@@ -1,0 +1,15 @@
+CHANGELOG
+HISTORY
+lib/i18n/core_ext.rb
+lib/i18n/localization_mixin.rb
+lib/i18n/translation_mixin.rb
+lib/i18n.rb
+LICENSE
+Manifest
+Rakefile
+README
+spec/core_ext_spec.rb
+spec/i18n_spec.rb
+spec/spec.opts
+spec/spec_helper.rb
+tasks/rspec.rake
