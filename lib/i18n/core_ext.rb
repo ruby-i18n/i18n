@@ -1,10 +1,6 @@
 require 'i18n/localization_mixin'
 require 'i18n/translation_mixin'
 
-class Object
-  include I18n::TranslationMixin
-end
-
 class Symbol
   include I18n::TranslationMixin
   
