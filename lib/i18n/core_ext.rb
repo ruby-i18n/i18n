@@ -1,17 +1,8 @@
 require 'i18n/localization_mixin'
 require 'i18n/translation_mixin'
 
-class String
+class Object
   include I18n::TranslationMixin
-  
-  protected
-  
-  # Define the value of this string as the default value if default value is
-  # given.
-  def typify_localization_options(options)
-    options[:default] = self unless options[:default]
-    options
-  end
 end
 
 class Symbol
@@ -19,7 +10,7 @@ class Symbol
   
   protected
   
-  # Add this symbol to the keys array.
+  # Prepend this symbol to the args array.
   def typify_localization_options(options)
     options[:keys] << self
     options

@@ -6,7 +6,7 @@ module I18n
     # Just ask the backend to localize this object. Simply returns self if no
     # backend is available.
     def localize(*args)
-      if I18n.backend and I18n.backend.respond_to? :localize
+      if I18n.backend.respond_to? :localize
         I18n.backend.localize(self, *args)
       else
         self
