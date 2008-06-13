@@ -6,10 +6,12 @@ module I18n
     def translate(*args)
       options = args.last.is_a?(Hash) ? args.pop : {}
       
+      options[:default] = args.shift if args.first.is_a? String
       key = args.shift || infer_localization_key_from_default(options[:default])
-      options[:keys] = [key] + Array(options.delete(:scope))
+
+      options[:keys] = Array(options.delete(:scope)) << key
       options[:locale] ||= args.shift
-      
+
       I18n.backend.translate typify_localization_options(options)
     end
         
