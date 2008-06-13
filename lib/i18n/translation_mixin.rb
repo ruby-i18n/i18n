@@ -6,7 +6,7 @@ module I18n
     def translate(*args)
       options = args.last.is_a?(Hash) ? args.pop : {}
       
-      key ||= args.shift || infer_localization_key_from_default(options[:default])
+      key = args.shift || infer_localization_key_from_default(options[:default])
       options[:keys] = [key] + Array(options.delete(:scope))
       options[:locale] ||= args.shift
       
