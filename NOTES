@@ -1,0 +1,5 @@
+I18n::Translation#typify_localization_args is a nice abstraction but it makes
+it harder to document the different method signatures of #translate in the
+classe where I18n::Translation is included. Maybe it would make sense to 
+remove that method and instead implement #translate in those classes for 
+clarity.
