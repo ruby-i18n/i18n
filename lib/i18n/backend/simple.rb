@@ -3,7 +3,6 @@ require 'date'
 module I18n
   module Backend
     module Simple
-      @@default_locale = :'en-US'
       @@translations = {}
       
       class << self
@@ -18,7 +17,7 @@ module I18n
         end
         
         def translate(options = {})
-          options[:locale] ||= @@default_locale
+          options[:locale] ||= Locale.current
           entry = lookup options[:locale], *options[:keys]
           entry ||= options[:default] if options[:default]
           entry = pluralize entry, options[:count]

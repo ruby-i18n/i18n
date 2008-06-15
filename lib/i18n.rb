@@ -1,6 +1,7 @@
 $:.unshift File.dirname(__FILE__)
 
 require 'i18n/core_ext'
+require 'locale'
 
 module I18n
   extend TranslationMixin
