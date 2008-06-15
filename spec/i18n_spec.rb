@@ -3,7 +3,7 @@ $:.unshift File.dirname(__FILE__) + '/../lib/'
 
 require 'i18n'
 
-describe I18n::TranslationMixin, 'localize with minimal backend' do
+describe I18n::Translation, 'localize with minimal backend' do
   it 'should respond_to :translate' do
     should respond_to(:t)
   end
@@ -36,7 +36,7 @@ describe I18n::TranslationMixin, 'localize with minimal backend' do
 end
 
 
-# describe I18n::TranslationMixin, 'localize with a backend available' do
+# describe I18n::Translation, 'localize with a backend available' do
 #   
 #   before do
 #     @backend = I18n.backend = mock('Backend')
@@ -66,7 +66,7 @@ end
 #   
 # end
 
-describe I18n::TranslationMixin, 'interpolation' do
+describe I18n::Translation, 'interpolation' do
   before do
     @backend = I18n::Backend::Minimal
   end

@@ -1,5 +1,5 @@
 class Locale < String
-  include I18n::TranslationMixin
+  include I18n::Translation
   
   @@instances = {}
   @@default_code = 'en-US'

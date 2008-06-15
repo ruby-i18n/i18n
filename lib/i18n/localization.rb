@@ -2,7 +2,7 @@ module I18n
   # This is the generic localization mixin suitable for almost any object. It
   # just asks the backend to localize the object or (if no backend is available)
   # simply returns self. Useful for Date, Time, ect.
-  module LocalizationMixin
+  module Localization
     # Just ask the backend to localize this object. Simply returns self if no
     # backend is available.
     def localize(*args)

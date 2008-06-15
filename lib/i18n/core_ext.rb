@@ -1,8 +1,8 @@
-require 'i18n/localization_mixin'
-require 'i18n/translation_mixin'
+require 'i18n/localization'
+require 'i18n/translation'
 
 class Symbol
-  include I18n::TranslationMixin
+  include I18n::Translation
   
   protected
   
@@ -13,13 +13,13 @@ class Symbol
 end
 
 class Time
-  include I18n::LocalizationMixin
+  include I18n::Localization
 end
 
 # class Date
-#   include I18n::LocalizationMixin
+#   include I18n::Localization
 # end
 # 
 # class DateTime
-#   include I18n::LocalizationMixin
+#   include I18n::Localization
 # end

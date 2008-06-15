@@ -11,8 +11,8 @@ Gem::Specification.new do |s|
   s.files = [
     "lib/i18n/backend/minimal.rb",
     "lib/i18n/core_ext.rb",
-    "lib/i18n/localization_mixin.rb",
-    "lib/i18n/translation_mixin.rb",
+    "lib/i18n/localization.rb",
+    "lib/i18n/translation.rb",
     "lib/i18n.rb",
     "LICENSE",
     "README",

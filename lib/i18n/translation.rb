@@ -1,7 +1,7 @@
 module I18n
   # This module should be mixed into every object that can be translated (where
   # the localization results into a string with pluralization and interpolation)
-  module TranslationMixin
+  module Translation
     # Main translation method
     def translate(*args)
       args = typify_localization_args(args)
