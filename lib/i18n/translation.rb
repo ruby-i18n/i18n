@@ -1,17 +1,25 @@
 module I18n
   # This module should be mixed into every object that can be translated (where
   # the localization results into a string with pluralization and interpolation)
+  class << self
+    def keyify(scope, key)
+      keys = []
+      keys += scope.to_s.split(/\./) if scope
+      keys += key.to_s.split(/\./)
+      keys.map &:to_sym
+    end
+  end
+  
   module Translation
     # Main translation method
     def translate(*args)
       args = typify_localization_args(args)
       options = args.last.is_a?(Hash) ? args.pop : {}      
-      options[:keys] = Array(options.delete(:scope)).dup << args.shift
+      options[:keys] = I18n.keyify options.delete(:scope), args.shift
       options[:locale] ||= args.shift
 
       I18n.backend.translate options
-    end
-        
+    end        
     alias :t :translate
     
     protected
