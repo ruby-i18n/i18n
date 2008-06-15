@@ -7,9 +7,8 @@ class Symbol
   protected
   
   # Prepend this symbol to the args array.
-  def typify_localization_options(options)
-    options[:keys] << self
-    options
+  def typify_localization_args(args)
+    args.unshift self
   end
 end
 
@@ -17,10 +16,10 @@ class Time
   include I18n::LocalizationMixin
 end
 
-class Date
-  include I18n::LocalizationMixin
-end
-
-class DateTime
-  include I18n::LocalizationMixin
-end
+# class Date
+#   include I18n::LocalizationMixin
+# end
+# 
+# class DateTime
+#   include I18n::LocalizationMixin
+# end

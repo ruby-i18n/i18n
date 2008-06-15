@@ -4,7 +4,7 @@ module I18n
   module Backend
     module Minimal
       class << self
-        def translate(options = {})      
+        def translate(options = {})
           return unless string = options[:default]
           values = options.reject{|key, value| [:keys, :locale, :default].include? key }      
           string = interpolate string, values unless values.empty?
@@ -20,7 +20,7 @@ module I18n
         # interpolation).
         def interpolate(text, values = {})
           s = StringScanner.new text
-      
+
           while s.skip_until /\{\{/
             s.string[s.pos - 3, 1] = '' and next if s.pre_match[-1, 1] == '\\'
             start_pos = s.pos - 2
