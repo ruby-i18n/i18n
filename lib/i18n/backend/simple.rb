@@ -13,7 +13,8 @@ module I18n
         def add_translations(locale, data)
           @@translations[locale] ||= {}
           # deep_merge by Stefan Rusterholz, seed http://www.ruby-forum.com/topic/142809
-          @@translations[locale].merge! data, &proc {|key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
+          merger = proc {|key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
+          @@translations[locale].merge! data, &merger
         end
         
         def translate(options = {})
@@ -22,7 +23,7 @@ module I18n
           entry ||= options[:default] if options[:default]
           entry = pluralize entry, options[:count]
           entry = interpolate entry, options.reject{|key, value| [:keys, :locale, :default].include? key } 
-          entry
+          entry || options[:keys].join
         end
         
         def lookup(*keys)
@@ -46,7 +47,7 @@ module I18n
         # the {{...}} key in a string (once for the string and once for the
         # interpolation).
         def interpolate(string, values = {})
-          return string if values.empty?
+          return string if string.nil? or values.empty?
           
           s = StringScanner.new string.dup
           while s.skip_until /\{\{/

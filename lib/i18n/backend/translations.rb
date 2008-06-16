@@ -84,3 +84,12 @@ I18n.backend.add_translations :'en-US', {
 #     :names => ::ActionView::Helpers::FormOptionsHelper.const_get('COUNTRIES')
 #   }
 # end
+
+# if Object.const_defined?('ActiveRecord')
+#   I18n.backend.add_translations :'en-US', :active_record => {
+#     :error_messages => ActiveRecord::Errors.default_error_messages
+#   }
+# end
+
+
+

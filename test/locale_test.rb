@@ -30,7 +30,7 @@ class LocaleTest < Test::Unit::TestCase
   
   def test_locale_with_options_using_scope_works
     I18n.backend.expects(:translate).with(:locale => Locale['en-US'], :keys => [:currency, :format, :precision])
-    @locale.with_options :scope => 'currency.format' do |locale|
+    @locale.with_options :scope => :'currency.format' do |locale|
       locale.t :precision
     end
   end

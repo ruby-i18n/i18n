@@ -21,22 +21,20 @@ I18n.backend = I18n::Backend::Simple
 require 'i18n/backend/translations'
 
 # require the patches
-require 'patch/date_helper'
-require 'patch/active_support'
-require 'patch/form_options_helper'
-require 'patch/active_record_helper'
-require 'patch/number_helper'
-require 'patch/date_time'
-
-# require 'patch/active_record_validations'
+# require 'patch/date_helper'
+# require 'patch/active_support'
+# require 'patch/form_options_helper'
+# require 'patch/active_record_helper'
+# require 'patch/number_helper'
+# require 'patch/date_time'
+require 'patch/active_record_validations'
 
 # run the tests
-require 'template/date_helper_test'
-require 'core_ext/array_ext_test'
-require 'template/form_options_helper_test'
-require 'template/active_record_helper_test'
-require 'template/number_helper_test'
-
-# require 'test/cases/validations_test'
+# require 'template/date_helper_test'
+# require 'core_ext/array_ext_test'
+# require 'template/form_options_helper_test'
+# require 'template/active_record_helper_test'
+# require 'template/number_helper_test'
+require 'test/cases/validations_test'
 
 
