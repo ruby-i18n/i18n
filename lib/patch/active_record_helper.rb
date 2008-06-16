@@ -26,18 +26,19 @@ module ActionView
           end
           options[:object_name] ||= params.first
 
-          header_message = options.include?(:header_message) ? options[:header_message] :
-            :header_message.t(locale, :count => count, :object_name => options[:object_name].to_s.gsub('_', ' '), :scope => [:active_record, :error])
-          message = options.include?(:message) ? options[:message] : 
-            :message.t(locale, :scope => [:active_record, :error])          
-          error_messages = objects.sum {|object| object.errors.full_messages.map {|msg| content_tag(:li, msg) } }.join
+          I18n.with_options :locale => options[:locale], :scope => :'active_record.error' do |locale|
+            header_message = options.include?(:header_message) ? options[:header_message] :
+              locale.t(:header_message, :count => count, :object_name => options[:object_name].to_s.gsub('_', ' '))
+            message = options.include?(:message) ? options[:message] : locale.t(:message)
+            error_messages = objects.sum {|object| object.errors.full_messages.map {|msg| content_tag(:li, msg) } }.join
 
-          contents = ''
-          contents << content_tag(options[:header_tag] || :h2, header_message) unless header_message.blank?
-          contents << content_tag(:p, message) unless message.blank?
-          contents << content_tag(:ul, error_messages)
+            contents = ''
+            contents << content_tag(options[:header_tag] || :h2, header_message) unless header_message.blank?
+            contents << content_tag(:p, message) unless message.blank?
+            contents << content_tag(:ul, error_messages)
 
-          content_tag(:div, contents, html)
+            content_tag(:div, contents, html)
+          end
         else
           ''
         end

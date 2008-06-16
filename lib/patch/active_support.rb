@@ -8,7 +8,7 @@ module ActiveSupport
           options.assert_valid_keys(:connector, :skip_last_comma)
 
           connector = options.has_key?(:connector) ? options[:connector] : 
-            :array_sentence_connector.t(options[:locale], :scope => :support)
+            :'support.array.sentence_connector'.t(options[:locale])
           connector = "#{connector} " unless connector.nil? || connector.strip == ''
 
           case length

@@ -45,7 +45,9 @@ I18n.backend.add_translations :'en-US', {
     }
   },
   :support => {
-    :array_sentence_connector => 'and'
+    :array => {
+      :sentence_connector => 'and'
+    }
   },
   :active_record => {
     :error => {
@@ -76,8 +78,9 @@ I18n.backend.add_translations :'en-US', {
   }
 }
 
-if Object.const_defined?('ActionView')
-  I18n.backend.add_translations :'en-US', :countries => {
-    :names => ::ActionView::Helpers::FormOptionsHelper.const_get('COUNTRIES')
-  }
-end
+# TODO define these here? pass them as default value?
+# if Object.const_defined?('ActionView')
+#   I18n.backend.add_translations :'en-US', :countries => {
+#     :names => ::ActionView::Helpers::FormOptionsHelper.const_get('COUNTRIES')
+#   }
+# end

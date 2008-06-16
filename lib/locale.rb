@@ -25,7 +25,7 @@ class Locale < String
   protected
   
     def typify_localization_args(args)
-      # TODO raise if no key in args[0] given?
+      # TODO raise ArgumentError if no key in args[0] given?
       args[1].is_a?(Hash) ? args.insert(1, self) : args[1] = self
       args
     end

@@ -5,7 +5,7 @@ module ActionView
         options = args.extract_options!
         selected, priority_countries = *args
         
-        countries = I18n.t :names, options[:locale], :scope => :countries
+        countries = :'countries.names'.t options[:locale], :default => COUNTRIES
         country_options = ""
 
         if priority_countries

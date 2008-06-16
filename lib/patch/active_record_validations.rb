@@ -13,9 +13,9 @@ module ActiveRecord
             full_messages << msg
           else
             # TODO what would make sense here as a scope?
-            scope = [:models, @base.class.name.to_sym, :human_attribute_names] 
+            key = :"models#{@base.class.name.to_sym}.human_attribute_names.#{attr}" 
             default = @base.class.human_attribute_name(attr)
-            attr_name = I18n.t attr.to_sym, options[:locale], :scope => scope, :default => default
+            attr_name = I18n.t key, options[:locale], :default => default
             full_messages << attr_name + " " + msg
           end
         end

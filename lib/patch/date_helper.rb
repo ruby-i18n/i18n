@@ -10,7 +10,7 @@ module ActionView
         distance_in_minutes = (((to_time - from_time).abs)/60).round
         distance_in_seconds = ((to_time - from_time).abs).round
 
-        I18n.with_options :locale => options[:locale], :scope => [:datetime, :distance_in_words] do |locale|
+        I18n.with_options :locale => options[:locale], :scope => :'datetime.distance_in_words' do |locale|
           case distance_in_minutes
             when 0..1
               return distance_in_minutes == 0 ? 
@@ -51,7 +51,7 @@ module ActionView
 
         position = { :year => 1, :month => 2, :day => 3, :hour => 4, :minute => 5, :second => 6 }
 
-        order = options[:order] ||= :order.t(locale, :scope => :date)
+        order = options[:order] ||= :'date.order'.t(locale)
 
         # Discard explicit and implicit by not being included in the :order
         discard = {}
@@ -101,10 +101,9 @@ module ActionView
           hidden_html(options[:field_name] || 'month', val, options)
         else
           month_options = []
-          month_names = :month_names.t locale, :scope => :date
-          abbr_month_names = :abbr_month_names.t locale, :scope => :date
-
-          month_names = options[:use_month_names] || (options[:use_short_month] ? abbr_month_names : month_names)
+          month_names = options[:use_month_names] || begin
+            (options[:use_short_month] ? :'date.abbr_month_names' : :'date.month_names').t locale
+          end
           month_names.unshift(nil) if month_names.size < 13
 
           1.upto(12) do |month_number|

@@ -18,6 +18,23 @@ class LocaleTest < Test::Unit::TestCase
     @locale = Locale.current
   end
   
+  def test_translate_on_nested_symbol_key_works
+    I18n.backend.expects(:translate).with(:locale => Locale['en-US'], :keys => [:currency, :format, :precision])
+    :'currency.format.precision'.t @locale
+  end
+  
+  def test_locale_with_nested_key_works
+    I18n.backend.expects(:translate).with(:locale => Locale['en-US'], :keys => [:currency, :format, :precision])
+    @locale.t :'currency.format.precision'
+  end
+  
+  def test_locale_with_options_using_scope_works
+    I18n.backend.expects(:translate).with(:locale => Locale['en-US'], :keys => [:currency, :format, :precision])
+    @locale.with_options :scope => 'currency.format' do |locale|
+      locale.t :precision
+    end
+  end
+  
   def test_translate_given_a_translation_key_it_inserts_itself_to_localization_args
     I18n.backend = mock  
     I18n.backend.expects(:translate).with(:locale => Locale['en-US'], :keys => [:currency])
@@ -34,12 +51,5 @@ class LocaleTest < Test::Unit::TestCase
     I18n.backend = mock  
     I18n.backend.expects(:translate).with(:locale => Locale['en-US'], :keys => [:currency, :format, :precision])
     @locale.t :precision, Locale['de-DE'], :scope => 'currency.format'
-  end
-  
-  def test_locale_with_options_using_scope_works
-    I18n.backend.expects(:translate).with(:locale => Locale['en-US'], :keys => [:currency, :format, :precision])
-    @locale.with_options :scope => 'currency.format' do |locale|
-      locale.t :precision
-    end
   end
 end

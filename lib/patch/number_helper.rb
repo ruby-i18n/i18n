@@ -20,7 +20,7 @@ module ActionView
       
       def number_to_currency(number, options = {})
         options = options.stringify_keys        
-        formats = I18n.t :format, options.delete(:locale), :scope => :currency
+        formats = I18n.t :'currency.format', options.delete(:locale)
         
         precision = options["precision"] || formats[:precision]
         unit      = options["unit"] || formats[:unit]
