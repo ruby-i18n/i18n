@@ -34,9 +34,8 @@ module I18n
         end
     
         def pluralize(entry, count)
-          return entry unless entry.is_a?(Array) and count
-          plural_index = count.nil? || count == 1 ? 0 : 1
-          entry[plural_index].dup
+          return entry unless entry.is_a?(Array) # and count
+          entry[count == 1 ? 0 : 1].dup
         end
     
         # Interpolates values into a given string.
