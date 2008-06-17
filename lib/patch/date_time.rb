@@ -23,7 +23,7 @@ class Time
   # Acts the same as #strftime, but returns a localized version of the
   # formatted date/time string.
   def localize(locale = nil, format = :default)
-    formats = :formats.t(locale, :scope => :time)
+    formats = :'time.formats'.t locale
     format = formats[format.to_sym] if formats[format.to_sym]      
     format = format.dup
     

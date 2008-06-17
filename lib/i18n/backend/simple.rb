@@ -21,9 +21,8 @@ module I18n
           reserved_keys = :locale, :keys, :default, :count
           locale, keys, default, count = options.values_at(reserved_keys)
           values = options.reject{|key, value| [:keys, :locale, :default].include? key } 
-          locale ||= Locale.current
           
-          entry = lookup(locale, *keys) || default
+          entry = lookup(locale || I18n.current_locale, *keys) || default
           entry = pluralize entry, count
           entry = interpolate entry, values
           entry
@@ -31,17 +30,17 @@ module I18n
         
         def translate(options = {})
           locale, keys, default, count, values = options.values_at(:locale, :keys, :default, :count, :values)
-          locale ||= Locale.current
           values ||= {}
           values[:count] = count if count
 
-          entry = lookup(locale, *keys) || default
+          entry = lookup(locale || I18n.current_locale, *keys) || default
           entry = pluralize entry, count
           entry = interpolate entry, values
           entry
         end
         
         def lookup(*keys)
+          return if keys.size <= 1
           keys.inject(translations){|result, key| result[key.to_sym] or return nil }
         end
     

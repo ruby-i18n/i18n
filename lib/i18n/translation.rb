@@ -6,7 +6,7 @@ module I18n
       keys = []
       keys += scope.to_s.split(/\./) if scope
       keys += key.to_s.split(/\./)
-      keys.map &:to_sym
+      keys.map{|key| key.to_sym}
     end
   end
   

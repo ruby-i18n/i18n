@@ -13,9 +13,13 @@ require 'i18n/backend/translations'
 
 gem 'mocha', '>=0.5'
 
-class LocaleTest < Test::Unit::TestCase
+class I18nTest < Test::Unit::TestCase
   def setup  
-    @locale = Locale.current
+    @locale = I18n.current_locale
+  end
+  
+  def test_uses_default_locale
+    assert_equal 'en-US', @locale
   end
   
   def test_translate_on_nested_symbol_key_works

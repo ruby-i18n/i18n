@@ -2,17 +2,8 @@ class Locale < String
   include I18n::Translation
   
   @@instances = {}
-  @@default_code = 'en-US'
   
   class << self
-    def use(code)
-      Thread.current[:locale] = Locale[code]
-    end
-    
-    def current
-      Thread.current[:locale] ||= self[@@default_code]
-    end
-    
     def [](code)
       @@instances[code] ||= Locale.new(code)
     end
