@@ -9,21 +9,29 @@ module ActiveRecord
     end
 
     # Will add an error message to each of the attributes in +attributes+ that is empty.
-    def add_on_empty(attributes, msg = nil)
-      msg ||= :"active_record.error_messages.empty".t
+    def add_on_empty(attributes, custom_message = nil)
       for attr in [attributes].flatten
         value = @base.respond_to?(attr.to_s) ? @base.send(attr.to_s) : @base[attr.to_s]
         is_empty = value.respond_to?("empty?") ? value.empty? : false
-        add(attr, msg) unless !value.nil? && !is_empty
+        unless !value.nil? && !is_empty
+          custom_key = :"active_record.error_messages.custom.#{self.class.name}.#{attr}.empty"
+          message = custom_key.t :default => custom_message
+          message ||= :"active_record.error_messages.empty".t        
+          add(attr, message) 
+        end
       end
     end
 
     # Will add an error message to each of the attributes in +attributes+ that is blank (using Object#blank?).
-    def add_on_blank(attributes, msg = nil)
-      msg ||= :"active_record.error_messages.blank".t
+    def add_on_blank(attributes, custom_message = nil)
       for attr in [attributes].flatten
         value = @base.respond_to?(attr.to_s) ? @base.send(attr.to_s) : @base[attr.to_s]
-        add(attr, msg) if value.blank?
+        if value.blank?
+          custom_key = :"active_record.error_messages.custom.#{self.class.name}.#{attr}.blank"
+          message = custom_key.t :default => custom_message
+          message ||= :"active_record.error_messages.blank".t
+          add(attr, message) 
+        end
       end
     end
     
@@ -52,18 +60,23 @@ module ActiveRecord
   module Validations    
     module ClassMethods
       def validates_confirmation_of(*attr_names)
-        configuration = { :message => :"active_record.error_messages.confirmation", :on => :save }
+        configuration = { :on => :save }
         configuration.update(attr_names.extract_options!)
 
         attr_accessor(*(attr_names.map { |n| "#{n}_confirmation" }))
 
         validates_each(attr_names, configuration) do |record, attr_name, value|
-          record.errors.add(attr_name, configuration[:message].t) unless record.send("#{attr_name}_confirmation").nil? or value == record.send("#{attr_name}_confirmation")
+          unless record.send("#{attr_name}_confirmation").nil? or value == record.send("#{attr_name}_confirmation")
+            custom_key = :"active_record.error_messages.custom.#{record.class.name}.#{attr_name}.confirmation"
+            message = custom_key.t :default => configuration[:message]
+            message ||= :"active_record.error_messages.confirmation".t
+            record.errors.add(attr_name, message) 
+          end
         end
       end 
     
       def validates_acceptance_of(*attr_names)
-        configuration = { :message => :"active_record.error_messages.accepted", :on => :save, :allow_nil => true, :accept => "1" }
+        configuration = { :on => :save, :allow_nil => true, :accept => "1" }
         configuration.update(attr_names.extract_options!)
 
         db_cols = begin
@@ -75,28 +88,29 @@ module ActiveRecord
         attr_accessor(*names)
 
         validates_each(attr_names,configuration) do |record, attr_name, value|
-          record.errors.add(attr_name, configuration[:message].t) unless value == configuration[:accept]
+          unless value == configuration[:accept]
+            custom_key = :"active_record.error_messages.custom.#{record.class.name}.#{attr_name}.accepted"
+            message = custom_key.t :default => configuration[:message]
+            message ||= :"active_record.error_messages.accepted".t
+            record.errors.add(attr_name, message) 
+          end
         end
       end
       
       def validates_presence_of(*attr_names)
-        configuration = { :message => :"active_record.error_messages.blank", :on => :save }
+        configuration = { :on => :save }
         configuration.update(attr_names.extract_options!)
 
         # can't use validates_each here, because it cannot cope with nonexistent attributes,
         # while errors.add_on_empty can
         send(validation_method(configuration[:on]), configuration) do |record|
-          record.errors.add_on_blank(attr_names, configuration[:message].t)
+          record.errors.add_on_blank(attr_names, configuration[:message])
         end
       end
       
       def validates_length_of(*attrs)
         # Merge given options with defaults.
-        options = {
-          :too_long     => :"active_record.error_messages.too_long", 
-          :too_short    => :"active_record.error_messages.too_short",
-          :wrong_length => :"active_record.error_messages.wrong_length"
-        }.merge(DEFAULT_VALIDATION_OPTIONS)
+        options = {}.merge(DEFAULT_VALIDATION_OPTIONS)
         options.update(attrs.extract_options!.symbolize_keys)
 
         # Ensure that one and only one range option is specified.
@@ -118,10 +132,15 @@ module ActiveRecord
           when :within, :in
             raise ArgumentError, ":#{option} must be a Range" unless option_value.is_a?(Range)
 
-            too_short = options[:too_short].t % option_value.begin
-            too_long  = options[:too_long].t % option_value.end
-
             validates_each(attrs, options) do |record, attr, value|
+              custom_key = :"active_record.error_messages.custom.#{record.class.name}.#{attr}.too_short"
+              too_short = custom_key.t :default => options[:too_short], :count => option_value.begin
+              too_short ||= :"active_record.error_messages.too_short".t :count => option_value.begin
+
+              custom_key = :"active_record.error_messages.custom.#{record.class.name}.#{attr}.too_long"
+              too_long = custom_key.t :default => options[:too_long], :count => option_value.end
+              too_long ||= :"active_record.error_messages.too_long".t :count => option_value.end
+
               value = value.split(//) if value.kind_of?(String)
               if value.nil? or value.size < option_value.begin
                 record.errors.add(attr, too_short)
@@ -136,9 +155,12 @@ module ActiveRecord
             validity_checks = { :is => "==", :minimum => ">=", :maximum => "<=" }
             message_options = { :is => :wrong_length, :minimum => :too_short, :maximum => :too_long }
 
-            message = (options[:message] || options[message_options[option]]).t % option_value
-
             validates_each(attrs, options) do |record, attr, value|
+              custom_key = :"active_record.error_messages.custom.#{record.class.name}.#{attr}.#{message_options[option]}"
+              custom_message = options[:message] || options[message_options[option]]
+              message = custom_key.t :default => custom_message, :count => option_value
+              message ||= :"active_record.error_messages.#{message_options[option]}".t :count => option_value
+            
               value = value.split(//) if value.kind_of?(String)
               record.errors.add(attr, message) unless !value.nil? and value.size.method(validity_checks[option])[option_value]
             end
@@ -146,7 +168,7 @@ module ActiveRecord
       end
       
       def validates_uniqueness_of(*attr_names)
-        configuration = { :message => :"active_record.error_messages.taken", :case_sensitive => true }
+        configuration = { :case_sensitive => true }
         configuration.update(attr_names.extract_options!)
 
         validates_each(attr_names,configuration) do |record, attr_name, value|
@@ -205,25 +227,33 @@ module ActiveRecord
             if configuration[:case_sensitive] && finder_class.columns_hash[attr_name.to_s].text?
               found = results.any? { |a| a[attr_name.to_s] == value }
             end
-
-            record.errors.add(attr_name, configuration[:message].t) if found
+            
+            custom_key = :"active_record.error_messages.custom.#{record.class.name}.#{attr_name}.taken"
+            message = custom_key.t :default => configuration[:message]
+            message ||= :"active_record.error_messages.taken".t            
+            record.errors.add(attr_name, message) if found
           end
         end
       end
       
       def validates_format_of(*attr_names)
-        configuration = { :message => :"active_record.error_messages.invalid", :on => :save, :with => nil }
+        configuration = { :on => :save, :with => nil }
         configuration.update(attr_names.extract_options!)
 
         raise(ArgumentError, "A regular expression must be supplied as the :with option of the configuration hash") unless configuration[:with].is_a?(Regexp)
 
         validates_each(attr_names, configuration) do |record, attr_name, value|
-          record.errors.add(attr_name, configuration[:message].t % value) unless value.to_s =~ configuration[:with]
+          unless value.to_s =~ configuration[:with]
+            custom_key = :"active_record.error_messages.custom.#{record.class.name}.#{attr_name}.invalid"
+            message = custom_key.t :default => configuration[:message], :value => value
+            message ||= :"active_record.error_messages.invalid".t :value => value
+            record.errors.add(attr_name, message) 
+          end
         end
       end
       
       def validates_inclusion_of(*attr_names)
-        configuration = { :message => :"active_record.error_messages.inclusion", :on => :save, :with => nil }
+        configuration = { :on => :save, :with => nil }
         configuration.update(attr_names.extract_options!)
 
         enum = configuration[:in] || configuration[:within]
@@ -231,12 +261,17 @@ module ActiveRecord
         raise(ArgumentError, "An object with the method include? is required must be supplied as the :in option of the configuration hash") unless enum.respond_to?("include?")
 
         validates_each(attr_names, configuration) do |record, attr_name, value|
-          record.errors.add(attr_name, configuration[:message].t % value) unless enum.include?(value)
+          unless enum.include?(value)
+            custom_key = :"active_record.error_messages.custom.#{record.class.name}.#{attr_name}.inclusion"
+            message = custom_key.t :default => configuration[:message], :value => value
+            message ||= :"active_record.error_messages.inclusion".t :value => value
+            record.errors.add(attr_name, message) 
+          end
         end
       end
       
       def validates_exclusion_of(*attr_names)
-        configuration = { :message => :"active_record.error_messages.exclusion", :on => :save, :with => nil }
+        configuration = { :on => :save, :with => nil }
         configuration.update(attr_names.extract_options!)
 
         enum = configuration[:in] || configuration[:within]
@@ -244,17 +279,26 @@ module ActiveRecord
         raise(ArgumentError, "An object with the method include? is required must be supplied as the :in option of the configuration hash") unless enum.respond_to?("include?")
 
         validates_each(attr_names, configuration) do |record, attr_name, value|
-          record.errors.add(attr_name, configuration[:message].t % value) if enum.include?(value)
+          if enum.include?(value)
+            custom_key = :"active_record.error_messages.custom.#{record.class.name}.#{attr_name}.exclusion"
+            message = custom_key.t :default => configuration[:message], :value => value
+            message ||= :"active_record.error_messages.exclusion".t :value => value
+            record.errors.add(attr_name, message) 
+          end
         end
       end
       
       def validates_associated(*attr_names)
-        configuration = { :message => :"active_record.error_messages.invalid", :on => :save }
+        configuration = { :on => :save }
         configuration.update(attr_names.extract_options!)
 
         validates_each(attr_names, configuration) do |record, attr_name, value|
-          record.errors.add(attr_name, configuration[:message].t) unless
-            (value.is_a?(Array) ? value : [value]).inject(true) { |v, r| (r.nil? || r.valid?) && v }
+          unless (value.is_a?(Array) ? value : [value]).inject(true) { |v, r| (r.nil? || r.valid?) && v }
+            custom_key = :"active_record.error_messages.custom.#{record.class.name}.#{attr_name}.invalid"
+            message = custom_key.t :default => configuration[:message]
+            message ||= :"active_record.error_messages.invalid".t
+            record.errors.add(attr_name, message)
+          end
         end
       end
       
@@ -276,8 +320,10 @@ module ActiveRecord
 
           if configuration[:only_integer]
             unless raw_value.to_s =~ /\A[+-]?\d+\Z/
-              message = configuration[:message] || :"active_record.error_messages.not_a_number"
-              record.errors.add(attr_name, message.t)
+              custom_key = :"active_record.error_messages.custom.#{record.class.name}.#{attr_name}.not_a_number"
+              message = custom_key.t :default => configuration[:message]
+              message ||= :"active_record.error_messages.not_a_number".t
+              record.errors.add(attr_name, message)
               next
             end
             raw_value = raw_value.to_i
@@ -285,8 +331,10 @@ module ActiveRecord
            begin
               raw_value = Kernel.Float(raw_value.to_s)
             rescue ArgumentError, TypeError
-              message = configuration[:message] || :"active_record.error_messages.not_a_number"
-              record.errors.add(attr_name, message.t)
+              custom_key = :"active_record.error_messages.custom.#{record.class.name}.#{attr_name}.not_a_number"
+              message = custom_key.t :default => configuration[:message]
+              message ||= :"active_record.error_messages.not_a_number".t
+              record.errors.add(attr_name, message)
               next
             end
           end
@@ -295,12 +343,15 @@ module ActiveRecord
             case option
               when :odd, :even
                 unless raw_value.to_i.method(ALL_NUMERICALITY_CHECKS[option])[]
-                  message = configuration[:message] || :"active_record.error_messages.#{option}"
-                  record.errors.add(attr_name, message.t) 
+                  custom_key = :"active_record.error_messages.custom.#{record.class.name}.#{attr_name}.#{option}"
+                  message = custom_key.t :default => configuration[:message]
+                  message ||= :"active_record.error_messages.#{option}".t
+                  record.errors.add(attr_name, message) 
                 end
               else
-                message = configuration[:message] || :"active_record.error_messages.#{option}"
-                message = message.t % configuration[option]
+                custom_key = :"active_record.error_messages.custom.#{record.class.name}.#{attr_name}.#{option}"
+                message = custom_key.t :default => configuration[:message], :count => configuration[option] if configuration[:message]
+                message ||= :"active_record.error_messages.#{option}".t :count => configuration[option]
                 record.errors.add(attr_name, message) unless raw_value.method(ALL_NUMERICALITY_CHECKS[option])[configuration[option]]
             end
           end

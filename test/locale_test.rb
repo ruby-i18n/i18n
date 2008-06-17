@@ -53,3 +53,13 @@ class LocaleTest < Test::Unit::TestCase
     @locale.t :precision, Locale['de-DE'], :scope => 'currency.format'
   end
 end
+
+class SimpleBackendTest < Test::Unit::TestCase
+  def setup  
+    I18n.backend = I18n::Backend::Simple
+  end
+  
+  def test_given_no_keys_it_returns_the_default
+    assert_equal 'default', I18n.translate(:default => 'default')    
+  end
+end

@@ -62,21 +62,22 @@ I18n.backend.add_translations :'en-US', {
       :accepted  => "must be accepted",
       :empty => "can't be empty",
       :blank => "can't be blank",
-      :too_long => "is too long (maximum is %d characters)",
-      :too_short => "is too short (minimum is %d characters)",
-      :wrong_length => "is the wrong length (should be %d characters)",
+      :too_long => "is too long (maximum is {{count}} characters)",
+      :too_short => "is too short (minimum is {{count}} characters)",
+      :wrong_length => "is the wrong length (should be {{count}} characters)",
       :taken => "has already been taken",
       :not_a_number => "is not a number",
-      :greater_than => "must be greater than %d",
-      :greater_than_or_equal_to => "must be greater than or equal to %d",
-      :equal_to => "must be equal to %d",
-      :less_than => "must be less than %d",
-      :less_than_or_equal_to => "must be less than or equal to %d",
+      :greater_than => "must be greater than {{count}}",
+      :greater_than_or_equal_to => "must be greater than or equal to {{count}}",
+      :equal_to => "must be equal to {{count}}",
+      :less_than => "must be less than {{count}}",
+      :less_than_or_equal_to => "must be less than or equal to {{count}}",
       :odd => "must be odd",
       :even => "must be even"
     }            
   }
 }
+
 
 # TODO define these here? pass them as default value?
 # if Object.const_defined?('ActionView')
