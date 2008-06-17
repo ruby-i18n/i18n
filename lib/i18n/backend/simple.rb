@@ -10,6 +10,7 @@ module I18n
         end
         
         def add_translations(locale, data)
+          locale = locale.to_sym
           @@translations[locale] ||= {}
           # deep_merge by Stefan Rusterholz, seed http://www.ruby-forum.com/topic/142809
           merger = proc {|key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
