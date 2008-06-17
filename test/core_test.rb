@@ -5,7 +5,7 @@ require 'i18n'
 require 'i18n/backend/simple'
 I18n.backend = I18n::Backend::Simple
 require 'i18n/backend/translations'
-require 'patch/date_time'
+# require 'patch/date_time'
 
 
 class I18nDateTest < Test::Unit::TestCase

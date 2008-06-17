@@ -1,6 +1,7 @@
 module I18n
   module Backend
     module Simple
+      class ReservedInterpolationKey < ArgumentError; end
       @@translations = {}
       
       class << self
@@ -16,21 +17,10 @@ module I18n
         end
         
         def translate(options = {})
-          reserved_keys = :locale, :keys, :default, :count
-          locale, keys, default, count = options.values_at(reserved_keys)
-          values = options.reject{|key, value| [:keys, :locale, :default].include? key } 
+          reserved = :locale, :keys, :default
+          count, locale, keys, default = options.values_at(:count, *reserved)
+          values = options.reject{|key, value| reserved.include? key } 
           
-          entry = lookup(locale || I18n.current_locale, *keys) || default
-          entry = pluralize entry, count
-          entry = interpolate entry, values
-          entry
-        end
-        
-        def translate(options = {})
-          locale, keys, default, count, values = options.values_at(:locale, :keys, :default, :count, :values)
-          values ||= {}
-          values[:count] = count if count
-
           entry = lookup(locale || I18n.current_locale, *keys) || default
           entry = pluralize entry, count
           entry = interpolate entry, values
@@ -58,20 +48,22 @@ module I18n
         # interpolation).
         def interpolate(string, values = {})
           return string if string.nil? or values.nil? or values.empty?
-          
+
           map = {'%d' => '{{count}}', '%s' => '{{value}}'} # TODO deprecate this
           string.gsub!(/#{map.keys.join('|')}/){|key| map[key]} 
           
           s = StringScanner.new string.dup
+          reserved = :locale, :keys, :default
           while s.skip_until /\{\{/
             s.string[s.pos - 3, 1] = '' and next if s.pre_match[-1, 1] == '\\'
+            
             start_pos = s.pos - 2
-            key_name = s.scan_until(/\}\}/)[0..-3]
-            end_pos = s.pos - 1
+            key = s.scan_until(/\}\}/)[0..-3]
+            end_pos = s.pos - 1            
+
+            raise ReservedInterpolationKey, %s(reserved key :#{key} used in "#{string}") if reserved.include?(key)
         
-            if values.has_key? key_name.to_sym
-              s.string[start_pos..end_pos] = values[key_name.to_sym].to_s
-            end        
+            s.string[start_pos..end_pos] = values[key.to_sym].to_s if values.has_key? key.to_sym
             s.unscan
           end      
           s.string

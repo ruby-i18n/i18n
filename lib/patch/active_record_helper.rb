@@ -33,7 +33,7 @@ module ActionView
               options[:header_message]
             else 
               object_name = options[:object_name].to_s.gsub('_', ' ')
-              locale.t :header_message, :count => count, :values => {:object_name => object_name}
+              locale.t :header_message, :count => count, :object_name => object_name
             end
             message = options.include?(:message) ? options[:message] : locale.t(:message)
             error_messages = objects.sum {|object| object.errors.full_messages.map {|msg| content_tag(:li, msg) } }.join

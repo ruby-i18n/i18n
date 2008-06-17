@@ -25,16 +25,11 @@ module ActiveRecord
       end
     end
     
-    def generate_message(attr, key, values = {})
-      options = {}
-      options[:default] = values.delete(:default) if values.has_key?(:default)
-      options[:count]   = values.delete(:count) if values.has_key?(:count)
-      options[:values]  = values unless values.empty?
-      
-      #options = {:default => values.delete(:default), :count => values.delete(:count), :values => values}
-      
-      custom_key = :"active_record.error_messages.custom.#{@base.class.name.downcase}.#{attr}.#{key}"
-      custom_key.t(options) || :"active_record.error_messages.#{key}".t(options)
+    def generate_message(attr, key, options = {})
+      scope = 'active_record.error_messages'
+      custom_key = :"#{scope}.custom.#{@base.class.name.downcase}.#{attr}.#{key}"
+      global_key = :"#{scope}.#{key}"
+      custom_key.t(options) || global_key.t(options)
     end
     
     def full_messages(options = {})

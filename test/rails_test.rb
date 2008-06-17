@@ -26,7 +26,6 @@ require 'patch/active_support'
 require 'patch/form_options_helper'
 require 'patch/active_record_helper'
 require 'patch/number_helper'
-require 'patch/date_time'
 require 'patch/active_record_validations'
 
 # run the tests
