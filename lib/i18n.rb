@@ -1,15 +1,25 @@
-$:.unshift File.dirname(__FILE__)
+# $:.unshift File.dirname(__FILE__)
+require 'i18n/core_ext'
 
 module I18n
+  @@backend = nil
   @@default_locale = 'en-US'
   
   class << self
-    def default_locale=(locale)
-      @@default_locale = locale
+    def backend
+      @@backend
     end
     
+    def backend=(backend) 
+      @@backend = backend
+    end
+  
     def default_locale
-      @@default_locale
+      @@default_locale 
+    end
+    
+    def default_locale=(locale) 
+      @@default_locale = locale 
     end
     
     def current_locale
@@ -29,6 +39,10 @@ module I18n
       backend.translate options
     end        
     alias :t :translate    
+    
+    def localize(*args)
+      backend.localize *args
+    end
 
     def merge_keys(scope, key)
       keys = []
@@ -37,11 +51,6 @@ module I18n
       keys.map{|key| key.to_sym}
     end
   end
-  
-  @@backend = nil
-  def self.backend; @@backend; end
-  def self.backend=(new_val); @@backend = new_val; end
 end
 
-require 'i18n/core_ext'
 

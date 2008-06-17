@@ -1,5 +1,3 @@
-require 'date'
-
 module I18n
   module Backend
     module Simple
@@ -46,16 +44,14 @@ module I18n
     
         def pluralize(entry, count)
           return entry unless entry.is_a?(Array) and count
-          entry[plural_index(count)].dup
-        end
-      
-        def plural_index(count)
-          count.nil? || count == 1 ? 0 : 1
+          plural_index = count.nil? || count == 1 ? 0 : 1
+          entry[plural_index].dup
         end
     
         # Interpolates values into a given string.
         # 
-        #   interpolate "file {{file}} opend by \\{{user}}", :file => 'test.txt', :user => 'Mr. X'  # => "file test.txt opend by {{user}}"
+        #   interpolate "file {{file}} opend by \\{{user}}", :file => 'test.txt', :user => 'Mr. X'  
+        #   # => "file test.txt opend by {{user}}"
         # 
         # Note that you have to double escape the "\" when you want to escape
         # the {{...}} key in a string (once for the string and once for the
@@ -79,6 +75,21 @@ module I18n
             s.unscan
           end      
           s.string
+        end
+        
+        def localize(object, locale = nil, format = :default)
+          type = object.is_a?(Date) ? 'date' : 'time'
+          
+          formats = :"#{type}.formats".t locale
+          format = formats[format.to_sym] if formats[format.to_sym]      
+          format = format.dup
+    
+          format.gsub! /%a/, :abbr_day_names.t(locale, :scope => :date)[object.wday]
+          format.gsub! /%A/, :day_names.t(locale, :scope => :date)[object.wday]
+          format.gsub! /%b/, :abbr_month_names.t(locale, :scope => :date)[object.mon]
+          format.gsub! /%B/, :month_names.t(locale, :scope => :date)[object.mon]
+          format.gsub! /%p/, (object.hour < 12 ? :am : :pm).t(locale, :scope => :time) if object.respond_to? :hour
+          object.strftime(format)
         end
       end
     end
