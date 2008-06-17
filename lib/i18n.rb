@@ -1,8 +1,9 @@
 # $:.unshift File.dirname(__FILE__)
 require 'i18n/core_ext'
+require 'i18n/backend/simple'
 
 module I18n
-  @@backend = nil
+  @@backend = Backend::Simple
   @@default_locale = 'en-US'
   
   class << self
