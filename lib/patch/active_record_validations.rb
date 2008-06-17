@@ -13,7 +13,7 @@ module ActiveRecord
       for attr in [attributes].flatten
         value = @base.respond_to?(attr.to_s) ? @base.send(attr.to_s) : @base[attr.to_s]
         is_empty = value.respond_to?("empty?") ? value.empty? : false        
-        add(attr, message(attr, :empty, :default => custom_message)) unless !value.nil? && !is_empty
+        add(attr, generate_message(attr, :empty, :default => custom_message)) unless !value.nil? && !is_empty
       end
     end
 
@@ -21,11 +21,11 @@ module ActiveRecord
     def add_on_blank(attributes, custom_message = nil)
       for attr in [attributes].flatten
         value = @base.respond_to?(attr.to_s) ? @base.send(attr.to_s) : @base[attr.to_s]
-        add(attr, message(attr, :blank, :default => custom_message)) if value.blank?
+        add(attr, generate_message(attr, :blank, :default => custom_message)) if value.blank?
       end
     end
     
-    def message(attr, key, options = {})
+    def generate_message(attr, key, options = {})
       custom_key = :"active_record.error_messages.custom.#{@base.class.name}.#{attr}.#{key}"
       custom_key.t(options) || :"active_record.error_messages.#{key}".t(options)
     end
@@ -62,7 +62,7 @@ module ActiveRecord
 
         validates_each(attr_names, configuration) do |record, attr_name, value|
           unless record.send("#{attr_name}_confirmation").nil? or value == record.send("#{attr_name}_confirmation")
-            message = record.errors.message(attr_name, :confirmation, :default => configuration[:message])
+            message = record.errors.generate_message(attr_name, :confirmation, :default => configuration[:message])
             record.errors.add(attr_name, message) 
           end
         end
@@ -82,7 +82,7 @@ module ActiveRecord
 
         validates_each(attr_names,configuration) do |record, attr_name, value|
           unless value == configuration[:accept]
-            message = record.errors.message(attr_name, :accepted, :default => configuration[:message])
+            message = record.errors.generate_message(attr_name, :accepted, :default => configuration[:message])
             record.errors.add(attr_name, message) 
           end
         end
@@ -151,7 +151,7 @@ module ActiveRecord
               unless !value.nil? and value.size.method(validity_checks[option])[option_value]
                 key = message_options[option]
                 custom_message = options[:message] || options[key]
-                message = record.errors.message(attr, key, :default => custom_message, :count => option_value)
+                message = record.errors.generate_message(attr, key, :default => custom_message, :count => option_value)
                 record.errors.add(attr, message) 
               end
             end
@@ -220,7 +220,7 @@ module ActiveRecord
             end
             
             if found
-              message = record.errors.message(attr_name, :taken, :default => configuration[:message])
+              message = record.errors.generate_message(attr_name, :taken, :default => configuration[:message])
               record.errors.add(attr_name, message) 
             end
           end
@@ -235,7 +235,7 @@ module ActiveRecord
 
         validates_each(attr_names, configuration) do |record, attr_name, value|
           unless value.to_s =~ configuration[:with]
-            message = record.errors.message(attr_name, :invalid, :default => configuration[:message], :value => value)
+            message = record.errors.generate_message(attr_name, :invalid, :default => configuration[:message], :value => value)
             record.errors.add(attr_name, message) 
           end
         end
@@ -251,7 +251,7 @@ module ActiveRecord
 
         validates_each(attr_names, configuration) do |record, attr_name, value|
           unless enum.include?(value)
-            message = record.errors.message(attr_name, :inclusion, :default => configuration[:message], :value => value)
+            message = record.errors.generate_message(attr_name, :inclusion, :default => configuration[:message], :value => value)
             record.errors.add(attr_name, message) 
           end
         end
@@ -267,7 +267,7 @@ module ActiveRecord
 
         validates_each(attr_names, configuration) do |record, attr_name, value|
           if enum.include?(value)
-            message = record.errors.message(attr_name, :exclusion, :default => configuration[:message], :value => value)
+            message = record.errors.generate_message(attr_name, :exclusion, :default => configuration[:message], :value => value)
             record.errors.add(attr_name, message) 
           end
         end
@@ -279,7 +279,7 @@ module ActiveRecord
 
         validates_each(attr_names, configuration) do |record, attr_name, value|
           unless (value.is_a?(Array) ? value : [value]).inject(true) { |v, r| (r.nil? || r.valid?) && v }
-            message = record.errors.message(attr_name, :invalid, :default => configuration[:message], :value => value)
+            message = record.errors.generate_message(attr_name, :invalid, :default => configuration[:message], :value => value)
             record.errors.add(attr_name, message)
           end
         end
@@ -303,7 +303,7 @@ module ActiveRecord
 
           if configuration[:only_integer]
             unless raw_value.to_s =~ /\A[+-]?\d+\Z/
-              message = record.errors.message(attr_name, :not_a_number, :default => configuration[:message])
+              message = record.errors.generate_message(attr_name, :not_a_number, :default => configuration[:message])
               record.errors.add(attr_name, message)
               next
             end
@@ -312,7 +312,7 @@ module ActiveRecord
            begin
               raw_value = Kernel.Float(raw_value.to_s)
             rescue ArgumentError, TypeError
-              message = record.errors.message(attr_name, :not_a_number, :default => configuration[:message])
+              message = record.errors.generate_message(attr_name, :not_a_number, :default => configuration[:message])
               record.errors.add(attr_name, message)
               next
             end
@@ -322,11 +322,11 @@ module ActiveRecord
             case option
               when :odd, :even
                 unless raw_value.to_i.method(ALL_NUMERICALITY_CHECKS[option])[]
-                  message = record.errors.message(attr_name, option, :default => configuration[:message])
+                  message = record.errors.generate_message(attr_name, option, :default => configuration[:message])
                   record.errors.add(attr_name, message) 
                 end
               else
-                message = record.errors.message(attr_name, option, :default => configuration[:message], :count => configuration[option])
+                message = record.errors.generate_message(attr_name, option, :default => configuration[:message], :count => configuration[option])
                 record.errors.add(attr_name, message) unless raw_value.method(ALL_NUMERICALITY_CHECKS[option])[configuration[option]]
             end
           end
