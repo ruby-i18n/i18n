@@ -19,11 +19,11 @@ module I18n
         
         def translate(options = {})
           options[:locale] ||= Locale.current
-          entry = lookup options[:locale], *options[:keys]
+          entry = lookup options[:locale], *options[:keys] unless options[:keys].empty?
           entry ||= options[:default] if options[:default]
           entry = pluralize entry, options[:count]
           entry = interpolate entry, options.reject{|key, value| [:keys, :locale, :default].include? key } 
-          entry || options[:keys].join
+          entry
         end
         
         def lookup(*keys)
@@ -48,6 +48,9 @@ module I18n
         # interpolation).
         def interpolate(string, values = {})
           return string if string.nil? or values.empty?
+          
+          map = {'%d' => '{{count}}', '%s' => '{{value}}'}
+          string.gsub!(/%d|%s/){|token| map[token]} 
           
           s = StringScanner.new string.dup
           while s.skip_until /\{\{/
