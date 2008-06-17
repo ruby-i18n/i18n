@@ -18,11 +18,26 @@ module I18n
         end
         
         def translate(options = {})
-          options[:locale] ||= Locale.current
-          entry = lookup options[:locale], *options[:keys] unless options[:keys].empty?
-          entry ||= options[:default] if options[:default]
-          entry = pluralize entry, options[:count]
-          entry = interpolate entry, options.reject{|key, value| [:keys, :locale, :default].include? key } 
+          reserved_keys = :locale, :keys, :default, :count
+          locale, keys, default, count = options.values_at(reserved_keys)
+          values = options.reject{|key, value| [:keys, :locale, :default].include? key } 
+          locale ||= Locale.current
+          
+          entry = lookup(locale, *keys) || default
+          entry = pluralize entry, count
+          entry = interpolate entry, values
+          entry
+        end
+        
+        def translate(options = {})
+          locale, keys, default, count, values = options.values_at(:locale, :keys, :default, :count, :values)
+          locale ||= Locale.current
+          values ||= {}
+          values[:count] = count if count
+
+          entry = lookup(locale, *keys) || default
+          entry = pluralize entry, count
+          entry = interpolate entry, values
           entry
         end
         
@@ -47,10 +62,10 @@ module I18n
         # the {{...}} key in a string (once for the string and once for the
         # interpolation).
         def interpolate(string, values = {})
-          return string if string.nil? or values.empty?
+          return string if string.nil? or values.nil? or values.empty?
           
-          map = {'%d' => '{{count}}', '%s' => '{{value}}'}
-          string.gsub!(/%d|%s/){|token| map[token]} 
+          map = {'%d' => '{{count}}', '%s' => '{{value}}'} # TODO deprecate this
+          string.gsub!(/#{map.keys.join('|')}/){|key| map[key]} 
           
           s = StringScanner.new string.dup
           while s.skip_until /\{\{/

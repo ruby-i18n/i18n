@@ -5,6 +5,8 @@ module ActionView
     module ActiveRecordHelper
       def error_messages_for(*params)
         options = params.extract_options!.symbolize_keys
+        options[:locale] ||= request.locale if respond_to?(:request)
+        
         if object = options.delete(:object)
           objects = [object].flatten
         else
@@ -27,8 +29,12 @@ module ActionView
           options[:object_name] ||= params.first
 
           I18n.with_options :locale => options[:locale], :scope => :'active_record.error' do |locale|
-            header_message = options.include?(:header_message) ? options[:header_message] :
-              locale.t(:header_message, :count => count, :object_name => options[:object_name].to_s.gsub('_', ' '))
+            header_message = if options.include?(:header_message)
+              options[:header_message]
+            else 
+              object_name = options[:object_name].to_s.gsub('_', ' ')
+              locale.t :header_message, :count => count, :values => {:object_name => object_name}
+            end
             message = options.include?(:message) ? options[:message] : locale.t(:message)
             error_messages = objects.sum {|object| object.errors.full_messages.map {|msg| content_tag(:li, msg) } }.join
 
