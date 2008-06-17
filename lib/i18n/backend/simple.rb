@@ -70,8 +70,8 @@ module I18n
         end
         
         def localize(object, locale = nil, format = :default)
-          type = object.is_a?(Date) ? 'date' : 'time'
-          
+          type = object.respond_to?(:sec) ? 'time' : 'date'
+
           formats = :"#{type}.formats".t locale
           format = formats[format.to_sym] if formats[format.to_sym]      
           format = format.dup
