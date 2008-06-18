@@ -1,7 +1,9 @@
+require 'strscan'
+
 module I18n
   module Backend
+    class ReservedInterpolationKey < ArgumentError; end
     module Simple
-      class ReservedInterpolationKey < ArgumentError; end
       @@translations = {}
       
       class << self
@@ -34,7 +36,7 @@ module I18n
         end
     
         def pluralize(entry, count)
-          return entry unless entry.is_a?(Array) # and count
+          return entry unless entry.is_a?(Array) && count
           entry[count == 1 ? 0 : 1].dup
         end
     
@@ -47,13 +49,12 @@ module I18n
         # the {{...}} key in a string (once for the string and once for the
         # interpolation).
         def interpolate(string, values = {})
-          return string if string.nil? or values.nil? or values.empty?
+          return string if string.nil? or values.empty?
 
           map = {'%d' => '{{count}}', '%s' => '{{value}}'} # TODO deprecate this
           string.gsub!(/#{map.keys.join('|')}/){|key| map[key]} 
           
           s = StringScanner.new string.dup
-          reserved = :locale, :keys, :default
           while s.skip_until /\{\{/
             s.string[s.pos - 3, 1] = '' and next if s.pre_match[-1, 1] == '\\'
             
@@ -61,7 +62,7 @@ module I18n
             key = s.scan_until(/\}\}/)[0..-3]
             end_pos = s.pos - 1            
 
-            raise ReservedInterpolationKey, %s(reserved key :#{key} used in "#{string}") if reserved.include?(key)
+            raise ReservedInterpolationKey, %s(reserved key :#{key} used in "#{string}") if %w(locale keys default).include?(key)
         
             s.string[start_pos..end_pos] = values[key.to_sym].to_s if values.has_key? key.to_sym
             s.unscan
@@ -70,17 +71,19 @@ module I18n
         end
         
         def localize(object, locale = nil, format = :default)
-          type = object.respond_to?(:sec) ? 'time' : 'date'
+          locale ||= I18n.current_locale
 
+          type = object.respond_to?(:sec) ? 'time' : 'date'
           formats = :"#{type}.formats".t locale
-          format = formats[format.to_sym] if formats[format.to_sym]      
-          format = format.dup
-    
-          format.gsub! /%a/, :abbr_day_names.t(locale, :scope => :date)[object.wday]
-          format.gsub! /%A/, :day_names.t(locale, :scope => :date)[object.wday]
-          format.gsub! /%b/, :abbr_month_names.t(locale, :scope => :date)[object.mon]
-          format.gsub! /%B/, :month_names.t(locale, :scope => :date)[object.mon]
-          format.gsub! /%p/, (object.hour < 12 ? :am : :pm).t(locale, :scope => :time) if object.respond_to? :hour
+          format = formats[format.to_sym] if formats && formats[format.to_sym]
+          # TODO raise exception unless format found?
+          format = format.to_s.dup
+
+          format.gsub! /%a/, :"date.abbr_day_names".t(locale)[object.wday]
+          format.gsub! /%A/, :"date.day_names".t(locale)[object.wday]
+          format.gsub! /%b/, :"date.abbr_month_names".t(locale)[object.mon]
+          format.gsub! /%B/, :"date.month_names".t(locale)[object.mon]
+          format.gsub! /%p/, :"time.#{object.hour < 12 ? :am : :pm}".t(locale) if object.respond_to? :hour
           object.strftime(format)
         end
       end
