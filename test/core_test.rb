@@ -34,7 +34,7 @@ class I18nDateTest < Test::Unit::TestCase
   
   def test_translate_unshifts_self_to_arguments
     I18n.expects(:localize).with @date, 'en-US'
-    @date.translate 'en-US'
+    @date.localize 'en-US'
   end
 end
 
@@ -45,7 +45,7 @@ class I18nDateTimeTest < Test::Unit::TestCase
   
   def test_translate_unshifts_self_to_arguments
     I18n.expects(:localize).with @datetime, 'en-US'
-    @datetime.translate 'en-US'
+    @datetime.localize 'en-US'
   end
 end
 
@@ -56,6 +56,6 @@ class I18nTimeTest < Test::Unit::TestCase
   
   def test_translate_unshifts_self_to_arguments
     I18n.expects(:localize).with @time, 'en-US'
-    @time.translate 'en-US'
+    @time.localize 'en-US'
   end
 end
