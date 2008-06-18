@@ -4,7 +4,6 @@ require 'rubygems'
 require 'test/unit'
 require 'mocha'
 require 'i18n'
-require 'i18n/backend/translations'
 
 class I18nStringTest < Test::Unit::TestCase
   def setup

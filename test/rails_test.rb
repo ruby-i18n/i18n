@@ -16,11 +16,9 @@ require 'action_view/helpers/form_options_helper'
 
 # require the library
 require 'i18n'
-require 'i18n/backend/simple'
-I18n.backend = I18n::Backend::Simple
-require 'i18n/backend/translations'
 
 # require the patches
+require 'patch/translations'
 require 'patch/date_helper'
 require 'patch/active_support'
 require 'patch/form_options_helper'
