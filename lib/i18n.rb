@@ -47,8 +47,8 @@ module I18n
 
     def merge_keys(scope, key)
       keys = []
-      keys += scope.to_s.split(/\./) if scope
-      keys += key.to_s.split(/\./)
+      keys += scope.is_a?(Array) ? scope : scope.to_s.split(/\./) if scope
+      keys += key.is_a?(Array) ? key : key.to_s.split(/\./)
       keys.map{|key| key.to_sym}
     end
   end
