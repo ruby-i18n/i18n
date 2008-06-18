@@ -2,10 +2,10 @@ require 'active_record/validations'
 
 module ActiveRecord
   class Errors
-    def add(attribute, msg = nil)
-      msg ||= :"active_record.error_messages.invalid".t
-      @errors[attribute.to_s] = [] if @errors[attribute.to_s].nil?
-      @errors[attribute.to_s] << msg
+    def add(attribute, message = nil)
+      message ||= :"active_record.error_messages.invalid".t
+      @errors[attribute.to_s] ||= []
+      @errors[attribute.to_s] << message
     end
 
     # Will add an error message to each of the attributes in +attributes+ that is empty.
@@ -26,26 +26,25 @@ module ActiveRecord
     end
     
     def generate_message(attr, key, options = {})
-      scope = 'active_record.error_messages'
-      custom_key = :"#{scope}.custom.#{@base.class.name.downcase}.#{attr}.#{key}"
-      global_key = :"#{scope}.#{key}"
-      custom_key.t(options) || global_key.t(options)
+      scope = [:active_record, :error_messages]
+      key.t(options.merge(:scope => scope + [:custom, @base.class.name.downcase, attr])) || 
+      key.t(options.merge(:scope => scope))
     end
     
     def full_messages(options = {})
       full_messages = []
-    
+      locale = options.delete :locale
+
       @errors.each_key do |attr|
-        @errors[attr].each do |msg|
-          next if msg.nil?
+        @errors[attr].each do |message|
+          next unless message
     
           if attr == "base"
-            full_messages << msg
+            full_messages << message
           else
-            key = :"models#{@base.class.name.to_sym}.human_attribute_names.#{attr}" 
-            default = @base.class.human_attribute_name(attr)
-            attr_name = key.t options[:locale], :default => default
-            full_messages << attr_name + " " + msg
+            key = :"active_record.human_attribute_names.#{@base.class.name.underscore.to_sym}.#{attr}" 
+            attr_name = key.t(locale) || @base.class.human_attribute_name(attr)
+            full_messages << attr_name + " " + message
           end
         end
       end
@@ -125,19 +124,13 @@ module ActiveRecord
             raise ArgumentError, ":#{option} must be a Range" unless option_value.is_a?(Range)
 
             validates_each(attrs, options) do |record, attr, value|
-              custom_key = :"active_record.error_messages.custom.#{record.class.name}.#{attr}.too_short"
-              too_short = custom_key.t :default => options[:too_short], :count => option_value.begin
-              too_short ||= :"active_record.error_messages.too_short".t :count => option_value.begin
-
-              custom_key = :"active_record.error_messages.custom.#{record.class.name}.#{attr}.too_long"
-              too_long = custom_key.t :default => options[:too_long], :count => option_value.end
-              too_long ||= :"active_record.error_messages.too_long".t :count => option_value.end
-
               value = value.split(//) if value.kind_of?(String)
               if value.nil? or value.size < option_value.begin
-                record.errors.add(attr, too_short)
+                message = record.errors.generate_message(attr, :too_short, :default => options[:too_short], :count => option_value.begin)                
+                record.errors.add(attr, message)
               elsif value.size > option_value.end
-                record.errors.add(attr, too_long)
+                message = record.errors.generate_message(attr, :too_long, :default => options[:too_long], :count => option_value.end)
+                record.errors.add(attr, message)
               end
             end
           when :is, :minimum, :maximum
@@ -304,7 +297,7 @@ module ActiveRecord
 
           if configuration[:only_integer]
             unless raw_value.to_s =~ /\A[+-]?\d+\Z/
-              message = record.errors.generate_message(attr_name, :not_a_number, :default => configuration[:message])
+              message = record.errors.generate_message(attr_name, :not_a_number, :value => raw_value, :default => configuration[:message])
               record.errors.add(attr_name, message)
               next
             end
@@ -313,7 +306,7 @@ module ActiveRecord
            begin
               raw_value = Kernel.Float(raw_value.to_s)
             rescue ArgumentError, TypeError
-              message = record.errors.generate_message(attr_name, :not_a_number, :default => configuration[:message])
+              message = record.errors.generate_message(attr_name, :not_a_number, :value => raw_value, :default => configuration[:message])
               record.errors.add(attr_name, message)
               next
             end
@@ -323,11 +316,11 @@ module ActiveRecord
             case option
               when :odd, :even
                 unless raw_value.to_i.method(ALL_NUMERICALITY_CHECKS[option])[]
-                  message = record.errors.generate_message(attr_name, option, :default => configuration[:message])
+                  message = record.errors.generate_message(attr_name, option, :value => raw_value, :default => configuration[:message])
                   record.errors.add(attr_name, message) 
                 end
               else
-                message = record.errors.generate_message(attr_name, option, :default => configuration[:message], :count => configuration[option])
+                message = record.errors.generate_message(attr_name, option, :default => configuration[:message], :value => raw_value, :count => configuration[option])
                 record.errors.add(attr_name, message) unless raw_value.method(ALL_NUMERICALITY_CHECKS[option])[configuration[option]]
             end
           end
