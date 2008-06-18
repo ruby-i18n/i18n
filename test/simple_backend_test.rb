@@ -3,7 +3,6 @@ $:.unshift "lib/i18n/lib"
 require 'rubygems'
 require 'test/unit'
 require 'mocha'
-
 require 'i18n'
 
 module I18nSimpleBackendTestSetup
