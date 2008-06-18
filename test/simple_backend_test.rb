@@ -107,6 +107,10 @@ class I18nSimpleBackendTranslateTest < Test::Unit::TestCase
     @backend.expects(:interpolate).with 'bar', {:count => 1}
     @backend.translate :keys => [:foo, :bar], :count => 1
   end
+  
+  def test_given_no_keys_it_returns_the_default
+    assert_equal 'default', I18n.translate(:default => 'default')    
+  end
 end
   
 class I18nSimpleBackendLookupTest < Test::Unit::TestCase
