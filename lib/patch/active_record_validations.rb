@@ -42,7 +42,6 @@ module ActiveRecord
           if attr == "base"
             full_messages << msg
           else
-            # TODO what would make sense here as a scope?
             key = :"models#{@base.class.name.to_sym}.human_attribute_names.#{attr}" 
             default = @base.class.human_attribute_name(attr)
             attr_name = key.t options[:locale], :default => default

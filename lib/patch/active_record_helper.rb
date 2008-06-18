@@ -5,16 +5,16 @@ module ActionView
     module ActiveRecordHelper
       def error_messages_for(*params)
         options = params.extract_options!.symbolize_keys
-        options[:locale] ||= request.locale if respond_to?(:request)
-        
+
         if object = options.delete(:object)
           objects = [object].flatten
         else
           objects = params.collect {|object_name| instance_variable_get("@#{object_name}") }.compact
         end
         
-        locale = options.delete(:locale)
         count  = objects.inject(0) {|sum, object| sum + object.errors.count }
+        locale = options.delete(:locale)
+        locale ||= request.locale if respond_to?(:request)
 
         unless count.zero?
           html = {}
@@ -28,7 +28,7 @@ module ActionView
           end
           options[:object_name] ||= params.first
 
-          I18n.with_options :locale => options[:locale], :scope => :'active_record.error' do |locale|
+          I18n.with_options :locale => locale, :scope => [:active_record, :error] do |locale|
             header_message = if options.include?(:header_message)
               options[:header_message]
             else 

@@ -1,4 +1,3 @@
-# $:.unshift File.dirname(__FILE__)
 require 'i18n/core_ext'
 require 'i18n/backend/simple'
 
@@ -34,7 +33,7 @@ module I18n
     # Main translation method
     def translate(*args)
       options = args.last.is_a?(Hash) ? args.pop : {}      
-      options[:keys] = I18n.merge_keys options.delete(:scope), args.shift
+      options[:keys] = merge_keys options.delete(:scope), args.shift
       options[:locale] ||= args.shift
 
       backend.translate options
@@ -44,6 +43,8 @@ module I18n
     def localize(*args)
       backend.localize *args
     end
+    
+  protected
 
     def merge_keys(scope, key)
       keys = []

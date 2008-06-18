@@ -51,7 +51,7 @@ I18n.backend.add_translations :'en-US', {
   },
   :active_record => {
     :error => {
-      :header_message => ["{{count}} error prohibited this {{object_name}} from being saved", "{{count}} errors prohibited this {{object_name}} from being saved"],
+      :header_message => ["1 error prohibited this {{object_name}} from being saved", "{{count}} errors prohibited this {{object_name}} from being saved"],
       :message => "There were problems with the following fields:"
     },
     :error_messages => {
@@ -78,13 +78,13 @@ I18n.backend.add_translations :'en-US', {
   }
 }
 
-
 # TODO define these here? pass them as default value?
-# if Object.const_defined?('ActionView')
-#   I18n.backend.add_translations :'en-US', :countries => {
-#     :names => ::ActionView::Helpers::FormOptionsHelper.const_get('COUNTRIES')
-#   }
-# end
+begin
+  I18n.backend.add_translations :'en-US', :countries => {
+    :names => ::ActionView::Helpers::FormOptionsHelper.const_get('COUNTRIES')
+  }
+rescue NameError
+end
 
 # if Object.const_defined?('ActiveRecord')
 #   I18n.backend.add_translations :'en-US', :active_record => {

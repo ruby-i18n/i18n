@@ -5,8 +5,8 @@ module ActiveSupport
     module Array
       module Conversions
         def to_sentence(options = {})          
-          options.assert_valid_keys(:connector, :skip_last_comma)
-
+          options.assert_valid_keys(:connector, :skip_last_comma, :locale)
+          options[:locale] ||= request.locale if respond_to?(:request)
           connector = options.has_key?(:connector) ? options[:connector] : 
             :'support.array.sentence_connector'.t(options[:locale])
           connector = "#{connector} " unless connector.nil? || connector.strip == ''

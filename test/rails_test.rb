@@ -16,9 +16,9 @@ require 'action_view/helpers/form_options_helper'
 
 # require the library
 require 'i18n'
+require 'patch/translations'
 
 # require the patches
-require 'patch/translations'
 require 'patch/date_helper'
 require 'patch/active_support'
 require 'patch/form_options_helper'

@@ -6,7 +6,7 @@ module ActionView
     module DateHelper  
       def distance_of_time_in_words(from_time, to_time = 0, include_seconds = false, options = {})
         options[:locale] ||= request.locale if respond_to?(:request)
-        
+
         from_time = from_time.to_time if from_time.respond_to?(:to_time)
         to_time = to_time.to_time if to_time.respond_to?(:to_time)
         distance_in_minutes = (((to_time - from_time).abs)/60).round
@@ -40,60 +40,6 @@ module ActionView
           end
         end
       end
-    end
-
-    class InstanceTag
-      def date_or_time_select(options, html_options = {})
-        locale = options.delete :locale
-        
-        defaults = { :discard_type => true }
-        options  = defaults.merge(options)
-        datetime = value(object)
-        datetime ||= default_time_from_options(options[:default]) unless options[:include_blank]
-
-        position = { :year => 1, :month => 2, :day => 3, :hour => 4, :minute => 5, :second => 6 }
-
-        order = options[:order] ||= :'date.order'.t(locale)
-
-        # Discard explicit and implicit by not being included in the :order
-        discard = {}
-        discard[:year]   = true if options[:discard_year] or !order.include?(:year)
-        discard[:month]  = true if options[:discard_month] or !order.include?(:month)
-        discard[:day]    = true if options[:discard_day] or discard[:month] or !order.include?(:day)
-        discard[:hour]   = true if options[:discard_hour]
-        discard[:minute] = true if options[:discard_minute] or discard[:hour]
-        discard[:second] = true unless options[:include_seconds] && !discard[:minute]
-
-        # If the day is hidden and the month is visible, the day should be set to the 1st so all month choices are valid
-        # (otherwise it could be 31 and february wouldn't be a valid date)
-        if datetime && discard[:day] && !discard[:month]
-          datetime = datetime.change(:day => 1)
-        end
-
-        # Maintain valid dates by including hidden fields for discarded elements
-        [:day, :month, :year].each { |o| order.unshift(o) unless order.include?(o) }
-
-        # Ensure proper ordering of :hour, :minute and :second
-        [:hour, :minute, :second].each { |o| order.delete(o); order.push(o) }
-
-        date_or_time_select = ''
-        order.reverse.each do |param|
-          # Send hidden fields for discarded elements once output has started
-          # This ensures AR can reconstruct valid dates using ParseDate
-          next if discard[param] && date_or_time_select.empty?
-
-          date_or_time_select.insert(0, self.send("select_#{param}", datetime, options_with_prefix(position[param], options.merge(:use_hidden => discard[param])), html_options))
-          date_or_time_select.insert(0,
-            case param
-              when :hour then (discard[:year] && discard[:day] ? "" : " &mdash; ")
-              when :minute then " : "
-              when :second then options[:include_seconds] ? " : " : ""
-              else ""
-            end)
-        end
-
-        date_or_time_select
-      end
       
       def select_month(date, options = {}, html_options = {})
         locale = options.delete :locale
@@ -125,6 +71,61 @@ module ActionView
           end
           select_html(options[:field_name] || 'month', month_options.join, options, html_options)
         end
+      end  
+    end
+
+    class InstanceTag
+      private
+      def date_or_time_select(options, html_options = {})
+        locale = options.delete :locale
+    
+        defaults = { :discard_type => true }
+        options  = defaults.merge(options)
+        datetime = value(object)
+        datetime ||= default_time_from_options(options[:default]) unless options[:include_blank]
+    
+        position = { :year => 1, :month => 2, :day => 3, :hour => 4, :minute => 5, :second => 6 }
+    
+        order = options[:order] ||= :'date.order'.t(locale)
+    
+        # Discard explicit and implicit by not being included in the :order
+        discard = {}
+        discard[:year]   = true if options[:discard_year] or !order.include?(:year)
+        discard[:month]  = true if options[:discard_month] or !order.include?(:month)
+        discard[:day]    = true if options[:discard_day] or discard[:month] or !order.include?(:day)
+        discard[:hour]   = true if options[:discard_hour]
+        discard[:minute] = true if options[:discard_minute] or discard[:hour]
+        discard[:second] = true unless options[:include_seconds] && !discard[:minute]
+    
+        # If the day is hidden and the month is visible, the day should be set to the 1st so all month choices are valid
+        # (otherwise it could be 31 and february wouldn't be a valid date)
+        if datetime && discard[:day] && !discard[:month]
+          datetime = datetime.change(:day => 1)
+        end
+    
+        # Maintain valid dates by including hidden fields for discarded elements
+        [:day, :month, :year].each { |o| order.unshift(o) unless order.include?(o) }
+    
+        # Ensure proper ordering of :hour, :minute and :second
+        [:hour, :minute, :second].each { |o| order.delete(o); order.push(o) }
+    
+        date_or_time_select = ''
+        order.reverse.each do |param|
+          # Send hidden fields for discarded elements once output has started
+          # This ensures AR can reconstruct valid dates using ParseDate
+          next if discard[param] && date_or_time_select.empty?
+    
+          date_or_time_select.insert(0, self.send("select_#{param}", datetime, options_with_prefix(position[param], options.merge(:use_hidden => discard[param])), html_options))
+          date_or_time_select.insert(0,
+            case param
+              when :hour then (discard[:year] && discard[:day] ? "" : " &mdash; ")
+              when :minute then " : "
+              when :second then options[:include_seconds] ? " : " : ""
+              else ""
+            end)
+        end
+    
+        date_or_time_select
       end
     end
   end
