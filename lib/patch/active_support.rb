@@ -6,9 +6,12 @@ module ActiveSupport
       module Conversions
         def to_sentence(options = {})          
           options.assert_valid_keys(:connector, :skip_last_comma, :locale)
-          options[:locale] ||= request.locale if respond_to?(:request)
-          connector = options.has_key?(:connector) ? options[:connector] : 
-            :'support.array.sentence_connector'.t(options[:locale])
+          
+          locale = options[:locale]
+          locale ||= request.locale if respond_to?(:request)
+          
+          connector = options[:connector] if options.has_key?(:connector)
+          connector ||= :'support.array.sentence_connector'.t locale if :'support.array.sentence_connector'.respond_to? :t
           connector = "#{connector} " unless connector.nil? || connector.strip == ''
 
           case length
