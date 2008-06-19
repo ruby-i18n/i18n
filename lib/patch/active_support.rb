@@ -3,16 +3,16 @@ require 'activesupport'
 module ActiveSupport
   module CoreExtensions
     module Array
-      module Conversions
+      module Conversions        
         def to_sentence(options = {})          
           options.assert_valid_keys(:connector, :skip_last_comma, :locale)
           
           locale = options[:locale]
           locale ||= request.locale if respond_to?(:request)
           
-          connector = options[:connector] if options.has_key?(:connector)
-          connector ||= :'support.array.sentence_connector'.t locale if :'support.array.sentence_connector'.respond_to? :t
-          connector = "#{connector} " unless connector.nil? || connector.strip == ''
+          default = :'support.array.sentence_connector'.respond_to?(:t) ? :'support.array.sentence_connector'.t(locale) : 'and'
+          options.reverse_merge! :connector => default, :skip_last_comma => false
+          options[:connector] = "#{options[:connector]} " unless options[:connector].nil? || options[:connector].strip == ''
 
           case length
             when 0
@@ -20,9 +20,9 @@ module ActiveSupport
             when 1
               self[0].to_s
             when 2
-              "#{self[0]} #{connector}#{self[1]}"
+              "#{self[0]} #{options[:connector]}#{self[1]}"
             else
-              "#{self[0...-1].join(', ')}#{options[:skip_last_comma] ? '' : ','} #{connector}#{self[-1]}"
+              "#{self[0...-1].join(', ')}#{options[:skip_last_comma] ? '' : ','} #{options[:connector]}#{self[-1]}"
           end
         end
       end
