@@ -9,10 +9,12 @@ module ActionView
     module FormOptionsHelper
       def country_options_for_select(*args)
         options = args.extract_options!
-        options[:locale] ||= request.locale if respond_to?(:request)
+        
+        locale = options[:locale]
+        locale ||= request.locale if respond_to?(:request)
         
         selected, priority_countries = *args        
-        countries = :'countries.names'.t options[:locale] #, :default => COUNTRIES
+        countries = :'countries.names'.t options[:locale]
         country_options = ""
 
         if priority_countries

@@ -18,6 +18,10 @@ class ActiveRecordValidationsI18nTests < Test::Unit::TestCase
     I18n.backend.add_translations('en-US', :active_record => {:error_messages => {:custom => nil}})
   end
   
+  def teardown
+    reset_callbacks(Topic)
+  end
+  
   def unique_topic
     @unique ||= Topic.create :title => 'unique!'
   end

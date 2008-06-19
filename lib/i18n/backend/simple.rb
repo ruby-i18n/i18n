@@ -55,7 +55,7 @@ module I18n
           string.gsub!(/#{map.keys.join('|')}/){|key| map[key]} 
           
           s = StringScanner.new string.dup
-          while s.skip_until /\{\{/
+          while s.skip_until(/\{\{/)
             s.string[s.pos - 3, 1] = '' and next if s.pre_match[-1, 1] == '\\'
             
             start_pos = s.pos - 2
@@ -79,11 +79,11 @@ module I18n
           # TODO raise exception unless format found?
           format = format.to_s.dup
 
-          format.gsub! /%a/, :"date.abbr_day_names".t(locale)[object.wday]
-          format.gsub! /%A/, :"date.day_names".t(locale)[object.wday]
-          format.gsub! /%b/, :"date.abbr_month_names".t(locale)[object.mon]
-          format.gsub! /%B/, :"date.month_names".t(locale)[object.mon]
-          format.gsub! /%p/, :"time.#{object.hour < 12 ? :am : :pm}".t(locale) if object.respond_to? :hour
+          format.gsub!(/%a/, :"date.abbr_day_names".t(locale)[object.wday])
+          format.gsub!(/%A/, :"date.day_names".t(locale)[object.wday])
+          format.gsub!(/%b/, :"date.abbr_month_names".t(locale)[object.mon])
+          format.gsub!(/%B/, :"date.month_names".t(locale)[object.mon])
+          format.gsub!(/%p/, :"time.#{object.hour < 12 ? :am : :pm}".t(locale)) if object.respond_to? :hour
           object.strftime(format)
         end
       end

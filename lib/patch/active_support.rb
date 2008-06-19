@@ -10,7 +10,7 @@ module ActiveSupport
           locale = options[:locale]
           locale ||= request.locale if respond_to?(:request)
           
-          default = :'support.array.sentence_connector'.respond_to?(:t) ? :'support.array.sentence_connector'.t(locale) : 'and'
+          default = :'support.array.sentence_connector'.t(locale)
           options.reverse_merge! :connector => default, :skip_last_comma => false
           options[:connector] = "#{options[:connector]} " unless options[:connector].nil? || options[:connector].strip == ''
 

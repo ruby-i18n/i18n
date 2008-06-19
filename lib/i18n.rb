@@ -41,7 +41,7 @@ module I18n
     alias :t :translate    
     
     def localize(*args)
-      backend.localize *args
+      backend.localize(*args)
     end
     
   protected
