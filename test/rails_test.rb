@@ -33,5 +33,3 @@ require 'template/form_options_helper_test'
 require 'template/active_record_helper_test'
 require 'template/number_helper_test'
 require 'test/cases/validations_test'
-
-

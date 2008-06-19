@@ -13,7 +13,7 @@ module ActionView
         end
         
         count  = objects.inject(0) {|sum, object| sum + object.errors.count }
-        locale = options.delete(:locale)
+        locale = options[:locale]
         locale ||= request.locale if respond_to?(:request)
 
         unless count.zero?

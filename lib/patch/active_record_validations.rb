@@ -33,7 +33,7 @@ module ActiveRecord
     
     def full_messages(options = {})
       full_messages = []
-      locale = options.delete :locale
+      locale = options[:locale]
 
       @errors.each_key do |attr|
         @errors[attr].each do |message|

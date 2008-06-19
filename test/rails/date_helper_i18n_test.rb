@@ -10,8 +10,26 @@ require 'i18n'
 require 'patch/date_helper'
 require 'patch/translations'
 
-class DateHelperI18nTests < Test::Unit::TestCase
+class DateHelperDistanceOfTimeInWordsI18nTests < Test::Unit::TestCase
   include ActionView::Helpers::DateHelper
+  attr_reader :request
+  
+  def setup
+    @request = mock
+    @from = Time.mktime(2004, 6, 6, 21, 45, 0)
+  end
+  
+  # distance_of_time_in_words
+
+  def test_distance_of_time_in_words_given_a_locale_it_does_not_check_request_for_locale
+    request.expects(:locale).never
+    distance_of_time_in_words @from, @from + 1.second, false, :locale => 'en-US'
+  end
+  
+  def test_distance_of_time_in_words_given_no_locale_it_checks_request_for_locale
+    request.expects(:locale).returns 'en-US'
+    distance_of_time_in_words @from, @from + 1.second
+  end
   
   def test_distance_of_time_in_words_calls_i18n
     { # with include_seconds
@@ -40,17 +58,27 @@ class DateHelperI18nTests < Test::Unit::TestCase
   
   def assert_distance_of_time_in_words_translates_key(passed, expected)
     diff, include_seconds = *passed
-    key, count = *expected
-    
-    from = Time.mktime(2004, 6, 6, 21, 45, 0)
-    to = from + diff
+    key, count = *expected    
+    to = @from + diff
 
     options = {:locale => 'en-US', :scope => :'datetime.distance_in_words'}
     options[:count] = count if count
     
     I18n.expects(:t).with(key, options)
-    distance_of_time_in_words(from, to, include_seconds, :locale => 'en-US')
+    distance_of_time_in_words(@from, to, include_seconds, :locale => 'en-US')
   end
+end
+  
+class DateHelperSelectTagsI18nTests < Test::Unit::TestCase
+  include ActionView::Helpers::DateHelper
+  attr_reader :request
+  
+  def setup
+    @request = mock
+    I18n.stubs(:translate).with(:'date.month_names', 'en-US').returns Date::MONTHNAMES
+  end
+  
+  # select_month
   
   def test_select_month_given_use_month_names_option_does_not_translate_monthnames
     I18n.expects(:translate).never
@@ -67,14 +95,15 @@ class DateHelperI18nTests < Test::Unit::TestCase
     select_month(8, :locale => 'en-US', :use_short_month => true)
   end
   
+  # date_or_time_select
+  
   def test_date_or_time_select_given_an_order_options_does_not_translate_order
     I18n.expects(:translate).never
-    datetime_select("post", "updated_at", :order => [:year, :month, :day])
+    datetime_select('post', 'updated_at', :order => [:year, :month, :day], :locale => 'en-US')
   end
   
   def test_date_or_time_select_given_no_order_options_translates_order
     I18n.expects(:translate).with(:'date.order', 'en-US').returns [:year, :month, :day]
-    datetime_select("post", "updated_at")
+    datetime_select('post', 'updated_at', :locale => 'en-US')
   end
-  
 end

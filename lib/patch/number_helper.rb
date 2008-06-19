@@ -5,15 +5,15 @@ module ActionView
       def number_to_currency(number, options = {})
         options = options.symbolize_keys
         
-        locale = options.delete(:locale)
+        locale = options[:locale]
         locale ||= request.locale if respond_to?(:request)
 
-        formats = :'currency.format'.t locale
-        precision = options[:precision] || formats[:precision]
-        unit      = options[:unit]      || formats[:unit]
-        separator = options[:separator] || formats[:separator]
-        delimiter = options[:delimiter] || formats[:delimiter]
-        format    = options[:format]    || formats[:format]
+        defaults  = :'currency.format'.t locale
+        precision = options[:precision] || defaults[:precision]
+        unit      = options[:unit]      || defaults[:unit]
+        separator = options[:separator] || defaults[:separator]
+        delimiter = options[:delimiter] || defaults[:delimiter]
+        format    = options[:format]    || defaults[:format]
         separator = '' if precision == 0
         
         begin

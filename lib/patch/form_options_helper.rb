@@ -1,5 +1,9 @@
 require 'action_view/helpers/form_options_helper'
 
+I18n.backend.add_translations :'en-US', :countries => {
+  :names => ::ActionView::Helpers::FormOptionsHelper.const_get('COUNTRIES')
+}
+
 module ActionView  
   module Helpers   
     module FormOptionsHelper
@@ -8,7 +12,7 @@ module ActionView
         options[:locale] ||= request.locale if respond_to?(:request)
         
         selected, priority_countries = *args        
-        countries = :'countries.names'.t options[:locale] # TODO, :default => COUNTRIES
+        countries = :'countries.names'.t options[:locale] #, :default => COUNTRIES
         country_options = ""
 
         if priority_countries

@@ -5,14 +5,15 @@ module ActionView
   module Helpers    
     module DateHelper  
       def distance_of_time_in_words(from_time, to_time = 0, include_seconds = false, options = {})
-        options[:locale] ||= request.locale if respond_to?(:request)
+        locale = options[:locale] 
+        locale ||= request.locale if respond_to?(:request)
 
         from_time = from_time.to_time if from_time.respond_to?(:to_time)
         to_time = to_time.to_time if to_time.respond_to?(:to_time)
         distance_in_minutes = (((to_time - from_time).abs)/60).round
         distance_in_seconds = ((to_time - from_time).abs).round
 
-        I18n.with_options :locale => options[:locale], :scope => :'datetime.distance_in_words' do |locale|
+        I18n.with_options :locale => locale, :scope => :'datetime.distance_in_words' do |locale|
           case distance_in_minutes
             when 0..1
               return distance_in_minutes == 0 ? 
@@ -42,7 +43,8 @@ module ActionView
       end
       
       def select_month(date, options = {}, html_options = {})
-        locale = options.delete :locale
+        locale = options[:locale] 
+        locale ||= request.locale if respond_to?(:request)
 
         val = date ? (date.kind_of?(Fixnum) ? date : date.month) : ''
         if options[:use_hidden]
@@ -77,15 +79,15 @@ module ActionView
     class InstanceTag
       private
       def date_or_time_select(options, html_options = {})
-        locale = options.delete :locale
-    
+        locale = options[:locale]
+
         defaults = { :discard_type => true }
         options  = defaults.merge(options)
         datetime = value(object)
         datetime ||= default_time_from_options(options[:default]) unless options[:include_blank]
     
         position = { :year => 1, :month => 2, :day => 3, :hour => 4, :minute => 5, :second => 6 }
-    
+
         order = options[:order] ||= :'date.order'.t(locale)
     
         # Discard explicit and implicit by not being included in the :order
@@ -114,7 +116,7 @@ module ActionView
           # Send hidden fields for discarded elements once output has started
           # This ensures AR can reconstruct valid dates using ParseDate
           next if discard[param] && date_or_time_select.empty?
-    
+
           date_or_time_select.insert(0, self.send("select_#{param}", datetime, options_with_prefix(position[param], options.merge(:use_hidden => discard[param])), html_options))
           date_or_time_select.insert(0,
             case param

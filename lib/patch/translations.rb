@@ -83,7 +83,7 @@ begin
   I18n.backend.add_translations :'en-US', :countries => {
     :names => ::ActionView::Helpers::FormOptionsHelper.const_get('COUNTRIES')
   }
-rescue NameError
+rescue NameError => e
 end
 
 # if Object.const_defined?('ActiveRecord')

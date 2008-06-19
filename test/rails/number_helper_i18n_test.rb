@@ -16,6 +16,8 @@ class NumberHelperI18nTests < Test::Unit::TestCase
   attr_reader :request
   def setup
     @request = mock
+    @defaults = {:separator => ".", :unit => "$", :format => "%u%n", :delimiter => ",", :precision => 2}
+    I18n.backend.add_translations 'en-US', :currency => {:format => @defaults}
   end
 
   def test_number_to_currency_given_a_locale_it_does_not_check_request_for_locale
@@ -29,8 +31,7 @@ class NumberHelperI18nTests < Test::Unit::TestCase
   end
 
   def test_number_to_currency_translates_currency_formats
-    formats = {:separator => ".", :unit => "$", :format => "%u%n", :delimiter => ",", :precision => 2}
-    I18n.expects(:translate).with(:'currency.format', 'en-US').returns formats
+    I18n.expects(:translate).with(:'currency.format', 'en-US').returns @defaults
     number_to_currency(1, :locale => 'en-US')
   end
 end
