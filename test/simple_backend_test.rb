@@ -9,12 +9,12 @@ module I18nSimpleBackendTestSetup
   def setup_backend
     @backend = I18n::Backend::Simple
     @backend.translations.clear
-    @backend.add_translations 'en-US', :foo => {:bar => 'bar'}
+    @backend.set_translations 'en-US', :foo => {:bar => 'bar'}
   end
   alias :setup :setup_backend
   
   def add_datetime_translations
-    @backend.add_translations :'de-DE', {
+    @backend.set_translations :'de-DE', {
       :date => {
         :formats => {
           :default => "%d.%m.%Y",
@@ -58,19 +58,19 @@ end
 class I18nSimpleBackendTranslationsTest < Test::Unit::TestCase
   include I18nSimpleBackendTestSetup
   
-  def test_add_translations_adds_translations # no, really :-)
-    @backend.add_translations :'en-US', :foo => 'bar'
+  def test_set_translations_adds_translations # no, really :-)
+    @backend.set_translations :'en-US', :foo => 'bar'
     assert_equal Hash[:'en-US', {:foo => 'bar'}], @backend.translations
   end
   
-  def test_add_translations_deep_merges_translations
-    @backend.add_translations :'en-US', :foo => {:bar => 'bar'}
-    @backend.add_translations :'en-US', :foo => {:baz => 'baz'}
+  def test_set_translations_deep_merges_translations
+    @backend.set_translations :'en-US', :foo => {:bar => 'bar'}
+    @backend.set_translations :'en-US', :foo => {:baz => 'baz'}
     assert_equal Hash[:'en-US', {:foo => {:bar => 'bar', :baz => 'baz'}}], @backend.translations
   end
   
-  def test_add_translations_forces_locale_to_sym
-    @backend.add_translations 'en-US', :foo => 'bar'
+  def test_set_translations_forces_locale_to_sym
+    @backend.set_translations 'en-US', :foo => 'bar'
     assert_equal Hash[:'en-US', {:foo => 'bar'}], @backend.translations
   end
 end

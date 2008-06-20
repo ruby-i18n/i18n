@@ -11,7 +11,7 @@ module I18n
           @@translations
         end
         
-        def add_translations(locale, data)
+        def set_translations(locale, data)
           locale = locale.to_sym
           @@translations[locale] ||= {}
           # deep_merge by Stefan Rusterholz, seed http://www.ruby-forum.com/topic/142809

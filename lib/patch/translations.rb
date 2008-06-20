@@ -1,4 +1,4 @@
-I18n.backend.add_translations :'en-US', {
+I18n.backend.set_translations :'en-US', {
   :date => {
     :formats => {
       :default => "%Y-%m-%d",
@@ -80,14 +80,14 @@ I18n.backend.add_translations :'en-US', {
 
 # TODO define these here? pass them as default value?
 begin
-  I18n.backend.add_translations :'en-US', :countries => {
+  I18n.backend.set_translations :'en-US', :countries => {
     :names => ::ActionView::Helpers::FormOptionsHelper.const_get('COUNTRIES')
   }
 rescue NameError => e
 end
 
 # if Object.const_defined?('ActiveRecord')
-#   I18n.backend.add_translations :'en-US', :active_record => {
+#   I18n.backend.set_translations :'en-US', :active_record => {
 #     :error_messages => ActiveRecord::Errors.default_error_messages
 #   }
 # end

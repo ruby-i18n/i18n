@@ -1,6 +1,6 @@
 require 'action_view/helpers/form_options_helper'
 
-I18n.backend.add_translations :'en-US', :countries => {
+I18n.backend.set_translations :'en-US', :countries => {
   :names => ::ActionView::Helpers::FormOptionsHelper.const_get('COUNTRIES')
 }
 
