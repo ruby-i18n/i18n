@@ -16,7 +16,7 @@ module I18n
         # translations.
         def populate(&block)
           yield
-        end        
+        end
         
         def store_translations(locale, data)
           merge_translations(locale, data)
@@ -24,29 +24,34 @@ module I18n
         
         def translate(key, locale, options = {})
           return key.map{|key| translate key, locale, options } if key.is_a? Array
-            
+
           reserved = :scope, :default
           count, scope, default = options.values_at(:count, *reserved)
+          options.delete(:default)
+
           values = options.reject{|name, value| reserved.include? name } 
           keys = (scope || []).dup << key
-          
-          entry = lookup(locale, *keys.compact) || default
+
+          entry = lookup(locale, *keys.compact) || default_to(locale, default, options)
           entry = pluralize entry, count
           entry = interpolate entry, values
           entry
         end
         
-        def translate_first(keys, locale, options = {})
-          keys.each do |key| 
-            result = translate key, locale, options
-            return result if result
-          end
-          nil
-        end
-        
         def lookup(*keys)
           return if keys.size <= 1
           keys.inject(translations){|result, key| result[key.to_sym] or return nil }
+        end
+        
+        def default_to(locale, default, options)
+          case default
+            when String
+              default
+            when Symbol
+              translate(default, locale, options)
+            when Array 
+              default.detect{|default| default_to(locale, default, options) }
+          end          
         end
     
         def pluralize(entry, count)
