@@ -47,6 +47,7 @@ module I18n
       locale ||= I18n.locale
       backend.localize(object, locale, format)
     end
+    alias :l :localize
     
   protected
 

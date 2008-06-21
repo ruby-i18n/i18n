@@ -27,15 +27,15 @@ class I18nTest < Test::Unit::TestCase
     I18n.default_locale = 'en-US'
   end
   
-  def test_uses_default_locale_as_current_locale_by_default
-    assert_equal I18n.default_locale, I18n.current_locale
+  def test_uses_default_locale_as_locale_by_default
+    assert_equal I18n.default_locale, I18n.locale
   end
   
-  def test_can_set_current_locale_to_thread_current
-    assert_nothing_raised{ I18n.current_locale = 'de-DE' }
-    assert_equal 'de-DE', I18n.current_locale
+  def test_can_set_locale_to_thread_current
+    assert_nothing_raised{ I18n.locale = 'de-DE' }
+    assert_equal 'de-DE', I18n.locale
     assert_equal 'de-DE', Thread.current[:locale]
-    I18n.current_locale = 'en-US'
+    I18n.locale = 'en-US'
   end
   
   def test_delegates_translate_to_backend
@@ -43,7 +43,12 @@ class I18nTest < Test::Unit::TestCase
     I18n.translate :foo, 'de-DE'
   end
   
-  def test_translate_given_no_locale_uses_i18n_current_locale
+  def test_delegates_localize_to_backend
+    I18n.backend.expects(:localize).with :whatever, 'de-DE', :default
+    I18n.localize :whatever, 'de-DE'
+  end
+  
+  def test_translate_given_no_locale_uses_i18n_locale
     I18n.backend.expects(:translate).with :foo, 'en-US', {}
     I18n.translate :foo
   end  
@@ -75,10 +80,5 @@ class I18nTest < Test::Unit::TestCase
     I18n.with_options :locale => 'de-DE', :scope => :'currency.format' do |locale|
       locale.t :precision
     end
-  end
-  
-  def test_delegates_localize_to_backend
-    I18n.backend.expects(:localize).with(:whatever)
-    I18n.localize :whatever
   end
 end

@@ -83,7 +83,7 @@ class I18nSimpleBackendTranslateTest < Test::Unit::TestCase
     @backend.translate :bar, 'de-DE', :scope => [:foo]
   end
   
-  def test_translate_given_no_locale_calls_lookup_with_i18n_current_locale
+  def test_translate_given_no_locale_calls_lookup_with_i18n_locale
     @backend.expects(:lookup).with 'en-US', :foo, :bar
     @backend.translate :bar, 'en-US', :scope => [:foo]
   end
