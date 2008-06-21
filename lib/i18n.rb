@@ -32,16 +32,20 @@ module I18n
     
     # Main translation method
     def translate(*args)
-      options = args.last.is_a?(Hash) ? args.pop : {}
-
-      keys = merge_keys options.delete(:scope), args.shift
-      key = keys.pop
-      options[:scope] = keys unless keys.empty?
-      locale = args.shift || options.delete(:locale) || I18n.locale
+      options = args.last.is_a?(Hash) ? args.pop : {}      
+      key = args.shift
+      locale = args.shift || options.delete(:locale) || I18n.locale      
       
+      # merge dot separated key/scope and scope option,
+      # use the first key from the merged scope as key if a key was given,
+      # use the rest as scope unless empty
+      scope = merge_keys options.delete(:scope), key
+      key = scope.pop if key
+      options[:scope] = scope unless scope.empty?      
+
       backend.translate key, locale, options
     end        
-    alias :t :translate    
+    alias :t :translate
     
     def localize(object, locale = nil, format = :default)
       locale ||= I18n.locale

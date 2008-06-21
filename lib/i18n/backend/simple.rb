@@ -32,7 +32,8 @@ module I18n
           values = options.reject{|name, value| reserved.include? name } 
           keys = (scope || []).dup << key
 
-          entry = lookup(locale, *keys.compact) || default_to(locale, default, options)
+          entry = lookup(locale, *keys.compact) if key
+          entry ||= default(locale, default, options)
           entry = pluralize entry, count
           entry = interpolate entry, values
           entry
@@ -43,15 +44,15 @@ module I18n
           keys.inject(translations){|result, key| result[key.to_sym] or return nil }
         end
         
-        def default_to(locale, default, options)
+        def default(locale, default, options)
           case default
-            when String
-              default
-            when Symbol
-              translate(default, locale, options)
-            when Array 
-              default.detect{|default| default_to(locale, default, options) }
-          end          
+            when String then default
+            when Symbol then default.translate(locale, options)
+            when Array  then
+              result = nil
+              default.detect{|default| result = default(locale, default, options.dup) }
+              result
+          end
         end
     
         def pluralize(entry, count)

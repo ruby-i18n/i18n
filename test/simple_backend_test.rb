@@ -9,7 +9,7 @@ module I18nSimpleBackendTestSetup
   def setup_backend
     @backend = I18n::Backend::Simple
     @backend.translations.clear
-    @backend.store_translations 'en-US', :foo => {:bar => 'bar'}
+    @backend.store_translations 'en-US', :foo => {:bar => 'bar', :baz => 'baz'}
   end
   alias :setup :setup_backend
   
@@ -88,8 +88,16 @@ class I18nSimpleBackendTranslateTest < Test::Unit::TestCase
     @backend.translate :bar, 'en-US', :scope => [:foo]
   end
   
-  def test_translate_first
-    assert_equal 'bar', @backend.translate_first([:baz, :bar], 'en-US', :scope => [:foo])
+  def test_translate_given_a_symbol_as_a_default_translates_the_symbol
+    assert_equal 'bar', @backend.translate(nil, 'en-US', :scope => [:foo], :default => :bar)
+  end
+  
+  def test_translate_given_an_array_as_default_uses_the_first_match
+    assert_equal 'bar', @backend.translate(:does_not_exist, 'en-US', :scope => [:foo], :default => [:does_not_exist_2, :bar])
+  end
+  
+  def test_translate_an_array_of_keys_translates_all_of_them
+    assert_equal %w(bar baz), @backend.translate([:bar, :baz], 'en-US', :scope => [:foo])
   end
   
   def test_translate_calls_pluralize
