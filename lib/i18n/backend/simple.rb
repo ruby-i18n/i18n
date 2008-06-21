@@ -11,12 +11,15 @@ module I18n
           @@translations
         end
         
-        def set_translations(locale, data)
-          locale = locale.to_sym
-          @@translations[locale] ||= {}
-          # deep_merge by Stefan Rusterholz, seed http://www.ruby-forum.com/topic/142809
-          merger = proc {|key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
-          @@translations[locale].merge! data, &merger
+        # Allow client libraries to pass a block that populates the translation
+        # storage. Decoupled for backends like a db backend that persist their
+        # translations.
+        def populate(&block)
+          yield
+        end        
+        
+        def store_translations(locale, data)
+          merge_translations(locale, data)
         end
         
         def translate(options = {})
@@ -86,6 +89,16 @@ module I18n
           format.gsub!(/%p/, :"time.#{object.hour < 12 ? :am : :pm}".t(locale)) if object.respond_to? :hour
           object.strftime(format)
         end
+        
+        protected
+          
+          def merge_translations(locale, data)
+            locale = locale.to_sym
+            @@translations[locale] ||= {}
+            # deep_merge by Stefan Rusterholz, seed http://www.ruby-forum.com/topic/142809
+            merger = proc {|key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
+            @@translations[locale].merge! data, &merger
+          end
       end
     end
   end

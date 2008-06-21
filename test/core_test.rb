@@ -1,4 +1,4 @@
-$:.unshift "lib/i18n/lib"
+$:.unshift "lib"
 
 require 'rubygems'
 require 'test/unit'
