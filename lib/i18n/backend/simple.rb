@@ -85,8 +85,6 @@ module I18n
         end
         
         def localize(object, locale = nil, format = :default)
-          locale ||= I18n.current_locale
-
           type = object.respond_to?(:sec) ? 'time' : 'date'
           formats = :"#{type}.formats".t locale
           format = formats[format.to_sym] if formats && formats[format.to_sym]

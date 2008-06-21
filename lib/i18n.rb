@@ -22,11 +22,11 @@ module I18n
       @@default_locale = locale 
     end
     
-    def current_locale
+    def locale
       Thread.current[:locale] ||= default_locale
     end
 
-    def current_locale=(locale)
+    def locale=(locale)
       Thread.current[:locale] = locale
     end
     
@@ -37,14 +37,15 @@ module I18n
       keys = merge_keys options.delete(:scope), args.shift
       key = keys.pop
       options[:scope] = keys unless keys.empty?
-      locale = args.shift || options.delete(:locale) || current_locale
+      locale = args.shift || options.delete(:locale) || I18n.locale
       
       backend.translate key, locale, options
     end        
     alias :t :translate    
     
-    def localize(*args)
-      backend.localize(*args)
+    def localize(object, locale = nil, format = :default)
+      locale ||= I18n.locale
+      backend.localize(object, locale, format)
     end
     
   protected
