@@ -80,36 +80,35 @@ class I18nSimpleBackendTranslateTest < Test::Unit::TestCase
 
   def test_translate_calls_lookup_with_locale_given
     @backend.expects(:lookup).with 'de-DE', :foo, :bar
-    @backend.translate :locale => 'de-DE', :keys => [:foo, :bar]
+    @backend.translate :bar, 'de-DE', :scope => [:foo]
   end
   
   def test_translate_given_no_locale_calls_lookup_with_i18n_current_locale
     @backend.expects(:lookup).with 'en-US', :foo, :bar
-    @backend.translate :keys => [:foo, :bar]
+    @backend.translate :bar, 'en-US', :scope => [:foo]
   end
   
-  def test_translate_given_nil_as_locale_calls_lookup_with_i18n_current_locale
-    @backend.expects(:lookup).with 'en-US', :foo, :bar
-    @backend.translate :locale => nil, :keys => [:foo, :bar]
+  def test_translate_first
+    assert_equal 'bar', @backend.translate_first([:baz, :bar], 'en-US', :scope => [:foo])
   end
   
   def test_translate_calls_pluralize
     @backend.expects(:pluralize).with 'bar', 1
-    @backend.translate :keys => [:foo, :bar], :count => 1
+    @backend.translate :bar, 'en-US', :scope => [:foo], :count => 1
   end
   
   def test_translate_calls_interpolate
     @backend.expects(:interpolate).with 'bar', {}
-    @backend.translate :keys => [:foo, :bar]
+    @backend.translate :bar, 'en-US', :scope => [:foo]
   end
   
   def test_translate_calls_interpolate_including_count_as_a_value
     @backend.expects(:interpolate).with 'bar', {:count => 1}
-    @backend.translate :keys => [:foo, :bar], :count => 1
+    @backend.translate :bar, 'en-US', :scope => [:foo], :count => 1
   end
   
   def test_given_no_keys_it_returns_the_default
-    assert_equal 'default', I18n.translate(:default => 'default')    
+    assert_equal 'default', @backend.translate(nil, 'en-US', :default => 'default')    
   end
 end
   

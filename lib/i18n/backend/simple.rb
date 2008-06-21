@@ -22,15 +22,26 @@ module I18n
           merge_translations(locale, data)
         end
         
-        def translate(options = {})
-          reserved = :locale, :keys, :default
-          count, locale, keys, default = options.values_at(:count, *reserved)
-          values = options.reject{|key, value| reserved.include? key } 
+        def translate(key, locale, options = {})
+          return key.map{|key| translate key, locale, options } if key.is_a? Array
+            
+          reserved = :scope, :default
+          count, scope, default = options.values_at(:count, *reserved)
+          values = options.reject{|name, value| reserved.include? name } 
+          keys = (scope || []).dup << key
           
-          entry = lookup(locale || I18n.current_locale, *keys) || default
+          entry = lookup(locale, *keys.compact) || default
           entry = pluralize entry, count
           entry = interpolate entry, values
           entry
+        end
+        
+        def translate_first(keys, locale, options = {})
+          keys.each do |key| 
+            result = translate key, locale, options
+            return result if result
+          end
+          nil
         end
         
         def lookup(*keys)
@@ -65,7 +76,7 @@ module I18n
             key = s.scan_until(/\}\}/)[0..-3]
             end_pos = s.pos - 1            
 
-            raise ReservedInterpolationKey, %s(reserved key :#{key} used in "#{string}") if %w(locale keys default).include?(key)
+            raise ReservedInterpolationKey, %s(reserved key :#{key} used in "#{string}") if %w(scope default).include?(key)
         
             s.string[start_pos..end_pos] = values[key.to_sym].to_s if values.has_key? key.to_sym
             s.unscan

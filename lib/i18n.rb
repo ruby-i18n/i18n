@@ -32,11 +32,14 @@ module I18n
     
     # Main translation method
     def translate(*args)
-      options = args.last.is_a?(Hash) ? args.pop : {}      
-      options[:keys] = merge_keys options.delete(:scope), args.shift
-      options[:locale] ||= args.shift
+      options = args.last.is_a?(Hash) ? args.pop : {}
 
-      backend.translate options
+      keys = merge_keys options.delete(:scope), args.shift
+      key = keys.pop
+      options[:scope] = keys unless keys.empty?
+      locale = args.shift || options.delete(:locale) || current_locale
+      
+      backend.translate key, locale, options
     end        
     alias :t :translate    
     
@@ -49,7 +52,7 @@ module I18n
     def merge_keys(scope, key)
       keys = []
       keys += scope.is_a?(Array) ? scope : scope.to_s.split(/\./) if scope
-      keys += key.is_a?(Array) ? key : key.to_s.split(/\./)
+      keys += key.to_s.split(/\./) unless key.is_a? Array
       keys.map{|key| key.to_sym}
     end
   end
