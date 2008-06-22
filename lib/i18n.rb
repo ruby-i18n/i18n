@@ -38,6 +38,83 @@ module I18n
     
     # Translates, pluralizes and interpolates a given key using a given locale, 
     # scope, default as well as interpolation values.
+    #
+    # LOOKUP
+    #
+    # Translation data is organized as a nested hash using the locales as toplevel
+    # keys. Upper-level keys can be used as namespaces. E.g. ActionView ships with
+    # the translation: :'en-US' => {:date => {:formats => {:short => "%b %d"}}}
+    # 
+    # Translations can be looked up at any level of this hash using the key argument 
+    # and the scope option. E.g., in this example :date.t 'en-US' returns the whole 
+    # translations hash {:formats => {:short => "%b %d"}}
+    # 
+    # Key can be either a single key or a dot-separated key (both Strings and Symbols 
+    # work). E.g. the short format can be looked up using both of:
+    # 'date.formats.short'.t 'en-US'
+    # :'date.formats.short'.t 'en-US'
+    # 
+    # Scope can be either a single key, a dot-separated key or an array of keys
+    # or dot-separated keys. Keys and scopes can be combined freely. So these
+    # examples will all look up the same short date format:
+    # 'date.formats.short'.t 'en-US'
+    # 'formats.short'.t 'en-US', :scope => 'date'
+    # 'short'.t 'en-US', :scope => 'date.formats'
+    # 'short'.t 'en-US', :scope => %w(date formats)
+    #
+    # INTERPOLATION
+    #
+    # Translations can contain interpolation variables which will be replaced by
+    # values passed #translate as part of the options hash with the keys matching
+    # the interpolation variable names. 
+    #
+    # E.g. with a translation :foo => "foo {{bar}}" the option value for the key 
+    # bar will be interpolated to the translation:
+    # :foo.t :bar => 'baz' # => 'foo baz'
+    #
+    # PLURALIZATION
+    #
+    # Translation data can contain pluralized translations. Pluralized translations
+    # are arrays of singluar/plural versions of translations like ['Foo', 'Foos'].
+    #
+    # Note that the I18n::Backend::Simple only supports an algorithm for English 
+    # pluralization rules. Other algorithms can be supported by custom backends.
+    #
+    # Returns the singular version of a pluralized translation:
+    # :foo, :count => 1 # => 'Foo'
+    #
+    # Both return the plural version of a pluralized translation:
+    # :foo, :count => 0 # => 'Foos'
+    # :foo, :count => 2 # => 'Foos'
+    # 
+    # The :count option can be used both for pluralization and interpolation. E.g. 
+    # with the translation :foo => ['{{count}} foo', '{{count}} foos'] count will
+    # be interpolated to the pluralized translation:
+    # :foo, :count => 1 # => '1 foo'
+    #
+    # DEFAULTS
+    #
+    # Returns the translation for :foo or 'default' if no translation was found.
+    # :foo.t :default => 'default'
+    #
+    # Returns the translation for :foo or the translation for :bar if no 
+    # translation for :foo was found.
+    # :foo.t :default => :bar
+    #
+    # Returns the translation for :foo or the translation for :bar or 'default' if
+    # no translations for :foo and :bar were found.
+    # :foo.t :default => [:bar, 'default']
+    #
+    # BULK LOOKUP
+    #
+    # Returns an array with the translations for :foo and :bar.
+    # I18n.t [:foo, :bar]
+    #
+    # Can be used with dot-separated nested keys:
+    # I18n.t [:'baz.foo', :'baz.bar']
+    #
+    # Which is the same as using a scope option:
+    # I18n.t [:foo, :bar], :scope => :baz
     def translate(*args)
       options = args.last.is_a?(Hash) ? args.pop : {}      
       key = args.shift
