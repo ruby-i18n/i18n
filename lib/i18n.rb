@@ -6,43 +6,42 @@ module I18n
   @@default_locale = 'en-US'
   
   class << self
+    # Returns the current backend. Defaults to Backend::Simple.
     def backend
       @@backend
     end
     
+    # Sets the current backend. Used to set a custom backend.
     def backend=(backend) 
       @@backend = backend
     end
   
+    # Returns the current default locale. Defaults to 'en-US'
     def default_locale
       @@default_locale 
     end
     
+    # Sets the current default locale. Used to set a custom default locale.
     def default_locale=(locale) 
       @@default_locale = locale 
     end
     
+    # Returns the current locale. Defaults to I18n.default_locale.
     def locale
       Thread.current[:locale] ||= default_locale
     end
 
+    # Sets the current locale pseudo-globally, i.e. in the Thread.current hash.
     def locale=(locale)
       Thread.current[:locale] = locale
     end
     
-    # Main translation method
+    # Translates, pluralizes and interpolates a given key using a given locale, 
+    # scope, default as well as interpolation values.
     def translate(*args)
       options = args.last.is_a?(Hash) ? args.pop : {}      
       key = args.shift
-      locale = args.shift || options.delete(:locale) || I18n.locale      
-      
-      # merge dot separated key/scope and scope option,
-      # use the first key from the merged scope as key if a key was given,
-      # use the rest as scope unless empty
-      scope = merge_keys options.delete(:scope), key
-      key = scope.pop if key
-      options[:scope] = scope unless scope.empty?      
-
+      locale = args.shift || options.delete(:locale) || I18n.locale
       backend.translate key, locale, options
     end        
     alias :t :translate
@@ -52,15 +51,6 @@ module I18n
       backend.localize(object, locale, format)
     end
     alias :l :localize
-    
-  protected
-
-    def merge_keys(scope, key)
-      keys = []
-      keys += scope.is_a?(Array) ? scope : scope.to_s.split(/\./) if scope
-      keys += key.to_s.split(/\./) unless key.is_a? Array
-      keys.map{|key| key.to_sym}
-    end
   end
 end
 

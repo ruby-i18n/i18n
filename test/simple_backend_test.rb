@@ -1,4 +1,4 @@
-$:.unshift "lib/i18n/lib"
+$:.unshift "lib"
 
 require 'rubygems'
 require 'test/unit'
@@ -77,15 +77,14 @@ end
   
 class I18nSimpleBackendTranslateTest < Test::Unit::TestCase
   include I18nSimpleBackendTestSetup
+  
+  def test_translate_given_nil_as_a_locale_raises_an_argument_error
+    assert_raises(ArgumentError){ @backend.translate :bar, nil }
+  end
 
   def test_translate_calls_lookup_with_locale_given
-    @backend.expects(:lookup).with 'de-DE', :foo, :bar
+    @backend.expects(:lookup).with 'de-DE', :bar, [:foo]
     @backend.translate :bar, 'de-DE', :scope => [:foo]
-  end
-  
-  def test_translate_given_no_locale_calls_lookup_with_i18n_locale
-    @backend.expects(:lookup).with 'en-US', :foo, :bar
-    @backend.translate :bar, 'en-US', :scope => [:foo]
   end
   
   def test_translate_given_a_symbol_as_a_default_translates_the_symbol
@@ -122,18 +121,14 @@ end
   
 class I18nSimpleBackendLookupTest < Test::Unit::TestCase
   include I18nSimpleBackendTestSetup
-
-  def test_lookup_given_no_keys_returns_nil
-    assert_nil @backend.lookup
-  end
   
   # useful because this way we can use the backend with no key for interpolation/pluralization
-  def test_lookup_given_only_a_locale_returns_nil 
-    assert_nil @backend.lookup('en-US')
+  def test_lookup_given_nil_as_a_key_returns_nil 
+    assert_nil @backend.lookup('en-US', nil)
   end
   
   def test_lookup_given_nested_keys_looks_up_a_nested_hash_value
-    assert_equal 'bar', @backend.lookup('en-US', :foo, :bar)    
+    assert_equal 'bar', @backend.lookup('en-US', :bar, [:foo])
   end
 end
   
@@ -329,4 +324,16 @@ class I18nSimpleBackendLocalizeTimeTest < Test::Unit::TestCase
   def test_translate_given_an_unknown_format_it_does_not_fail
     assert_nothing_raised{ @backend.localize @morning, 'de-DE', '%x' }
   end  
+end
+
+class I18nSimpleBackendHelperMethodsTest < Test::Unit::TestCase
+  def setup
+    @backend = I18n::Backend::Simple
+  end
+  
+  def test_deep_symbolize_keys_works
+    result = @backend.send :deep_symbolize_keys, 'foo' => {'bar' => {'baz' => 'bar'}}
+    expected = {:foo => {:bar => {:baz => 'bar'}}}
+    assert_equal expected, result
+  end
 end

@@ -2,6 +2,12 @@ require 'date'
 require 'time'
 
 class String
+  # Translates the String as a translation key. 
+  #
+  # Can be used to look up nested translations using dot separated keys like 
+  # in "currency.format.precision".t which would return 2 for the locale en-US.
+  # 
+  # See I18n#translate for more options.
   def translate(*args)
     I18n.translate self, *args
   end
@@ -9,6 +15,12 @@ class String
 end
 
 class Symbol
+  # Translates the Symbol as a translation key.
+  #
+  # Can be used to look up nested translations using dot separated keys like 
+  # in :"currency.format.precision".t which would return 2 for the locale en-US.
+  # 
+  # See I18n#translate for more options.
   def translate(*args)
     I18n.translate self, *args
   end

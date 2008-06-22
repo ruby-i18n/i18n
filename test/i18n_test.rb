@@ -1,12 +1,23 @@
-$:.unshift 'lib/i18n/lib'
+$:.unshift "lib"
 
 require 'rubygems'
-require 'mocha'
 require 'test/unit'
-require 'active_support'
+require 'mocha'
 require 'i18n'
+require 'active_support'
 
 class I18nTest < Test::Unit::TestCase
+  def setup
+    I18n.backend.store_translations :'en-US', {
+      :currency => {
+        :format => {
+          :separator => '.',
+          :delimiter => ',',
+        }
+      }
+    }
+  end
+  
   def test_uses_simple_backend_set_by_default
     assert_equal I18n::Backend::Simple, I18n.backend
   end
@@ -54,29 +65,31 @@ class I18nTest < Test::Unit::TestCase
   end  
   
   def test_translate_on_nested_symbol_keys_works
-    I18n.backend.expects(:translate).with(:precision, 'de-DE', :scope => [:currency, :format])
-    I18n.t :'currency.format.precision', 'de-DE'
+    assert_equal ".", I18n.t(:'currency.format.separator', 'en-US')
   end
   
   def test_translate_with_nested_string_keys_works
-    I18n.backend.expects(:translate).with(:precision, 'de-DE', :scope => [:currency, :format])
-    I18n.t 'currency.format.precision', 'de-DE'
+    assert_equal ".", I18n.t('currency.format.separator', 'en-US')
   end
   
-  # took these out to still have the option to decide to use Array#t for bulk lookup
-  #
-  # def test_translate_with_symbol_keys_array_works
-  #   I18n.backend.expects(:translate).with(:locale => 'de-DE', :key => [:currency, :format, :precision])
-  #   I18n.t [:currency, :format, :precision], 'de-DE'
-  # end
-  # 
-  # def test_translate_with_string_keys_array_works
-  #   I18n.backend.expects(:translate).with(:locale => 'de-DE', :key => [:currency, :format, :precision])
-  #   I18n.t %w(currency format precision), 'de-DE'
-  # end
+  def test_translate_with_array_as_scope_works
+    assert_equal ".", I18n.t(:separator, 'en-US', :scope => ['currency.format'])
+  end
+  
+  def test_translate_with_array_containing_dot_separated_strings_as_scope_works
+    assert_equal ".", I18n.t(:separator, 'en-US', :scope => ['currency.format'])
+  end
+  
+  def test_translate_with_key_array_and_dot_separated_scope_works
+    assert_equal [".", ","], I18n.t(%w(separator delimiter), 'en-US', :scope => 'currency.format')
+  end
+  
+  def test_translate_with_dot_separated_key_array_and_scope_works
+    assert_equal [".", ","], I18n.t(%w(format.separator format.delimiter), 'en-US', :scope => 'currency')
+  end
   
   def test_translate_with_options_using_scope_works
-    I18n.backend.expects(:translate).with(:precision, 'de-DE', :scope => [:currency, :format])
+    I18n.backend.expects(:translate).with(:precision, 'de-DE', :scope => :"currency.format")
     I18n.with_options :locale => 'de-DE', :scope => :'currency.format' do |locale|
       locale.t :precision
     end
