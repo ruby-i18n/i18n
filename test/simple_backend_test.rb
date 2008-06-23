@@ -151,6 +151,10 @@ class I18nSimpleBackendPluralizeTest < Test::Unit::TestCase
     assert_equal 'bars', @backend.send(:pluralize, ['bar', 'bars'], 2)
   end
   
+  def test_pluralize_given_3_returns_plural_string
+    assert_equal 'bars', @backend.send(:pluralize, ['bar', 'bars'], 3)
+  end
+  
   def test_pluralize_given_2_with_invalid_pluralization_data
     assert_equal ['bar'], @backend.send(:pluralize, ['bar'], 2)
   end

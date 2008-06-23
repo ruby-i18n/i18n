@@ -92,7 +92,7 @@ module I18n
           # and the second translation if it is equal to 1. Other backends can
           # implement more flexible or complex pluralization rules.
           def pluralize(entry, count)
-            return entry unless entry.is_a?(Array) and count and count <= entry.size
+            return entry unless entry.is_a?(Array) and count and entry.size == 2
             entry[count == 1 ? 0 : 1]
           end
     
