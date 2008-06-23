@@ -3,7 +3,6 @@ require 'strscan'
 module I18n
   module Backend
     class ReservedInterpolationKey < ArgumentError; end
-    class InvalidPluralizationData < ArgumentError; end
     
     module Simple
       @@translations = {}
