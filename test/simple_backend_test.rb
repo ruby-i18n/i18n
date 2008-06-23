@@ -8,7 +8,7 @@ require 'i18n'
 module I18nSimpleBackendTestSetup
   def setup_backend
     @backend = I18n::Backend::Simple
-    @backend.translations.clear
+    @backend.send :class_variable_set, :@@translations, {}
     @backend.store_translations 'en-US', :foo => {:bar => 'bar', :baz => 'baz'}
   end
   alias :setup :setup_backend
@@ -60,18 +60,18 @@ class I18nSimpleBackendTranslationsTest < Test::Unit::TestCase
   
   def test_store_translations_adds_translations # no, really :-)
     @backend.store_translations :'en-US', :foo => 'bar'
-    assert_equal Hash[:'en-US', {:foo => 'bar'}], @backend.translations
+    assert_equal Hash[:'en-US', {:foo => 'bar'}], @backend.send(:class_variable_get, :@@translations)
   end
   
   def test_store_translations_deep_merges_translations
     @backend.store_translations :'en-US', :foo => {:bar => 'bar'}
     @backend.store_translations :'en-US', :foo => {:baz => 'baz'}
-    assert_equal Hash[:'en-US', {:foo => {:bar => 'bar', :baz => 'baz'}}], @backend.translations
+    assert_equal Hash[:'en-US', {:foo => {:bar => 'bar', :baz => 'baz'}}], @backend.send(:class_variable_get, :@@translations)
   end
   
   def test_store_translations_forces_locale_to_sym
     @backend.store_translations 'en-US', :foo => 'bar'
-    assert_equal Hash[:'en-US', {:foo => 'bar'}], @backend.translations
+    assert_equal Hash[:'en-US', {:foo => 'bar'}], @backend.send(:class_variable_get, :@@translations)
   end
 end
   
@@ -124,11 +124,11 @@ class I18nSimpleBackendLookupTest < Test::Unit::TestCase
   
   # useful because this way we can use the backend with no key for interpolation/pluralization
   def test_lookup_given_nil_as_a_key_returns_nil 
-    assert_nil @backend.lookup('en-US', nil)
+    assert_nil @backend.send(:lookup, 'en-US', nil)
   end
   
   def test_lookup_given_nested_keys_looks_up_a_nested_hash_value
-    assert_equal 'bar', @backend.lookup('en-US', :bar, [:foo])
+    assert_equal 'bar', @backend.send(:lookup, 'en-US', :bar, [:foo])
   end
 end
   
@@ -136,23 +136,23 @@ class I18nSimpleBackendPluralizeTest < Test::Unit::TestCase
   include I18nSimpleBackendTestSetup
   
   def test_pluralize_given_nil_returns_the_given_entry
-    assert_equal ['bar', 'bars'], @backend.pluralize(['bar', 'bars'], nil)
+    assert_equal ['bar', 'bars'], @backend.send(:pluralize, ['bar', 'bars'], nil)
   end
   
   def test_pluralize_given_0_returns_plural_string
-    assert_equal 'bars', @backend.pluralize(['bar', 'bars'], 0)
+    assert_equal 'bars', @backend.send(:pluralize, ['bar', 'bars'], 0)
   end
   
   def test_pluralize_given_1_returns_singular_string
-    assert_equal 'bar', @backend.pluralize(['bar', 'bars'], 1)
+    assert_equal 'bar', @backend.send(:pluralize, ['bar', 'bars'], 1)
   end
   
   def test_pluralize_given_2_returns_plural_string
-    assert_equal 'bars', @backend.pluralize(['bar', 'bars'], 2)
+    assert_equal 'bars', @backend.send(:pluralize, ['bar', 'bars'], 2)
   end
   
-  def test_pluralize_given_2_bad_array
-    assert_equal 'bars', @backend.pluralize(['bar'], 2)
+  def test_pluralize_given_2_with_a_bad_array
+    assert_equal 'bars', @backend.send(:pluralize, ['bar'], 2)
   end
 end
   
@@ -160,23 +160,23 @@ class I18nSimpleBackendInterpolateTest < Test::Unit::TestCase
   include I18nSimpleBackendTestSetup
   
   def test_interpolate_given_a_value_hash_interpolates_the_values_to_the_string
-    assert_equal 'Hi David!', @backend.interpolate('Hi {{name}}!', :name => 'David')
+    assert_equal 'Hi David!', @backend.send(:interpolate, 'Hi {{name}}!', :name => 'David')
   end
   
   def test_interpolate_given_nil_as_a_string_returns_nil
-    assert_nil @backend.interpolate(nil, :name => 'David')
+    assert_nil @backend.send(:interpolate, nil, :name => 'David')
   end
   
   def test_interpolate_given_an_empty_values_hash_returns_the_unmodified_string
-    assert_equal 'Hi {{name}}!', @backend.interpolate('Hi {{name}}!', {})
+    assert_equal 'Hi {{name}}!', @backend.send(:interpolate, 'Hi {{name}}!', {})
   end
   
   def test_interpolate_given_a_values_hash_with_nil_values_interpolates_the_string
-    assert_equal 'Hi !', @backend.interpolate('Hi {{name}}!', {:name => nil})
+    assert_equal 'Hi !', @backend.send(:interpolate, 'Hi {{name}}!', {:name => nil})
   end
   
   def test_interpolate_given_a_string_containing_a_reserved_key_raises_an_exception
-    assert_raises(I18n::Backend::ReservedInterpolationKey) { @backend.interpolate('{{default}}', {:default => nil}) }
+    assert_raises(I18n::Backend::ReservedInterpolationKey) { @backend.send(:interpolate, '{{default}}', {:default => nil}) }
   end
 end
 
