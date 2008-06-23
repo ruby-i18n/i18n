@@ -81,7 +81,7 @@ class I18nSimpleBackendTranslateTest < Test::Unit::TestCase
   def test_translate_given_nil_as_a_locale_raises_an_argument_error
     assert_raises(ArgumentError){ @backend.translate :bar, nil }
   end
-
+  
   def test_translate_calls_lookup_with_locale_given
     @backend.expects(:lookup).with 'de-DE', :bar, [:foo]
     @backend.translate :bar, 'de-DE', :scope => [:foo]
@@ -151,8 +151,8 @@ class I18nSimpleBackendPluralizeTest < Test::Unit::TestCase
     assert_equal 'bars', @backend.send(:pluralize, ['bar', 'bars'], 2)
   end
   
-  def test_pluralize_given_2_with_a_bad_array
-    assert_equal 'bars', @backend.send(:pluralize, ['bar'], 2)
+  def test_pluralize_given_2_with_invalid_pluralization_data
+    assert_equal ['bar'], @backend.send(:pluralize, ['bar'], 2)
   end
 end
   
@@ -165,6 +165,10 @@ class I18nSimpleBackendInterpolateTest < Test::Unit::TestCase
   
   def test_interpolate_given_nil_as_a_string_returns_nil
     assert_nil @backend.send(:interpolate, nil, :name => 'David')
+  end
+  
+  def test_interpolate_given_an_non_string_as_a_string_returns_nil
+    assert_equal [], @backend.send(:interpolate, [], :name => 'David')
   end
   
   def test_interpolate_given_an_empty_values_hash_returns_the_unmodified_string

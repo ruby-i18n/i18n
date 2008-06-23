@@ -4,6 +4,7 @@ module I18n
   module Backend
     class ReservedInterpolationKey < ArgumentError; end
     class InvalidPluralizationData < ArgumentError; end
+    
     module Simple
       @@translations = {}
       
@@ -91,8 +92,8 @@ module I18n
           # and the second translation if it is equal to 1. Other backends can
           # implement more flexible or complex pluralization rules.
           def pluralize(entry, count)
-            return entry unless entry.is_a?(Array) and count
-            entry[count == 1 ? 0 : 1].dup rescue entry.first.dup
+            return entry unless entry.is_a?(Array) and count and count <= entry.size
+            entry[count == 1 ? 0 : 1]
           end
     
           # Interpolates values into a given string.
@@ -104,7 +105,7 @@ module I18n
           # the <tt>{{...}}</tt> key in a string (once for the string and once for the
           # interpolation).
           def interpolate(string, values = {})
-            return string if string.nil? or values.empty?
+            return string if !string.is_a?(String) or values.empty?
 
             map = {'%d' => '{{count}}', '%s' => '{{value}}'} # TODO deprecate this?
             string.gsub!(/#{map.keys.join('|')}/){|key| map[key]} 
@@ -128,8 +129,9 @@ module I18n
           # for the given locale
           def merge_translations(locale, data)
             locale = locale.to_sym
-            data = deep_symbolize_keys data
             @@translations[locale] ||= {}
+            data = deep_symbolize_keys data
+
             # deep_merge by Stefan Rusterholz, see http://www.ruby-forum.com/topic/142809
             merger = proc{|key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
             @@translations[locale].merge! data, &merger
@@ -151,7 +153,7 @@ module I18n
               result[(key.to_sym rescue key) || key] = value
               result
             }
-          end          
+          end
       end
     end
   end
