@@ -150,6 +150,10 @@ class I18nSimpleBackendPluralizeTest < Test::Unit::TestCase
   def test_pluralize_given_2_returns_plural_string
     assert_equal 'bars', @backend.pluralize(['bar', 'bars'], 2)
   end
+  
+  def test_pluralize_given_2_bad_array
+    assert_equal 'bars', @backend.pluralize(['bar'], 2)
+  end
 end
   
 class I18nSimpleBackendInterpolateTest < Test::Unit::TestCase

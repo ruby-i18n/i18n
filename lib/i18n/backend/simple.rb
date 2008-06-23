@@ -43,24 +43,23 @@ module I18n
         end
         
         # Looks up a translation from the translations hash. Returns nil if 
-        # key is nil or locale, scope or key do not exist as a key in the
+        # eiher key is nil, or locale, scope or key do not exist as a key in the
         # nested translations hash. Splits keys or scopes containing dots
-        # into multiple keys, i.e. "currency.format" is regarded the same as
-        # %w(currency format).
+        # into multiple keys, i.e. <tt>currency.format</tt> is regarded the same as
+        # <tt>%w(currency format)</tt>.
         def lookup(locale, key, scope = [])
           return unless key
           keys = normalize_keys locale, key, scope
           keys.inject(translations){|result, key| result[key.to_sym] or return nil }
         end
         
-        # Evaluates a default translation.
-        # 
+        # Evaluates a default translation. 
         # If the given default is a String it is used literally. If it is a Symbol
         # it will be translated with the given options. If it is an Array the first
         # translation yielded will be returned.
         # 
-        # I.e. default(locale, [:foo, 'default']) will return 'default' if 
-        # translate(locale, :foo) does not yield a result.
+        # <em>I.e.</em>, <tt>default(locale, [:foo, 'default'])</tt> will return +default+ if 
+        # <tt>translate(locale, :foo)</tt> does not yield a result.
         def default(locale, default, options = {})
           case default
             when String then default
@@ -82,11 +81,11 @@ module I18n
     
         # Interpolates values into a given string.
         # 
-        #   interpolate "file {{file}} opend by \\{{user}}", :file => 'test.txt', :user => 'Mr. X'  
-        #   # => "file test.txt opend by {{user}}"
+        #   interpolate "file {{file}} opened by \\{{user}}", :file => 'test.txt', :user => 'Mr. X'  
+        #   # => "file test.txt opened by {{user}}"
         # 
-        # Note that you have to double escape the "\" when you want to escape
-        # the {{...}} key in a string (once for the string and once for the
+        # Note that you have to double escape the <tt>\\</tt> when you want to escape
+        # the <tt>{{...}}</tt> key in a string (once for the string and once for the
         # interpolation).
         def interpolate(string, values = {})
           return string if string.nil? or values.empty?
@@ -109,9 +108,9 @@ module I18n
           s.string
         end
         
-        # Acts the same as #strftime, but returns a localized version of the 
+        # Acts the same as +strftime+, but returns a localized version of the 
         # formatted date string. Takes a key from the date/time formats 
-        # translations as a format argument (e.g. :short in :'date.formats')        
+        # translations as a format argument (<em>e.g.</em>, <tt>:short</tt> in <tt>:'date.formats'</tt>).        
         def localize(object, locale = nil, format = :default)
           type = object.respond_to?(:sec) ? 'time' : 'date'
           formats = :"#{type}.formats".t locale
@@ -135,7 +134,7 @@ module I18n
             locale = locale.to_sym
             data = deep_symbolize_keys data
             @@translations[locale] ||= {}
-            # deep_merge by Stefan Rusterholz, seed http://www.ruby-forum.com/topic/142809
+            # deep_merge by Stefan Rusterholz, see http://www.ruby-forum.com/topic/142809
             merger = proc{|key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
             @@translations[locale].merge! data, &merger
           end

@@ -1,6 +1,6 @@
 h1. Ruby I18n gem
 
-I18n and localization solution for Ruby
+I18n and localization solution for Ruby.
 
 h2. Authors
 
