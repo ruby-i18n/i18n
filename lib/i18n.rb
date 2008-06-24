@@ -9,6 +9,13 @@ require 'i18n/core_ext'
 require 'i18n/backend/simple'
 
 module I18n
+  class ArgumentError < StandardError; end
+  class InvalidLocale < ArgumentError; end
+  class MissingTranslationData < ArgumentError; end
+  class InvalidPluralizationData < ArgumentError; end
+  class MissingInterpolationArgument < ArgumentError; end
+  class ReservedInterpolationKey < ArgumentError; end
+  
   @@backend = Backend::Simple
   @@default_locale = 'en-US'
   

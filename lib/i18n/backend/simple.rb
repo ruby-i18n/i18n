@@ -2,8 +2,6 @@ require 'strscan'
 
 module I18n
   module Backend
-    class ReservedInterpolationKey < ArgumentError; end
-    
     module Simple
       @@translations = {}
       
@@ -24,7 +22,7 @@ module I18n
         end
         
         def translate(key, locale, options = {})
-          raise ArgumentError, 'locale is nil in I18n::Backend::Simple#translate' if locale.nil?
+          raise InvalidLocale, 'locale is nil in I18n::Backend::Simple#translate' if locale.nil?
           return key.map{|key| translate key, locale, options } if key.is_a? Array
 
           reserved = :scope, :default
@@ -32,7 +30,7 @@ module I18n
           options.delete(:default)
           values = options.reject{|name, value| reserved.include? name } 
 
-          entry = lookup(locale, key, scope) || default(locale, default, options)
+          entry = lookup(locale, key, scope) || default(locale, default, options) || raise(I18n::MissingTranslationData, "translation data missing for #{normalize_keys(locale, key, scope).inspect}")
           entry = pluralize entry, count
           entry = interpolate entry, values
           entry
@@ -42,6 +40,8 @@ module I18n
         # formatted date string. Takes a key from the date/time formats 
         # translations as a format argument (<em>e.g.</em>, <tt>:short</tt> in <tt>:'date.formats'</tt>).        
         def localize(object, locale = nil, format = :default)
+          raise ArgumentError, "Object must be a Date, DateTime or Time object. #{object.inspect} given." unless object.respond_to?(:strftime)
+          
           type = object.respond_to?(:sec) ? 'time' : 'date'
           formats = :"#{type}.formats".t locale
           format = formats[format.to_sym] if formats && formats[format.to_sym]
@@ -84,6 +84,8 @@ module I18n
                 result = default(locale, obj, options.dup) and return result
               end
             end
+          rescue MissingTranslationData
+            nil
           end
         
           # Picks a translation from an array according to English pluralization
@@ -91,7 +93,8 @@ module I18n
           # and the second translation if it is equal to 1. Other backends can
           # implement more flexible or complex pluralization rules.
           def pluralize(entry, count)
-            return entry unless entry.is_a?(Array) and count and entry.size == 2
+            return entry unless entry.is_a?(Array) and count
+            raise InvalidPluralizationData, "translation data #{entry} can not be used with :count => #{count}" unless entry.size == 2
             entry[count == 1 ? 0 : 1]
           end
     
@@ -104,7 +107,7 @@ module I18n
           # the <tt>{{...}}</tt> key in a string (once for the string and once for the
           # interpolation).
           def interpolate(string, values = {})
-            return string if !string.is_a?(String) or values.empty?
+            return string if !string.is_a?(String)
 
             map = {'%d' => '{{count}}', '%s' => '{{value}}'} # TODO deprecate this?
             string.gsub!(/#{map.keys.join('|')}/){|key| map[key]} 
@@ -117,8 +120,9 @@ module I18n
               end_pos = s.pos - 1            
 
               raise ReservedInterpolationKey, %s(reserved key :#{key} used in "#{string}") if %w(scope default).include?(key)
-        
-              s.string[start_pos..end_pos] = values[key.to_sym].to_s if values.has_key? key.to_sym
+              raise MissingInterpolationArgument, %s(interpolation argument #{key} missing in "#{string}") unless values.has_key? key.to_sym
+
+              s.string[start_pos..end_pos] = values[key.to_sym].to_s
               s.unscan
             end      
             s.string
