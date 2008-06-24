@@ -94,4 +94,25 @@ class I18nTest < Test::Unit::TestCase
       locale.t :precision
     end
   end
+  
+  def test_translate_no_args
+    assert_raises(ArgumentError) { I18n.t }
+  end
+
+  def test_localize_no_args
+    assert_raises(ArgumentError) { I18n.l }
+  end
+  
+  def test_translate_just_key
+    assert_equal :bogus_key, I18n.t(:bogus_key)
+  end
+
+  def test_localize_nil
+    assert_nil I18n.l(nil)
+  end
+
+  def test_localize_object
+    obj = Object.new
+    assert_equal obj, I18n.l(obj)
+  end
 end

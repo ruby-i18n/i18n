@@ -73,6 +73,14 @@ class I18nSimpleBackendTranslationsTest < Test::Unit::TestCase
     @backend.store_translations 'en-US', :foo => 'bar'
     assert_equal Hash[:'en-US', {:foo => 'bar'}], @backend.send(:class_variable_get, :@@translations)
   end
+  
+  def test_store_translations_covert_key_symbols
+    @backend.send :class_variable_set, :@@translations, {}  # reset translations
+    @backend.store_translations :'en-US', 'foo' => {'bar' => 'baz'}
+    assert_equal Hash[:'en-US', {:foo => {:bar => 'baz'}}], 
+      @backend.send(:class_variable_get, :@@translations)      
+  end
+  
 end
   
 class I18nSimpleBackendTranslateTest < Test::Unit::TestCase
