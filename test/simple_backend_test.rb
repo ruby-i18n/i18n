@@ -301,10 +301,15 @@ class I18nSimpleBackendLocalizeTimeTest < Test::Unit::TestCase
   include I18nSimpleBackendTestSetup
   
   def setup
+    @old_timezone, ENV['TZ'] = ENV['TZ'], 'UTC'
     @backend = I18n::Backend::Simple
     add_datetime_translations
     @morning = Time.parse '2008-01-01 6:00 UTC'
     @evening = Time.parse '2008-01-01 18:00 UTC'
+  end
+  
+  def teardown
+    ENV['TZ'] = @old_timezone
   end
   
   def test_translate_given_the_short_format_it_uses_it
@@ -316,7 +321,7 @@ class I18nSimpleBackendLocalizeTimeTest < Test::Unit::TestCase
   end
   
   def test_translate_given_the_default_format_it_uses_it
-    assert_equal 'Di, 01. Jan 2008 06:00:00 +0100', @backend.localize(@morning, 'de-DE', :default)
+    assert_equal 'Di, 01. Jan 2008 06:00:00 +0000', @backend.localize(@morning, 'de-DE', :default)
   end
   
   def test_translate_given_a_day_name_format_it_returns_the_correct_day_name

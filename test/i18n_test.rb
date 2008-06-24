@@ -103,10 +103,6 @@ class I18nTest < Test::Unit::TestCase
     assert_raises(I18n::MissingTranslationData){ I18n.t :bogus }
   end
 
-  def test_localize_given_no_args_raises_argument_error
-    assert_raises(ArgumentError) { I18n.l }
-  end
-
   def test_localize_nil_raises_argument_error
     assert_raises(I18n::ArgumentError) { I18n.l nil }
   end
