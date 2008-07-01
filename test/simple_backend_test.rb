@@ -243,6 +243,14 @@ class I18nSimpleBackendLocalizeDateTest < Test::Unit::TestCase
   def test_translate_given_an_unknown_format_it_does_not_fail
     assert_nothing_raised{ @backend.localize @date, 'de-DE', '%x' }
   end  
+  
+  def test_localize_nil_raises_argument_error
+    assert_raises(I18n::ArgumentError) { @backend.localize nil }
+  end
+  
+  def test_localize_object_raises_argument_error
+    assert_raises(I18n::ArgumentError) { @backend.localize Object.new }
+  end
 end
 
 class I18nSimpleBackendLocalizeDateTimeTest < Test::Unit::TestCase
@@ -352,7 +360,7 @@ class I18nSimpleBackendLocalizeTimeTest < Test::Unit::TestCase
   
   def test_translate_given_an_unknown_format_it_does_not_fail
     assert_nothing_raised{ @backend.localize @morning, 'de-DE', '%x' }
-  end  
+  end
 end
 
 class I18nSimpleBackendHelperMethodsTest < Test::Unit::TestCase

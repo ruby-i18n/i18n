@@ -9,7 +9,7 @@ require 'i18n/core_ext'
 require 'i18n/backend/simple'
 
 module I18n
-  class ArgumentError < StandardError; end
+  class ArgumentError < ::ArgumentError; end
   class InvalidLocale < ArgumentError; end
   class MissingTranslationData < ArgumentError; end
   class InvalidPluralizationData < ArgumentError; end
@@ -18,7 +18,8 @@ module I18n
   
   @@backend = Backend::Simple
   @@default_locale = 'en-US'
-  
+  @@exception_handler = :default_exception_handler
+    
   class << self
     # Returns the current backend. Defaults to +Backend::Simple+.
     def backend
@@ -48,6 +49,11 @@ module I18n
     # Sets the current locale pseudo-globally, i.e. in the Thread.current hash.
     def locale=(locale)
       Thread.current[:locale] = locale
+    end
+    
+    # Sets the exception handler.
+    def exception_handler=(exception_handler)
+      @@exception_handler = exception_handler
     end
     
     # Translates, pluralizes and interpolates a given key using a given locale, 
@@ -135,6 +141,8 @@ module I18n
       key = args.shift
       locale = args.shift || options.delete(:locale) || I18n.locale
       backend.translate key, locale, options
+    rescue I18n::ArgumentError => e
+      send @@exception_handler, e, key, locale, options
     end        
     alias :t :translate
     
@@ -144,6 +152,18 @@ module I18n
       backend.localize(object, locale, format)
     end
     alias :l :localize
+    
+  protected
+    def default_exception_handler(exception, key, locale, options)
+      if I18n::MissingTranslationData === exception
+        keys = Array(options[:scope]) << key
+        keys = keys.map{|key| key.to_s.split(/\./) }.flatten
+        keys << 'no key' if keys.empty?
+        "translation missing: #{locale}, #{keys.join(', ')}"
+      else
+        raise exception
+      end
+    end
   end
 end
 

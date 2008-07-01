@@ -49,6 +49,18 @@ class I18nTest < Test::Unit::TestCase
     I18n.locale = 'en-US'
   end
   
+  def test_can_set_exception_handler
+    assert_nothing_raised{ I18n.exception_handler = :custom_exception_handler }
+    I18n.exception_handler = :default_exception_handler # revert that
+  end
+  
+  def test_uses_custom_exception_handler
+    I18n.exception_handler = :custom_exception_handler
+    I18n.expects(:custom_exception_handler)
+    I18n.translate :bogus
+    I18n.exception_handler = :default_exception_handler # revert that
+  end
+  
   def test_delegates_translate_to_backend
     I18n.backend.expects(:translate).with :foo, 'de-DE', {}
     I18n.translate :foo, 'de-DE'
@@ -96,17 +108,17 @@ class I18nTest < Test::Unit::TestCase
   end
   
   def test_translate_given_no_args_raises_missing_translation_data
-    assert_raises(I18n::MissingTranslationData){ I18n.t }
+    assert_equal "translation missing: en-US, no key", I18n.t
   end
   
   def test_translate_given_a_bogus_key_raises_missing_translation_data
-    assert_raises(I18n::MissingTranslationData){ I18n.t :bogus }
+    assert_equal "translation missing: en-US, bogus", I18n.t(:bogus)
   end
-
+  
   def test_localize_nil_raises_argument_error
     assert_raises(I18n::ArgumentError) { I18n.l nil }
   end
-
+  
   def test_localize_object_raises_argument_error
     assert_raises(I18n::ArgumentError) { I18n.l Object.new }
   end
