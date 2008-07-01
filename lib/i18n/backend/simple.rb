@@ -79,7 +79,7 @@ module I18n
           def default(locale, default, options = {})
             case default
               when String then default
-              when Symbol then default.translate(locale, options)
+              when Symbol then translate default, locale, options
               when Array  then default.each do |obj| 
                 result = default(locale, obj, options.dup) and return result
               end
