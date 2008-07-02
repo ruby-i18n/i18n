@@ -43,16 +43,16 @@ module I18n
           raise ArgumentError, "Object must be a Date, DateTime or Time object. #{object.inspect} given." unless object.respond_to?(:strftime)
           
           type = object.respond_to?(:sec) ? 'time' : 'date'
-          formats = :"#{type}.formats".t locale
+          formats = translate(:"#{type}.formats", locale)
           format = formats[format.to_sym] if formats && formats[format.to_sym]
           # TODO raise exception unless format found?
           format = format.to_s.dup
 
-          format.gsub!(/%a/, :"date.abbr_day_names".t(locale)[object.wday])
-          format.gsub!(/%A/, :"date.day_names".t(locale)[object.wday])
-          format.gsub!(/%b/, :"date.abbr_month_names".t(locale)[object.mon])
-          format.gsub!(/%B/, :"date.month_names".t(locale)[object.mon])
-          format.gsub!(/%p/, :"time.#{object.hour < 12 ? :am : :pm}".t(locale)) if object.respond_to? :hour
+          format.gsub!(/%a/, translate(:"date.abbr_day_names", locale)[object.wday])
+          format.gsub!(/%A/, translate(:"date.day_names", locale)[object.wday])
+          format.gsub!(/%b/, translate(:"date.abbr_month_names", locale)[object.mon])
+          format.gsub!(/%B/, translate(:"date.month_names", locale)[object.mon])
+          format.gsub!(/%p/, translate(:"time.#{object.hour < 12 ? :am : :pm}", locale)) if object.respond_to? :hour
           object.strftime(format)
         end
         

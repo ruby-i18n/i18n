@@ -5,7 +5,6 @@
 #             Stephan Soller (http://www.arkanis-development.de/) 
 # Copyright:: Copyright (c) 2008 The Ruby i18n Team
 # License::   MIT
-require 'i18n/core_ext'
 require 'i18n/backend/simple'
 
 module I18n
