@@ -146,8 +146,9 @@ module I18n
     alias :t :translate
     
     # Localizes certain objects, such as dates and numbers to local formatting.
-    def localize(object, locale = nil, format = :default)
-      locale ||= I18n.locale
+    def localize(object, options = {})
+      locale = options[:locale] || I18n.locale
+      format = options[:format] || :default
       backend.localize(object, locale, format)
     end
     alias :l :localize

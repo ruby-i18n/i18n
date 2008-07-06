@@ -68,7 +68,7 @@ class I18nTest < Test::Unit::TestCase
   
   def test_delegates_localize_to_backend
     I18n.backend.expects(:localize).with :whatever, 'de-DE', :default
-    I18n.localize :whatever, 'de-DE'
+    I18n.localize :whatever, :locale => 'de-DE'
   end
   
   def test_delegates_populate_to_backend
