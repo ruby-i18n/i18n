@@ -65,21 +65,21 @@ module I18n
     # <tt>:date => {:formats => {:short => "%b %d"}}</tt>.
     # 
     # Translations can be looked up at any level of this hash using the key argument 
-    # and the scope option. <em>E.g.</em>, in this example <tt>:date.t 'en-US'</tt> 
+    # and the scope option. <em>E.g.</em>, in this example <tt>I18n.t :date, 'en-US'</tt> 
     # returns the whole translations hash <tt>{:formats => {:short => "%b %d"}}</tt>.
     # 
     # Key can be either a single key or a dot-separated key (both Strings and Symbols 
     # work). <em>E.g.</em>, the short format can be looked up using both:
-    #   'date.formats.short'.t 'en-US'
-    #   :'date.formats.short'.t 'en-US'
+    #   I18n.t 'date.formats.short', 'en-US'
+    #   I18n.t :'date.formats.short', 'en-US'
     # 
     # Scope can be either a single key, a dot-separated key or an array of keys
     # or dot-separated keys. Keys and scopes can be combined freely. So these
     # examples will all look up the same short date format:
-    #   'date.formats.short'.t 'en-US'
-    #   'formats.short'.t 'en-US', :scope => 'date'
-    #   'short'.t 'en-US', :scope => 'date.formats'
-    #   'short'.t 'en-US', :scope => %w(date formats)
+    #   I18n.t 'date.formats.short', 'en-US'
+    #   I18n.t 'formats.short', 'en-US', :scope => 'date'
+    #   I18n.t 'short', 'en-US', :scope => 'date.formats'
+    #   I18n.t 'short', 'en-US', :scope => %w(date formats)
     #
     # *INTERPOLATION*
     #
@@ -89,7 +89,7 @@ module I18n
     #
     # <em>E.g.</em>, with a translation <tt>:foo => "foo {{bar}}"</tt> the option 
     # value for the key +bar+ will be interpolated into the translation:
-    #   :foo.t :bar => 'baz' # => 'foo baz'
+    #   I18n.t :foo, :bar => 'baz' # => 'foo baz'
     #
     # *PLURALIZATION*
     #
@@ -100,30 +100,30 @@ module I18n
     # pluralization rules. Other algorithms can be supported by custom backends.
     #
     # This returns the singular version of a pluralized translation:
-    #   :foo, :count => 1 # => 'Foo'
+    #   I18n.t :foo, :count => 1 # => 'Foo'
     #
     # These both return the plural version of a pluralized translation:
-    #   :foo, :count => 0 # => 'Foos'
-    #   :foo, :count => 2 # => 'Foos'
+    #   I18n.t :foo, :count => 0 # => 'Foos'
+    #   I18n.t :foo, :count => 2 # => 'Foos'
     # 
     # The <tt>:count</tt> option can be used both for pluralization and interpolation. 
     # <em>E.g.</em>, with the translation 
     # <tt>:foo => ['{{count}} foo', '{{count}} foos']</tt>, count will
     # be interpolated to the pluralized translation:
-    #   :foo, :count => 1 # => '1 foo'
+    #   I18n.t :foo, :count => 1 # => '1 foo'
     #
     # *DEFAULTS*
     #
     # This returns the translation for <tt>:foo</tt> or <tt>default</tt> if no translation was found:
-    #   :foo.t :default => 'default'
+    #   I18n.t :foo, :default => 'default'
     #
     # This returns the translation for <tt>:foo</tt> or the translation for <tt>:bar</tt> if no 
     # translation for <tt>:foo</tt> was found:
-    #   :foo.t :default => :bar
+    #   I18n.t :foo, :default => :bar
     #
     # Returns the translation for <tt>:foo</tt> or the translation for <tt>:bar</tt> 
     # or <tt>default</tt> if no translations for <tt>:foo</tt> and <tt>:bar</tt> were found.
-    #   :foo.t :default => [:bar, 'default']
+    #   I18n.t :foo, :default => [:bar, 'default']
     #
     # <b>BULK LOOKUP</b>
     #
