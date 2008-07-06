@@ -137,10 +137,8 @@ module I18n
     #
     # Which is the same as using a scope option:
     #   I18n.t [:foo, :bar], :scope => :baz
-    def translate(*args)
-      options = args.last.is_a?(Hash) ? args.pop : {}
-      key = args.shift
-      locale = args.shift || options.delete(:locale) || I18n.locale
+    def translate(key, options = {})
+      locale = options.delete(:locale) || I18n.locale
       backend.translate key, locale, options
     rescue I18n::ArgumentError => e
       send @@exception_handler, e, key, locale, options

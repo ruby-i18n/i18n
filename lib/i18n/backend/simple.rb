@@ -39,7 +39,7 @@ module I18n
         # Acts the same as +strftime+, but returns a localized version of the 
         # formatted date string. Takes a key from the date/time formats 
         # translations as a format argument (<em>e.g.</em>, <tt>:short</tt> in <tt>:'date.formats'</tt>).        
-        def localize(object, locale = nil, format = :default)
+        def localize(object, locale, format = :default)
           raise ArgumentError, "Object must be a Date, DateTime or Time object. #{object.inspect} given." unless object.respond_to?(:strftime)
           
           type = object.respond_to?(:sec) ? 'time' : 'date'

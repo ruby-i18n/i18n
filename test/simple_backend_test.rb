@@ -245,11 +245,11 @@ class I18nSimpleBackendLocalizeDateTest < Test::Unit::TestCase
   end  
   
   def test_localize_nil_raises_argument_error
-    assert_raises(I18n::ArgumentError) { @backend.localize nil }
+    assert_raises(I18n::ArgumentError) { @backend.localize nil, 'de-DE' }
   end
   
   def test_localize_object_raises_argument_error
-    assert_raises(I18n::ArgumentError) { @backend.localize Object.new }
+    assert_raises(I18n::ArgumentError) { @backend.localize Object.new, 'de-DE' }
   end
 end
 
