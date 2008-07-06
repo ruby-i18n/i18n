@@ -154,7 +154,7 @@ module I18n
     
   protected
     def default_exception_handler(exception, key, locale, options)
-      if I18n::MissingTranslationData === exception
+      if !options[:raise] and I18n::MissingTranslationData === exception
         keys = Array(options[:scope]) << key
         keys = keys.map{|key| key.to_s.split(/\./) }.flatten
         keys << 'no key' if keys.empty?
