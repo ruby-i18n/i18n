@@ -51,14 +51,14 @@ class I18nTest < Test::Unit::TestCase
   
   def test_can_set_exception_handler
     assert_nothing_raised{ I18n.exception_handler = :custom_exception_handler }
-    I18n.exception_handler = :default_exception_handler # revert that
+    I18n.exception_handler = :default_exception_handler # revert it
   end
   
   def test_uses_custom_exception_handler
     I18n.exception_handler = :custom_exception_handler
     I18n.expects(:custom_exception_handler)
     I18n.translate :bogus
-    I18n.exception_handler = :default_exception_handler # revert that
+    I18n.exception_handler = :default_exception_handler # revert it
   end
   
   def test_delegates_translate_to_backend
@@ -69,6 +69,16 @@ class I18nTest < Test::Unit::TestCase
   def test_delegates_localize_to_backend
     I18n.backend.expects(:localize).with :whatever, 'de-DE', :default
     I18n.localize :whatever, 'de-DE'
+  end
+  
+  def test_delegates_populate_to_backend
+    I18n.backend.expects(:populate) # can't specify a block here as an expected argument
+    I18n.populate{ }
+  end
+  
+  def test_delegates_store_translations_to_backend
+    I18n.backend.expects(:store_translations).with 'de-DE', {:foo => :bar}
+    I18n.store_translations 'de-DE', {:foo => :bar}
   end
   
   def test_translate_given_no_locale_uses_i18n_locale

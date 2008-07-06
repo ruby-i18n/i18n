@@ -55,6 +55,14 @@ module I18n
       @@exception_handler = exception_handler
     end
     
+    def populate(&block)
+      backend.populate &block
+    end
+    
+    def store_translations(locale, data)
+      backend.store_translations locale, data
+    end
+    
     # Translates, pluralizes and interpolates a given key using a given locale, 
     # scope, and default, as well as interpolation values.
     #
