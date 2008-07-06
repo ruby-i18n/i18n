@@ -22,7 +22,7 @@ module I18n
         end
         
         def translate(key, locale, options = {})
-          raise InvalidLocale, 'locale is nil in I18n::Backend::Simple#translate' if locale.nil?
+          raise InvalidLocale.new(locale) if locale.nil?
           return key.map{|key| translate key, locale, options } if key.is_a? Array
 
           reserved = :scope, :default
@@ -30,7 +30,7 @@ module I18n
           options.delete(:default)
           values = options.reject{|name, value| reserved.include? name } 
 
-          entry = lookup(locale, key, scope) || default(locale, default, options) || raise(I18n::MissingTranslationData, "translation data missing for #{I18n.send(:normalize_translation_keys, locale, key, scope).inspect}")
+          entry = lookup(locale, key, scope) || default(locale, default, options) || raise(I18n::MissingTranslationData.new(key, locale, options))
           entry = pluralize entry, count
           entry = interpolate entry, values
           entry
@@ -94,7 +94,7 @@ module I18n
           # implement more flexible or complex pluralization rules.
           def pluralize(entry, count)
             return entry unless entry.is_a?(Array) and count
-            raise InvalidPluralizationData, "translation data #{entry} can not be used with :count => #{count}" unless entry.size == 2
+            raise InvalidPluralizationData.new(entry, count) unless entry.size == 2
             entry[count == 1 ? 0 : 1]
           end
     
@@ -119,8 +119,8 @@ module I18n
               key = s.scan_until(/\}\}/)[0..-3]
               end_pos = s.pos - 1            
 
-              raise ReservedInterpolationKey, %s(reserved key :#{key} used in "#{string}") if %w(scope default).include?(key)
-              raise MissingInterpolationArgument, %s(interpolation argument #{key} missing in "#{string}") unless values.has_key? key.to_sym
+              raise ReservedInterpolationKey.new(key, string) if %w(scope default).include?(key)
+              raise MissingInterpolationArgument.new(key, string) unless values.has_key? key.to_sym
 
               s.string[start_pos..end_pos] = values[key.to_sym].to_s
               s.unscan

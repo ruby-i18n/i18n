@@ -6,15 +6,9 @@
 # Copyright:: Copyright (c) 2008 The Ruby i18n Team
 # License::   MIT
 require 'i18n/backend/simple'
+require 'i18n/exceptions'
 
-module I18n
-  class ArgumentError < ::ArgumentError; end
-  class InvalidLocale < ArgumentError; end
-  class MissingTranslationData < ArgumentError; end
-  class InvalidPluralizationData < ArgumentError; end
-  class MissingInterpolationArgument < ArgumentError; end
-  class ReservedInterpolationKey < ArgumentError; end
-  
+module I18n  
   @@backend = Backend::Simple
   @@default_locale = 'en-US'
   @@exception_handler = :default_exception_handler
