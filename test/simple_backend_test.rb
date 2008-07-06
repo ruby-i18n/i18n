@@ -87,46 +87,46 @@ class I18nSimpleBackendTranslateTest < Test::Unit::TestCase
 
   def test_translate_calls_lookup_with_locale_given
     @backend.expects(:lookup).with('de-DE', :bar, [:foo]).returns 'bar'
-    @backend.translate :bar, 'de-DE', :scope => [:foo]
+    @backend.translate 'de-DE', :bar, :scope => [:foo]
   end
   
   def test_translate_given_a_symbol_as_a_default_translates_the_symbol
-    assert_equal 'bar', @backend.translate(nil, 'en-US', :scope => [:foo], :default => :bar)
+    assert_equal 'bar', @backend.translate('en-US', nil, :scope => [:foo], :default => :bar)
   end
   
   def test_translate_given_an_array_as_default_uses_the_first_match
-    assert_equal 'bar', @backend.translate(:does_not_exist, 'en-US', :scope => [:foo], :default => [:does_not_exist_2, :bar])
+    assert_equal 'bar', @backend.translate('en-US', :does_not_exist, :scope => [:foo], :default => [:does_not_exist_2, :bar])
   end
   
   def test_translate_an_array_of_keys_translates_all_of_them
-    assert_equal %w(bar baz), @backend.translate([:bar, :baz], 'en-US', :scope => [:foo])
+    assert_equal %w(bar baz), @backend.translate('en-US', [:bar, :baz], :scope => [:foo])
   end
   
   def test_translate_calls_pluralize
     @backend.expects(:pluralize).with 'bar', 1
-    @backend.translate :bar, 'en-US', :scope => [:foo], :count => 1
+    @backend.translate 'en-US', :bar, :scope => [:foo], :count => 1
   end
   
   def test_translate_calls_interpolate
     @backend.expects(:interpolate).with 'bar', {}
-    @backend.translate :bar, 'en-US', :scope => [:foo]
+    @backend.translate 'en-US', :bar, :scope => [:foo]
   end
   
   def test_translate_calls_interpolate_including_count_as_a_value
     @backend.expects(:interpolate).with 'bar', {:count => 1}
-    @backend.translate :bar, 'en-US', :scope => [:foo], :count => 1
+    @backend.translate 'en-US', :bar, :scope => [:foo], :count => 1
   end
   
   def test_given_no_keys_it_returns_the_default
-    assert_equal 'default', @backend.translate(nil, 'en-US', :default => 'default')    
+    assert_equal 'default', @backend.translate('en-US', nil, :default => 'default')    
   end
   
   def test_translate_given_nil_as_a_locale_raises_an_argument_error
-    assert_raises(I18n::InvalidLocale){ @backend.translate :bar, nil }
+    assert_raises(I18n::InvalidLocale){ @backend.translate nil, :bar }
   end
   
   def test_translate_with_a_bogus_key_and_no_default_raises_missing_translation_data
-    assert_raises(I18n::MissingTranslationData){ @backend.translate :bogus, 'de-DE' }
+    assert_raises(I18n::MissingTranslationData){ @backend.translate 'de-DE', :bogus }
   end
 end
   
@@ -209,47 +209,47 @@ class I18nSimpleBackendLocalizeDateTest < Test::Unit::TestCase
   end
   
   def test_translate_given_the_short_format_it_uses_it
-    assert_equal '01. Jan', @backend.localize(@date, 'de-DE', :short)
+    assert_equal '01. Jan', @backend.localize('de-DE', @date, :short)
   end
   
   def test_translate_given_the_long_format_it_uses_it
-    assert_equal '01. Januar 2008', @backend.localize(@date, 'de-DE', :long)
+    assert_equal '01. Januar 2008', @backend.localize('de-DE', @date, :long)
   end
   
   def test_translate_given_the_default_format_it_uses_it
-    assert_equal '01.01.2008', @backend.localize(@date, 'de-DE', :default)
+    assert_equal '01.01.2008', @backend.localize('de-DE', @date, :default)
   end
   
   def test_translate_given_a_day_name_format_it_returns_a_day_name
-    assert_equal 'Dienstag', @backend.localize(@date, 'de-DE', '%A')
+    assert_equal 'Dienstag', @backend.localize('de-DE', @date, '%A')
   end
   
   def test_translate_given_an_abbr_day_name_format_it_returns_an_abbrevated_day_name
-    assert_equal 'Di', @backend.localize(@date, 'de-DE', '%a')
+    assert_equal 'Di', @backend.localize('de-DE', @date, '%a')
   end
   
   def test_translate_given_a_month_name_format_it_returns_a_month_name
-    assert_equal 'Januar', @backend.localize(@date, 'de-DE', '%B')
+    assert_equal 'Januar', @backend.localize('de-DE', @date, '%B')
   end
   
   def test_translate_given_an_abbr_month_name_format_it_returns_an_abbrevated_month_name
-    assert_equal 'Jan', @backend.localize(@date, 'de-DE', '%b')
+    assert_equal 'Jan', @backend.localize('de-DE', @date, '%b')
   end
   
   def test_translate_given_no_format_it_does_not_fail
-    assert_nothing_raised{ @backend.localize @date, 'de-DE' }
+    assert_nothing_raised{ @backend.localize 'de-DE', @date }
   end
   
   def test_translate_given_an_unknown_format_it_does_not_fail
-    assert_nothing_raised{ @backend.localize @date, 'de-DE', '%x' }
+    assert_nothing_raised{ @backend.localize 'de-DE', @date, '%x' }
   end  
   
   def test_localize_nil_raises_argument_error
-    assert_raises(I18n::ArgumentError) { @backend.localize nil, 'de-DE' }
+    assert_raises(I18n::ArgumentError) { @backend.localize 'de-DE', nil }
   end
   
   def test_localize_object_raises_argument_error
-    assert_raises(I18n::ArgumentError) { @backend.localize Object.new, 'de-DE' }
+    assert_raises(I18n::ArgumentError) { @backend.localize 'de-DE', Object.new }
   end
 end
 
@@ -264,44 +264,44 @@ class I18nSimpleBackendLocalizeDateTimeTest < Test::Unit::TestCase
   end
   
   def test_translate_given_the_short_format_it_uses_it
-    assert_equal '01. Jan 06:00', @backend.localize(@morning, 'de-DE', :short)
+    assert_equal '01. Jan 06:00', @backend.localize('de-DE', @morning, :short)
   end
   
   def test_translate_given_the_long_format_it_uses_it
-    assert_equal '01. Januar 2008 06:00', @backend.localize(@morning, 'de-DE', :long)
+    assert_equal '01. Januar 2008 06:00', @backend.localize('de-DE', @morning, :long)
   end
   
   def test_translate_given_the_default_format_it_uses_it
-    assert_equal 'Di, 01. Jan 2008 06:00:00 +0000', @backend.localize(@morning, 'de-DE', :default)
+    assert_equal 'Di, 01. Jan 2008 06:00:00 +0000', @backend.localize('de-DE', @morning, :default)
   end
   
   def test_translate_given_a_day_name_format_it_returns_the_correct_day_name
-    assert_equal 'Dienstag', @backend.localize(@morning, 'de-DE', '%A')
+    assert_equal 'Dienstag', @backend.localize('de-DE', @morning, '%A')
   end
   
   def test_translate_given_an_abbr_day_name_format_it_returns_the_correct_abbrevated_day_name
-    assert_equal 'Di', @backend.localize(@morning, 'de-DE', '%a')
+    assert_equal 'Di', @backend.localize('de-DE', @morning, '%a')
   end
   
   def test_translate_given_a_month_name_format_it_returns_the_correct_month_name
-    assert_equal 'Januar', @backend.localize(@morning, 'de-DE', '%B')
+    assert_equal 'Januar', @backend.localize('de-DE', @morning, '%B')
   end
   
   def test_translate_given_an_abbr_month_name_format_it_returns_the_correct_abbrevated_month_name
-    assert_equal 'Jan', @backend.localize(@morning, 'de-DE', '%b')
+    assert_equal 'Jan', @backend.localize('de-DE', @morning, '%b')
   end
   
   def test_translate_given_a_meridian_indicator_format_it_returns_the_correct_meridian_indicator
-    assert_equal 'am', @backend.localize(@morning, 'de-DE', '%p')
-    assert_equal 'pm', @backend.localize(@evening, 'de-DE', '%p')
+    assert_equal 'am', @backend.localize('de-DE', @morning, '%p')
+    assert_equal 'pm', @backend.localize('de-DE', @evening, '%p')
   end
   
   def test_translate_given_no_format_it_does_not_fail
-    assert_nothing_raised{ @backend.localize @morning, 'de-DE' }
+    assert_nothing_raised{ @backend.localize 'de-DE', @morning }
   end
   
   def test_translate_given_an_unknown_format_it_does_not_fail
-    assert_nothing_raised{ @backend.localize @morning, 'de-DE', '%x' }
+    assert_nothing_raised{ @backend.localize 'de-DE', @morning, '%x' }
   end 
 end
 
@@ -321,45 +321,45 @@ class I18nSimpleBackendLocalizeTimeTest < Test::Unit::TestCase
   end
   
   def test_translate_given_the_short_format_it_uses_it
-    assert_equal '01. Jan 06:00', @backend.localize(@morning, 'de-DE', :short)
+    assert_equal '01. Jan 06:00', @backend.localize('de-DE', @morning, :short)
   end
   
   def test_translate_given_the_long_format_it_uses_it
-    assert_equal '01. Januar 2008 06:00', @backend.localize(@morning, 'de-DE', :long)
+    assert_equal '01. Januar 2008 06:00', @backend.localize('de-DE', @morning, :long)
   end
   
   # TODO Seems to break on Windows because ENV['TZ'] is ignored. What's a better way to do this?
   # def test_translate_given_the_default_format_it_uses_it
-  #   assert_equal 'Di, 01. Jan 2008 06:00:00 +0000', @backend.localize(@morning, 'de-DE', :default)
+  #   assert_equal 'Di, 01. Jan 2008 06:00:00 +0000', @backend.localize('de-DE', @morning, :default)
   # end
   
   def test_translate_given_a_day_name_format_it_returns_the_correct_day_name
-    assert_equal 'Dienstag', @backend.localize(@morning, 'de-DE', '%A')
+    assert_equal 'Dienstag', @backend.localize('de-DE', @morning, '%A')
   end
   
   def test_translate_given_an_abbr_day_name_format_it_returns_the_correct_abbrevated_day_name
-    assert_equal 'Di', @backend.localize(@morning, 'de-DE', '%a')
+    assert_equal 'Di', @backend.localize('de-DE', @morning, '%a')
   end
   
   def test_translate_given_a_month_name_format_it_returns_the_correct_month_name
-    assert_equal 'Januar', @backend.localize(@morning, 'de-DE', '%B')
+    assert_equal 'Januar', @backend.localize('de-DE', @morning, '%B')
   end
   
   def test_translate_given_an_abbr_month_name_format_it_returns_the_correct_abbrevated_month_name
-    assert_equal 'Jan', @backend.localize(@morning, 'de-DE', '%b')
+    assert_equal 'Jan', @backend.localize('de-DE', @morning, '%b')
   end
   
   def test_translate_given_a_meridian_indicator_format_it_returns_the_correct_meridian_indicator
-    assert_equal 'am', @backend.localize(@morning, 'de-DE', '%p')
-    assert_equal 'pm', @backend.localize(@evening, 'de-DE', '%p')
+    assert_equal 'am', @backend.localize('de-DE', @morning, '%p')
+    assert_equal 'pm', @backend.localize('de-DE', @evening, '%p')
   end
   
   def test_translate_given_no_format_it_does_not_fail
-    assert_nothing_raised{ @backend.localize @morning, 'de-DE' }
+    assert_nothing_raised{ @backend.localize 'de-DE', @morning }
   end
   
   def test_translate_given_an_unknown_format_it_does_not_fail
-    assert_nothing_raised{ @backend.localize @morning, 'de-DE', '%x' }
+    assert_nothing_raised{ @backend.localize 'de-DE', @morning, '%x' }
   end
 end
 

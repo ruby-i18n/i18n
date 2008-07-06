@@ -62,18 +62,13 @@ class I18nTest < Test::Unit::TestCase
   end
   
   def test_delegates_translate_to_backend
-    I18n.backend.expects(:translate).with :foo, 'de-DE', {}
+    I18n.backend.expects(:translate).with 'de-DE', :foo, {}
     I18n.translate :foo, :locale => 'de-DE'
   end
   
   def test_delegates_localize_to_backend
-    I18n.backend.expects(:localize).with :whatever, 'de-DE', :default
+    I18n.backend.expects(:localize).with 'de-DE', :whatever, :default
     I18n.localize :whatever, :locale => 'de-DE'
-  end
-  
-  def test_delegates_populate_to_backend
-    I18n.backend.expects(:populate) # can't specify a block here as an expected argument
-    I18n.populate{ }
   end
   
   def test_delegates_store_translations_to_backend
@@ -81,8 +76,19 @@ class I18nTest < Test::Unit::TestCase
     I18n.store_translations 'de-DE', {:foo => :bar}
   end
   
+  def test_delegates_populate_to_backend
+    I18n.backend.expects(:populate) # can't specify a block here as an expected argument
+    I18n.populate{ }
+  end
+  
+  def test_populate_yields_the_block
+    tmp = nil
+    I18n.populate do tmp = 'yielded' end
+    assert_equal 'yielded', tmp
+  end
+  
   def test_translate_given_no_locale_uses_i18n_locale
-    I18n.backend.expects(:translate).with :foo, 'en-US', {}
+    I18n.backend.expects(:translate).with 'en-US', :foo, {}
     I18n.translate :foo
   end  
   
@@ -111,7 +117,7 @@ class I18nTest < Test::Unit::TestCase
   end
   
   def test_translate_with_options_using_scope_works
-    I18n.backend.expects(:translate).with(:precision, 'de-DE', :scope => :"currency.format")
+    I18n.backend.expects(:translate).with('de-DE', :precision, :scope => :"currency.format")
     I18n.with_options :locale => 'de-DE', :scope => :'currency.format' do |locale|
       locale.t :precision
     end

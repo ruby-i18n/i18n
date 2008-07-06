@@ -67,21 +67,21 @@ module I18n
     # <tt>:date => {:formats => {:short => "%b %d"}}</tt>.
     # 
     # Translations can be looked up at any level of this hash using the key argument 
-    # and the scope option. <em>E.g.</em>, in this example <tt>I18n.t :date, 'en-US'</tt> 
+    # and the scope option. <em>E.g.</em>, in this example <tt>I18n.t :date</tt> 
     # returns the whole translations hash <tt>{:formats => {:short => "%b %d"}}</tt>.
     # 
     # Key can be either a single key or a dot-separated key (both Strings and Symbols 
     # work). <em>E.g.</em>, the short format can be looked up using both:
-    #   I18n.t 'date.formats.short', 'en-US'
-    #   I18n.t :'date.formats.short', 'en-US'
+    #   I18n.t 'date.formats.short'
+    #   I18n.t :'date.formats.short'
     # 
     # Scope can be either a single key, a dot-separated key or an array of keys
     # or dot-separated keys. Keys and scopes can be combined freely. So these
     # examples will all look up the same short date format:
-    #   I18n.t 'date.formats.short', 'en-US'
-    #   I18n.t 'formats.short', 'en-US', :scope => 'date'
-    #   I18n.t 'short', 'en-US', :scope => 'date.formats'
-    #   I18n.t 'short', 'en-US', :scope => %w(date formats)
+    #   I18n.t 'date.formats.short'
+    #   I18n.t 'formats.short', :scope => 'date'
+    #   I18n.t 'short', :scope => 'date.formats'
+    #   I18n.t 'short', :scope => %w(date formats)
     #
     # *INTERPOLATION*
     #
@@ -139,9 +139,9 @@ module I18n
     #   I18n.t [:foo, :bar], :scope => :baz
     def translate(key, options = {})
       locale = options.delete(:locale) || I18n.locale
-      backend.translate key, locale, options
+      backend.translate locale, key, options
     rescue I18n::ArgumentError => e
-      send @@exception_handler, e, key, locale, options
+      send @@exception_handler, e, locale, key, options
     end        
     alias :t :translate
     
@@ -149,12 +149,12 @@ module I18n
     def localize(object, options = {})
       locale = options[:locale] || I18n.locale
       format = options[:format] || :default
-      backend.localize(object, locale, format)
+      backend.localize(locale, object, format)
     end
     alias :l :localize
     
   protected
-    def default_exception_handler(exception, key, locale, options)
+    def default_exception_handler(exception, locale, key, options)
       if !options[:raise] and I18n::MissingTranslationData === exception
         keys = normalize_translation_keys locale, key, options[:scope]
         keys << 'no key' if keys.size < 2

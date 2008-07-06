@@ -21,9 +21,9 @@ module I18n
           merge_translations(locale, data)
         end
         
-        def translate(key, locale, options = {})
+        def translate(locale, key, options = {})
           raise InvalidLocale.new(locale) if locale.nil?
-          return key.map{|key| translate key, locale, options } if key.is_a? Array
+          return key.map{|key| translate locale, key, options } if key.is_a? Array
 
           reserved = :scope, :default
           count, scope, default = options.values_at(:count, *reserved)
@@ -39,20 +39,20 @@ module I18n
         # Acts the same as +strftime+, but returns a localized version of the 
         # formatted date string. Takes a key from the date/time formats 
         # translations as a format argument (<em>e.g.</em>, <tt>:short</tt> in <tt>:'date.formats'</tt>).        
-        def localize(object, locale, format = :default)
+        def localize(locale, object, format = :default)
           raise ArgumentError, "Object must be a Date, DateTime or Time object. #{object.inspect} given." unless object.respond_to?(:strftime)
           
           type = object.respond_to?(:sec) ? 'time' : 'date'
-          formats = translate(:"#{type}.formats", locale)
+          formats = translate(locale, :"#{type}.formats")
           format = formats[format.to_sym] if formats && formats[format.to_sym]
           # TODO raise exception unless format found?
           format = format.to_s.dup
 
-          format.gsub!(/%a/, translate(:"date.abbr_day_names", locale)[object.wday])
-          format.gsub!(/%A/, translate(:"date.day_names", locale)[object.wday])
-          format.gsub!(/%b/, translate(:"date.abbr_month_names", locale)[object.mon])
-          format.gsub!(/%B/, translate(:"date.month_names", locale)[object.mon])
-          format.gsub!(/%p/, translate(:"time.#{object.hour < 12 ? :am : :pm}", locale)) if object.respond_to? :hour
+          format.gsub!(/%a/, translate(locale, :"date.abbr_day_names")[object.wday])
+          format.gsub!(/%A/, translate(locale, :"date.day_names")[object.wday])
+          format.gsub!(/%b/, translate(locale, :"date.abbr_month_names")[object.mon])
+          format.gsub!(/%B/, translate(locale, :"date.month_names")[object.mon])
+          format.gsub!(/%p/, translate(locale, :"time.#{object.hour < 12 ? :am : :pm}")) if object.respond_to? :hour
           object.strftime(format)
         end
         
@@ -79,7 +79,7 @@ module I18n
           def default(locale, default, options = {})
             case default
               when String then default
-              when Symbol then translate default, locale, options
+              when Symbol then translate locale, default, options
               when Array  then default.each do |obj| 
                 result = default(locale, obj, options.dup) and return result
               end
