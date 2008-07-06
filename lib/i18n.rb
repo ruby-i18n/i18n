@@ -49,10 +49,14 @@ module I18n
       @@exception_handler = exception_handler
     end
     
+    # Allow client libraries to pass a block that populates the translation
+    # storage. Decoupled for backends like a db backend that persist their
+    # translations, so the backend can decide whether/when to yield or not.
     def populate(&block)
       backend.populate &block
     end
     
+    # Stores translations for the given locale in the backend. 
     def store_translations(locale, data)
       backend.store_translations locale, data
     end
@@ -154,6 +158,10 @@ module I18n
     alias :l :localize
     
   protected
+    # Handles exceptions raised in the backend. All exceptions except for
+    # MissingTranslationData exceptions are re-raised. When a MissingTranslationData
+    # was caught and the option :raise is not set the handler returns an error
+    # message string containing the key/scope.
     def default_exception_handler(exception, locale, key, options)
       if !options[:raise] and I18n::MissingTranslationData === exception
         keys = normalize_translation_keys locale, key, options[:scope]
