@@ -136,9 +136,7 @@ module I18n
     # Which is the same as using a scope option:
     #   I18n.t [:foo, :bar], :scope => :baz
     def translate(*args)
-      options = args.last.is_a?(Hash) ? args.pop : {}      
-      key = args.shift
-      locale = args.shift || options.delete(:locale) || I18n.locale
+      key, locale, options = process_translate_arguments *args
       backend.translate key, locale, options
     rescue I18n::ArgumentError => e
       send @@exception_handler, e, key, locale, options
@@ -162,6 +160,22 @@ module I18n
       else
         raise exception
       end
+    end
+    
+    def process_translate_arguments(*args)
+      options = args.last.is_a?(Hash) ? args.pop : {}      
+      key = args.shift
+      locale = args.shift || options.delete(:locale) || I18n.locale
+      [key, locale, options]
+    end
+          
+    # Merges the given locale, key and scope into a single array of keys.
+    # Splits keys that contain dots into multiple keys. Makes sure all
+    # keys are Symbols.
+    def normalize_translation_keys(locale, key, scope)
+      keys = [locale] + Array(scope) + [key]
+      keys = keys.map{|key| key.to_s.split(/\./) }
+      keys.flatten.map{|key| key.to_sym}
     end
   end
 end

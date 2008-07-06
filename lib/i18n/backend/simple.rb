@@ -30,7 +30,7 @@ module I18n
           options.delete(:default)
           values = options.reject{|name, value| reserved.include? name } 
 
-          entry = lookup(locale, key, scope) || default(locale, default, options) || raise(I18n::MissingTranslationData, "translation data missing for #{normalize_keys(locale, key, scope).inspect}")
+          entry = lookup(locale, key, scope) || default(locale, default, options) || raise(I18n::MissingTranslationData, "translation data missing for #{I18n.send(:normalize_translation_keys, locale, key, scope).inspect}")
           entry = pluralize entry, count
           entry = interpolate entry, values
           entry
@@ -65,7 +65,7 @@ module I18n
           # <tt>%w(currency format)</tt>.
           def lookup(locale, key, scope = [])
             return unless key
-            keys = normalize_keys locale, key, scope
+            keys = I18n.send :normalize_translation_keys, locale, key, scope
             keys.inject(@@translations){|result, key| result[key.to_sym] or return nil }
           end
         
@@ -138,15 +138,6 @@ module I18n
             # deep_merge by Stefan Rusterholz, see http://www.ruby-forum.com/topic/142809
             merger = proc{|key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
             @@translations[locale].merge! data, &merger
-          end
-          
-          # Merges the given locale, key and scope into a single array of keys.
-          # Splits keys that contain dots into multiple keys. Makes sure all
-          # keys are Symbols.
-          def normalize_keys(locale, key, scope)
-            keys = [locale] + Array(scope) + [key]
-            keys = keys.map{|key| key.to_s.split(/\./) }
-            keys.flatten.map{|key| key.to_sym}
           end
           
           # Return a new hash with all keys and nested keys converted to symbols.
