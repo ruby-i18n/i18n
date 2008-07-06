@@ -28,7 +28,7 @@ module I18n
           reserved = :scope, :default
           count, scope, default = options.values_at(:count, *reserved)
           options.delete(:default)
-          values = options.reject{|name, value| reserved.include? name } 
+          values = options.reject{|name, value| reserved.include? name }
 
           entry = lookup(locale, key, scope) || default(locale, default, options) || raise(I18n::MissingTranslationData.new(key, locale, options))
           entry = pluralize entry, count

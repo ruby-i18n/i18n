@@ -138,7 +138,9 @@ module I18n
     # Which is the same as using a scope option:
     #   I18n.t [:foo, :bar], :scope => :baz
     def translate(*args)
-      key, locale, options = process_translate_arguments *args
+      options = args.last.is_a?(Hash) ? args.pop : {}
+      key = args.shift
+      locale = args.shift || options.delete(:locale) || I18n.locale
       backend.translate key, locale, options
     rescue I18n::ArgumentError => e
       send @@exception_handler, e, key, locale, options
@@ -155,20 +157,12 @@ module I18n
   protected
     def default_exception_handler(exception, key, locale, options)
       if !options[:raise] and I18n::MissingTranslationData === exception
-        keys = Array(options[:scope]) << key
-        keys = keys.map{|key| key.to_s.split(/\./) }.flatten
-        keys << 'no key' if keys.empty?
-        "translation missing: #{locale}, #{keys.join(', ')}"
+        keys = normalize_translation_keys locale, key, options[:scope]
+        keys << 'no key' if keys.size < 2
+        "translation missing: #{keys.join(', ')}"
       else
         raise exception
       end
-    end
-    
-    def process_translate_arguments(*args)
-      options = args.last.is_a?(Hash) ? args.pop : {}      
-      key = args.shift
-      locale = args.shift || options.delete(:locale) || I18n.locale
-      [key, locale, options]
     end
           
     # Merges the given locale, key and scope into a single array of keys.
