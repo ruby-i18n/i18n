@@ -162,14 +162,9 @@ module I18n
     # MissingTranslationData exceptions are re-raised. When a MissingTranslationData
     # was caught and the option :raise is not set the handler returns an error
     # message string containing the key/scope.
-    def default_exception_handler(exception, locale, key, options)
-      if !options[:raise] and I18n::MissingTranslationData === exception
-        keys = normalize_translation_keys locale, key, options[:scope]
-        keys << 'no key' if keys.size < 2
-        "translation missing: #{keys.join(', ')}"
-      else
-        raise exception
-      end
+    def default_exception_handler(e, locale, key, options)
+      return e.message if !options[:raise] && MissingTranslationData === e
+      raise e
     end
           
     # Merges the given locale, key and scope into a single array of keys.

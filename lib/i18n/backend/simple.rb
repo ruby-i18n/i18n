@@ -30,7 +30,7 @@ module I18n
           options.delete(:default)
           values = options.reject{|name, value| reserved.include? name }
 
-          entry = lookup(locale, key, scope) || default(locale, default, options) || raise(I18n::MissingTranslationData.new(key, locale, options))
+          entry = lookup(locale, key, scope) || default(locale, default, options) || raise(I18n::MissingTranslationData.new(locale, key, options))
           entry = pluralize entry, count
           entry = interpolate entry, values
           entry
