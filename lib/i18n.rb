@@ -145,6 +145,7 @@ module I18n
       locale = options.delete(:locale) || I18n.locale
       backend.translate locale, key, options
     rescue I18n::ArgumentError => e
+      raise e if options[:raise]
       send @@exception_handler, e, locale, key, options
     end        
     alias :t :translate
@@ -162,9 +163,9 @@ module I18n
     # MissingTranslationData exceptions are re-raised. When a MissingTranslationData
     # was caught and the option :raise is not set the handler returns an error
     # message string containing the key/scope.
-    def default_exception_handler(e, locale, key, options)
-      return e.message if !options[:raise] && MissingTranslationData === e
-      raise e
+    def default_exception_handler(exception, locale, key, options)
+      return exception.message if MissingTranslationData === exception
+      raise exception
     end
           
     # Merges the given locale, key and scope into a single array of keys.

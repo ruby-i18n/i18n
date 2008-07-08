@@ -8,7 +8,7 @@ require 'active_support'
 
 class I18nTest < Test::Unit::TestCase
   def setup
-    I18n.backend.store_translations :'en-US', {
+    I18n.store_translations :'en-US', {
       :currency => {
         :format => {
           :separator => '.',
