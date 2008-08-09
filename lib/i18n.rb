@@ -56,6 +56,10 @@ module I18n
       backend.populate &block
     end
     
+    def load_translations(filename)
+      backend.load_translations filename
+    end
+    
     # Stores translations for the given locale in the backend. 
     def store_translations(locale, data)
       backend.store_translations locale, data

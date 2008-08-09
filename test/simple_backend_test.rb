@@ -5,12 +5,14 @@ require 'test/unit'
 require 'mocha'
 require 'i18n'
 require 'Time'
+require 'Yaml'
 
 module I18nSimpleBackendTestSetup
   def setup_backend
     @backend = I18n::Backend::Simple
     @backend.send :class_variable_set, :@@translations, {}
     @backend.store_translations 'en-US', :foo => {:bar => 'bar', :baz => 'baz'}
+    @locale_dir = File.dirname(__FILE__) + '/locale'
   end
   alias :setup :setup_backend
   
@@ -418,3 +420,58 @@ class I18nSimpleBackendHelperMethodsTest < Test::Unit::TestCase
     assert_equal expected, result
   end
 end
+
+class I18nSimpleBackendLoadTranslationsTest < Test::Unit::TestCase
+  include I18nSimpleBackendTestSetup
+
+  def test_load_translations_with_unknown_file_type_raises_exception
+    assert_raises(I18n::UnknownFileType) { @backend.load_translations "#{@locale_dir}/en-US.xml" }
+  end
+
+  def test_load_translations_with_ruby_file_type_does_not_raise_exception
+    assert_nothing_raised { @backend.load_translations "#{@locale_dir}/en-US.rb" }
+  end
+
+  def test_load_rb_loads_data_from_ruby_file
+    data = @backend.send :load_rb, "#{@locale_dir}/en-US.rb"
+    assert_equal({:'en-US-Ruby' => {:foo => {:bar => "baz"}}}, data)
+  end
+
+  def test_load_rb_loads_data_from_yaml_file
+    data = @backend.send :load_yml, "#{@locale_dir}/en-US.yml"
+    assert_equal({'en-US-Yaml' => {'foo' => {'bar' => 'baz'}}}, data)
+  end
+  
+  def test_load_translations_loads_from_different_file_formats
+    @backend.send :class_variable_set, :@@translations, {}  # reset translations
+    @backend.load_translations "#{@locale_dir}/en-US.rb", "#{@locale_dir}/en-US.yml"
+    expected = {
+      :'en-US-Ruby' => {:foo => {:bar => "baz"}},
+      :'en-US-Yaml' => {:foo => {:bar => "baz"}}
+    }
+    result = @backend.send :class_variable_get, :@@translations
+    assert_equal expected, result
+  end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

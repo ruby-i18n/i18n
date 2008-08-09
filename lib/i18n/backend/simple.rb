@@ -12,6 +12,10 @@ module I18n
         def populate(&block)
           yield
         end
+    
+        def load_translations(*filenames)
+          filenames.each {|filename| load_file filename }
+        end
         
         # Stores translations for the given locale in memory. 
         # This uses a deep merge for the translations hash, so existing
@@ -129,6 +133,23 @@ module I18n
               s.unscan
             end      
             s.string
+          end
+          
+          def load_file(filename)
+            type = File.extname(filename).tr('.', '').downcase
+            raise UnknownFileType.new(type, filename) unless respond_to? :"load_#{type}"
+            data = send :"load_#{type}", filename # TODO raise a meaningful exception if this does not yield a Hash
+            data.each do |locale, data| 
+              merge_translations locale, data
+            end            
+          end
+          
+          def load_rb(filename)
+            eval IO.read(filename), binding, filename
+          end
+          
+          def load_yml(filename)
+            YAML::load IO.read(filename)
           end
           
           # Deep merges the given translations hash with the existing translations
