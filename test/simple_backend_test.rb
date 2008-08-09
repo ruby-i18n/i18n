@@ -4,6 +4,7 @@ require 'rubygems'
 require 'test/unit'
 require 'mocha'
 require 'i18n'
+require 'Time'
 
 module I18nSimpleBackendTestSetup
   def setup_backend
@@ -38,17 +39,47 @@ module I18nSimpleBackendTestSetup
       },
       :datetime => {
         :distance_in_words => {
-          :half_a_minute       => 'half a minute',
-          :less_than_x_seconds => ['less than 1 second', 'less than {{count}} seconds'],
-          :x_seconds           => ['1 second', '{{count}} seconds'],
-          :less_than_x_minutes => ['less than a minute', 'less than {{count}} minutes'],
-          :x_minutes           => ['1 minute', '{{count}} minutes'],
-          :about_x_hours       => ['about 1 hour', 'about {{count}} hours'],
-          :x_days              => ['1 day', '{{count}} days'],
-          :about_x_months      => ['about 1 month', 'about {{count}} months'],
-          :x_months            => ['1 month', '{{count}} months'],
-          :about_x_years       => ['about 1 year', 'about {{count}} year'],
-          :over_x_years        => ['over 1 year', 'over {{count}} years']
+          :half_a_minute => 'half a minute',
+          :less_than_x_seconds => {
+            :one => 'less than 1 second', 
+            :many => 'less than {{count}} seconds'
+          },
+          :x_seconds => {
+            :one => '1 second', 
+            :many => '{{count}} seconds'
+          },
+          :less_than_x_minutes => {
+            :one => 'less than a minute', 
+            :many => 'less than {{count}} minutes'
+          },
+          :x_minutes => {
+            :one => '1 minute', 
+            :many => '{{count}} minutes'
+          },
+          :about_x_hours => {
+            :one => 'about 1 hour', 
+            :many => 'about {{count}} hours'
+          },
+          :x_days => {
+            :one => '1 day',
+            :many => '{{count}} days' 
+          },
+          :about_x_months => { 
+            :one => 'about 1 month', 
+            :many => 'about {{count}} months'
+          },
+          :x_months => {
+            :one => '1 month', 
+            :many => '{{count}} months'
+          },
+          :about_x_years => {
+            :one => 'about 1 year', 
+            :many => 'about {{count}} year'
+          },
+          :over_x_years => {
+            :one => 'over 1 year', 
+            :many => 'over {{count}} years'
+          }
         }
       }  
     }
@@ -147,28 +178,41 @@ class I18nSimpleBackendPluralizeTest < Test::Unit::TestCase
   include I18nSimpleBackendTestSetup
   
   def test_pluralize_given_nil_returns_the_given_entry
-    assert_equal ['bar', 'bars'], @backend.send(:pluralize, ['bar', 'bars'], nil)
+    entry = {:one => 'bar', :many => 'bars'}
+    assert_equal entry, @backend.send(:pluralize, entry, nil)
   end
   
-  def test_pluralize_given_0_returns_plural_string
-    assert_equal 'bars', @backend.send(:pluralize, ['bar', 'bars'], 0)
+  def test_pluralize_given_0_returns_zero_string_if_zero_key_given
+    assert_equal 'zero', @backend.send(:pluralize, {:zero => 'zero', :one => 'bar', :many => 'bars'}, 0)
+  end
+  
+  def test_pluralize_given_0_returns_plural_string_if_no_zero_key_given
+    assert_equal 'bars', @backend.send(:pluralize, {:one => 'bar', :many => 'bars'}, 0)
   end
   
   def test_pluralize_given_1_returns_singular_string
-    assert_equal 'bar', @backend.send(:pluralize, ['bar', 'bars'], 1)
+    assert_equal 'bar', @backend.send(:pluralize, {:one => 'bar', :many => 'bars'}, 1)
   end
   
   def test_pluralize_given_2_returns_plural_string
-    assert_equal 'bars', @backend.send(:pluralize, ['bar', 'bars'], 2)
+    assert_equal 'bars', @backend.send(:pluralize, {:one => 'bar', :many => 'bars'}, 2)
   end
   
   def test_pluralize_given_3_returns_plural_string
-    assert_equal 'bars', @backend.send(:pluralize, ['bar', 'bars'], 3)
+    assert_equal 'bars', @backend.send(:pluralize, {:one => 'bar', :many => 'bars'}, 3)
   end
   
-  def test_interpolate_given_invalid_pluralization_data_raises_invalid_pluralization_data
-    assert_raises(I18n::InvalidPluralizationData){ @backend.send(:pluralize, ['bar'], 2) }
+  def test_interpolate_given_incomplete_pluralization_data_raises_invalid_pluralization_data
+    assert_raises(I18n::InvalidPluralizationData){ @backend.send(:pluralize, {:one => 'bar'}, 2) }
   end
+  
+  # def test_interpolate_given_a_string_raises_invalid_pluralization_data
+  #   assert_raises(I18n::InvalidPluralizationData){ @backend.send(:pluralize, 'bar', 2) }
+  # end
+  # 
+  # def test_interpolate_given_an_array_raises_invalid_pluralization_data
+  #   assert_raises(I18n::InvalidPluralizationData){ @backend.send(:pluralize, ['bar'], 2) }
+  # end
 end
   
 class I18nSimpleBackendInterpolateTest < Test::Unit::TestCase

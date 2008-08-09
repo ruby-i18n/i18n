@@ -93,9 +93,12 @@ module I18n
           # and the second translation if it is equal to 1. Other backends can
           # implement more flexible or complex pluralization rules.
           def pluralize(entry, count)
-            return entry unless entry.is_a?(Array) and count
-            raise InvalidPluralizationData.new(entry, count) unless entry.size == 2
-            entry[count == 1 ? 0 : 1]
+            return entry unless entry.is_a?(Hash) and count
+            # raise InvalidPluralizationData.new(entry, count) unless entry.is_a?(Hash)
+            key = :zero if count == 0 && entry.has_key?(:zero)
+            key ||= count == 1 ? :one : :many
+            raise InvalidPluralizationData.new(entry, count) unless entry.has_key?(key)
+            entry[key]
           end
     
           # Interpolates values into a given string.
