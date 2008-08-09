@@ -134,17 +134,17 @@ class I18nSimpleBackendTranslateTest < Test::Unit::TestCase
   end
   
   def test_translate_calls_pluralize
-    @backend.expects(:pluralize).with 'bar', 1
+    @backend.expects(:pluralize).with 'en-US', 'bar', 1
     @backend.translate 'en-US', :bar, :scope => [:foo], :count => 1
   end
   
   def test_translate_calls_interpolate
-    @backend.expects(:interpolate).with 'bar', {}
+    @backend.expects(:interpolate).with 'en-US', 'bar', {}
     @backend.translate 'en-US', :bar, :scope => [:foo]
   end
   
   def test_translate_calls_interpolate_including_count_as_a_value
-    @backend.expects(:interpolate).with 'bar', {:count => 1}
+    @backend.expects(:interpolate).with 'en-US', 'bar', {:count => 1}
     @backend.translate 'en-US', :bar, :scope => [:foo], :count => 1
   end
   
@@ -179,39 +179,39 @@ class I18nSimpleBackendPluralizeTest < Test::Unit::TestCase
   
   def test_pluralize_given_nil_returns_the_given_entry
     entry = {:one => 'bar', :many => 'bars'}
-    assert_equal entry, @backend.send(:pluralize, entry, nil)
+    assert_equal entry, @backend.send(:pluralize, nil, entry, nil)
   end
   
   def test_pluralize_given_0_returns_zero_string_if_zero_key_given
-    assert_equal 'zero', @backend.send(:pluralize, {:zero => 'zero', :one => 'bar', :many => 'bars'}, 0)
+    assert_equal 'zero', @backend.send(:pluralize, nil, {:zero => 'zero', :one => 'bar', :many => 'bars'}, 0)
   end
   
   def test_pluralize_given_0_returns_plural_string_if_no_zero_key_given
-    assert_equal 'bars', @backend.send(:pluralize, {:one => 'bar', :many => 'bars'}, 0)
+    assert_equal 'bars', @backend.send(:pluralize, nil, {:one => 'bar', :many => 'bars'}, 0)
   end
   
   def test_pluralize_given_1_returns_singular_string
-    assert_equal 'bar', @backend.send(:pluralize, {:one => 'bar', :many => 'bars'}, 1)
+    assert_equal 'bar', @backend.send(:pluralize, nil, {:one => 'bar', :many => 'bars'}, 1)
   end
   
   def test_pluralize_given_2_returns_plural_string
-    assert_equal 'bars', @backend.send(:pluralize, {:one => 'bar', :many => 'bars'}, 2)
+    assert_equal 'bars', @backend.send(:pluralize, nil, {:one => 'bar', :many => 'bars'}, 2)
   end
   
   def test_pluralize_given_3_returns_plural_string
-    assert_equal 'bars', @backend.send(:pluralize, {:one => 'bar', :many => 'bars'}, 3)
+    assert_equal 'bars', @backend.send(:pluralize, nil, {:one => 'bar', :many => 'bars'}, 3)
   end
   
   def test_interpolate_given_incomplete_pluralization_data_raises_invalid_pluralization_data
-    assert_raises(I18n::InvalidPluralizationData){ @backend.send(:pluralize, {:one => 'bar'}, 2) }
+    assert_raises(I18n::InvalidPluralizationData){ @backend.send(:pluralize, nil, {:one => 'bar'}, 2) }
   end
   
   # def test_interpolate_given_a_string_raises_invalid_pluralization_data
-  #   assert_raises(I18n::InvalidPluralizationData){ @backend.send(:pluralize, 'bar', 2) }
+  #   assert_raises(I18n::InvalidPluralizationData){ @backend.send(:pluralize, nil, 'bar', 2) }
   # end
   # 
   # def test_interpolate_given_an_array_raises_invalid_pluralization_data
-  #   assert_raises(I18n::InvalidPluralizationData){ @backend.send(:pluralize, ['bar'], 2) }
+  #   assert_raises(I18n::InvalidPluralizationData){ @backend.send(:pluralize, nil, ['bar'], 2) }
   # end
 end
   
@@ -219,27 +219,27 @@ class I18nSimpleBackendInterpolateTest < Test::Unit::TestCase
   include I18nSimpleBackendTestSetup
   
   def test_interpolate_given_a_value_hash_interpolates_the_values_to_the_string
-    assert_equal 'Hi David!', @backend.send(:interpolate, 'Hi {{name}}!', :name => 'David')
+    assert_equal 'Hi David!', @backend.send(:interpolate, nil, 'Hi {{name}}!', :name => 'David')
   end
   
   def test_interpolate_given_nil_as_a_string_returns_nil
-    assert_nil @backend.send(:interpolate, nil, :name => 'David')
+    assert_nil @backend.send(:interpolate, nil, nil, :name => 'David')
   end
   
   def test_interpolate_given_an_non_string_as_a_string_returns_nil
-    assert_equal [], @backend.send(:interpolate, [], :name => 'David')
+    assert_equal [], @backend.send(:interpolate, nil, [], :name => 'David')
   end
   
   def test_interpolate_given_a_values_hash_with_nil_values_interpolates_the_string
-    assert_equal 'Hi !', @backend.send(:interpolate, 'Hi {{name}}!', {:name => nil})
+    assert_equal 'Hi !', @backend.send(:interpolate, nil, 'Hi {{name}}!', {:name => nil})
   end
   
   def test_interpolate_given_an_empty_values_hash_raises_missing_interpolation_argument
-    assert_raises(I18n::MissingInterpolationArgument) { @backend.send(:interpolate, 'Hi {{name}}!', {}) }
+    assert_raises(I18n::MissingInterpolationArgument) { @backend.send(:interpolate, nil, 'Hi {{name}}!', {}) }
   end
   
   def test_interpolate_given_a_string_containing_a_reserved_key_raises_reserved_interpolation_key
-    assert_raises(I18n::ReservedInterpolationKey) { @backend.send(:interpolate, '{{default}}', {:default => nil}) }
+    assert_raises(I18n::ReservedInterpolationKey) { @backend.send(:interpolate, nil, '{{default}}', {:default => nil}) }
   end
 end
 

@@ -31,8 +31,8 @@ module I18n
           values = options.reject{|name, value| reserved.include? name }
 
           entry = lookup(locale, key, scope) || default(locale, default, options) || raise(I18n::MissingTranslationData.new(locale, key, options))
-          entry = pluralize entry, count
-          entry = interpolate entry, values
+          entry = pluralize locale, entry, count
+          entry = interpolate locale, entry, values
           entry
         end
         
@@ -92,7 +92,7 @@ module I18n
           # rules. It will pick the first translation if count is not equal to 1
           # and the second translation if it is equal to 1. Other backends can
           # implement more flexible or complex pluralization rules.
-          def pluralize(entry, count)
+          def pluralize(locale, entry, count)
             return entry unless entry.is_a?(Hash) and count
             # raise InvalidPluralizationData.new(entry, count) unless entry.is_a?(Hash)
             key = :zero if count == 0 && entry.has_key?(:zero)
@@ -109,7 +109,7 @@ module I18n
           # Note that you have to double escape the <tt>\\</tt> when you want to escape
           # the <tt>{{...}}</tt> key in a string (once for the string and once for the
           # interpolation).
-          def interpolate(string, values = {})
+          def interpolate(locale, string, values = {})
             return string if !string.is_a?(String)
 
             map = {'%d' => '{{count}}', '%s' => '{{value}}'} # TODO deprecate this?
