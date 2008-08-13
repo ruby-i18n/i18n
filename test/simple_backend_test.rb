@@ -452,11 +452,6 @@ class I18nSimpleBackendLoadTranslationsTest < Test::Unit::TestCase
     result = @backend.send :class_variable_get, :@@translations
     assert_equal expected, result
   end
-
-  def test_load_rb_loads_data_from_yaml_file
-    data = @backend.send :load_yml, "#{@locale_dir}/test.yml"
-    assert_equal({'en-US-Yaml' => {'foo' => {'bar' => 'baz'}}}, data)
-  end
 end
 
 
