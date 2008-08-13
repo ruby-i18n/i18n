@@ -123,12 +123,22 @@ class I18nSimpleBackendTranslateTest < Test::Unit::TestCase
     @backend.translate 'de-DE', :bar, :scope => [:foo]
   end
   
+  def test_given_no_keys_it_returns_the_default
+    assert_equal 'default', @backend.translate('en-US', nil, :default => 'default')    
+  end
+  
   def test_translate_given_a_symbol_as_a_default_translates_the_symbol
     assert_equal 'bar', @backend.translate('en-US', nil, :scope => [:foo], :default => :bar)
   end
   
   def test_translate_given_an_array_as_default_uses_the_first_match
     assert_equal 'bar', @backend.translate('en-US', :does_not_exist, :scope => [:foo], :default => [:does_not_exist_2, :bar])
+  end
+  
+  def test_translate_given_an_array_of_inexistent_keys_it_raises_missing_translation_data
+    assert_raises I18n::MissingTranslationData do 
+      @backend.translate('en-US', :does_not_exist, :scope => [:foo], :default => [:does_not_exist_2, :does_not_exist_3])
+    end
   end
   
   def test_translate_an_array_of_keys_translates_all_of_them
@@ -148,10 +158,6 @@ class I18nSimpleBackendTranslateTest < Test::Unit::TestCase
   def test_translate_calls_interpolate_including_count_as_a_value
     @backend.expects(:interpolate).with 'en-US', 'bar', {:count => 1}
     @backend.translate 'en-US', :bar, :scope => [:foo], :count => 1
-  end
-  
-  def test_given_no_keys_it_returns_the_default
-    assert_equal 'default', @backend.translate('en-US', nil, :default => 'default')    
   end
   
   def test_translate_given_nil_as_a_locale_raises_an_argument_error
