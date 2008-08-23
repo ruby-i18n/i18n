@@ -1,11 +1,12 @@
+# encoding: utf-8
 $:.unshift "lib"
 
 require 'rubygems'
 require 'test/unit'
 require 'mocha'
 require 'i18n'
-require 'Time'
-require 'Yaml'
+require 'time'
+require 'yaml'
 
 module I18nSimpleBackendTestSetup
   def setup_backend
@@ -369,7 +370,7 @@ class I18nSimpleBackendLocalizeTimeTest < Test::Unit::TestCase
   end
   
   def teardown
-    ENV['TZ'] = @old_timezone
+    @old_timezone ? ENV['TZ'] = @old_timezone : ENV.delete('TZ')
   end
   
   def test_translate_given_the_short_format_it_uses_it
