@@ -119,25 +119,31 @@ module I18n
           def interpolate(locale, string, values = {})
             return string if !string.is_a?(String)
 
-            map = {'%d' => '{{count}}', '%s' => '{{value}}'} # TODO deprecate this?
-            string.gsub!(/#{map.keys.join('|')}/){|key| map[key]} 
-          
-            s = StringScanner.new string.dup
+            string = string.gsub(/%d/, '{{count}}').gsub(/%s/, '{{value}}')
+            if string.respond_to?(:force_encoding)
+              original_encoding = string.encoding
+              string.force_encoding(Encoding::BINARY)
+            end
+
+            s = StringScanner.new(string)
             while s.skip_until(/\{\{/)
-              s.string[s.pos - 3, 1] = '' and next if s.pre_match[-1, 1] == '\\'            
+              s.string[s.pos - 3, 1] = '' and next if s.pre_match[-1, 1] == '\\'
               start_pos = s.pos - 2
               key = s.scan_until(/\}\}/)[0..-3]
-              end_pos = s.pos - 1            
+              end_pos = s.pos - 1
 
               raise ReservedInterpolationKey.new(key, string) if %w(scope default).include?(key)
               raise MissingInterpolationArgument.new(key, string) unless values.has_key? key.to_sym
 
               s.string[start_pos..end_pos] = values[key.to_sym].to_s
               s.unscan
-            end      
-            s.string
+            end
+
+            result = s.string
+            result.force_encoding(original_encoding) if original_encoding
+            result
           end
-          
+
           # Loads a single translations file by delegating to #load_rb or 
           # #load_yml depending on the file extension and directly merges the
           # data to the existing translations. Raises I18n::UnknownFileType

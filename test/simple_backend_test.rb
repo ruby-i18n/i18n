@@ -230,7 +230,11 @@ class I18nSimpleBackendInterpolateTest < Test::Unit::TestCase
   def test_interpolate_given_a_value_hash_interpolates_the_values_to_the_string
     assert_equal 'Hi David!', @backend.send(:interpolate, nil, 'Hi {{name}}!', :name => 'David')
   end
-  
+
+  def test_interpolate_given_a_value_hash_interpolates_into_unicode_string
+    assert_equal 'Häi David!', @backend.send(:interpolate, nil, 'Häi {{name}}!', :name => 'David')
+  end
+
   def test_interpolate_given_nil_as_a_string_returns_nil
     assert_nil @backend.send(:interpolate, nil, nil, :name => 'David')
   end
@@ -460,25 +464,3 @@ class I18nSimpleBackendLoadTranslationsTest < Test::Unit::TestCase
     assert_equal expected, result
   end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
