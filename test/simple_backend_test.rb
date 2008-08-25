@@ -1,3 +1,4 @@
+# encoding: utf-8
 $:.unshift "lib"
 
 require 'rubygems'
@@ -237,7 +238,11 @@ class I18nSimpleBackendInterpolateTest < Test::Unit::TestCase
   def test_interpolate_given_a_value_hash_interpolates_the_values_to_the_string
     assert_equal 'Hi David!', @backend.send(:interpolate, nil, 'Hi {{name}}!', :name => 'David')
   end
-  
+
+  def test_interpolate_given_a_value_hash_interpolates_into_unicode_string
+    assert_equal 'Häi David!', @backend.send(:interpolate, nil, 'Häi {{name}}!', :name => 'David')
+  end
+
   def test_interpolate_given_nil_as_a_string_returns_nil
     assert_nil @backend.send(:interpolate, nil, nil, :name => 'David')
   end
@@ -377,7 +382,7 @@ class I18nSimpleBackendLocalizeTimeTest < Test::Unit::TestCase
   end
   
   def teardown
-    ENV['TZ'] = @old_timezone
+    @old_timezone ? ENV['TZ'] = @old_timezone : ENV.delete('TZ')
   end
   
   def test_translate_given_the_short_format_it_uses_it
