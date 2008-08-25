@@ -19,13 +19,13 @@ class I18nTest < Test::Unit::TestCase
   end
   
   def test_uses_simple_backend_set_by_default
-    assert_equal I18n::Backend::Simple, I18n.backend
+    assert I18n.backend.is_a?(I18n::Backend::Simple)
   end
   
   def test_can_set_backend
     assert_nothing_raised{ I18n.backend = self }
     assert_equal self, I18n.backend
-    I18n.backend = I18n::Backend::Simple
+    I18n.backend = I18n::Backend::Simple.new
   end
   
   def test_uses_en_us_as_default_locale_by_default

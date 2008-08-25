@@ -4,17 +4,26 @@ require 'rubygems'
 require 'test/unit'
 require 'mocha'
 require 'i18n'
-require 'Time'
-require 'Yaml'
+require 'time'
+require 'yaml'
 
 module I18nSimpleBackendTestSetup
   def setup_backend
-    @backend = I18n::Backend::Simple
-    @backend.send :class_variable_set, :@@translations, {}
+    # backend_reset_translations!
+    @backend = I18n::Backend::Simple.new
     @backend.store_translations 'en-US', :foo => {:bar => 'bar', :baz => 'baz'}
     @locale_dir = File.dirname(__FILE__) + '/locale'
   end
   alias :setup :setup_backend
+  
+  # def backend_reset_translations!
+  #   I18n::Backend::Simple::ClassMethods.send :class_variable_set, :@@translations, {}
+  # end
+
+  def backend_get_translations
+    # I18n::Backend::Simple::ClassMethods.send :class_variable_get, :@@translations
+    @backend.instance_variable_get :@translations
+  end  
   
   def add_datetime_translations
     @backend.store_translations :'de-DE', {
@@ -93,25 +102,24 @@ class I18nSimpleBackendTranslationsTest < Test::Unit::TestCase
   
   def test_store_translations_adds_translations # no, really :-)
     @backend.store_translations :'en-US', :foo => 'bar'
-    assert_equal Hash[:'en-US', {:foo => 'bar'}], @backend.send(:class_variable_get, :@@translations)
+    assert_equal Hash[:'en-US', {:foo => 'bar'}], backend_get_translations
   end
   
   def test_store_translations_deep_merges_translations
     @backend.store_translations :'en-US', :foo => {:bar => 'bar'}
     @backend.store_translations :'en-US', :foo => {:baz => 'baz'}
-    assert_equal Hash[:'en-US', {:foo => {:bar => 'bar', :baz => 'baz'}}], @backend.send(:class_variable_get, :@@translations)
+    assert_equal Hash[:'en-US', {:foo => {:bar => 'bar', :baz => 'baz'}}], backend_get_translations
   end
   
   def test_store_translations_forces_locale_to_sym
     @backend.store_translations 'en-US', :foo => 'bar'
-    assert_equal Hash[:'en-US', {:foo => 'bar'}], @backend.send(:class_variable_get, :@@translations)
+    assert_equal Hash[:'en-US', {:foo => 'bar'}], backend_get_translations
   end
   
-  def test_store_translations_covert_key_symbols
-    @backend.send :class_variable_set, :@@translations, {}  # reset translations
-    @backend.store_translations :'en-US', 'foo' => {'bar' => 'baz'}
-    assert_equal Hash[:'en-US', {:foo => {:bar => 'baz'}}], 
-      @backend.send(:class_variable_get, :@@translations)      
+  def test_store_translations_converts_keys_to_symbols
+    # backend_reset_translations!
+    @backend.store_translations 'en-US', 'foo' => {'bar' => 'bar', 'baz' => 'baz'}
+    assert_equal Hash[:'en-US', {:foo => {:bar => 'bar', :baz => 'baz'}}], backend_get_translations      
   end
 end
   
@@ -255,7 +263,7 @@ class I18nSimpleBackendLocalizeDateTest < Test::Unit::TestCase
   include I18nSimpleBackendTestSetup
   
   def setup
-    @backend = I18n::Backend::Simple
+    @backend = I18n::Backend::Simple.new
     add_datetime_translations
     @date = Date.new 2008, 1, 1
   end
@@ -309,7 +317,7 @@ class I18nSimpleBackendLocalizeDateTimeTest < Test::Unit::TestCase
   include I18nSimpleBackendTestSetup
   
   def setup
-    @backend = I18n::Backend::Simple
+    @backend = I18n::Backend::Simple.new
     add_datetime_translations
     @morning = DateTime.new 2008, 1, 1, 6
     @evening = DateTime.new 2008, 1, 1, 18
@@ -362,7 +370,7 @@ class I18nSimpleBackendLocalizeTimeTest < Test::Unit::TestCase
   
   def setup
     @old_timezone, ENV['TZ'] = ENV['TZ'], 'UTC'
-    @backend = I18n::Backend::Simple
+    @backend = I18n::Backend::Simple.new
     add_datetime_translations
     @morning = Time.parse '2008-01-01 6:00 UTC'
     @evening = Time.parse '2008-01-01 18:00 UTC'
@@ -417,7 +425,7 @@ end
 
 class I18nSimpleBackendHelperMethodsTest < Test::Unit::TestCase
   def setup
-    @backend = I18n::Backend::Simple
+    @backend = I18n::Backend::Simple.new
   end
   
   def test_deep_symbolize_keys_works
@@ -449,35 +457,12 @@ class I18nSimpleBackendLoadTranslationsTest < Test::Unit::TestCase
   end
   
   def test_load_translations_loads_from_different_file_formats
-    @backend.send :class_variable_set, :@@translations, {}  # reset translations
+    @backend = I18n::Backend::Simple.new
     @backend.load_translations "#{@locale_dir}/en-US.rb", "#{@locale_dir}/en-US.yml"
     expected = {
       :'en-US-Ruby' => {:foo => {:bar => "baz"}},
       :'en-US-Yaml' => {:foo => {:bar => "baz"}}
     }
-    result = @backend.send :class_variable_get, :@@translations
-    assert_equal expected, result
+    assert_equal expected, backend_get_translations
   end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
