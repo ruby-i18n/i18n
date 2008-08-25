@@ -53,43 +53,43 @@ module I18nSimpleBackendTestSetup
           :half_a_minute => 'half a minute',
           :less_than_x_seconds => {
             :one => 'less than 1 second', 
-            :many => 'less than {{count}} seconds'
+            :other => 'less than {{count}} seconds'
           },
           :x_seconds => {
             :one => '1 second', 
-            :many => '{{count}} seconds'
+            :other => '{{count}} seconds'
           },
           :less_than_x_minutes => {
             :one => 'less than a minute', 
-            :many => 'less than {{count}} minutes'
+            :other => 'less than {{count}} minutes'
           },
           :x_minutes => {
             :one => '1 minute', 
-            :many => '{{count}} minutes'
+            :other => '{{count}} minutes'
           },
           :about_x_hours => {
             :one => 'about 1 hour', 
-            :many => 'about {{count}} hours'
+            :other => 'about {{count}} hours'
           },
           :x_days => {
             :one => '1 day',
-            :many => '{{count}} days' 
+            :other => '{{count}} days' 
           },
           :about_x_months => { 
             :one => 'about 1 month', 
-            :many => 'about {{count}} months'
+            :other => 'about {{count}} months'
           },
           :x_months => {
             :one => '1 month', 
-            :many => '{{count}} months'
+            :other => '{{count}} months'
           },
           :about_x_years => {
             :one => 'about 1 year', 
-            :many => 'about {{count}} year'
+            :other => 'about {{count}} year'
           },
           :over_x_years => {
             :one => 'over 1 year', 
-            :many => 'over {{count}} years'
+            :other => 'over {{count}} years'
           }
         }
       }  
@@ -194,28 +194,28 @@ class I18nSimpleBackendPluralizeTest < Test::Unit::TestCase
   include I18nSimpleBackendTestSetup
   
   def test_pluralize_given_nil_returns_the_given_entry
-    entry = {:one => 'bar', :many => 'bars'}
+    entry = {:one => 'bar', :other => 'bars'}
     assert_equal entry, @backend.send(:pluralize, nil, entry, nil)
   end
   
   def test_pluralize_given_0_returns_zero_string_if_zero_key_given
-    assert_equal 'zero', @backend.send(:pluralize, nil, {:zero => 'zero', :one => 'bar', :many => 'bars'}, 0)
+    assert_equal 'zero', @backend.send(:pluralize, nil, {:zero => 'zero', :one => 'bar', :other => 'bars'}, 0)
   end
   
   def test_pluralize_given_0_returns_plural_string_if_no_zero_key_given
-    assert_equal 'bars', @backend.send(:pluralize, nil, {:one => 'bar', :many => 'bars'}, 0)
+    assert_equal 'bars', @backend.send(:pluralize, nil, {:one => 'bar', :other => 'bars'}, 0)
   end
   
   def test_pluralize_given_1_returns_singular_string
-    assert_equal 'bar', @backend.send(:pluralize, nil, {:one => 'bar', :many => 'bars'}, 1)
+    assert_equal 'bar', @backend.send(:pluralize, nil, {:one => 'bar', :other => 'bars'}, 1)
   end
   
   def test_pluralize_given_2_returns_plural_string
-    assert_equal 'bars', @backend.send(:pluralize, nil, {:one => 'bar', :many => 'bars'}, 2)
+    assert_equal 'bars', @backend.send(:pluralize, nil, {:one => 'bar', :other => 'bars'}, 2)
   end
   
   def test_pluralize_given_3_returns_plural_string
-    assert_equal 'bars', @backend.send(:pluralize, nil, {:one => 'bar', :many => 'bars'}, 3)
+    assert_equal 'bars', @backend.send(:pluralize, nil, {:one => 'bar', :other => 'bars'}, 3)
   end
   
   def test_interpolate_given_incomplete_pluralization_data_raises_invalid_pluralization_data
