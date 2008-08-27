@@ -8,7 +8,7 @@ require 'active_support'
 
 class I18nTest < Test::Unit::TestCase
   def setup
-    I18n.store_translations :'en-US', {
+    I18n.backend.store_translations :'en-US', {
       :currency => {
         :format => {
           :separator => '.',
@@ -69,22 +69,6 @@ class I18nTest < Test::Unit::TestCase
   def test_delegates_localize_to_backend
     I18n.backend.expects(:localize).with 'de-DE', :whatever, :default
     I18n.localize :whatever, :locale => 'de-DE'
-  end
-  
-  def test_delegates_store_translations_to_backend
-    I18n.backend.expects(:store_translations).with 'de-DE', {:foo => :bar}
-    I18n.store_translations 'de-DE', {:foo => :bar}
-  end
-  
-  def test_delegates_populate_to_backend
-    I18n.backend.expects(:populate) # can't specify a block here as an expected argument
-    I18n.populate{ }
-  end
-  
-  def test_populate_yields_the_block
-    tmp = nil
-    I18n.populate do tmp = 'yielded' end
-    assert_equal 'yielded', tmp
   end
   
   def test_translate_given_no_locale_uses_i18n_locale

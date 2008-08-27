@@ -79,22 +79,22 @@ class I18nExceptionsTest < Test::Unit::TestCase
     end
   
     def force_missing_translation_data
-      I18n.store_translations 'de-DE', :bar => nil
+      I18n.backend.store_translations 'de-DE', :bar => nil
       I18n.backend.translate 'de-DE', :foo, :scope => :bar
     end
   
     def force_invalid_pluralization_data
-      I18n.store_translations 'de-DE', :foo => [:bar]
+      I18n.backend.store_translations 'de-DE', :foo => [:bar]
       I18n.backend.translate 'de-DE', :foo, :count => 1
     end
     
     def force_missing_interpolation_argument
-      I18n.store_translations 'de-DE', :foo => "{{bar}}"
+      I18n.backend.store_translations 'de-DE', :foo => "{{bar}}"
       I18n.backend.translate 'de-DE', :foo, :baz => 'baz'
     end
   
     def force_reserved_interpolation_key
-      I18n.store_translations 'de-DE', :foo => "{{scope}}"
+      I18n.backend.store_translations 'de-DE', :foo => "{{scope}}"
       I18n.backend.translate 'de-DE', :foo, :baz => 'baz'
     end
 end
