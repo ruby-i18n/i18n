@@ -19,6 +19,6 @@ Gem::Specification.new do |s|
     "spec/core_ext_spec.rb",
     "spec/i18n_spec.rb",
     "spec/spec.opts",
-    "spec/spec_helper.rb"
+    "spec/spec/helper.rb"
   ]
 end
