@@ -10,7 +10,7 @@ require 'i18n/exceptions'
 
 module I18n  
   @@backend = nil
-  @@load_paths = []
+  @@load_path = []
   @@default_locale = :'en-US'
   @@exception_handler = :default_exception_handler
     
@@ -57,9 +57,13 @@ module I18n
     # files which are either named *.rb and contain plain Ruby Hashes or are
     # named *.yml and contain YAML data. So for the SimpleBackend clients may 
     # register translation files like this:
-    #   I18n.load_paths << 'path/to/locale/en-US.yml'
-    def load_paths
-      @@load_paths
+    #   I18n.load_path << 'path/to/locale/en-US.yml'
+    def load_path
+      @@load_path
+    end
+
+    def load_path=(load_path)
+      @@load_path = load_path
     end
     
     # Translates, pluralizes and interpolates a given key using a given locale, 

@@ -61,8 +61,8 @@ module I18n
       
       protected
       
-        def initialize
-          load_translations *I18n.load_paths unless I18n.load_paths.empty?
+        def init_translations
+          load_translations(*I18n.load_path)
           @initialized = true
         end
         
@@ -77,7 +77,7 @@ module I18n
         # <tt>%w(currency format)</tt>.
         def lookup(locale, key, scope = [])
           return unless key
-          initialize unless @initialized 
+          init_translations unless @initialized 
           keys = I18n.send :normalize_translation_keys, locale, key, scope
           keys.inject(translations){|result, k| result[k.to_sym] or return nil }
         end
