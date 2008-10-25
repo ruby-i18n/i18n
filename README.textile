@@ -2,6 +2,8 @@ h1. Ruby I18n gem
 
 I18n and localization solution for Ruby.
 
+For information please refer to http://rails-i18n.org
+
 h2. Authors
 
 * "Matt Aimonetti":http://railsontherun.com
