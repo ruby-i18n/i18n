@@ -471,3 +471,32 @@ class I18nSimpleBackendLoadTranslationsTest < Test::Unit::TestCase
     assert_equal expected, backend_get_translations
   end
 end
+
+class I18nSimpleBackendReloadTranslationsTest < Test::Unit::TestCase
+  include I18nSimpleBackendTestSetup
+  
+  def setup
+    @backend = I18n::Backend::Simple.new
+    I18n.load_path = [File.dirname(__FILE__) + '/locale/en-US.yml']
+    assert_nil backend_get_translations
+    @backend.send :init_translations
+  end
+  
+  def teardown
+    I18n.load_path = []
+  end
+  
+  def test_setup
+    assert_not_nil backend_get_translations
+  end
+  
+  def test_reload_translations_unloads_translations
+    @backend.reload!
+    assert_nil backend_get_translations
+  end
+  
+  def test_reload_translations_uninitializes_translations
+    @backend.reload!
+    assert_equal @backend.initialized?, false
+  end
+end
