@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.date = "2008-10-26"
   s.summary = "Internationalization support for Ruby"
   s.email = "rails-i18n@googlegroups.com"
-  s.homepage = "http://groups.google.com/group/rails-i18n"
+  s.homepage = "http://rails-i18n.org"
   s.description = "Add Internationalization support to your Ruby application."
   s.has_rdoc = false
   s.authors = ['Sven Fuchs', 'Joshua Harvey', 'Matt Aimonetti', 'Stephan Soller', 'Saimon Moore']
@@ -14,7 +14,9 @@ Gem::Specification.new do |s|
     'lib/i18n/exceptions.rb',
     'lib/i18n.rb',
     'MIT-LICENSE',
-    'README.textile',
+    'README.textile'
+  ]
+  s.test_files = [
     'test/all.rb',
     'test/i18n_exceptions_test.rb',
     'test/i18n_test.rb',
