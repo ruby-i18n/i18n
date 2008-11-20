@@ -23,7 +23,7 @@ class I18nExceptionsTest < Test::Unit::TestCase
     force_missing_translation_data
   rescue I18n::ArgumentError => e
     options = {:scope => :bar}
-    assert_equal 'de-DE', e.locale
+    assert_equal 'de', e.locale
     assert_equal :foo, e.key
     assert_equal options, e.options
   end
@@ -31,7 +31,7 @@ class I18nExceptionsTest < Test::Unit::TestCase
   def test_missing_translation_data_message
     force_missing_translation_data
   rescue I18n::ArgumentError => e
-    assert_equal 'translation missing: de-DE, bar, foo', e.message
+    assert_equal 'translation missing: de, bar, foo', e.message
   end
 
   def test_invalid_pluralization_data_stores_entry_and_count
@@ -79,22 +79,22 @@ class I18nExceptionsTest < Test::Unit::TestCase
     end
 
     def force_missing_translation_data
-      I18n.backend.store_translations 'de-DE', :bar => nil
-      I18n.backend.translate 'de-DE', :foo, :scope => :bar
+      I18n.backend.store_translations 'de', :bar => nil
+      I18n.backend.translate 'de', :foo, :scope => :bar
     end
 
     def force_invalid_pluralization_data
-      I18n.backend.store_translations 'de-DE', :foo => [:bar]
-      I18n.backend.translate 'de-DE', :foo, :count => 1
+      I18n.backend.store_translations 'de', :foo => [:bar]
+      I18n.backend.translate 'de', :foo, :count => 1
     end
 
     def force_missing_interpolation_argument
-      I18n.backend.store_translations 'de-DE', :foo => "{{bar}}"
-      I18n.backend.translate 'de-DE', :foo, :baz => 'baz'
+      I18n.backend.store_translations 'de', :foo => "{{bar}}"
+      I18n.backend.translate 'de', :foo, :baz => 'baz'
     end
 
     def force_reserved_interpolation_key
-      I18n.backend.store_translations 'de-DE', :foo => "{{scope}}"
-      I18n.backend.translate 'de-DE', :foo, :baz => 'baz'
+      I18n.backend.store_translations 'de', :foo => "{{scope}}"
+      I18n.backend.translate 'de', :foo, :baz => 'baz'
     end
 end

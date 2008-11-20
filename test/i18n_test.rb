@@ -8,7 +8,7 @@ require 'active_support'
 
 class I18nTest < Test::Unit::TestCase
   def setup
-    I18n.backend.store_translations :'en-US', {
+    I18n.backend.store_translations :'en', {
       :currency => {
         :format => {
           :separator => '.',
@@ -29,13 +29,13 @@ class I18nTest < Test::Unit::TestCase
   end
 
   def test_uses_en_us_as_default_locale_by_default
-    assert_equal 'en-US', I18n.default_locale
+    assert_equal 'en', I18n.default_locale
   end
 
   def test_can_set_default_locale
-    assert_nothing_raised{ I18n.default_locale = 'de-DE' }
-    assert_equal 'de-DE', I18n.default_locale
-    I18n.default_locale = 'en-US'
+    assert_nothing_raised{ I18n.default_locale = 'de' }
+    assert_equal 'de', I18n.default_locale
+    I18n.default_locale = 'en'
   end
 
   def test_uses_default_locale_as_locale_by_default
@@ -43,10 +43,10 @@ class I18nTest < Test::Unit::TestCase
   end
 
   def test_can_set_locale_to_thread_current
-    assert_nothing_raised{ I18n.locale = 'de-DE' }
-    assert_equal 'de-DE', I18n.locale
-    assert_equal 'de-DE', Thread.current[:locale]
-    I18n.locale = 'en-US'
+    assert_nothing_raised{ I18n.locale = 'de' }
+    assert_equal 'de', I18n.locale
+    assert_equal 'de', Thread.current[:locale]
+    I18n.locale = 'en'
   end
 
   def test_can_set_exception_handler
@@ -62,17 +62,17 @@ class I18nTest < Test::Unit::TestCase
   end
 
   def test_delegates_translate_to_backend
-    I18n.backend.expects(:translate).with 'de-DE', :foo, {}
-    I18n.translate :foo, :locale => 'de-DE'
+    I18n.backend.expects(:translate).with 'de', :foo, {}
+    I18n.translate :foo, :locale => 'de'
   end
 
   def test_delegates_localize_to_backend
-    I18n.backend.expects(:localize).with 'de-DE', :whatever, :default
-    I18n.localize :whatever, :locale => 'de-DE'
+    I18n.backend.expects(:localize).with 'de', :whatever, :default
+    I18n.localize :whatever, :locale => 'de'
   end
 
   def test_translate_given_no_locale_uses_i18n_locale
-    I18n.backend.expects(:translate).with 'en-US', :foo, {}
+    I18n.backend.expects(:translate).with 'en', :foo, {}
     I18n.translate :foo
   end
 
@@ -101,18 +101,18 @@ class I18nTest < Test::Unit::TestCase
   end
 
   def test_translate_with_options_using_scope_works
-    I18n.backend.expects(:translate).with('de-DE', :precision, :scope => :"currency.format")
-    I18n.with_options :locale => 'de-DE', :scope => :'currency.format' do |locale|
+    I18n.backend.expects(:translate).with('de', :precision, :scope => :"currency.format")
+    I18n.with_options :locale => 'de', :scope => :'currency.format' do |locale|
       locale.t :precision
     end
   end
 
   # def test_translate_given_no_args_raises_missing_translation_data
-  #   assert_equal "translation missing: en-US, no key", I18n.t
+  #   assert_equal "translation missing: en, no key", I18n.t
   # end
 
   def test_translate_given_a_bogus_key_raises_missing_translation_data
-    assert_equal "translation missing: en-US, bogus", I18n.t(:bogus)
+    assert_equal "translation missing: en, bogus", I18n.t(:bogus)
   end
 
   def test_localize_nil_raises_argument_error

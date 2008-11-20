@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "i18n"
-  s.version = "0.1.0"
+  s.version = "0.1.1"
   s.date = "2008-10-26"
   s.summary = "Internationalization support for Ruby"
   s.email = "rails-i18n@googlegroups.com"
@@ -20,8 +20,8 @@ Gem::Specification.new do |s|
     'test/all.rb',
     'test/i18n_exceptions_test.rb',
     'test/i18n_test.rb',
-    'test/locale/en-US.rb',
-    'test/locale/en-US.yml',
+    'test/locale/en.rb',
+    'test/locale/en.yml',
     'test/simple_backend_test.rb'
   ]
 end
