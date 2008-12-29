@@ -472,6 +472,18 @@ class I18nSimpleBackendLoadTranslationsTest < Test::Unit::TestCase
   end
 end
 
+class I18nSimpleBackendLoadPathTest < Test::Unit::TestCase
+  include I18nSimpleBackendTestSetup
+
+  def test_nested_load_paths_do_not_break_locale_loading
+    @backend = I18n::Backend::Simple.new
+    I18n.load_path = [[File.dirname(__FILE__) + '/locale/en.yml']]
+    assert_nil backend_get_translations
+    assert_nothing_raised { @backend.send :init_translations }
+    assert_not_nil backend_get_translations
+  end
+end
+
 class I18nSimpleBackendReloadTranslationsTest < Test::Unit::TestCase
   include I18nSimpleBackendTestSetup
   
