@@ -124,6 +124,16 @@ class I18nSimpleBackendTranslationsTest < Test::Unit::TestCase
   end
 end
 
+class I18nSimpleBackendAvailableLocalesTest < Test::Unit::TestCase
+  def test_available_locales
+    @backend = I18n::Backend::Simple.new
+    @backend.store_translations 'de', :foo => 'bar'
+    @backend.store_translations 'en', :foo => 'foo'
+
+    assert_equal ['de', 'en'], @backend.available_locales.map{|locale| locale.to_s }.sort
+  end
+end
+
 class I18nSimpleBackendTranslateTest < Test::Unit::TestCase
   include I18nSimpleBackendTestSetup
 
