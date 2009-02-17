@@ -137,4 +137,25 @@ class I18nTest < Test::Unit::TestCase
   def test_localize_object_raises_argument_error
     assert_raises(I18n::ArgumentError) { I18n.l Object.new }
   end
+
+  def test_proc_exception_handler
+    I18n.exception_handler = Proc.new { |exception, locale, key, options|
+      "No exception here! [Proc handler]"
+    }
+    assert_equal "No exception here! [Proc handler]", I18n.translate(:test_proc_handler)
+  ensure
+    I18n.exception_handler = :default_exception_handler
+  end
+
+  def test_class_exception_handler
+    I18n.exception_handler = Class.new do
+      def call(exception, locale, key, options)
+        "No exception here! [Class handler]"
+      end
+    end.new
+    assert_equal "No exception here! [Class handler]", I18n.translate(:test_class_handler)
+  ensure
+    I18n.exception_handler = :default_exception_handler
+  end
+
 end

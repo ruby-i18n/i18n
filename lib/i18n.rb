@@ -176,13 +176,13 @@ module I18n
     # *LAMBDAS*
     #
     # Both translations and defaults can be given as Ruby lambdas. Lambdas will be
-    # called and passed the key and options. 
+    # called and passed the key and options.
     #
     # E.g. assuming the key <tt>:salutation</tt> resolves to:
     #   lambda { |key, options| options[:gender] == 'm' ? "Mr. {{options[:name]}}" : "Mrs. {{options[:name]}}" }
     #
     # Then <tt>I18n.t(:salutation, :gender => 'w', :name => 'Smith') will result in "Mrs. Smith".
-    # 
+    #
     # It is recommended to use/implement lambdas in an "idempotent" way. E.g. when
     # a cache layer is put in front of I18n.translate it will generate a cache key
     # from the argument values passed to #translate. Therefor your lambdas should
@@ -193,11 +193,16 @@ module I18n
       key     = args.shift
       locale  = options.delete(:locale) || I18n.locale
       backend.translate(locale, key, options)
-    rescue I18n::ArgumentError => e
-      raise e if options[:raise]
-      send(@@exception_handler, e, locale, key, options)
+    rescue I18n::ArgumentError => exception
+      raise exception if options[:raise]
+      handle_exception(exception, locale, key, options)
     end
     alias :t :translate
+
+    def translate!(key, options = {})
+      translate(key, options.merge( :raise => true ))
+    end
+    alias :t! :translate!
 
     # Localizes certain objects, such as dates and numbers to local formatting.
     def localize(object, options = {})
@@ -208,6 +213,7 @@ module I18n
     alias :l :localize
 
   protected
+
     # Handles exceptions raised in the backend. All exceptions except for
     # MissingTranslationData exceptions are re-raised. When a MissingTranslationData
     # was caught and the option :raise is not set the handler returns an error
@@ -215,6 +221,32 @@ module I18n
     def default_exception_handler(exception, locale, key, options)
       return exception.message if MissingTranslationData === exception
       raise exception
+    end
+
+    # Any exceptions thrown in translate will be sent to the @@exception_handler
+    # which can be a Symbol, a Proc or any other Object.
+    #
+    # If exception_handler is a Symbol then it will simply be sent to I18n as
+    # a method call. A Proc will simply be called. In any other case the
+    # method #call will be called on the exception_handler object.
+    #
+    # Examples:
+    #
+    #   I18n.exception_handler = :default_exception_handler             # this is the default
+    #   I18n.default_exception_handler(exception, locale, key, options) # will be called like this
+    #
+    #   I18n.exception_handler = lambda { |*args| ... }                 # a lambda
+    #   I18n.exception_handler.call(exception, locale, key, options)    # will be called like this
+    #
+    #  I18n.exception_handler = I18nExceptionHandler.new                # an object
+    #  I18n.exception_handler.call(exception, locale, key, options)     # will be called like this
+    def handle_exception(exception, locale, key, options)
+      case @@exception_handler
+      when Symbol
+        send(@@exception_handler, exception, locale, key, options)
+      else
+        @@exception_handler.call(exception, locale, key, options)
+      end
     end
 
     # Merges the given locale, key and scope into a single array of keys.
