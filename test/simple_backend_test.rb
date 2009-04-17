@@ -196,6 +196,47 @@ class I18nSimpleBackendTranslateTest < Test::Unit::TestCase
   end
 end
 
+class I18nSimpleBackendTranslateLambdaTest < Test::Unit::TestCase
+  include I18nSimpleBackendTestSetup
+
+  def test_translate_simple_proc
+    setup_proc_translation
+    assert_equal 'bar=bar, baz=baz, foo=foo', @backend.translate('en', :a_lambda, :foo => 'foo', :bar => 'bar', :baz => 'baz')
+  end
+
+  def test_translate_proc_in_defaults
+    setup_proc_translation
+    assert_equal 'bar=bar, baz=baz, foo=foo', @backend.translate('en', :does_not_exist, :default => :a_lambda, :foo => 'foo', :bar => 'bar', :baz => 'baz')
+    assert_equal 'bar=bar, baz=baz, foo=foo', @backend.translate('en', :does_not_exist, :default => [:does_not_exist_2, :does_not_exist_3, :a_lambda], :foo => 'foo', :bar => 'bar', :baz => 'baz')
+  end
+
+  def test_translate_proc_with_pluralize
+    setup_proc_translation
+    params = { :zero => 'zero', :one => 'one', :other => 'other' }
+    assert_equal 'zero', @backend.translate('en', :lambda_for_pluralize, params.merge(:count => 0))
+    assert_equal 'one', @backend.translate('en', :lambda_for_pluralize, params.merge(:count => 1))
+    assert_equal 'other', @backend.translate('en', :lambda_for_pluralize, params.merge(:count => 2))
+  end
+
+  def test_translate_proc_with_interpolate
+    setup_proc_translation
+    assert_equal 'bar baz foo', @backend.translate('en', :lambda_for_interpolate, :foo => 'foo', :bar => 'bar', :baz => 'baz')
+  end
+
+  private
+  def setup_proc_translation
+    @backend.store_translations 'en', {
+      :a_lambda => lambda { |attributes|
+        attributes.keys.sort_by(&:to_s).collect { |key| "#{key}=#{attributes[key]}"}.join(', ')
+      },
+      :lambda_for_pluralize => lambda { |attributes| attributes },
+      :lambda_for_interpolate => lambda { |attributes|
+        "{{#{attributes.keys.sort_by(&:to_s).join('}} {{')}}}"
+      }
+    }
+  end
+end
+
 class I18nSimpleBackendLookupTest < Test::Unit::TestCase
   include I18nSimpleBackendTestSetup
 

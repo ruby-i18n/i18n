@@ -31,6 +31,7 @@ module I18n
         values = options.reject { |name, value| reserved.include?(name) }
 
         entry = lookup(locale, key, scope) || resolve(locale, key, default, options) || raise(I18n::MissingTranslationData.new(locale, key, options))
+        entry = entry.call(values) if entry.is_a? Proc
         entry = pluralize(locale, entry, count)
         entry = interpolate(locale, entry, values)
         entry
