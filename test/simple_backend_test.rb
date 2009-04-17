@@ -33,6 +33,10 @@ module I18nSimpleBackendTestSetup
           :default => "%d.%m.%Y",
           :short => "%d. %b",
           :long => "%d. %B %Y",
+          :long_ordinalized => lambda { |date, options|
+            tz = " (#{options[:timezone]})" if options[:timezone]
+            "#{date.day}ter %B %Y#{tz}"
+          }
         },
         :day_names => %w(Sonntag Montag Dienstag Mittwoch Donnerstag Freitag Samstag),
         :abbr_day_names => %w(So Mo Di Mi Do Fr  Sa),
@@ -45,6 +49,10 @@ module I18nSimpleBackendTestSetup
           :default => "%a, %d. %b %Y %H:%M:%S %z",
           :short => "%d. %b %H:%M",
           :long => "%d. %B %Y %H:%M",
+          :long_ordinalized => lambda { |date, options|
+            tz = " (#{options[:timezone]})" if options[:timezone]
+            "#{date.day}ter %B %Y, %H:%M Uhr#{tz}"
+          }
         },
         :am => 'am',
         :pm => 'pm'
@@ -343,6 +351,14 @@ class I18nSimpleBackendLocalizeDateTest < Test::Unit::TestCase
     assert_equal 'Jan', @backend.localize('de', @date, '%b')
   end
 
+  def test_translate_given_a_format_specified_as_a_proc
+    assert_equal '1ter Januar 2008', @backend.localize('de', @date, :long_ordinalized)
+  end
+
+  def test_translate_given_a_format_specified_as_a_proc_with_additional_options
+    assert_equal '1ter Januar 2008 (MEZ)', @backend.localize('de', @date, :long_ordinalized, :timezone => 'MEZ')
+  end
+
   def test_translate_given_no_format_it_does_not_fail
     assert_nothing_raised{ @backend.localize 'de', @date }
   end
@@ -403,6 +419,14 @@ class I18nSimpleBackendLocalizeDateTimeTest < Test::Unit::TestCase
     assert_equal 'pm', @backend.localize('de', @evening, '%p')
   end
 
+  def test_translate_given_a_format_specified_as_a_proc
+    assert_equal '1ter Januar 2008, 06:00 Uhr', @backend.localize('de', @morning, :long_ordinalized)
+  end
+
+  def test_translate_given_a_format_specified_as_a_proc_with_additional_options
+    assert_equal '1ter Januar 2008, 06:00 Uhr (MEZ)', @backend.localize('de', @morning, :long_ordinalized, :timezone => 'MEZ')
+  end
+
   def test_translate_given_no_format_it_does_not_fail
     assert_nothing_raised{ @backend.localize 'de', @morning }
   end
@@ -459,6 +483,14 @@ class I18nSimpleBackendLocalizeTimeTest < Test::Unit::TestCase
   def test_translate_given_a_meridian_indicator_format_it_returns_the_correct_meridian_indicator
     assert_equal 'am', @backend.localize('de', @morning, '%p')
     assert_equal 'pm', @backend.localize('de', @evening, '%p')
+  end
+
+  def test_translate_given_a_format_specified_as_a_proc
+    assert_equal '1ter Januar 2008, 06:00 Uhr', @backend.localize('de', @morning, :long_ordinalized)
+  end
+
+  def test_translate_given_a_format_specified_as_a_proc_with_additional_options
+    assert_equal '1ter Januar 2008, 06:00 Uhr (MEZ)', @backend.localize('de', @morning, :long_ordinalized, :timezone => 'MEZ')
   end
 
   def test_translate_given_no_format_it_does_not_fail

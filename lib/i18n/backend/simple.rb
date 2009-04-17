@@ -27,16 +27,10 @@ module I18n
 
         reserved = :scope, :default
         count, scope, default = options.values_at(:count, *reserved)
-        options.delete(:default)
+        default = options.delete(:default)
         values = options.reject { |name, value| reserved.include?(name) }
 
-        entry = lookup(locale, key, scope)
-        if entry.nil?
-          entry = default(locale, default, options)
-          if entry.nil?
-            raise(I18n::MissingTranslationData.new(locale, key, options))
-          end
-        end
+        entry = lookup(locale, key, scope) || resolve(locale, key, default, options) || raise(I18n::MissingTranslationData.new(locale, key, options))
         entry = pluralize(locale, entry, count)
         entry = interpolate(locale, entry, values)
         entry
@@ -45,14 +39,14 @@ module I18n
       # Acts the same as +strftime+, but returns a localized version of the
       # formatted date string. Takes a key from the date/time formats
       # translations as a format argument (<em>e.g.</em>, <tt>:short</tt> in <tt>:'date.formats'</tt>).
-      def localize(locale, object, format = :default)
+      def localize(locale, object, format = :default, options={})
         raise ArgumentError, "Object must be a Date, DateTime or Time object. #{object.inspect} given." unless object.respond_to?(:strftime)
 
-        type = object.respond_to?(:sec) ? 'time' : 'date'
-        # TODO only translate these if format is a String?
-        formats = translate(locale, :"#{type}.formats")
-        format = formats[format.to_sym] if formats && formats[format.to_sym]
-        # TODO raise exception unless format found?
+        if Symbol === format
+          type = object.respond_to?(:sec) ? 'time' : 'date'
+          format = lookup(locale, :"#{type}.formats.#{format}")
+        end
+        format = resolve(locale, object, format, options.merge(:raise => true))
         format = format.to_s.dup
 
         # TODO only translate these if the format string is actually present
@@ -108,19 +102,20 @@ module I18n
           end
         end
 
-        # Evaluates a default translation.
+        # Resolves a translation.
         # If the given default is a String it is used literally. If it is a Symbol
         # it will be translated with the given options. If it is an Array the first
-        # translation yielded will be returned.
+        # translation yielded will be returned. If it is a Proc then it is evaluated.
         #
-        # <em>I.e.</em>, <tt>default(locale, [:foo, 'default'])</tt> will return +default+ if
+        # <em>I.e.</em>, <tt>resolve(locale, [:foo, 'default'])</tt> will return +default+ if
         # <tt>translate(locale, :foo)</tt> does not yield a result.
-        def default(locale, default, options = {})
-          case default
-            when String then default
-            when Symbol then translate locale, default, options
-            when Array  then default.each do |obj|
-              result = default(locale, obj, options.dup) and return result
+        def resolve(locale, object, subject, options = {})
+          case subject
+            when String then subject
+            when Symbol then translate locale, subject, options
+            when Proc   then subject.call object, options
+            when Array  then subject.each do |subject|
+              result = resolve(locale, object, subject, options.dup) and return result
             end and nil
           end
         rescue MissingTranslationData
