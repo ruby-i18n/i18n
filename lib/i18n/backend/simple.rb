@@ -128,7 +128,7 @@ module I18n
           when Symbol
             translate(locale, subject, options)
           when Proc
-            subject.call(object, options)
+            resolve(locale, object, subject.call(object, options), options = {})
           else
             subject
           end
