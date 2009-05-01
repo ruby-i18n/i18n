@@ -3,7 +3,7 @@ require 'yaml'
 module I18n
   module Backend
     class Simple
-      INTERPOLATION_RESERVED_KEYS = %w(scope default)
+      RESERVED_KEYS = [:scope, :default]
       MATCH = /(\\\\)?\{\{([^\}]+)\}\}/
 
       # Accepts a list of paths to translation files. Loads translations from
@@ -23,15 +23,15 @@ module I18n
 
       def translate(locale, key, options = {})
         raise InvalidLocale.new(locale) if locale.nil?
-        return key.map { |k| translate(locale, k, options) } if key.is_a? Array
+        return key.map { |k| translate(locale, k, options) } if key.is_a?(Array)
 
-        reserved = :scope, :default
-        count, scope, default = options.values_at(:count, *reserved)
-        default = options.delete(:default)
-        values = options.reject { |name, value| reserved.include?(name) }
+        count, scope, default = options.values_at(:count, *RESERVED_KEYS)
+        values = options.reject { |name, value| RESERVED_KEYS.include?(name) }
 
-        entry = lookup(locale, key, scope) || resolve(locale, key, default, options) || raise(I18n::MissingTranslationData.new(locale, key, options))
-        entry = entry.call(values) if entry.is_a? Proc
+        entry = lookup(locale, key, scope)
+        entry = entry.nil? ? default(locale, key, default, options) : resolve(locale, key, entry, options)
+
+        raise(I18n::MissingTranslationData.new(locale, key, options)) if entry.nil?
         entry = pluralize(locale, entry, count)
         entry = interpolate(locale, entry, values)
         entry
@@ -47,16 +47,16 @@ module I18n
           type = object.respond_to?(:sec) ? 'time' : 'date'
           format = lookup(locale, :"#{type}.formats.#{format}")
         end
+
         format = resolve(locale, object, format, options.merge(:raise => true))
-        format = format.to_s.dup
 
         # TODO only translate these if the format string is actually present
-        # TODO check which format strings are present, then bulk translate then, then replace them
+        # TODO check which format strings are present, then bulk translate them, then replace them
         format.gsub!(/%a/, translate(locale, :"date.abbr_day_names")[object.wday])
         format.gsub!(/%A/, translate(locale, :"date.day_names")[object.wday])
         format.gsub!(/%b/, translate(locale, :"date.abbr_month_names")[object.mon])
         format.gsub!(/%B/, translate(locale, :"date.month_names")[object.mon])
-        format.gsub!(/%p/, translate(locale, :"time.#{object.hour < 12 ? :am : :pm}")) if object.respond_to? :hour
+        format.gsub!(/%p/, translate(locale, :"time.#{object.hour < 12 ? :am : :pm}")) if object.respond_to?(:hour)
         object.strftime(format)
       end
 
@@ -103,21 +103,34 @@ module I18n
           end
         end
 
+        # Evaluates defaults.
+        # If given subject is an Array, it walks the array and returns the
+        # first translation that can be resolved. Otherwise it tries to resolve
+        # the translation directly.
+        def default(locale, object, subject, options = {})
+          options = options.dup.reject { |key, value| key == :default }
+          case subject
+          when Array
+            subject.each do |subject|
+              result = resolve(locale, object, subject, options) and return result
+            end and nil
+          else
+            resolve(locale, object, subject, options)
+          end
+        end
+
         # Resolves a translation.
-        # If the given default is a String it is used literally. If it is a Symbol
-        # it will be translated with the given options. If it is an Array the first
-        # translation yielded will be returned. If it is a Proc then it is evaluated.
-        #
-        # <em>I.e.</em>, <tt>resolve(locale, [:foo, 'default'])</tt> will return +default+ if
-        # <tt>translate(locale, :foo)</tt> does not yield a result.
+        # If the given subject is a Symbol, it will be translated with the
+        # given options. If it is a Proc then it will be evaluated. All other
+        # subjects will be returned directly.
         def resolve(locale, object, subject, options = {})
           case subject
-            when String then subject
-            when Symbol then translate locale, subject, options
-            when Proc   then subject.call object, options
-            when Array  then subject.each do |subject|
-              result = resolve(locale, object, subject, options.dup) and return result
-            end and nil
+          when Symbol
+            translate(locale, subject, options)
+          when Proc
+            subject.call(object, options)
+          else
+            subject
           end
         rescue MissingTranslationData
           nil
@@ -129,7 +142,7 @@ module I18n
         # implement more flexible or complex pluralization rules.
         def pluralize(locale, entry, count)
           return entry unless entry.is_a?(Hash) and count
-          # raise InvalidPluralizationData.new(entry, count) unless entry.is_a?(Hash)
+
           key = :zero if count == 0 && entry.has_key?(:zero)
           key ||= count == 1 ? :one : :other
           raise InvalidPluralizationData.new(entry, count) unless entry.has_key?(key)
@@ -148,14 +161,14 @@ module I18n
           return string unless string.is_a?(String)
 
           string.gsub(MATCH) do
-            escaped, pattern, key = $1, $2, $2.to_sym
+            escaped, key = $1, $2.to_sym
 
             if escaped
-              pattern
-            elsif INTERPOLATION_RESERVED_KEYS.include?(pattern)
-              raise ReservedInterpolationKey.new(pattern, string)
+              key
+            elsif RESERVED_KEYS.include?(key)
+              raise ReservedInterpolationKey.new(key, string)
             elsif !values.include?(key)
-              raise MissingInterpolationArgument.new(pattern, string)
+              raise MissingInterpolationArgument.new(key, string)
             else
               values[key].to_s
             end
@@ -200,10 +213,19 @@ module I18n
         # Return a new hash with all keys and nested keys converted to symbols.
         def deep_symbolize_keys(hash)
           hash.inject({}) { |result, (key, value)|
-            value = deep_symbolize_keys(value) if value.is_a? Hash
+            value = deep_symbolize_keys(value) if value.is_a?(Hash)
             result[(key.to_sym rescue key) || key] = value
             result
           }
+        end
+
+        # Flatten the given array once
+        def flatten_once(array)
+          result = []
+          for element in array # a little faster than each
+            result.push(*element)
+          end
+          result
         end
     end
   end

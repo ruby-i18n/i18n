@@ -12,7 +12,7 @@ module I18nSimpleBackendTestSetup
   def setup_backend
     # backend_reset_translations!
     @backend = I18n::Backend::Simple.new
-    @backend.store_translations 'en', :foo => {:bar => 'bar', :baz => 'baz'}
+    @backend.store_translations :en, :foo => {:bar => 'bar', :baz => 'baz'}
     @locale_dir = File.dirname(__FILE__) + '/locale'
   end
   alias :setup :setup_backend
@@ -27,7 +27,7 @@ module I18nSimpleBackendTestSetup
   end
 
   def add_datetime_translations
-    @backend.store_translations :'de', {
+    @backend.store_translations :de, {
       :date => {
         :formats => {
           :default => "%d.%m.%Y",
@@ -155,7 +155,11 @@ class I18nSimpleBackendTranslateTest < Test::Unit::TestCase
   end
 
   def test_translate_given_a_symbol_as_a_default_translates_the_symbol
-    assert_equal 'bar', @backend.translate('en', nil, :scope => [:foo], :default => :bar)
+    assert_equal 'bar', @backend.translate('en', nil, :default => :'foo.bar')
+  end
+
+  def test_translate_default_with_scope_stays_in_scope_when_looking_up_the_symbol
+    assert_equal 'bar', @backend.translate('en', :does_not_exist, :default => :bar, :scope => :foo)
   end
 
   def test_translate_given_an_array_as_default_uses_the_first_match
@@ -196,7 +200,7 @@ class I18nSimpleBackendTranslateTest < Test::Unit::TestCase
   end
 end
 
-class I18nSimpleBackendTranslateLambdaTest < Test::Unit::TestCase
+class I18nSimpleBackendLambdaTest < Test::Unit::TestCase
   include I18nSimpleBackendTestSetup
 
   def test_translate_simple_proc
@@ -223,18 +227,23 @@ class I18nSimpleBackendTranslateLambdaTest < Test::Unit::TestCase
     assert_equal 'bar baz foo', @backend.translate('en', :lambda_for_interpolate, :foo => 'foo', :bar => 'bar', :baz => 'baz')
   end
 
-  private
-  def setup_proc_translation
-    @backend.store_translations 'en', {
-      :a_lambda => lambda { |attributes|
-        attributes.keys.sort_by(&:to_s).collect { |key| "#{key}=#{attributes[key]}"}.join(', ')
-      },
-      :lambda_for_pluralize => lambda { |attributes| attributes },
-      :lambda_for_interpolate => lambda { |attributes|
-        "{{#{attributes.keys.sort_by(&:to_s).join('}} {{')}}}"
-      }
-    }
+  def test_translate_with_proc_as_default
+    expected = 'result from lambda'
+    assert_equal expected, @backend.translate(:en, :'does not exist', :default => lambda { expected })
   end
+
+  private
+    def setup_proc_translation
+      @backend.store_translations 'en', {
+        :a_lambda => lambda { |key, values|
+          values.keys.sort_by(&:to_s).collect { |key| "#{key}=#{values[key]}"}.join(', ')
+        },
+        :lambda_for_pluralize => lambda { |key, values| values },
+        :lambda_for_interpolate => lambda { |key, values|
+          "{{#{values.keys.sort_by(&:to_s).join('}} {{')}}}"
+        }
+      }
+    end
 end
 
 class I18nSimpleBackendLookupTest < Test::Unit::TestCase
@@ -247,6 +256,40 @@ class I18nSimpleBackendLookupTest < Test::Unit::TestCase
 
   def test_lookup_given_nested_keys_looks_up_a_nested_hash_value
     assert_equal 'bar', @backend.send(:lookup, 'en', :bar, [:foo])
+  end
+end
+
+class I18nSimpleBackendTranslateLinkedTest < Test::Unit::TestCase
+  def setup
+    @backend = I18n::Backend::Simple.new
+    @backend.store_translations 'en', {
+      :foo => 'foo',
+      :bar => { :baz => 'baz', :link_to_baz => :baz, :link_to_buz => :'boz.buz' },
+      :boz => { :buz => 'buz' },
+      :link_to_foo => :foo,
+      :link_to_bar => :bar,
+      :link_to_baz => :'bar.baz'
+    }
+  end
+
+  def test_translate_calls_translate_if_resolves_to_a_symbol
+    assert_equal 'foo', @backend.translate('en', :link_to_foo)
+  end
+
+  def test_translate_calls_translate_if_resolves_to_a_symbol2
+    assert_equal('baz', @backend.translate('en', :link_to_baz))
+  end
+
+  def test_translate_calls_translate_if_resolves_to_a_symbol3
+    assert @backend.translate('en', :link_to_bar).key?(:baz)
+  end
+
+  def test_translate_calls_translate_if_resolves_to_a_symbol_with_scope_1
+    assert_equal('baz', @backend.translate('en', :link_to_baz, :scope => :bar))
+  end
+
+  def test_translate_calls_translate_if_resolves_to_a_symbol_with_scope_1
+    assert_equal('buz', @backend.translate('en', :'bar.link_to_buz'))
   end
 end
 
@@ -347,9 +390,9 @@ class I18nSimpleBackendInterpolateTest < Test::Unit::TestCase
   def test_interpolate_given_a_string_containing_a_reserved_key_raises_reserved_interpolation_key
     assert_raises(I18n::ReservedInterpolationKey) { @backend.send(:interpolate, nil, '{{default}}', {:default => nil}) }
   end
-  
+
   private
-  
+
   def euc_jp(string)
     string.encode!(Encoding::EUC_JP)
   end
@@ -613,27 +656,27 @@ end
 
 class I18nSimpleBackendReloadTranslationsTest < Test::Unit::TestCase
   include I18nSimpleBackendTestSetup
-  
+
   def setup
     @backend = I18n::Backend::Simple.new
     I18n.load_path = [File.dirname(__FILE__) + '/locale/en.yml']
     assert_nil backend_get_translations
     @backend.send :init_translations
   end
-  
+
   def teardown
     I18n.load_path = []
   end
-  
+
   def test_setup
     assert_not_nil backend_get_translations
   end
-  
+
   def test_reload_translations_unloads_translations
     @backend.reload!
     assert_nil backend_get_translations
   end
-  
+
   def test_reload_translations_uninitializes_translations
     @backend.reload!
     assert_equal @backend.initialized?, false
