@@ -188,3 +188,54 @@ class I18nSimpleBackendLocalizeTimeTest < Test::Unit::TestCase
     assert_nothing_raised{ @backend.localize 'de', @morning, '%x' }
   end
 end
+
+class I18nSimpleBackendLocalizeLambdaTest < Test::Unit::TestCase
+  $KCODE = 'u'
+  
+  include I18nSimpleBackendTestSetup
+
+  def setup
+    @backend = I18n::Backend::Simple.new
+    @time = Time.parse '2008-03-01 6:00 UTC'
+
+    @backend.store_translations 'ru', {
+      :date => {
+        :'day_names' => lambda { |key, options| 
+          (options[:format] =~ /^%A/) ? 
+          %w(Воскресенье Понедельник Вторник Среда Четверг Пятница Суббота) : 
+          %w(воскресенье понедельник вторник среда четверг пятница суббота)
+        },
+        :'abbr_day_names' => %w(Вс Пн Вт Ср Чт Пт Сб),
+        :'month_names' => lambda { |key, options| 
+          (options[:format] =~ /(%d|%e)(\s*)?(%B)/) ? 
+          %w(января февраля марта апреля мая июня июля августа сентября октября ноября декабря).unshift(nil) :
+          %w(Январь Февраль Март Апрель Май Июнь Июль Август Сентябрь Октябрь Ноябрь Декабрь).unshift(nil) 
+        },
+        :'abbr_month_names' => lambda { |key, options| 
+          (options[:format] =~ /(%d|%e)(\s*)(%b)/) ? 
+          %w(янв. февр. марта апр. мая июня июля авг. сент. окт. нояб. дек.).unshift(nil) :
+          %w(янв. февр. март апр. май июнь июль авг. сент. окт. нояб. дек.).unshift(nil)
+        },
+      },
+      :time => {
+        :am => "утра",
+        :pm => "вечера"
+      }
+    }
+  end
+
+  def test_localize_uses_lambda_day_names
+    assert_match /Суббота/, @backend.localize('ru', @time, "%A, %d %B")
+    assert_match /суббота/, @backend.localize('ru', @time, "%d %B (%A)")
+  end
+
+  def test_localize_uses_lambda_month_names
+    assert_match /марта/, @backend.localize('ru', @time, "%d %B %Y")
+    assert_match /Март/, @backend.localize('ru', @time, "%B %Y")
+  end
+  
+  def test_localize_uses_lambda_abbr_day_names
+    assert_match /марта/, @backend.localize('ru', @time, "%d %b %Y")
+    assert_match /март/, @backend.localize('ru', @time, "%b %Y")
+  end
+end
