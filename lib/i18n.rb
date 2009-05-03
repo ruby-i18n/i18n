@@ -12,6 +12,7 @@ module I18n
   @@backend = nil
   @@load_path = nil
   @@default_locale = :'en'
+  @@default_separator = '.'
   @@exception_handler = :default_exception_handler
 
   class << self
@@ -48,6 +49,16 @@ module I18n
     # Returns an array of locales for which translations are available
     def available_locales
       backend.available_locales
+    end
+
+    # Returns the current default scope separator. Defaults to '.'
+    def default_separator
+      @@default_separator
+    end
+
+    # Sets the current default scope separator.
+    def default_separator=(separator)
+      @@default_separator = separator
     end
 
     # Sets the exception handler.
@@ -190,9 +201,9 @@ module I18n
     # Merges the given locale, key and scope into a single array of keys.
     # Splits keys that contain dots into multiple keys. Makes sure all
     # keys are Symbols.
-    def normalize_translation_keys(locale, key, scope)
-      keys = [locale] + Array(scope) + [key]
-      keys = keys.map { |k| k.to_s.split(/\./) }
+    def normalize_translation_keys(locale, key, scope, separator = nil)
+      keys = [locale] + Array(scope) + Array(key)
+      keys = keys.map { |k| k.to_s.split(separator || I18n.default_separator) }
       keys.flatten.map { |k| k.to_sym }
     end
   end

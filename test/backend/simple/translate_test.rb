@@ -5,7 +5,7 @@ class I18nSimpleBackendTranslateTest < Test::Unit::TestCase
   include I18nSimpleBackendTestSetup
 
   def test_translate_calls_lookup_with_locale_given
-    @backend.expects(:lookup).with('de', :bar, [:foo]).returns 'bar'
+    @backend.expects(:lookup).with('de', :bar, [:foo], nil).returns 'bar'
     @backend.translate 'de', :bar, :scope => [:foo]
   end
 

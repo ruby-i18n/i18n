@@ -23,7 +23,7 @@ class I18nTest < Test::Unit::TestCase
   end
 
   def test_can_set_backend
-    assert_nothing_raised{ I18n.backend = self }
+    assert_nothing_raised { I18n.backend = self }
     assert_equal self, I18n.backend
     I18n.backend = I18n::Backend::Simple.new
   end
@@ -33,7 +33,7 @@ class I18nTest < Test::Unit::TestCase
   end
 
   def test_can_set_default_locale
-    assert_nothing_raised{ I18n.default_locale = 'de' }
+    assert_nothing_raised { I18n.default_locale = 'de' }
     assert_equal 'de', I18n.default_locale
     I18n.default_locale = 'en'
   end
@@ -43,14 +43,35 @@ class I18nTest < Test::Unit::TestCase
   end
 
   def test_can_set_locale_to_thread_current
-    assert_nothing_raised{ I18n.locale = 'de' }
+    assert_nothing_raised { I18n.locale = 'de' }
     assert_equal 'de', I18n.locale
     assert_equal 'de', Thread.current[:locale]
     I18n.locale = 'en'
   end
 
+  def test_defaults_to_dot_as_separator
+    assert_equal '.', I18n.default_separator
+  end
+
+  def test_can_set_default_separator
+    assert_nothing_raised { I18n.default_separator = "\001" }
+    I18n.default_separator = '.' # revert it
+  end
+
+  def test_normalize_keys
+    assert_equal [:en, :foo, :bar], I18n.send(:normalize_translation_keys, :en, :bar, :foo)
+    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.send(:normalize_translation_keys, :en, :'baz.buz', :'foo.bar')
+    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.send(:normalize_translation_keys, :en, 'baz.buz', 'foo.bar')
+    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.send(:normalize_translation_keys, :en, %w(baz buz), %w(foo bar))
+    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.send(:normalize_translation_keys, :en, [:baz, :buz], [:foo, :bar])
+  end
+
+  def test_uses_passed_separator_to_normalize_keys
+    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.send(:normalize_translation_keys, :en, :'baz|buz', :'foo|bar', '|')
+  end
+
   def test_can_set_exception_handler
-    assert_nothing_raised{ I18n.exception_handler = :custom_exception_handler }
+    assert_nothing_raised { I18n.exception_handler = :custom_exception_handler }
     I18n.exception_handler = :default_exception_handler # revert it
   end
 

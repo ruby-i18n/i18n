@@ -3,7 +3,7 @@ require 'yaml'
 module I18n
   module Backend
     class Simple
-      RESERVED_KEYS = [:scope, :default]
+      RESERVED_KEYS = [:scope, :default, :separator]
       MATCH = /(\\\\)?\{\{([^\}]+)\}\}/
 
       # Accepts a list of paths to translation files. Loads translations from
@@ -25,10 +25,10 @@ module I18n
         raise InvalidLocale.new(locale) if locale.nil?
         return key.map { |k| translate(locale, k, options) } if key.is_a?(Array)
 
-        count, scope, default = options.values_at(:count, *RESERVED_KEYS)
+        count, scope, default, separator = options.values_at(:count, *RESERVED_KEYS)
         values = options.reject { |name, value| RESERVED_KEYS.include?(name) }
 
-        entry = lookup(locale, key, scope)
+        entry = lookup(locale, key, scope, separator)
         entry = entry.nil? ? default(locale, key, default, options) : resolve(locale, key, entry, options)
 
         raise(I18n::MissingTranslationData.new(locale, key, options)) if entry.nil?
@@ -92,10 +92,10 @@ module I18n
         # nested translations hash. Splits keys or scopes containing dots
         # into multiple keys, i.e. <tt>currency.format</tt> is regarded the same as
         # <tt>%w(currency format)</tt>.
-        def lookup(locale, key, scope = [])
+        def lookup(locale, key, scope = [], separator = nil)
           return unless key
           init_translations unless initialized?
-          keys = I18n.send(:normalize_translation_keys, locale, key, scope)
+          keys = I18n.send(:normalize_translation_keys, locale, key, scope, separator)
           keys.inject(translations) do |result, k|
             if (x = result[k.to_sym]).nil?
               return nil

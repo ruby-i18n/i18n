@@ -33,12 +33,8 @@ class I18nSimpleBackendPluralizeTest < Test::Unit::TestCase
     assert_raises(I18n::InvalidPluralizationData){ @backend.send(:pluralize, nil, {:one => 'bar'}, 2) }
   end
 
-  # def test_interpolate_given_a_string_raises_invalid_pluralization_data
-  #   assert_raises(I18n::InvalidPluralizationData){ @backend.send(:pluralize, nil, 'bar', 2) }
-  # end
-  #
-  # def test_interpolate_given_an_array_raises_invalid_pluralization_data
-  #   assert_raises(I18n::InvalidPluralizationData){ @backend.send(:pluralize, nil, ['bar'], 2) }
-  # end
+  def test_pluralize_given_pluralization_data_as_default
+    assert_equal 'bars', I18n.t(:bar, :count => 2, :default => { :one => 'bar', :other => 'bars' })
+  end
 end
 
