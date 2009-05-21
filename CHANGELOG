@@ -1,5 +1,13 @@
 h1. Changelog
 
+h2. Master
+
+* "Allow configuring the default scope separator, allow to pass a custom scope separator (e.g. I18n.t(:'foo|bar', :separator => '|') (API addition)":http://github.com/svenfuchs/i18n/commit/5b75bfbc348061adc11e3790187a187275bfd471
+* "Pass :format option to #translate for #localize more useful lambda support":http://github.com/svenfuchs/i18n/commit/e277711b3c844fe7589b8d3f9af0f7d1b969a273
+* "Refactor Simple backend #resolve to #default and #resolve for more consistency. Now allows to pass lambdas as defaults and re-resolve Symbols":http://github.com/svenfuchs/i18n/commit/8c4ce3d923ce5fa73e973fe28217e18165549aba
+* "Add lambda support to #translate (API addition)":http://github.com/svenfuchs/i18n/commit/c90e62d8f7d3d5b78f34cfe328d871b58884f115
+* "Add lambda support to #localize (API addition)":http://github.com/svenfuchs/i18n/commit/9d390afcf33f3f469bb95e6888147152f6cc7442
+
 h2. 0.1.3 (2009-02-27)
 
 * "Remove unnecessary string encoding handling in the i18n simple backend which made the backend break on Ruby 1.9":http://github.com/svenfuchs/i18n/commit/4c3a970783861a94f2e89f46714fb3434e4f4f8d
@@ -26,16 +34,19 @@ h2. 0.1.0 (2008-10-25)
 * "Fix default arrays of non-existant keys returning the default array":http://github.com/svenfuchs/i18n/commit/6c04ca86c87f97dc78f07c2a4023644e5ba8b839
 
 h2. Initial implementation (June/July 2008)
-* Initial implementation by "Sven Fuchs":http://www.workingwithrails.com/person/9963-sven-fuchs
-* Based on previous discussion/consensus of the rails-i18n team (alphabetical order):
-** "Matt Aimonetti":http://railsontherun.com
-** "Sven Fuchs":http://www.workingwithrails.com/person/9963-sven-fuchs
-** "Joshua Harvey":http://www.workingwithrails.com/person/759-joshua-harvey
-** "Saimon Moore":http://saimonmoore.net
-** "Stephan Soller":http://www.arkanis-development.de
-* More information:
-** "Homepage":http://rails-i18n.org
-** "Wiki":http://rails-i18n.org/wiki
-** "Mailinglist":http://groups.google.com/group/rails-i18n
-** "About the project/history":http://www.artweb-design.de/2008/7/18/finally-ruby-on-rails-gets-internationalized
-** "Initial API Intro":http://www.artweb-design.de/2008/7/18/the-ruby-on-rails-i18n-core-api
+
+Initial implementation by "Sven Fuchs":http://www.workingwithrails.com/person/9963-sven-fuchs based on previous discussion/consensus of the rails-i18n team (alphabetical order) and many others:
+
+* "Matt Aimonetti":http://railsontherun.com
+* "Sven Fuchs":http://www.workingwithrails.com/person/9963-sven-fuchs
+* "Joshua Harvey":http://www.workingwithrails.com/person/759-joshua-harvey
+* "Saimon Moore":http://saimonmoore.net
+* "Stephan Soller":http://www.arkanis-development.de
+
+h2. More information
+
+* "Homepage":http://rails-i18n.org
+* "Wiki":http://rails-i18n.org/wiki
+* "Mailinglist":http://groups.google.com/group/rails-i18n
+* "About the project/history":http://www.artweb-design.de/2008/7/18/finally-ruby-on-rails-gets-internationalized
+* "Initial API Intro":http://www.artweb-design.de/2008/7/18/the-ruby-on-rails-i18n-core-api
