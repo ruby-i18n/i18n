@@ -161,7 +161,7 @@ module I18n
     # or <tt>default</tt> if no translations for <tt>:foo</tt> and <tt>:bar</tt> were found.
     #   I18n.t :foo, :default => [:bar, 'default']
     #
-    # <b>BULK LOOKUP</b>
+    # *BULK LOOKUP*
     #
     # This returns an array with the translations for <tt>:foo</tt> and <tt>:bar</tt>.
     #   I18n.t [:foo, :bar]
@@ -171,6 +171,22 @@ module I18n
     #
     # Which is the same as using a scope option:
     #   I18n.t [:foo, :bar], :scope => :baz
+    #
+    # *LAMBDAS*
+    #
+    # Both translations and defaults can be given as Ruby lambdas. Lambdas will be
+    # called and passed the key and options. 
+    #
+    # E.g. assuming the key <tt>:salutation</tt> resolves to:
+    #   lambda { |key, options| options[:gender] == 'm' ? "Mr. {{options[:name]}}" : "Mrs. {{options[:name]}}" }
+    #
+    # Then <tt>I18n.t(:salutation, :gender => 'w', :name => 'Smith') will result in "Mrs. Smith".
+    # 
+    # It is recommended to use/implement lambdas in an "idempotent" way. E.g. when
+    # a cache layer is put in front of I18n.translate it will generate a cache key
+    # from the argument values passed to #translate. Therefor your lambdas should
+    # always return the same translations/values per unique combination of argument
+    # values.
     def translate(key, options = {})
       locale = options.delete(:locale) || I18n.locale
       backend.translate(locale, key, options)
