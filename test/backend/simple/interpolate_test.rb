@@ -8,6 +8,10 @@ class I18nSimpleBackendInterpolateTest < Test::Unit::TestCase
     assert_equal 'Hi David!', @backend.send(:interpolate, nil, 'Hi {{name}}!', :name => 'David')
   end
 
+  def test_interpolate_with_ruby_1_9_syntax
+    assert_equal 'Hi David!', @backend.send(:interpolate, nil, 'Hi %{name}!', :name => 'David')
+  end
+
   def test_interpolate_given_a_value_hash_interpolates_into_unicode_string
     assert_equal 'Häi David!', @backend.send(:interpolate, nil, 'Häi {{name}}!', :name => 'David')
   end
@@ -50,8 +54,8 @@ class I18nSimpleBackendInterpolateTest < Test::Unit::TestCase
     assert_equal 'Hi !', @backend.send(:interpolate, nil, 'Hi {{name}}!', {:name => nil})
   end
 
-  def test_interpolate_given_an_empty_values_hash_raises_missing_interpolation_argument
-    assert_raises(I18n::MissingInterpolationArgument) { @backend.send(:interpolate, nil, 'Hi {{name}}!', {}) }
+  def test_interpolate_given_an_empty_values_hash
+    assert_equal 'Hi {{name}}!', @backend.send(:interpolate, nil, 'Hi {{name}}!', {})
   end
 
   def test_interpolate_given_a_string_containing_a_reserved_key_raises_reserved_interpolation_key

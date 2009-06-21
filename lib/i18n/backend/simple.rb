@@ -33,7 +33,7 @@ module I18n
 
         raise(I18n::MissingTranslationData.new(locale, key, options)) if entry.nil?
         entry = pluralize(locale, entry, count)
-        entry = interpolate(locale, entry, values)
+        entry = interpolate(locale, entry, values) if values.size > 0
         entry
       end
 
@@ -170,11 +170,11 @@ module I18n
             elsif RESERVED_KEYS.include?(key)
               raise ReservedInterpolationKey.new(key, string)
             elsif !values.include?(key)
-              raise MissingInterpolationArgument.new(key, string)
+              "{{#{key}}}"
             else
               values[key].to_s
             end
-          end
+          end % values
         end
 
         # Loads a single translations file by delegating to #load_rb or
