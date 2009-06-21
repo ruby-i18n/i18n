@@ -162,7 +162,7 @@ module I18n
         def interpolate(locale, string, values = {})
           return string unless string.is_a?(String)
 
-          string.gsub!(MATCH) do
+          string.gsub(MATCH) do
             escaped, key = $1, $2.to_sym
 
             if escaped
@@ -175,7 +175,6 @@ module I18n
               values[key].to_s
             end
           end
-          string
         end
 
         # Loads a single translations file by delegating to #load_rb or
