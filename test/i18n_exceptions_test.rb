@@ -1,9 +1,4 @@
-$:.unshift "lib"
-
-require 'rubygems'
-require 'test/unit'
-require 'mocha'
-require 'i18n'
+require File.expand_path(File.dirname(__FILE__) + '/test_helper')
 
 class I18nExceptionsTest < Test::Unit::TestCase
   def test_invalid_locale_stores_locale
