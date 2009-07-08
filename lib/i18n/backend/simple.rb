@@ -33,7 +33,7 @@ module I18n
 
         raise(I18n::MissingTranslationData.new(locale, key, options)) if entry.nil?
         entry = pluralize(locale, entry, count)
-        entry = interpolate(locale, entry, values) if values.size > 0
+        entry = interpolate(locale, entry, values)
         entry
       end
 
@@ -160,7 +160,7 @@ module I18n
         # the <tt>{{...}}</tt> key in a string (once for the string and once for the
         # interpolation).
         def interpolate(locale, string, values = {})
-          return string unless string.is_a?(String)
+          return string unless string.is_a?(String) && !values.empty?
 
           string.gsub(MATCH) do
             escaped, key = $1, $2.to_sym
