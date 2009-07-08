@@ -22,7 +22,7 @@ class String
   alias :bytesize :size unless instance_methods.find {|m| m.to_s == 'bytesize'}
   alias :interpolate_without_ruby_19_syntax :% # :nodoc:
 
-  INTERPOLATION_PATTERNS = Regexp.union(
+  INTERPOLATION_PATTERN = Regexp.union(
     /%%/,
     /%\{(\w+)\}/,
     /%<(\w+)>(.*?\d*\.?\d*[bBdiouxXeEfgGcps])/
@@ -54,7 +54,7 @@ class String
   #         "%<age>d, %<weight>.1f" % {:age => 10, :weight => 43.4}
   def %(args)
     if args.kind_of?(Hash)
-      dup.gsub(INTERPOLATION_PATTERNS) do |match|
+      dup.gsub(INTERPOLATION_PATTERN) do |match|
         if match == '%%'
           '%'
         else
