@@ -5,7 +5,7 @@ require 'rubygems'
 require 'test/unit'
 require 'mocha'
 require 'i18n'
-require 'active_support'
 require 'time'
 require 'yaml'
 
+require File.dirname(__FILE__) + '/with_options'

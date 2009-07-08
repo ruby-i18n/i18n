@@ -4,7 +4,6 @@ require 'rubygems'
 require 'test/unit'
 require 'mocha'
 require 'i18n'
-require 'active_support'
 
 class I18nTest < Test::Unit::TestCase
   def setup
