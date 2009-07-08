@@ -7,11 +7,11 @@
   license terms as Ruby.
 =end
 
-class KeyError < Exception
+class KeyError < IndexError
   def initialize(message = nil)
     super(message || "key not found")
   end
-end
+end unless defined?(KeyError)
 
 # Extension for String class. This feature is included in Ruby 1.9 or later but not occur TypeError.
 #

@@ -1,3 +1,9 @@
+class KeyError < IndexError
+  def initialize(message = nil)
+    super(message || "key not found")
+  end
+end unless defined?(KeyError)
+
 module I18n
   class ArgumentError < ::ArgumentError; end
 
