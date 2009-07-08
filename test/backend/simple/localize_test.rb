@@ -190,7 +190,7 @@ class I18nSimpleBackendLocalizeTimeTest < Test::Unit::TestCase
 end
 
 class I18nSimpleBackendLocalizeLambdaTest < Test::Unit::TestCase
-  $KCODE = 'u'
+  $KCODE = 'u' unless RUBY_VERSION >= '1.9'
   
   include I18nSimpleBackendTestSetup
 
