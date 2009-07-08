@@ -7,23 +7,25 @@
   license terms as Ruby.
 =end
 
+class KeyError < Exception
+  def initialize(message = nil)
+    super(message || "key not found")
+  end
+end
+
 # Extension for String class. This feature is included in Ruby 1.9 or later but not occur TypeError.
 #
 # String#% method which accept "named argument". The translator can know 
 # the meaning of the msgids using "named argument" instead of %s/%d style.
 class String
+  # For older ruby versions (such as ruby-1.8.5)
+  alias :bytesize :size unless instance_methods.find {|m| m.to_s == 'bytesize'}
+  alias :interpolate_without_ruby_19_syntax :% # :nodoc:
 
-  unless instance_methods.find {|m| m.to_s == 'bytesize'} 
-    # For older ruby (such as ruby-1.8.5)
-    alias :bytesize :size
-  end
-
-  alias :_old_format_m :% # :nodoc:
-
-  PERCENT_MATCH_RE = Regexp.union(
-      /%%/,
-      /%\{(\w+)\}/,
-      /%<(\w+)>(.*?\d*\.?\d*[bBdiouxXeEfgGcps])/
+  INTERPOLATION_PATTERNS = Regexp.union(
+    /%%/,
+    /%\{(\w+)\}/,
+    /%<(\w+)>(.*?\d*\.?\d*[bBdiouxXeEfgGcps])/
   )
 
   # call-seq:
@@ -52,23 +54,19 @@ class String
   #         "%<age>d, %<weight>.1f" % {:age => 10, :weight => 43.4}
   def %(args)
     if args.kind_of?(Hash)
-      ret = dup
-      ret.gsub!(PERCENT_MATCH_RE) {|match|
+      dup.gsub(INTERPOLATION_PATTERNS) do |match|
         if match == '%%'
           '%'
-        elsif $1
-          key = $1.to_sym
-          args.has_key?(key) ? args[key] : match
-        elsif $2
-          key = $2.to_sym
-          args.has_key?(key) ? sprintf("%#{$3}", args[key]) : match
+        else
+          key = ($1 || $2).to_sym
+          raise KeyError unless args.has_key?(key)
+          $3 ? sprintf("%#{$3}", args[key]) : args[key]
         end
-      }
-      ret
+      end
     else
       ret = gsub(/%([{<])/, '%%\1')
       begin
-        ret._old_format_m(args)
+        ret.send :'interpolate_without_ruby_19_syntax', args
       rescue ArgumentError => e
         if $DEBUG
           $stderr.puts "  The string:#{ret}"
