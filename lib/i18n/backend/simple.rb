@@ -4,7 +4,7 @@ module I18n
   module Backend
     class Simple
       RESERVED_KEYS = [:scope, :default, :separator]
-      MATCH = /(\\\\)?\{\{([^\}]+)\}\}/
+      INTERPOLATION_SYNTAX_PATTERN = /(\\\\)?\{\{([^\}]+)\}\}/
 
       # Accepts a list of paths to translation files. Loads translations from
       # plain Ruby (*.rb) or YAML files (*.yml). See #load_rb and #load_yml
@@ -162,19 +162,20 @@ module I18n
         def interpolate(locale, string, values = {})
           return string unless string.is_a?(String) && !values.empty?
 
-          string.gsub(MATCH) do
+          string.gsub(INTERPOLATION_SYNTAX_PATTERN) do
             escaped, key = $1, $2.to_sym
 
             if escaped
               key
             elsif RESERVED_KEYS.include?(key)
               raise ReservedInterpolationKey.new(key, string)
-            elsif !values.include?(key)
-              "{{#{key}}}"
             else
-              values[key].to_s
+              "%{#{key}}"
             end
           end % values
+
+        rescue KeyError => e
+          raise MissingInterpolationArgument.new(values, string)
         end
 
         # Loads a single translations file by delegating to #load_rb or

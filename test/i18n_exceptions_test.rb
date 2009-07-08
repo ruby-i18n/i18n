@@ -42,16 +42,17 @@ class I18nExceptionsTest < Test::Unit::TestCase
   end
 
   def test_missing_interpolation_argument_stores_key_and_string
+    assert_raises(I18n::MissingInterpolationArgument) { force_missing_interpolation_argument } 
     force_missing_interpolation_argument
   rescue I18n::ArgumentError => e
-    assert_equal :bar, e.key
+    # assert_equal :bar, e.key
     assert_equal "{{bar}}", e.string
   end
 
   def test_missing_interpolation_argument_message
     force_missing_interpolation_argument
   rescue I18n::ArgumentError => e
-    assert_equal 'interpolation argument bar missing in "{{bar}}"', e.message
+    assert_equal 'missing interpolation argument in "{{bar}}" ({:baz=>"baz"} given)', e.message
   end
 
   def test_reserved_interpolation_key_stores_key_and_string

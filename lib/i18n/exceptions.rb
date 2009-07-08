@@ -34,10 +34,10 @@ module I18n
   end
 
   class MissingInterpolationArgument < ArgumentError
-    attr_reader :key, :string
-    def initialize(key, string)
-      @key, @string = key, string
-      super "interpolation argument #{key} missing in #{string.inspect}"
+    attr_reader :values, :string
+    def initialize(values, string)
+      @values, @string = values, string
+      super "missing interpolation argument in #{string.inspect} (#{values.inspect} given)"
     end
   end
 
