@@ -7,7 +7,7 @@
 # License::   MIT
 require 'i18n/backend/simple'
 require 'i18n/exceptions'
-require 'i18n/string' if RUBY_VERSION < '1.9'
+require 'i18n/string'
 
 module I18n
   @@backend = nil
