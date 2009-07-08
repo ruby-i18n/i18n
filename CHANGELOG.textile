@@ -2,6 +2,7 @@ h1. Changelog
 
 h2. Master
 
+* "Allow using Ruby 1.9 syntax for string interpolation (API addition)":http://github.com/svenfuchs/i18n/commit/c6e0b06d512f2af57199a843a1d8a40241b32861
 * "Allow configuring the default scope separator, allow to pass a custom scope separator (e.g. I18n.t(:'foo|bar', :separator => '|') (API addition)":http://github.com/svenfuchs/i18n/commit/5b75bfbc348061adc11e3790187a187275bfd471
 * "Pass :format option to #translate for #localize more useful lambda support":http://github.com/svenfuchs/i18n/commit/e277711b3c844fe7589b8d3f9af0f7d1b969a273
 * "Refactor Simple backend #resolve to #default and #resolve for more consistency. Now allows to pass lambdas as defaults and re-resolve Symbols":http://github.com/svenfuchs/i18n/commit/8c4ce3d923ce5fa73e973fe28217e18165549aba
