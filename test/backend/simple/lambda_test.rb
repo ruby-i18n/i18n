@@ -30,7 +30,7 @@ class I18nSimpleBackendLambdaTest < Test::Unit::TestCase
 
   def test_translate_with_proc_as_default
     expected = 'result from lambda'
-    assert_equal expected, @backend.translate(:en, :'does not exist', :default => lambda { expected })
+    assert_equal expected, @backend.translate(:en, :'does not exist', :default => lambda { |key, values| expected })
   end
 
   private
