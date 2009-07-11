@@ -188,8 +188,10 @@ module I18n
     # from the argument values passed to #translate. Therefor your lambdas should
     # always return the same translations/values per unique combination of argument
     # values.
-    def translate(key, options = {})
-      locale = options.delete(:locale) || I18n.locale
+    def translate(*args)
+      options = args.last.is_a?(Hash) ? args.pop : {}
+      key     = args.shift
+      locale  = options.delete(:locale) || I18n.locale
       backend.translate(locale, key, options)
     rescue I18n::ArgumentError => e
       raise e if options[:raise]
