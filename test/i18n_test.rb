@@ -100,7 +100,7 @@ class I18nTest < Test::Unit::TestCase
   end
 
   def test_translate_with_array_as_scope_works
-    assert_equal ".", I18n.t(:separator, :scope => ['currency.format'])
+    assert_equal ".", I18n.t(:separator, :scope => %w(currency format))
   end
 
   def test_translate_with_array_containing_dot_separated_strings_as_scope_works
