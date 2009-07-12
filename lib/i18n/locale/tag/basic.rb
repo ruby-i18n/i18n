@@ -1,0 +1,39 @@
+require 'i18n/locale/tag/parents'
+
+module I18n
+  module Locale
+    module Tag
+      class Basic
+        class << self
+          def tag(tag)
+            new(tag)
+          end
+        end
+
+        include Parents
+
+        attr_reader :tag
+
+        def initialize(*tag)
+          @tag = tag.join('-').to_sym
+        end
+
+        def subtags
+          @subtags = tag.to_s.split('-').map { |subtag| subtag.to_s }
+        end
+
+        def to_sym
+          tag
+        end
+
+        def to_s
+          tag.to_s
+        end
+
+        def to_a
+          subtags
+        end
+      end
+    end
+  end
+end

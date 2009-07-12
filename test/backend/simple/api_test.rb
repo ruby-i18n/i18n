@@ -1,12 +1,12 @@
 # encoding: utf-8
 require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 
-class I18nSimpleBackendApiTest < Test::Unit::TestCase
+class I18nSimpleBackendApiBasicsTest < Test::Unit::TestCase
   include Tests::Backend::Simple::Setup::Base
   include Tests::Backend::Api::Basics
 end
 
-class I18nSimpleBackendTranslateTest < Test::Unit::TestCase
+class I18nSimpleBackendApiTranslateTest < Test::Unit::TestCase
   include Tests::Backend::Simple::Setup::Base
   include Tests::Backend::Api::Translation
 
@@ -33,7 +33,7 @@ class I18nSimpleBackendTranslateTest < Test::Unit::TestCase
   end
 end
 
-class I18nSimpleBackendInterpolateTest < Test::Unit::TestCase
+class I18nSimpleBackendApiInterpolateTest < Test::Unit::TestCase
   include Tests::Backend::Simple::Setup::Base
   include Tests::Backend::Api::Interpolation
 
@@ -48,37 +48,37 @@ class I18nSimpleBackendInterpolateTest < Test::Unit::TestCase
   end
 end
 
-class I18nSimpleBackendLambdaTest < Test::Unit::TestCase
+class I18nSimpleBackendApiLambdaTest < Test::Unit::TestCase
   include Tests::Backend::Simple::Setup::Base
   include Tests::Backend::Api::Lambda
 end
 
-class I18nSimpleBackendTranslateLinkedTest < Test::Unit::TestCase
+class I18nSimpleBackendApiTranslateLinkedTest < Test::Unit::TestCase
   include Tests::Backend::Simple::Setup::Base
   include Tests::Backend::Api::Link
 end
 
-class I18nSimpleBackendPluralizationTest < Test::Unit::TestCase
+class I18nSimpleBackendApiPluralizationTest < Test::Unit::TestCase
   include Tests::Backend::Simple::Setup::Base
   include Tests::Backend::Api::Pluralization
 end
 
-class I18nSimpleBackendLocalizeDateTest < Test::Unit::TestCase
+class I18nSimpleBackendApiLocalizeDateTest < Test::Unit::TestCase
   include Tests::Backend::Simple::Setup::Localization
   include Tests::Backend::Api::Localization::Date
 end
 
-class I18nSimpleBackendLocalizeDateTimeTest < Test::Unit::TestCase
+class I18nSimpleBackendApiLocalizeDateTimeTest < Test::Unit::TestCase
   include Tests::Backend::Simple::Setup::Localization
   include Tests::Backend::Api::Localization::DateTime
 end
 
-class I18nSimpleBackendLocalizeTimeTest < Test::Unit::TestCase
+class I18nSimpleBackendApiLocalizeTimeTest < Test::Unit::TestCase
   include Tests::Backend::Simple::Setup::Localization
   include Tests::Backend::Api::Localization::Time
 end
 
-class I18nSimpleBackendLocalizeLambdaTest < Test::Unit::TestCase
+class I18nSimpleBackendApiLocalizeLambdaTest < Test::Unit::TestCase
   include Tests::Backend::Simple::Setup::Localization
   include Tests::Backend::Api::Localization::Lambda
 end

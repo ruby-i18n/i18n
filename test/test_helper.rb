@@ -9,8 +9,8 @@ require 'time'
 require 'yaml'
 
 require File.dirname(__FILE__) + '/with_options'
-require File.dirname(__FILE__) + '/backend/simple/setup/base'
-require File.dirname(__FILE__) + '/backend/simple/setup/localization'
+require File.dirname(__FILE__) + '/backend/simple/setup'
+require File.dirname(__FILE__) + '/backend/fallbacks/setup'
 
 Dir[File.dirname(__FILE__) + '/api/**/*.rb'].each do |filename|
   require filename
@@ -18,7 +18,12 @@ end
 
 $KCODE = 'u' unless RUBY_VERSION >= '1.9'
   
+
 class Test::Unit::TestCase
+  def self.test(name, &block)
+    define_method("test: " + name, &block)
+  end
+
   def euc_jp(string)
     string.encode!(Encoding::EUC_JP)
   end
