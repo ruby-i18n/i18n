@@ -23,13 +23,13 @@ class I18nTest < Test::Unit::TestCase
   end
 
   def test_uses_en_us_as_default_locale_by_default
-    assert_equal 'en', I18n.default_locale
+    assert_equal :en, I18n.default_locale
   end
 
   def test_can_set_default_locale
     assert_nothing_raised { I18n.default_locale = 'de' }
-    assert_equal 'de', I18n.default_locale
-    I18n.default_locale = 'en'
+    assert_equal :de, I18n.default_locale
+    I18n.default_locale = :en
   end
 
   def test_uses_default_locale_as_locale_by_default
@@ -38,9 +38,9 @@ class I18nTest < Test::Unit::TestCase
 
   def test_can_set_locale_to_thread_current
     assert_nothing_raised { I18n.locale = 'de' }
-    assert_equal 'de', I18n.locale
-    assert_equal 'de', Thread.current[:locale]
-    I18n.locale = 'en'
+    assert_equal :de, I18n.locale
+    assert_equal :de, Thread.current[:locale]
+    I18n.locale = :en
   end
 
   def test_defaults_to_dot_as_separator
@@ -87,7 +87,7 @@ class I18nTest < Test::Unit::TestCase
   end
 
   def test_translate_given_no_locale_uses_i18n_locale
-    I18n.backend.expects(:translate).with 'en', :foo, {}
+    I18n.backend.expects(:translate).with :en, :foo, {}
     I18n.translate :foo
   end
 

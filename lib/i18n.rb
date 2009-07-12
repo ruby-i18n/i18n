@@ -12,7 +12,7 @@ require 'i18n/string'
 module I18n
   @@backend = nil
   @@load_path = nil
-  @@default_locale = :'en'
+  @@default_locale = :en
   @@default_separator = '.'
   @@exception_handler = :default_exception_handler
 
@@ -34,7 +34,7 @@ module I18n
 
     # Sets the current default locale. Used to set a custom default locale.
     def default_locale=(locale)
-      @@default_locale = locale
+      @@default_locale = locale.to_sym rescue nil
     end
 
     # Returns the current locale. Defaults to I18n.default_locale.
@@ -44,7 +44,7 @@ module I18n
 
     # Sets the current locale pseudo-globally, i.e. in the Thread.current hash.
     def locale=(locale)
-      Thread.current[:locale] = locale
+      Thread.current[:locale] = locale.to_sym rescue nil
     end
 
     # Returns an array of locales for which translations are available
