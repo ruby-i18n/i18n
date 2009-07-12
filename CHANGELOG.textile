@@ -4,10 +4,10 @@ h2. master
 
 * (no changes)
 
-h2. 0.2.0 (2009-07-12, "fb9819c7efd3713c178c47b0722d0b39fff14131":http://github.com/svenfuchs/i18n/commit/fb9819c7efd3713c178c47b0722d0b39fff14131)
+h2. 0.2.0 (2009-07-12)
 
 * "Allow using Ruby 1.9 syntax for string interpolation (API addition)":http://github.com/svenfuchs/i18n/commit/c6e0b06d512f2af57199a843a1d8a40241b32861
-* "Allow configuring the default scope separator, allow to pass a custom scope separator (e.g. I18n.t(:'foo|bar', :separator => '|') (API addition)":http://github.com/svenfuchs/i18n/commit/5b75bfbc348061adc11e3790187a187275bfd471
+* "Allow configuring the default scope separator, allow to pass a custom scope separator(API addition)":http://github.com/svenfuchs/i18n/commit/5b75bfbc348061adc11e3790187a187275bfd471 (e.g. I18n.t(:'foo|bar', :separator => '|') 
 * "Pass :format option to #translate for #localize more useful lambda support":http://github.com/svenfuchs/i18n/commit/e277711b3c844fe7589b8d3f9af0f7d1b969a273
 * "Refactor Simple backend #resolve to #default and #resolve for more consistency. Now allows to pass lambdas as defaults and re-resolve Symbols":http://github.com/svenfuchs/i18n/commit/8c4ce3d923ce5fa73e973fe28217e18165549aba
 * "Add lambda support to #translate (API addition)":http://github.com/svenfuchs/i18n/commit/c90e62d8f7d3d5b78f34cfe328d871b58884f115
