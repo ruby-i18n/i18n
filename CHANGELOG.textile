@@ -1,6 +1,10 @@
 h1. Changelog
 
-h2. Master
+h2. master
+
+* (no changes)
+
+h2. 0.2.0 (2009-07-12, "fb9819c7efd3713c178c47b0722d0b39fff14131":http://github.com/svenfuchs/i18n/commit/fb9819c7efd3713c178c47b0722d0b39fff14131)
 
 * "Allow using Ruby 1.9 syntax for string interpolation (API addition)":http://github.com/svenfuchs/i18n/commit/c6e0b06d512f2af57199a843a1d8a40241b32861
 * "Allow configuring the default scope separator, allow to pass a custom scope separator (e.g. I18n.t(:'foo|bar', :separator => '|') (API addition)":http://github.com/svenfuchs/i18n/commit/5b75bfbc348061adc11e3790187a187275bfd471
