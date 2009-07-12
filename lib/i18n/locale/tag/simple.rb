@@ -3,7 +3,7 @@ require 'i18n/locale/tag/parents'
 module I18n
   module Locale
     module Tag
-      class Basic
+      class Simple
         class << self
           def tag(tag)
             new(tag)

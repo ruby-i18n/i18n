@@ -93,24 +93,24 @@ class I18nFallbacksComputationTest < Test::Unit::TestCase
   # Finnland also speak Swedish and Finnish.
 
   test "with a Sami mapping defined it returns [:sms-FI, :sms, :se-FI, :se, :fi-FI, :fi, :en-US] for :sms-FI" do
-    @fallbacks.map :sms => [:"se-FI", :"fi-FI"]
+    @fallbacks.map(:sms => [:"se-FI", :"fi-FI"])
     assert_equal [:"sms-FI", :sms, :"se-FI", :se, :"fi-FI", :fi, :"en-US", :en], @fallbacks[:"sms-FI"]
   end
   
   # Austrian people understand German as spoken in Germany
 
   test "with a German mapping defined it returns [:de, :en-US] for de" do
-    @fallbacks.map :"de-AT" => :"de-DE"
+    @fallbacks.map(:"de-AT" => :"de-DE")
     assert_equal [:de, :"en-US", :en], @fallbacks[:"de"]
   end
 
   test "with a German mapping defined it returns [:de-DE, :de, :en-US] for de-DE" do
-    @fallbacks.map :"de-AT" => :"de-DE"
+    @fallbacks.map(:"de-AT" => :"de-DE")
     assert_equal [:"de-DE", :de, :"en-US", :en], @fallbacks[:"de-DE"]
   end
 
   test "with a German mapping defined it returns [:de-AT, :de, :de-DE, :en-US] for de-AT" do
-    @fallbacks.map :"de-AT" => :"de-DE"
+    @fallbacks.map(:"de-AT" => :"de-DE")
     assert_equal [:"de-AT", :de, :"de-DE", :"en-US", :en], @fallbacks[:"de-AT"]
   end
 

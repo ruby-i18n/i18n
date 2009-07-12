@@ -32,7 +32,7 @@ class I18nLocaleTagRfc4646ParserTest < Test::Unit::TestCase
   end
 end
 
-# Tag for the locale 'DE-latn-de-Variant-a-ext-x-phonebk-i-klingon'
+# Tag for the locale 'de-Latn-DE-Variant-a-ext-x-phonebk-i-klingon'
 
 class I18nLocaleTagSubtagsTest < Test::Unit::TestCase
   include I18n::Locale

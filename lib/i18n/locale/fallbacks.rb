@@ -9,22 +9,9 @@ module I18n
       @@fallbacks ||= I18n::Locale::Fallbacks.new
     end
 
-    # Sets the current fallbacks implementation. Use this to set a differen fallbacks implementation.
+    # Sets the current fallbacks implementation. Use this to set a different fallbacks implementation.
     def fallbacks=(fallbacks)
       @@fallbacks = fallbacks
-    end
-    
-    # Locale tag factory. Uses I18n::Locale::Tag by default.
-    def tag(tag)
-      tags.tag(tag.to_sym)
-    end
-    
-    def tags
-      @@tags ||= I18n::Locale::Tag
-    end
-
-    def tags=(tag_class)
-      @@tags = tag_class
     end
   end
 
@@ -32,8 +19,7 @@ module I18n
     class Fallbacks < Hash
       def initialize(*defaults)
         @map = {}
-        map defaults.pop if defaults.last.is_a?(Hash)
-
+        map(defaults.pop) if defaults.last.is_a?(Hash)
         defaults = [I18n.default_locale.to_sym] if defaults.empty?
         self.defaults = defaults
       end
@@ -46,7 +32,7 @@ module I18n
       def [](locale)
         raise InvalidLocale.new(locale) if locale.nil?
         locale = locale.to_sym
-        has_key?(locale) ? fetch(locale) : store(locale, compute(locale))
+        super || store(locale, compute(locale))
       end
 
       def map(mappings)
@@ -63,7 +49,7 @@ module I18n
 
       def compute(tags, include_defaults = true)
         result = Array(tags).collect do |tag|
-          tags = I18n.tag(tag).self_and_parents.map! { |t| t.to_sym }
+          tags = I18n::Locale::Tag.tag(tag).self_and_parents.map! { |t| t.to_sym }
           tags.each { |tag| tags += compute(@map[tag]) if @map[tag] }
           tags
         end.flatten
