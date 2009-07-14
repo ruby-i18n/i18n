@@ -65,9 +65,13 @@ module I18n
       end
 
       # Returns an array of locales for which translations are available
+      # ignoring the reserved translation meta data key :i18n.
       def available_locales
         init_translations unless initialized?
-        translations.keys
+        translations.inject([]) do |locales, (locale, data)|
+          locales << locale unless data.keys.tap { |keys| keys.delete(:i18n) }.empty?
+          locales
+        end
       end
 
       def reload!
