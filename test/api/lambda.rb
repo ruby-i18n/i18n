@@ -16,8 +16,8 @@ module Tests
         def test_translate_proc_with_pluralize
           setup_proc_translations
           params = { :zero => 'zero', :one => 'one', :other => 'other' }
-          assert_equal 'zero', I18n.backend.translate('en', :lambda_for_pluralize, params.merge(:count => 0))
-          assert_equal 'one', I18n.backend.translate('en', :lambda_for_pluralize, params.merge(:count => 1))
+          assert_equal 'zero',  I18n.backend.translate('en', :lambda_for_pluralize, params.merge(:count => 0))
+          assert_equal 'one',   I18n.backend.translate('en', :lambda_for_pluralize, params.merge(:count => 1))
           assert_equal 'other', I18n.backend.translate('en', :lambda_for_pluralize, params.merge(:count => 2))
         end
 

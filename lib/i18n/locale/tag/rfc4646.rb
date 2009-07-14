@@ -1,6 +1,9 @@
-# for specifications see http://en.wikipedia.org/wiki/IETF_language_tag
+# RFC 4646/47 compliant Locale tag implementation that parses locale tags to 
+# subtags such as language, script, region, variant etc.
 #
-# Rfc4646::Parser does not implement advanced usages such as grandfathered tags
+# For more information see by http://en.wikipedia.org/wiki/IETF_language_tag
+#
+# Rfc4646::Parser does not implement grandfathered tags.
 
 require 'i18n/locale/tag/parents'
 
@@ -12,17 +15,19 @@ module I18n
 
       class Rfc4646 < Struct.new(*RFC4646_SUBTAGS)
         class << self
+          # Parses the given tag and returns a Tag instance if it is valid. 
+          # Returns false if the given tag is not valid according to RFC 4646.
+          def tag(tag)
+            matches = parser.match(tag)
+            new(*matches) if matches
+          end
+
           def parser
             @@parser ||= Rfc4646::Parser
           end
   
           def parser=(parser)
             @@parser = parser
-          end
-  
-          def tag(tag)
-            matches = parser.match(tag)
-            new(*matches) if matches
           end
         end
 

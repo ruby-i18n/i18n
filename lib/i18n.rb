@@ -47,9 +47,16 @@ module I18n
       Thread.current[:locale] = locale.to_sym rescue nil
     end
 
-    # Returns an array of locales for which translations are available
+    # Returns an array of locales for which translations are available.
+    # Unless you explicitely set the these through I18n.available_locales=
+    # the call will be delegated to the backend and memoized on the I18n module.
     def available_locales
-      backend.available_locales
+      @@available_locales ||= backend.available_locales
+    end
+
+    # Sets the available locales.
+    def available_locales=(locales)
+      @@available_locales = locales
     end
 
     # Returns the current default scope separator. Defaults to '.'
