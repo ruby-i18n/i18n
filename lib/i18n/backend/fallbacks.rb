@@ -1,6 +1,29 @@
 require 'i18n/locale/fallbacks'
 
+# I18n locale fallbacks are useful when you want your application to use
+# translations from other locales when translations for the current locale are
+# missing. E.g. you might want to use :en translations when translations in
+# your applications main locale :de are missing.
+#
+# To enable locale fallbacks you can simply include the Fallbacks module to 
+# the Simple backend - or whatever other backend you are using:
+#
+#   I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
 module I18n
+  @@fallbacks = nil
+
+  class << self
+    # Returns the current fallbacks implementation. Defaults to +I18n::Locale::Fallbacks+.
+    def fallbacks
+      @@fallbacks ||= I18n::Locale::Fallbacks.new
+    end
+
+    # Sets the current fallbacks implementation. Use this to set a different fallbacks implementation.
+    def fallbacks=(fallbacks)
+      @@fallbacks = fallbacks
+    end
+  end
+
   module Backend
     module Fallbacks
       # Overwrites the Base backend translate method so that it will try each

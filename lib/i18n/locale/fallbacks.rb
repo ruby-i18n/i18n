@@ -53,20 +53,6 @@ require 'i18n/locale/tag'
 #   fallbacks[:sms] # => [:sms, :"se-FI", :se, :"fi-FI", :fi, :"en-US", :en]
 
 module I18n
-  @@fallbacks = nil
-
-  class << self
-    # Returns the current fallbacks implementation. Defaults to +I18n::Locale::Fallbacks+.
-    def fallbacks
-      @@fallbacks ||= I18n::Locale::Fallbacks.new
-    end
-
-    # Sets the current fallbacks implementation. Use this to set a different fallbacks implementation.
-    def fallbacks=(fallbacks)
-      @@fallbacks = fallbacks
-    end
-  end
-
   module Locale
     class Fallbacks < Hash
       def initialize(*mappings)
