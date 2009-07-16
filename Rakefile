@@ -8,6 +8,7 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |s|
     s.name = "i18n"
+    s.rubyforge_project = "i18n"
     s.summary = "New wave Internationalization support for Ruby"
     s.email = "rails-i18n@googlegroups.com"
     s.homepage = "http://rails-i18n.org"
