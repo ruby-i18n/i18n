@@ -1,8 +1,26 @@
-h1. Ruby I18n gem
+h1. Ruby I18n
 
-I18n and localization solution for Ruby.
+Ruby Internationalization and localization solution.
 
-For information please refer to http://rails-i18n.org
+Features:
+
+* translation and localization
+* interpolation of values to translations (Ruby 1.9 compatible syntax)
+* pluralization (CLDR compatible)
+* flexible defaults
+* bulk lookup
+* lambdas as translation data
+* custom key/scope separator
+* custom exception handlers
+* extensible architecture with a swappable backend
+
+Experimental, pluggable features:
+
+* lambda pluralizers stored as translation data
+* RFC4647 compliant locale fallbacks (with optional RFC4646 locale validation)
+* backend cache
+
+For more information and lots of resources see: "http://rails-i18n.org/wiki":http://rails-i18n.org/wiki
 
 h2. Install
 
@@ -10,11 +28,11 @@ gem install i18n
 
 h2. Authors
 
-* "Matt Aimonetti":http://railsontherun.com
 * "Sven Fuchs":http://www.artweb-design.de
 * "Joshua Harvey":http://www.workingwithrails.com/person/759-joshua-harvey
-* "Saimon Moore":http://saimonmoore.net
 * "Stephan Soller":http://www.arkanis-development.de
+* "Saimon Moore":http://saimonmoore.net
+* "Matt Aimonetti":http://railsontherun.com
 
 h2. License
 
