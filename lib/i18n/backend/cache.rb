@@ -11,11 +11,16 @@
 #  I18n.cache_store = ActiveSupport::Cache.lookup_store(:memory_store)
 #
 # You can use any cache implementation you want that provides the same API as
-# the ActiveSupport::Cache API. 
+# ActiveSupport::Cache (only the methods #fetch and #write are being used).
+#
+# The cache_key implementation assumes that you only pass values to
+# I18n.translate that return a valid key from #hash (see
+# http://www.ruby-doc.org/core/classes/Object.html#M000337).
 module I18n
   class << self
     @@cache_store = nil
-      
+    @@cache_namespace = nil
+
     def cache_store
       @@cache_store
     end
@@ -24,19 +29,27 @@ module I18n
       @@cache_store = store
     end
 
+    def cache_namespace
+      @@cache_namespace
+    end
+
+    def cache_namespace=(namespace)
+      @@cache_namespace = namespace
+    end
+
     def perform_caching?
       !cache_store.nil?
     end
   end
-  
+
   module Backend
     module Cache
       def translate(*args)
         I18n.perform_caching? ? fetch(*args) { super } : super
       end
-    
+
       protected
-    
+
         def fetch(*args, &block)
           result = I18n.cache_store.fetch(cache_key(*args), &block)
           raise result if result.is_a?(Exception)
@@ -45,9 +58,11 @@ module I18n
           I18n.cache_store.write(cache_key(*args), exception)
           raise exception
         end
-    
+
         def cache_key(*args)
-          args.hash
+          # this assumes that only simple, native Ruby values are passed to I18n.translate
+          keys = ['i18n', I18n.cache_namespace, args.hash]
+          keys.compact.join('-')
         end
     end
   end
