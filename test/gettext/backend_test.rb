@@ -8,9 +8,7 @@ class I18nGettextBackendTest < Test::Unit::TestCase
   def setup
     I18n.locale = :en
     I18n.load_path = [locales_dir + '/de.po']
-    class << I18n.backend
-      include I18n::Backend::Gettext
-    end
+    I18n.backend.meta_class.send(:include, I18n::Backend::Gettext)
   end
   
   def teardown

@@ -4,9 +4,7 @@ require 'i18n/backend/fallbacks'
 module FallbacksSetup
   def setup
     super
-    class << I18n.backend
-      include I18n::Backend::Fallbacks
-    end
+    I18n.backend.meta_class.send(:include, I18n::Backend::Fallbacks)
   end
 end
 

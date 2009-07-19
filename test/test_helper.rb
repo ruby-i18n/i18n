@@ -16,7 +16,6 @@ Dir[File.dirname(__FILE__) + '/api/**/*.rb'].each do |filename|
 end
 
 $KCODE = 'u' unless RUBY_VERSION >= '1.9'
-  
 
 class Test::Unit::TestCase
   def self.test(name, &block)
@@ -61,3 +60,11 @@ class Test::Unit::TestCase
     Time.parse('2008-03-01 18:00 UTC')
   end
 end
+
+class Object
+  def meta_class
+    class << self; self; end
+  end
+end
+
+

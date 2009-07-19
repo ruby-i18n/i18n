@@ -5,6 +5,8 @@ module Tests
         module Base
           def setup
             super
+            I18n.locale = nil
+            I18n.default_locale = :en
             I18n.backend = I18n::Backend::Simple.new
             backend_store_translations :en, :foo => {:bar => 'bar', :baz => 'baz'}
           end
@@ -13,8 +15,6 @@ module Tests
             super
             I18n.load_path = []
             I18n.backend = nil
-            I18n.locale = nil
-            I18n.default_locale = :en
           end
         end
 

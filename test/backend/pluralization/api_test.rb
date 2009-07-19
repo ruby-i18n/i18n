@@ -4,9 +4,7 @@ require 'i18n/backend/pluralization'
 module PluralizationSetup
   def setup
     super
-    class << I18n.backend
-      include I18n::Backend::Pluralization
-    end
+    I18n.backend.meta_class.send(:include, I18n::Backend::Pluralization)
     I18n.load_path << locales_dir + '/plurals.rb'
   end
 end
