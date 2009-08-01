@@ -5,8 +5,11 @@ module ChainSetup
   def setup
     super
     first = I18n::Backend::Simple.new
-    # first.store_translations(:en, translations)
     I18n.backend = I18n::Backend::Chain.new(first, I18n.backend)
+  end
+
+  def test_using_chain_backend
+    assert_equal I18n::Backend::Chain, I18n.backend.class
   end
 end
 
@@ -46,26 +49,30 @@ class I18nChainBackendApiPluralizationTest < Test::Unit::TestCase
 end
 
 class I18nChainBackendApiLocalizeDateTest < Test::Unit::TestCase
-  include ChainSetup
+  include Tests::Backend::Simple::Setup::Base
   include Tests::Backend::Simple::Setup::Localization
+  include ChainSetup
   include Tests::Backend::Api::Localization::Date
 end
 
 class I18nChainBackendApiLocalizeDateTimeTest < Test::Unit::TestCase
-  include ChainSetup
+  include Tests::Backend::Simple::Setup::Base
   include Tests::Backend::Simple::Setup::Localization
+  include ChainSetup
   include Tests::Backend::Api::Localization::DateTime
 end
 
 class I18nChainBackendApiLocalizeTimeTest < Test::Unit::TestCase
-  include ChainSetup
+  include Tests::Backend::Simple::Setup::Base
   include Tests::Backend::Simple::Setup::Localization
+  include ChainSetup
   include Tests::Backend::Api::Localization::Time
 end
 
 class I18nChainBackendApiLocalizeLambdaTest < Test::Unit::TestCase
-  include ChainSetup
+  include Tests::Backend::Simple::Setup::Base
   include Tests::Backend::Simple::Setup::Localization
+  include ChainSetup
   include Tests::Backend::Api::Localization::Lambda
 end
 
