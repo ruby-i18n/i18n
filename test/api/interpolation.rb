@@ -26,7 +26,7 @@ module Tests
 
         def test_interpolation_does_not_raise_missing_interpolation_argument_exceptions_for_escaped_variables
           assert_nothing_raised(I18n::MissingInterpolationArgument) do
-            interpolate(:default => '\{{foo}}', :bar => 'bar')
+            assert_equal 'Barr {{foo}}', interpolate(:default => '{{bar}} \{{foo}}', :bar => 'Barr')
           end
         end
 

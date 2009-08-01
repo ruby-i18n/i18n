@@ -166,7 +166,7 @@ module I18n
           string.gsub(INTERPOLATION_SYNTAX_PATTERN) do
             escaped, key = $1, $2.to_sym
             if escaped
-              key
+              "{{#{key}}}"
             elsif RESERVED_KEYS.include?(key)
               raise ReservedInterpolationKey.new(key, string)
             else
