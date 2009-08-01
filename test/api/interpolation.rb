@@ -5,7 +5,7 @@ module Tests
         def interpolate(options)
           I18n.backend.translate('en', nil, options)
         end
-      
+
         def test_interpolation_given_no_interpolation_values_it_does_not_alter_the_string
           assert_equal 'Hi {{name}}!', interpolate(:default => 'Hi {{name}}!')
         end
@@ -16,6 +16,18 @@ module Tests
 
         def test_interpolation_given_interpolation_values_with_nil_values_it_interpolates_the_values_to_the_string
           assert_equal 'Hi !', interpolate(:default => 'Hi {{name}}!', :name => nil)
+        end
+
+        def test_interpolation_given_interpolation_values_but_missing_a_key_it_raises_a_missing_interpolation_argument_exception
+          assert_raises(I18n::MissingInterpolationArgument) do
+            interpolate(:default => '{{foo}}', :bar => 'bar')
+          end
+        end
+
+        def test_interpolation_does_not_raise_missing_interpolation_argument_exceptions_for_escaped_variables
+          assert_nothing_raised(I18n::MissingInterpolationArgument) do
+            interpolate(:default => '\{{foo}}', :bar => 'bar')
+          end
         end
 
         def test_interpolate_with_ruby_1_9_syntax
