@@ -6,7 +6,7 @@ module I18n
     # translations in a database or other backends.
     #
     # To use the Chain backend instantiate it and set it to the I18n module.
-    # You can add chained backends through the initializer or backends 
+    # You can add chained backends through the initializer or backends
     # accessor:
     #
     #   # preserves the existing Simple backend set to I18n.backend
@@ -28,15 +28,18 @@ module I18n
       def store_translations(locale, data)
         backends.first.store_translations(locale, data)
       end
-      
+
       def available_locales
         backends.map { |backend| backend.available_locales }.flatten.uniq
       end
 
-      def localize(locale, object, format = :default)
+      def localize(locale, object, format = :default, options = {})
         backends.each do |backend|
-          result = backend.localize(locale, object, format) and return result
-        end
+          begin
+            result = backend.localize(locale, object, format, options) and return result
+          rescue MissingTranslationData
+          end
+        end or nil
       end
 
       protected
