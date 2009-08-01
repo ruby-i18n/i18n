@@ -4,6 +4,10 @@ require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 class I18nSimpleBackendApiBasicsTest < Test::Unit::TestCase
   include Tests::Backend::Simple::Setup::Base
   include Tests::Backend::Api::Basics
+
+  def test_uses_simple_backend
+    assert_equal I18n::Backend::Simple, I18n.backend.class
+  end
 end
 
 class I18nSimpleBackendApiTranslateTest < Test::Unit::TestCase

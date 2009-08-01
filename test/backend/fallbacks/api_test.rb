@@ -6,6 +6,10 @@ module FallbacksSetup
     super
     I18n.backend.meta_class.send(:include, I18n::Backend::Fallbacks)
   end
+
+  def test_uses_fallbacks
+    assert I18n.backend.meta_class.included_modules.include?(I18n::Backend::Fallbacks)
+  end
 end
 
 class I18nFallbacksBackendApiBasicsTest < Test::Unit::TestCase
@@ -44,26 +48,30 @@ class I18nFallbacksBackendApiPluralizationTest < Test::Unit::TestCase
 end
 
 class I18nFallbacksBackendApiLocalizeDateTest < Test::Unit::TestCase
-  include FallbacksSetup
+  include Tests::Backend::Simple::Setup::Base
   include Tests::Backend::Simple::Setup::Localization
+  include FallbacksSetup
   include Tests::Backend::Api::Localization::Date
 end
 
 class I18nFallbacksBackendApiLocalizeDateTimeTest < Test::Unit::TestCase
-  include FallbacksSetup
+  include Tests::Backend::Simple::Setup::Base
   include Tests::Backend::Simple::Setup::Localization
+  include FallbacksSetup
   include Tests::Backend::Api::Localization::DateTime
 end
 
 class I18nFallbacksBackendApiLocalizeTimeTest < Test::Unit::TestCase
-  include FallbacksSetup
+  include Tests::Backend::Simple::Setup::Base
   include Tests::Backend::Simple::Setup::Localization
+  include FallbacksSetup
   include Tests::Backend::Api::Localization::Time
 end
 
 class I18nFallbacksBackendApiLocalizeLambdaTest < Test::Unit::TestCase
-  include FallbacksSetup
+  include Tests::Backend::Simple::Setup::Base
   include Tests::Backend::Simple::Setup::Localization
+  include FallbacksSetup
   include Tests::Backend::Api::Localization::Lambda
 end
 

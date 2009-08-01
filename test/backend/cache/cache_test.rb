@@ -13,6 +13,10 @@ class I18nCacheBackendTest < Test::Unit::TestCase
     I18n.cache_store = nil
   end
 
+  def test_uses_cache
+    assert I18n.cache_store.is_a?(ActiveSupport::Cache::MemoryStore)
+  end
+
   define_method :"test translate hits the backend and caches the response" do
     I18n.backend.expects(:lookup).returns('Foo')
     assert_equal 'Foo', I18n.t(:foo)
