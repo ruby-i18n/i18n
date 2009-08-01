@@ -37,26 +37,26 @@ module I18n
         entry
       end
 
-      # Acts the same as +strftime+, but returns a localized version of the
-      # formatted date string. Takes a key from the date/time formats
-      # translations as a format argument (<em>e.g.</em>, <tt>:short</tt> in <tt>:'date.formats'</tt>).
-      def localize(locale, object, format = :default, options={})
+      # Acts the same as +strftime+, but uses a localized version of the
+      # format string. Takes a key from the date/time formats translations as
+      # a format argument (<em>e.g.</em>, <tt>:short</tt> in <tt>:'date.formats'</tt>).
+      def localize(locale, object, format = :default, options = {})
         raise ArgumentError, "Object must be a Date, DateTime or Time object. #{object.inspect} given." unless object.respond_to?(:strftime)
 
         if Symbol === format
+          key = format
           type = object.respond_to?(:sec) ? 'time' : 'date'
-          format = lookup(locale, :"#{type}.formats.#{format}")
+          format = lookup(locale, :"#{type}.formats.#{key}")
+          raise(MissingTranslationData.new(locale, key, options)) if format.nil?
         end
 
-        format = resolve(locale, object, format, options.merge(:raise => true))
+        format = resolve(locale, object, format, options)
 
-        # TODO check which format strings are present, then bulk translate them, then replace them
-        format.gsub!(/%a/, translate(locale, :"date.abbr_day_names",   :format => format)[object.wday])   if format.include?('%a')
-        format.gsub!(/%A/, translate(locale, :"date.day_names",        :format => format)[object.wday])   if format.include?('%A')
-        format.gsub!(/%b/, translate(locale, :"date.abbr_month_names", :format => format)[object.mon])    if format.include?('%b')
-        format.gsub!(/%B/, translate(locale, :"date.month_names",      :format => format)[object.mon])    if format.include?('%B')
-        format.gsub!(/%p/, translate(locale, :"time.#{object.hour < 12 ? :am : :pm}", :format => format)) if format.include?('%p') && object.respond_to?(:hour)
-
+        localize_format!(format, '%a', :'date.abbr_day_names',   locale, object.wday)
+        localize_format!(format, '%A', :'date.day_names',        locale, object.wday)
+        localize_format!(format, '%b', :'date.abbr_month_names', locale, object.mon)
+        localize_format!(format, '%B', :'date.month_names',      locale, object.mon)
+        localize_format!(format, '%p', :"time", locale, object.hour < 12 ? :am : :pm) if object.respond_to?(:hour)
         object.strftime(format)
       end
 
@@ -178,6 +178,13 @@ module I18n
 
         rescue KeyError => e
           raise MissingInterpolationArgument.new(values, string)
+        end
+        
+        def localize_format!(format, token, key, locale, ix = nil)
+          return format unless format.include?(token)
+          localized = I18n.t(key, :locale => locale, :format => format)
+          localized = localized[ix] unless ix.nil?
+          format.gsub!(token, localized)
         end
 
         # Loads a single translations file by delegating to #load_rb or
