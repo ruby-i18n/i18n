@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = [
     "README.textile"
   ]
+  s.add_dependency('ruby2ruby', '1.2.2')
   s.files = [
     "CHANGELOG.textile",
      "MIT-LICENSE",

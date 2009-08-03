@@ -11,6 +11,7 @@ require 'yaml'
 
 require File.dirname(__FILE__) + '/with_options'
 require File.dirname(__FILE__) + '/backend/simple/setup'
+require File.dirname(__FILE__) + '/backend/active_record/setup'
 
 Dir[File.dirname(__FILE__) + '/api/**/*.rb'].each do |filename|
   require filename

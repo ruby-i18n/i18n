@@ -10,6 +10,7 @@
 require 'i18n/backend/simple'
 require 'i18n/exceptions'
 require 'i18n/string'
+require 'i18n/hash'
 
 module I18n
   @@backend = nil
