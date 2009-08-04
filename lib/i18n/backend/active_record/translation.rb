@@ -17,7 +17,7 @@ class Translation < ActiveRecord::Base
 
   named_scope :keys, lambda { |key, separator|
     separator ||= I18n.default_separator
-    { :conditions => "key LIKE '#{key}#{separator}%'" }
+    { :conditions => "`key` LIKE '#{key}#{separator}%'" }
   }
 
   def value=(v)
