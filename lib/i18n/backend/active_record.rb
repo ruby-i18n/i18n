@@ -34,10 +34,10 @@ module I18n
           else
             chop_range = (flat_key.size + separator.size)..-1
             results = results.inject({}) do |hash, r|
-              hash[r.key.slice(chop_range)] = hash[r.value]
+              hash[r.key.slice(chop_range)] = r.value
               hash
             end
-            deep_symbolize_keys(results)
+            deep_symbolize_keys(results.unwind)
           end
         end
     end
