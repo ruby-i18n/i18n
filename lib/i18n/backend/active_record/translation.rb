@@ -4,7 +4,7 @@ require 'parse_tree'
 require 'parse_tree_extensions'
 
 class Translation < ActiveRecord::Base
-  attr_protected :proc
+  attr_protected :is_proc
   serialize :value
 
   named_scope :locale, lambda {|locale|
@@ -24,14 +24,14 @@ class Translation < ActiveRecord::Base
     case v
       when Proc
         write_attribute(:value, v.to_ruby)
-        write_attribute(:proc, true)
+        write_attribute(:is_proc, true)
       else
         write_attribute(:value, v)
     end
   end
 
   def value
-    if proc
+    if is_proc
       Kernel.eval read_attribute(:value)
     else
       read_attribute(:value)

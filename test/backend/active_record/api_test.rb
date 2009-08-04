@@ -8,7 +8,7 @@ ActiveRecord::Schema.define(:version => 1) do
     t.string :locale
     t.string :key
     t.string :value
-    t.boolean :proc
+    t.boolean :is_proc, :default => false
   end
 end
 
