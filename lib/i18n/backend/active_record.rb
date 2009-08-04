@@ -8,7 +8,7 @@ module I18n
       end
 
       def store_translations(locale, data)
-        data.unwind.each do |key, v|
+        data.wind.each do |key, v|
           Translation.create(:locale => locale.to_s, :key => key, :value => v)
         end
       end
