@@ -1,3 +1,5 @@
+require 'i18n/backend/active_record/store_procs'
+
 module Tests
   module Backend
     module ActiveRecord
@@ -8,12 +10,13 @@ module Tests
             I18n.locale = nil
             I18n.default_locale = :en
             I18n.backend = I18n::Backend::ActiveRecord.new
+            I18n::Backend::ActiveRecord::Translation.send(:include, I18n::Backend::ActiveRecord::StoreProcs)
             backend_store_translations :en, :foo => {:bar => 'bar', :baz => 'baz'}
           end
 
           def teardown
             super
-            Translation.destroy_all
+            I18n::Backend::ActiveRecord::Translation.destroy_all
             I18n.backend = nil
           end
         end
