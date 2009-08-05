@@ -55,12 +55,6 @@ class I18nSimpleBackendStoreTranslationsTest < Test::Unit::TestCase
     I18n.backend.store_translations 'en', 'foo' => {'bar' => 'bar', 'baz' => 'baz'}
     assert_equal Hash[:'en', {:foo => {:bar => 'bar', :baz => 'baz'}}], backend_get_translations
   end
-
-  def test_deep_symbolize_keys_works
-    result = I18n.backend.send :deep_symbolize_keys, 'foo' => {'bar' => {'baz' => 'bar'}}
-    expected = {:foo => {:bar => {:baz => 'bar'}}}
-    assert_equal expected, result
-  end
 end
 
 class I18nSimpleBackendReloadTranslationsTest < Test::Unit::TestCase

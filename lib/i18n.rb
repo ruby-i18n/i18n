@@ -10,7 +10,6 @@
 require 'i18n/backend/simple'
 require 'i18n/exceptions'
 require 'i18n/core_ext/string/interpolate'
-require 'i18n/core_ext/hash/wind'
 
 module I18n
   @@backend = nil

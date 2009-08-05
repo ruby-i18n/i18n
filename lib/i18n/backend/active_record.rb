@@ -8,7 +8,7 @@ module I18n
       end
 
       def store_translations(locale, data)
-        data.wind.each do |key, v|
+        wind_keys(data).each do |key, v|
           Translation.create(:locale => locale.to_s, :key => key, :value => v)
         end
       end
@@ -37,7 +37,7 @@ module I18n
               hash[r.key.slice(chop_range)] = r.value
               hash
             end
-            deep_symbolize_keys(results.unwind)
+            deep_symbolize_keys(unwind_keys(results))
           end
         end
     end

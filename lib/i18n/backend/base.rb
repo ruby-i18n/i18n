@@ -1,10 +1,13 @@
 # encoding: utf-8
 
 require 'yaml'
+require 'i18n/backend/helpers'
 
 module I18n
   module Backend
     class Base
+      include I18n::Backend::Helpers
+
       RESERVED_KEYS = [:scope, :default, :separator]
       INTERPOLATION_SYNTAX_PATTERN = /(\\)?\{\{([^\}]+)\}\}/
 
@@ -227,24 +230,6 @@ module I18n
           # deep_merge by Stefan Rusterholz, see http://www.ruby-forum.com/topic/142809
           merger = proc { |key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
           translations[locale].merge!(data, &merger)
-        end
-
-        # Return a new hash with all keys and nested keys converted to symbols.
-        def deep_symbolize_keys(hash)
-          hash.inject({}) { |result, (key, value)|
-            value = deep_symbolize_keys(value) if value.is_a?(Hash)
-            result[(key.to_sym rescue key) || key] = value
-            result
-          }
-        end
-
-        # Flatten the given array once
-        def flatten_once(array)
-          result = []
-          for element in array # a little faster than each
-            result.push(*element)
-          end
-          result
         end
     end
   end
