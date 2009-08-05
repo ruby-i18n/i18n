@@ -8,13 +8,13 @@ module I18n
         attr_protected :is_proc
         serialize :value
 
-        named_scope :locale, lambda {|locale|
-          { :conditions => {:locale => locale } }
-        }
+  named_scope :locale, lambda {|locale|
+    { :conditions => {:locale => locale.to_s} }
+  }
 
-        named_scope :key, lambda { |key|
-          { :conditions => {:key => key} }
-        }
+  named_scope :key, lambda { |key|
+    { :conditions => {:key => key.to_s} }
+  }
 
         named_scope :keys, lambda { |key, separator|
           separator ||= I18n.default_separator
