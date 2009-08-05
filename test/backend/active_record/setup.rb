@@ -1,4 +1,16 @@
+require 'activerecord'
 require 'i18n/backend/active_record/store_procs'
+
+ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :dbfile => ":memory:")
+ActiveRecord::Migration.verbose = false
+ActiveRecord::Schema.define(:version => 1) do
+  create_table :translations do |t|
+    t.string :locale
+    t.string :key
+    t.string :value
+    t.boolean :is_proc, :default => false
+  end
+end
 
 module Tests
   module Backend
@@ -11,7 +23,7 @@ module Tests
             I18n.default_locale = :en
             I18n.backend = I18n::Backend::ActiveRecord.new
             I18n::Backend::ActiveRecord::Translation.send(:include, I18n::Backend::ActiveRecord::StoreProcs)
-            backend_store_translations :en, :foo => {:bar => 'bar', :baz => 'baz'}
+            backend_store_translations(:en, :foo => { :bar => 'bar', :baz => 'baz' })
           end
 
           def teardown

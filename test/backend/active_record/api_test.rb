@@ -2,17 +2,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 require 'i18n/backend/active_record'
 
-ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :dbfile => ":memory:")
-ActiveRecord::Migration.verbose = false
-ActiveRecord::Schema.define(:version => 1) do
-  create_table :translations do |t|
-    t.string :locale
-    t.string :key
-    t.string :value
-    t.boolean :is_proc, :default => false
-  end
-end
-
 class I18nActiveRecordBackendApiBasicsTest < Test::Unit::TestCase
   include Tests::Backend::ActiveRecord::Setup::Base
   include Tests::Backend::Api::Basics
