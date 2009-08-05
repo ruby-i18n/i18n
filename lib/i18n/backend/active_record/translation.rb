@@ -8,17 +8,14 @@ module I18n
         attr_protected :is_proc
         serialize :value
 
-  named_scope :locale, lambda {|locale|
-    { :conditions => {:locale => locale.to_s} }
-  }
+        named_scope :locale, lambda { |locale|
+          { :conditions => { :locale => locale.to_s } }
+        }
 
-  named_scope :key, lambda { |key|
-    { :conditions => {:key => key.to_s} }
-  }
-
-        named_scope :keys, lambda { |key, separator|
+        named_scope :lookup, lambda { |keys, separator|
+          keys = Array(keys).map! { |key| key.to_s }
           separator ||= I18n.default_separator
-          { :conditions => "`key` LIKE '#{key}#{separator}%'" }
+          { :conditions => ["`key` IN (?) OR `key` LIKE '#{keys.last}#{separator}%'", keys] }
         }
 
         def value

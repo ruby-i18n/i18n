@@ -10,7 +10,7 @@ module Tests
             I18n.locale = nil
             I18n.default_locale = :en
             I18n.backend = I18n::Backend::Simple.new
-            backend_store_translations :en, :foo => {:bar => 'bar', :baz => 'baz'}
+            backend_store_translations(:en, :foo => { :bar => 'bar', :baz => 'baz' })
           end
 
           def teardown
