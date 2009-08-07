@@ -16,7 +16,11 @@ module I18n
       end
 
       def available_locales
-        Translation.find(:all, :select => 'DISTINCT locale').map { |t| t.locale }
+        begin
+          Translation.available_locales
+        rescue ::ActiveRecord::StatementInvalid
+          []
+        end
       end
 
       protected

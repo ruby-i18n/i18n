@@ -18,6 +18,10 @@ module I18n
           { :conditions => ["`key` IN (?) OR `key` LIKE '#{keys.last}#{separator}%'", keys] }
         }
 
+        def self.available_locales
+          Translation.find(:all, :select => 'DISTINCT locale').map { |t| t.locale }
+        end
+
         def value
           if is_proc
             Kernel.eval read_attribute(:value)

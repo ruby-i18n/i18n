@@ -29,6 +29,11 @@ class I18nActiveRecordBackendTest < Test::Unit::TestCase
     assert_equal 'foo', I18n.t(:foo)
   end
   
+  def test_missing_translations_table_does_not_cause_available_locales_to_error
+    I18n::Backend::ActiveRecord::Translation.expects(:available_locales).raises(::ActiveRecord::StatementInvalid)
+    assert_equal [], I18n.backend.available_locales
+  end
+  
   def test_expand_keys
     assert_equal %w(foo foo.bar foo.bar.baz), I18n.backend.send(:expand_keys, :'foo.bar.baz')
   end
