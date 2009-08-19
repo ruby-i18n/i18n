@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Sven Fuchs", "Joshua Harvey", "Matt Aimonetti", "Stephan Soller", "Saimon Moore"]
-  s.date = %q{2009-07-12}
+  s.date = %q{2009-08-19}
   s.description = %q{Add Internationalization support to your Ruby application.}
   s.email = %q{rails-i18n@googlegroups.com}
   s.extra_rdoc_files = [
@@ -19,9 +19,26 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION",
      "lib/i18n.rb",
+     "lib/i18n/backend/active_record.rb",
+     "lib/i18n/backend/active_record/store_procs.rb",
+     "lib/i18n/backend/active_record/translation.rb",
+     "lib/i18n/backend/base.rb",
+     "lib/i18n/backend/cache.rb",
+     "lib/i18n/backend/chain.rb",
+     "lib/i18n/backend/fallbacks.rb",
+     "lib/i18n/backend/gettext.rb",
+     "lib/i18n/backend/helpers.rb",
+     "lib/i18n/backend/pluralization.rb",
      "lib/i18n/backend/simple.rb",
+     "lib/i18n/core_ext/string/interpolate.rb",
      "lib/i18n/exceptions.rb",
-     "lib/i18n/string.rb",
+     "lib/i18n/gettext.rb",
+     "lib/i18n/helpers/gettext.rb",
+     "lib/i18n/locale/fallbacks.rb",
+     "lib/i18n/locale/tag.rb",
+     "lib/i18n/locale/tag/parents.rb",
+     "lib/i18n/locale/tag/rfc4646.rb",
+     "lib/i18n/locale/tag/simple.rb",
      "test/all.rb",
      "test/api/basics.rb",
      "test/api/interpolation.rb",
@@ -33,26 +50,43 @@ Gem::Specification.new do |s|
      "test/api/localization/time.rb",
      "test/api/pluralization.rb",
      "test/api/translation.rb",
+     "test/backend/active_record/active_record_test.rb",
+     "test/backend/active_record/all.rb",
+     "test/backend/active_record/api_test.rb",
+     "test/backend/active_record/setup.rb",
+     "test/backend/cache/cache_test.rb",
+     "test/backend/chain/api_test.rb",
+     "test/backend/chain/chain_test.rb",
+     "test/backend/fallbacks/api_test.rb",
+     "test/backend/fallbacks/fallbacks_test.rb",
+     "test/backend/pluralization/api_test.rb",
+     "test/backend/pluralization/pluralization_test.rb",
      "test/backend/simple/all.rb",
      "test/backend/simple/api_test.rb",
+     "test/backend/simple/helpers_test.rb",
      "test/backend/simple/lookup_test.rb",
-     "test/backend/simple/setup/base.rb",
-     "test/backend/simple/setup/localization.rb",
+     "test/backend/simple/setup.rb",
      "test/backend/simple/translations_test.rb",
+     "test/core_ext/string/interpolate_test.rb",
+     "test/fixtures/locales/de.po",
      "test/fixtures/locales/en.rb",
      "test/fixtures/locales/en.yml",
+     "test/fixtures/locales/plurals.rb",
+     "test/gettext/api_test.rb",
+     "test/gettext/backend_test.rb",
      "test/i18n_exceptions_test.rb",
      "test/i18n_load_path_test.rb",
      "test/i18n_test.rb",
-     "test/string_test.rb",
+     "test/locale/fallbacks_test.rb",
+     "test/locale/tag/rfc4646_test.rb",
+     "test/locale/tag/simple_test.rb",
      "test/test_helper.rb",
      "test/with_options.rb"
   ]
-  s.has_rdoc = true
   s.homepage = %q{http://rails-i18n.org}
-  s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.1}
+  s.rubyforge_project = %q{i18n}
+  s.rubygems_version = %q{1.3.5}
   s.summary = %q{New wave Internationalization support for Ruby}
   s.test_files = [
     "test/all.rb",
@@ -66,24 +100,41 @@ Gem::Specification.new do |s|
      "test/api/localization/time.rb",
      "test/api/pluralization.rb",
      "test/api/translation.rb",
+     "test/backend/active_record/active_record_test.rb",
+     "test/backend/active_record/all.rb",
+     "test/backend/active_record/api_test.rb",
+     "test/backend/active_record/setup.rb",
+     "test/backend/cache/cache_test.rb",
+     "test/backend/chain/api_test.rb",
+     "test/backend/chain/chain_test.rb",
+     "test/backend/fallbacks/api_test.rb",
+     "test/backend/fallbacks/fallbacks_test.rb",
+     "test/backend/pluralization/api_test.rb",
+     "test/backend/pluralization/pluralization_test.rb",
      "test/backend/simple/all.rb",
      "test/backend/simple/api_test.rb",
+     "test/backend/simple/helpers_test.rb",
      "test/backend/simple/lookup_test.rb",
-     "test/backend/simple/setup/base.rb",
-     "test/backend/simple/setup/localization.rb",
+     "test/backend/simple/setup.rb",
      "test/backend/simple/translations_test.rb",
+     "test/core_ext/string/interpolate_test.rb",
      "test/fixtures/locales/en.rb",
+     "test/fixtures/locales/plurals.rb",
+     "test/gettext/api_test.rb",
+     "test/gettext/backend_test.rb",
      "test/i18n_exceptions_test.rb",
      "test/i18n_load_path_test.rb",
      "test/i18n_test.rb",
-     "test/string_test.rb",
+     "test/locale/fallbacks_test.rb",
+     "test/locale/tag/rfc4646_test.rb",
+     "test/locale/tag/simple_test.rb",
      "test/test_helper.rb",
      "test/with_options.rb"
   ]
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
-    s.specification_version = 2
+    s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
     else
