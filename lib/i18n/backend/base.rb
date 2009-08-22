@@ -182,19 +182,6 @@ module I18n
           raise MissingInterpolationArgument.new(values, string)
         end
 
-        # def localize_token(locale, format, key, ix = nil)
-        #   result = I18n.t(key, :locale => locale, :format => format)
-        #   result = result[ix] unless ix.nil?
-        #   result
-        # end
-        # 
-        # def localize_format!(format, token, key, locale, ix = nil)
-        #   return format unless format.include?(token)
-        #   localized = I18n.t(key, :locale => locale, :format => format)
-        #   localized = localized[ix] unless ix.nil?
-        #   format.gsub!(token, localized)
-        # end
-
         # Loads a single translations file by delegating to #load_rb or
         # #load_yml depending on the file extension and directly merges the
         # data to the existing translations. Raises I18n::UnknownFileType
