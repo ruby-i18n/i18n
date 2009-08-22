@@ -51,12 +51,16 @@ module I18n
         end
 
         format = resolve(locale, object, format, options)
+        format = format.to_s.gsub(/%[aAbBp]/) do |match|
+          case match
+          when '%a' then I18n.t(:"date.abbr_day_names",                  :locale => locale, :format => format)[object.wday]
+          when '%A' then I18n.t(:"date.day_names",                       :locale => locale, :format => format)[object.wday]
+          when '%b' then I18n.t(:"date.abbr_month_names",                :locale => locale, :format => format)[object.mon]
+          when '%B' then I18n.t(:"date.month_names",                     :locale => locale, :format => format)[object.mon]
+          when '%p' then I18n.t(:"time.#{object.hour < 12 ? :am : :pm}", :locale => locale, :format => format) if object.respond_to? :hour
+          end
+        end
 
-        localize_format!(format, '%a', :'date.abbr_day_names',   locale, object.wday)
-        localize_format!(format, '%A', :'date.day_names',        locale, object.wday)
-        localize_format!(format, '%b', :'date.abbr_month_names', locale, object.mon)
-        localize_format!(format, '%B', :'date.month_names',      locale, object.mon)
-        localize_format!(format, '%p', :"time", locale, object.hour < 12 ? :am : :pm) if object.respond_to?(:hour)
         object.strftime(format)
       end
 
@@ -178,12 +182,18 @@ module I18n
           raise MissingInterpolationArgument.new(values, string)
         end
 
-        def localize_format!(format, token, key, locale, ix = nil)
-          return format unless format.include?(token)
-          localized = I18n.t(key, :locale => locale, :format => format)
-          localized = localized[ix] unless ix.nil?
-          format.gsub!(token, localized)
-        end
+        # def localize_token(locale, format, key, ix = nil)
+        #   result = I18n.t(key, :locale => locale, :format => format)
+        #   result = result[ix] unless ix.nil?
+        #   result
+        # end
+        # 
+        # def localize_format!(format, token, key, locale, ix = nil)
+        #   return format unless format.include?(token)
+        #   localized = I18n.t(key, :locale => locale, :format => format)
+        #   localized = localized[ix] unless ix.nil?
+        #   format.gsub!(token, localized)
+        # end
 
         # Loads a single translations file by delegating to #load_rb or
         # #load_yml depending on the file extension and directly merges the
