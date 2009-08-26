@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 {
   :af  => { :i18n => { :pluralize => lambda { |n| n == 1 ? :one : :other } } },
   :am  => { :i18n => { :pluralize => lambda { |n| (0..1).include?(n) ? :one : :other } } },

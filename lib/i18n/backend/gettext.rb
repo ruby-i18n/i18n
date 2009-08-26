@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'i18n/gettext'
 require File.expand_path(File.dirname(__FILE__) + '/../../../vendor/po_parser.rb')
 

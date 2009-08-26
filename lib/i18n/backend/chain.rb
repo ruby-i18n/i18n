@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 module I18n
   module Backend
     # Backend that chains multiple other backends and checks each of them when

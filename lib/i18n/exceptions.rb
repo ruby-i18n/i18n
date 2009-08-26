@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class KeyError < IndexError
   def initialize(message = nil)
     super(message || "key not found")

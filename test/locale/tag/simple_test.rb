@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require File.dirname(__FILE__) + '/../../test_helper.rb'
 require 'i18n/locale/tag'
 require 'i18n/locale/tag/simple'

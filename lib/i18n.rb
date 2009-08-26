@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Authors::   Matt Aimonetti (http://railsontherun.com/),
 #             Sven Fuchs (http://www.artweb-design.de),
 #             Joshua Harvey (http://www.workingwithrails.com/person/759-joshua-harvey),

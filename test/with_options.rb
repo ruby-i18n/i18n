@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # this is only here so we can test I18n works nicely with ActiveSupports
 # with_options. Maybe we can just remove it?
 

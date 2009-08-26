@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'i18n/locale/tag/simple'
 require 'i18n/locale/tag/rfc4646'
 

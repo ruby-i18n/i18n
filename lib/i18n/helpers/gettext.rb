@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 module I18n
   module Helpers
     # Implements classical Gettext style accessors. To use this include the

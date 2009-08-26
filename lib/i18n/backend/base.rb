@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'yaml'
 
 module I18n
@@ -102,11 +104,12 @@ module I18n
           return unless key
           init_translations unless initialized?
           keys = I18n.send(:normalize_translation_keys, locale, key, scope, separator)
-          keys.inject(translations) do |result, k|
-            if (x = result[k.to_sym]).nil?
-              return nil
+          keys.inject(translations) do |result, key|
+            key = key.to_sym
+            if result.respond_to?(:has_key?) and result.has_key?(key)
+              result[key]
             else
-              x
+              return nil
             end
           end
         end
