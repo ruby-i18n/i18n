@@ -20,6 +20,14 @@ module Tests
           assert_equal 'Hi !', interpolate(:default => 'Hi {{name}}!', :name => nil)
         end
 
+        def test_interpolation_given_a_lambda_as_a_value_it_calls_it_when_the_string_contains_the_key
+          assert_equal 'Hi David!', interpolate(:default => 'Hi {{name}}!', :name => lambda { 'David' })
+        end
+
+        def test_interpolation_given_a_lambda_as_a_value_it_does_not_call_it_when_the_string_does_not_contain_the_key
+          assert_nothing_raised { interpolate(:default => 'Hi!', :name => lambda { raise 'fail' }) }
+        end
+
         def test_interpolation_given_interpolation_values_but_missing_a_key_it_raises_a_missing_interpolation_argument_exception
           assert_raises(I18n::MissingInterpolationArgument) do
             interpolate(:default => '{{foo}}', :bar => 'bar')

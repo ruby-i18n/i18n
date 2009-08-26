@@ -170,7 +170,8 @@ module I18n
         # interpolation).
         def interpolate(locale, string, values = {})
           return string unless string.is_a?(String) && !values.empty?
-          string.gsub(INTERPOLATION_SYNTAX_PATTERN) do
+
+          s = string.gsub(INTERPOLATION_SYNTAX_PATTERN) do
             escaped, key = $1, $2.to_sym
             if escaped
               "{{#{key}}}"
@@ -179,10 +180,18 @@ module I18n
             else
               "%{#{key}}"
             end
-          end % values
+          end
+          values.each { |key, value| values[key] = value.call if interpolate_lambda?(value, s, key) }
+          s % values
 
         rescue KeyError => e
           raise MissingInterpolationArgument.new(values, string)
+        end
+
+        # returns true when the given value responds to :call and the key is
+        # an interpolation placeholder in the given string
+        def interpolate_lambda?(object, string, key)
+          object.respond_to?(:call) && string =~ /%\{#{key}\}|%\<#{key}>.*?\d*\.?\d*[bBdiouxXeEfgGcps]\}/
         end
 
         # Loads a single translations file by delegating to #load_rb or
