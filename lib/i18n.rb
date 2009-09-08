@@ -270,7 +270,8 @@ module I18n
     def normalize_translation_keys(locale, key, scope, separator = nil)
       keys = [locale] + Array(scope) + Array(key)
       keys = keys.map { |k| k.to_s.split(separator || I18n.default_separator) }
-      keys.flatten.map { |k| k.to_sym }
+      keys = keys.flatten - ['']
+      keys.map { |k| k.to_sym }
     end
   end
 end
