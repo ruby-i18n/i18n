@@ -4,8 +4,10 @@ module Tests
   module Backend
     module Api
       module Interpolation
-        def interpolate(options)
-          I18n.backend.translate('en', nil, options)
+        def interpolate(*args)
+          options = args.last.is_a?(Hash) ? args.pop : {}
+          key = args.pop
+          I18n.backend.translate('en', key, options)
         end
 
         def test_interpolation_given_no_interpolation_values_it_does_not_alter_the_string
@@ -38,6 +40,13 @@ module Tests
           assert_nothing_raised(I18n::MissingInterpolationArgument) do
             assert_equal 'Barr {{foo}}', interpolate(:default => '{{bar}} \{{foo}}', :bar => 'Barr')
           end
+        end
+
+        def test_interpolation_does_not_change_the_original_stored_translation_string_and_allows_reinterpolation
+          I18n.backend.store_translations(:en, :interpolate => 'Hi {{name}}!')
+          assert_equal 'Hi David!', interpolate(:interpolate, :name => 'David')
+          assert_equal 'Hi Yehuda!', interpolate(:interpolate, :name => 'Yehuda')
+          # assert_equal 'Hi {{name}}!', I18n.backend.instance_variable_get(:@translations)[:en][:interpolate]
         end
 
         def test_interpolate_with_ruby_1_9_syntax
