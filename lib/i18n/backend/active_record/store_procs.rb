@@ -8,7 +8,7 @@
 # was extracted from the original backend.
 module I18n
   module Backend
-    class ActiveRecord < Base
+    class ActiveRecord
       module StoreProcs
         class << self
           def included(target)

@@ -5,7 +5,7 @@ require 'i18n/backend/helpers'
 
 module I18n
   module Backend
-    class Base
+    module Base
       include I18n::Backend::Helpers
 
       RESERVED_KEYS = [:scope, :default, :separator]

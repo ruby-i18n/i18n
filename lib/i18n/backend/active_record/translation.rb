@@ -43,7 +43,7 @@ module I18n
     #     :value  => lambda { |key, options| 'FOO' }
     #   Translation.find_by_locale_and_key('en', 'foo').value
     #   # => 'FOO'
-    class ActiveRecord < Base
+    class ActiveRecord
       class Translation < ::ActiveRecord::Base
         set_table_name 'translations'
         attr_protected :is_proc

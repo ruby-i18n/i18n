@@ -3,7 +3,9 @@ require 'i18n/backend/active_record/translation'
 
 module I18n
   module Backend
-    class ActiveRecord < Base
+    class ActiveRecord
+      include Base
+
       def reload!
       end
 

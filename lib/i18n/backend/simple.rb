@@ -17,7 +17,8 @@ require 'i18n/backend/base'
 
 module I18n
   module Backend
-    class Simple < Base
+    class Simple
+      include Base
     end
   end
 end
