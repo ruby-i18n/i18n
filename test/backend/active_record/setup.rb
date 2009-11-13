@@ -1,6 +1,10 @@
 require 'activerecord'
 require 'i18n/backend/active_record/store_procs'
 
+if I18n::Backend::Simple.method_defined?(:interpolate_with_deprecated_syntax)
+  I18n::Backend::Simple.send(:remove_method, :interpolate)
+end
+
 ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
 ActiveRecord::Migration.verbose = false
 ActiveRecord::Schema.define(:version => 1) do
