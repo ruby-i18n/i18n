@@ -1,7 +1,7 @@
 require 'activerecord'
 require 'i18n/backend/active_record/store_procs'
 
-ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :dbfile => ":memory:")
+ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
 ActiveRecord::Migration.verbose = false
 ActiveRecord::Schema.define(:version => 1) do
   create_table :translations do |t|
