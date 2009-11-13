@@ -35,7 +35,7 @@ module I18n
           if result.empty?
             return nil
           elsif result.first.key == key
-            return result.first.value 
+            return result.first.value
           else
             chop_range = (key.size + separator.size)..-1
             result = result.inject({}) do |hash, r|
@@ -45,7 +45,7 @@ module I18n
             deep_symbolize_keys(unwind_keys(result))
           end
         end
-        
+
         # For a key :'foo.bar.baz' return ['foo', 'foo.bar', 'foo.bar.baz']
         def expand_keys(key, separator = I18n.default_separator)
           key.to_s.split(separator).inject([]) do |keys, key|
