@@ -6,6 +6,7 @@ require 'rubygems'
 require 'test/unit'
 require 'mocha'
 require 'i18n'
+require 'i18n/core_ext/object/meta_class'
 require 'time'
 require 'yaml'
 
@@ -27,7 +28,7 @@ class Test::Unit::TestCase
   def euc_jp(string)
     string.encode!(Encoding::EUC_JP)
   end
-  
+
   def locales_dir
     File.dirname(__FILE__) + '/fixtures/locales'
   end
@@ -60,12 +61,6 @@ class Test::Unit::TestCase
 
   def evening_time
     Time.parse('2008-03-01 18:00 UTC')
-  end
-end
-
-class Object
-  def meta_class
-    class << self; self; end
   end
 end
 
