@@ -1,3 +1,11 @@
+# This module is intended to be mixed into the ActiveRecord backend to allow
+# storing Ruby Procs as translation values in the database.
+#
+#   I18n.backend = I18n::Backend::ActiveRecord.new
+#   I18n::Backend::ActiveRecord::Translation.send(:include, I18n::Backend::ActiveRecord::StoreProcs)
+#
+# The StoreProcs module requires the ParseTree and ruby2ruby gems and therefor
+# was extracted from the original backend.
 module I18n
   module Backend
     class ActiveRecord < Base
