@@ -11,12 +11,12 @@ module I18n
         def implementation
           @@implementation ||= Simple
         end
-  
+
         # Sets the current locale tag implementation. Use this to set a different locale tag implementation.
         def implementation=(implementation)
           @@implementation = implementation
         end
-  
+
         # Factory method for locale tags. Delegates to the current locale tag implementation.
         def tag(tag)
           implementation.tag(tag)

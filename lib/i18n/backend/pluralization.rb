@@ -11,7 +11,7 @@
 #
 #   I18n::Backend::Simple.send(:include, I18n::Backend::Pluralization)
 #
-# You also need to make sure to provide pluralization algorithms to the 
+# You also need to make sure to provide pluralization algorithms to the
 # backend, i.e. include them to your I18n.load_path accordingly.
 module I18n
   module Backend

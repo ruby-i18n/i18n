@@ -13,7 +13,7 @@ module I18n
       # Flatten keys for nested Hashes by chaining up keys using the separator
       #   >> { "a" => { "b" => { "c" => "d", "e" => "f" }, "g" => "h" }, "i" => "j"}.wind
       #   => { "a.b.c" => "d", "a.b.e" => "f", "a.g" => "h", "i" => "j" }
-      def wind_keys(hash, separator = ".", prev_key = nil, result = {}) 
+      def wind_keys(hash, separator = ".", prev_key = nil, result = {})
         hash.inject(result) do |result, pair|
           key, value = *pair
           curr_key = [prev_key, key].compact.join(separator)
@@ -25,7 +25,7 @@ module I18n
           result
         end
       end
-  
+
       # Expand keys chained by the the given separator through nested Hashes
       #   >> { "a.b.c" => "d", "a.b.e" => "f", "a.g" => "h", "i" => "j" }.unwind
       #   => { "a" => { "b" => { "c" => "d", "e" => "f" }, "g" => "h" }, "i" => "j"}
@@ -39,7 +39,7 @@ module I18n
         end
         result
       end
-      
+
       # # Flatten the given array once
       # def flatten_once(array)
       #   result = []

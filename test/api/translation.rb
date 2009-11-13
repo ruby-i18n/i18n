@@ -7,7 +7,7 @@ module Tests
         def translate(key, options = {})
           I18n.backend.translate('en', key, options)
         end
-        
+
         def test_given_no_keys_it_returns_the_default
           assert_equal 'default', translate(nil, :default => 'default')
         end
@@ -35,7 +35,7 @@ module Tests
         end
 
         def test_translate_with_a_missing_key_and_no_default_raises_missing_translation_data
-          assert_raises(I18n::MissingTranslationData) do 
+          assert_raises(I18n::MissingTranslationData) do
             translate(:missing)
           end
         end

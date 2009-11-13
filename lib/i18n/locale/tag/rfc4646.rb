@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-# RFC 4646/47 compliant Locale tag implementation that parses locale tags to 
+# RFC 4646/47 compliant Locale tag implementation that parses locale tags to
 # subtags such as language, script, region, variant etc.
 #
 # For more information see by http://en.wikipedia.org/wiki/IETF_language_tag
@@ -17,7 +17,7 @@ module I18n
 
       class Rfc4646 < Struct.new(*RFC4646_SUBTAGS)
         class << self
-          # Parses the given tag and returns a Tag instance if it is valid. 
+          # Parses the given tag and returns a Tag instance if it is valid.
           # Returns false if the given tag is not valid according to RFC 4646.
           def tag(tag)
             matches = parser.match(tag)
@@ -27,7 +27,7 @@ module I18n
           def parser
             @@parser ||= Rfc4646::Parser
           end
-  
+
           def parser=(parser)
             @@parser = parser
           end
@@ -38,19 +38,19 @@ module I18n
         RFC4646_FORMATS.each do |name, format|
           define_method(name) { self[name].send(format) unless self[name].nil? }
         end
-      
+
         def to_sym
           to_s.to_sym
         end
-      
+
         def to_s
           @tag ||= to_a.compact.join("-")
         end
-  
+
         def to_a
           members.collect { |attr| self.send(attr) }
         end
-  
+
         module Parser
           PATTERN = %r{\A(?:
             ([a-z]{2,3}(?:(?:-[a-z]{3}){0,3})?|[a-z]{4}|[a-z]{5,8}) # language
@@ -61,7 +61,7 @@ module I18n
             (?:-(x(?:-[0-9a-z]{1,8})+))?|                           # privateuse subtag
             (x(?:-[0-9a-z]{1,8})+)|                                 # privateuse tag
             /* ([a-z]{1,3}(?:-[0-9a-z]{2,8}){1,2}) */               # grandfathered
-            )\z}xi 
+            )\z}xi
 
           class << self
             def match(tag)

@@ -7,7 +7,7 @@ require 'i18n/locale/fallbacks'
 # missing. E.g. you might want to use :en translations when translations in
 # your applications main locale :de are missing.
 #
-# To enable locale fallbacks you can simply include the Fallbacks module to 
+# To enable locale fallbacks you can simply include the Fallbacks module to
 # the Simple backend - or whatever other backend you are using:
 #
 #   I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
