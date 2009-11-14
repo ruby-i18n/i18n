@@ -2,7 +2,7 @@
 
 require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 require 'i18n/backend/cache'
-require 'activesupport'
+require 'active_support'
 
 class I18nCacheBackendTest < Test::Unit::TestCase
   class Backend

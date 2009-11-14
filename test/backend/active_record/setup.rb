@@ -1,4 +1,4 @@
-require 'activerecord'
+require 'active_record'
 require 'i18n/backend/active_record/store_procs'
 
 if I18n::Backend::Simple.method_defined?(:interpolate_with_deprecated_syntax)
