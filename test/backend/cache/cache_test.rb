@@ -2,7 +2,12 @@
 
 require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 require 'i18n/backend/cache'
-require 'active_support'
+
+begin
+  require 'active_support/cache'
+rescue LoadError
+  $stderr.puts "Skipping cache tests using ActiveSupport::Cache"
+else
 
 class I18nCacheBackendTest < Test::Unit::TestCase
   class Backend
@@ -60,3 +65,5 @@ class I18nCacheBackendTest < Test::Unit::TestCase
       I18n.cache_namespace = nil
     end
 end
+
+end # AS cache check
