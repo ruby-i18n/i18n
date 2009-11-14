@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'active_record'
 require 'i18n/backend/active_record/store_procs'
 
