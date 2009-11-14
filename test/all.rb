@@ -1,5 +1,8 @@
 # encoding: utf-8
 
-Dir[File.dirname(__FILE__) + '/**/*_test.rb'].sort.each do |file|
-  require file
+base = File.dirname(__FILE__)
+$LOAD_PATH.unshift base
+
+Dir["#{base}/**/*_test.rb"].sort.each do |file|
+  require file.sub(/^#{base}\/(.*)\.rb$/, '\1')
 end
