@@ -13,20 +13,20 @@ class I18nFallbacksDefaultsTest < Test::Unit::TestCase
 
   test "defaults reflect the I18n.default_locale if no default has been set manually" do
     I18n.default_locale = :'en-US'
-    I18n.fallbacks = Fallbacks.new
-    assert_equal [:'en-US', :en], I18n.fallbacks.defaults
+    fallbacks = Fallbacks.new
+    assert_equal [:'en-US', :en], fallbacks.defaults
   end
 
   test "defaults reflect a manually passed default locale if any" do
-    I18n.fallbacks = Fallbacks.new(:'fi-FI')
-    assert_equal [:'fi-FI', :fi], I18n.fallbacks.defaults
+    fallbacks = Fallbacks.new(:'fi-FI')
+    assert_equal [:'fi-FI', :fi], fallbacks.defaults
     I18n.default_locale = :'de-DE'
-    assert_equal [:'fi-FI', :fi], I18n.fallbacks.defaults
+    assert_equal [:'fi-FI', :fi], fallbacks.defaults
   end
 
   test "defaults allows to set multiple defaults" do
-    I18n.fallbacks = Fallbacks.new(:'fi-FI', :'se-FI')
-    assert_equal [:'fi-FI', :fi, :'se-FI', :se], I18n.fallbacks.defaults
+    fallbacks = Fallbacks.new(:'fi-FI', :'se-FI')
+    assert_equal [:'fi-FI', :fi, :'se-FI', :se], fallbacks.defaults
   end
 end
 
@@ -98,7 +98,7 @@ class I18nFallbacksComputationTest < Test::Unit::TestCase
     @fallbacks.map(:sms => [:"se-FI", :"fi-FI"])
     assert_equal [:"sms-FI", :sms, :"se-FI", :se, :"fi-FI", :fi, :"en-US", :en], @fallbacks[:"sms-FI"]
   end
-  
+
   # Austrian people understand German as spoken in Germany
 
   test "with a German mapping defined it returns [:de, :en-US] for de" do

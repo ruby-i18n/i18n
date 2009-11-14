@@ -7,23 +7,31 @@ class I18nFallbacksBackendTest < Test::Unit::TestCase
   def setup
     I18n.backend = I18n::Backend::Simple.new
     I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
-    backend_store_translations(:en, :foo => 'Foo')
+    backend_store_translations(:en, :foo => 'Foo in :en', :bar => 'Bar in :en', :buz => 'Buz in :en')
+    backend_store_translations(:de, :bar => 'Bar in :de', :baz => 'Baz in :de')
+    backend_store_translations(:'de-DE', :baz => 'Baz in :de-DE')
   end
 
-  define_method "test: fallbacks for :de are [:de, :en]" do
-    assert_equal [:de, :en], I18n.fallbacks[:de]
+  define_method "test: still returns an existing translation as usual" do
+    assert_equal 'Foo in :en', I18n.t(:foo, :locale => :en)
+    assert_equal 'Bar in :de', I18n.t(:bar, :locale => :de)
+    assert_equal 'Baz in :de-DE', I18n.t(:baz, :locale => :'de-DE')
   end
 
-  define_method "test: still returns the English translation as usual" do
-    assert_equal 'Foo', I18n.t(:foo, :locale => :en)
+  define_method "test: returns the :en translation for a missing :de translation" do
+    assert_equal 'Foo in :en', I18n.t(:foo, :locale => :de)
   end
 
-  define_method "test: returns the English translation for a missing German translation" do
-    assert_equal 'Foo', I18n.t(:foo, :locale => :de)
+  define_method "test: returns the :de translation for a missing :'de-DE' translation" do
+    assert_equal 'Bar in :de', I18n.t(:bar, :locale => :'de-DE')
+  end
+
+  define_method "test: returns the :en translation for translation missing in both :de and :'de-De'" do
+    assert_equal 'Buz in :en', I18n.t(:buz, :locale => :'de-DE')
   end
 
   define_method "test: raises I18n::MissingTranslationData exception when no translation was found" do
-    assert_raises(I18n::MissingTranslationData) { I18n.t(:bar, :locale => :en, :raise => true) }
-    assert_raises(I18n::MissingTranslationData) { I18n.t(:bar, :locale => :de, :raise => true) }
+    assert_raises(I18n::MissingTranslationData) { I18n.t(:faa, :locale => :en, :raise => true) }
+    assert_raises(I18n::MissingTranslationData) { I18n.t(:faa, :locale => :de, :raise => true) }
   end
 end
