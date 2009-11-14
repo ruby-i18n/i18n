@@ -6,12 +6,12 @@ require 'i18n/backend/pluralization'
 module PluralizationSetup
   def setup
     super
-    I18n.backend.meta_class.send(:include, I18n::Backend::Pluralization)
+    I18n::Backend::Simple.send(:include, I18n::Backend::Pluralization)
     I18n.load_path << locales_dir + '/plurals.rb'
   end
 
   def test_uses_pluralization
-    assert I18n.backend.meta_class.included_modules.include?(I18n::Backend::Pluralization)
+    assert I18n::Backend::Simple.included_modules.include?(I18n::Backend::Pluralization)
   end
 end
 

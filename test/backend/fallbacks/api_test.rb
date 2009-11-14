@@ -6,11 +6,11 @@ require 'i18n/backend/fallbacks'
 module FallbacksSetup
   def setup
     super
-    I18n.backend.meta_class.send(:include, I18n::Backend::Fallbacks)
+    I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
   end
 
   def test_uses_fallbacks
-    assert I18n.backend.meta_class.included_modules.include?(I18n::Backend::Fallbacks)
+    assert I18n::Backend::Simple.included_modules.include?(I18n::Backend::Fallbacks)
   end
 end
 

@@ -7,7 +7,7 @@ require 'activesupport'
 class I18nCacheBackendTest < Test::Unit::TestCase
   def setup
     super
-    I18n.backend.meta_class.send(:include, I18n::Backend::Cache)
+    I18n::Backend::Simple.send(:include, I18n::Backend::Cache)
     I18n.cache_store = ActiveSupport::Cache.lookup_store(:memory_store)
   end
 

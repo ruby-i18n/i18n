@@ -6,7 +6,7 @@ require 'i18n/backend/fallbacks'
 class I18nFallbacksBackendTest < Test::Unit::TestCase
   def setup
     I18n.backend = I18n::Backend::Simple.new
-    I18n.backend.meta_class.send(:include, I18n::Backend::Fallbacks)
+    I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
     backend_store_translations(:en, :foo => 'Foo')
   end
 
