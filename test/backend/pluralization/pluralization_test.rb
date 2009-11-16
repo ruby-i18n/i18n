@@ -4,9 +4,13 @@ require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 require 'i18n/backend/pluralization'
 
 class I18nPluralizationBackendTest < Test::Unit::TestCase
+  class Backend
+    include I18n::Backend::Base
+    include I18n::Backend::Pluralization
+  end
+
   def setup
-    I18n.backend = I18n::Backend::Simple.new
-    I18n::Backend::Simple.send(:include, I18n::Backend::Pluralization)
+    I18n.backend = Backend.new
     @pluralizer = lambda { |n| n == 1 ? :one : n == 0 || (2..10).include?(n % 100) ? :few : (11..19).include?(n % 100) ? :many : :other }
     backend_store_translations(:foo, :i18n => { :pluralize => @pluralizer })
     @entry = { :zero => 'zero', :one => 'one', :few => 'few', :many => 'many', :other => 'other' }

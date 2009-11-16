@@ -7,10 +7,15 @@ require 'i18n/helpers/gettext'
 include I18n::Helpers::Gettext
 
 class I18nGettextBackendTest < Test::Unit::TestCase
+  class Backend
+    include I18n::Backend::Base
+    include I18n::Backend::Gettext
+  end
+
   def setup
+    I18n.backend = Backend.new
     I18n.locale = :en
     I18n.load_path = [locales_dir + '/de.po']
-    I18n::Backend::Simple.send(:include, I18n::Backend::Gettext)
   end
 
   def teardown

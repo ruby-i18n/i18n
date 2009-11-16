@@ -4,14 +4,19 @@ require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 require 'i18n/backend/pluralization'
 
 module PluralizationSetup
+  class Backend
+    include I18n::Backend::Base
+    include I18n::Backend::Pluralization
+  end
+
   def setup
+    I18n.backend = Backend.new
     super
-    I18n::Backend::Simple.send(:include, I18n::Backend::Pluralization)
     I18n.load_path << locales_dir + '/plurals.rb'
   end
 
   def test_uses_pluralization
-    assert I18n::Backend::Simple.included_modules.include?(I18n::Backend::Pluralization)
+    assert I18n.backend.class.included_modules.include?(I18n::Backend::Pluralization)
   end
 end
 

@@ -4,13 +4,18 @@ require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 require 'i18n/backend/fallbacks'
 
 module FallbacksSetup
+  class Backend
+    include I18n::Backend::Base
+    include I18n::Backend::Fallbacks
+  end
+
   def setup
+    I18n.backend = Backend.new
     super
-    I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
   end
 
   def test_uses_fallbacks
-    assert I18n::Backend::Simple.included_modules.include?(I18n::Backend::Fallbacks)
+    assert I18n.backend.class.included_modules.include?(I18n::Backend::Fallbacks)
   end
 end
 

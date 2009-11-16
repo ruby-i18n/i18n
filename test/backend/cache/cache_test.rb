@@ -5,9 +5,14 @@ require 'i18n/backend/cache'
 require 'activesupport'
 
 class I18nCacheBackendTest < Test::Unit::TestCase
+  class Backend
+    include I18n::Backend::Base
+    include I18n::Backend::Cache
+  end
+
   def setup
+    I18n.backend = Backend.new
     super
-    I18n::Backend::Simple.send(:include, I18n::Backend::Cache)
     I18n.cache_store = ActiveSupport::Cache.lookup_store(:memory_store)
   end
 

@@ -4,9 +4,13 @@ require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 require 'i18n/backend/fallbacks'
 
 class I18nFallbacksBackendTest < Test::Unit::TestCase
+  class Backend
+    include I18n::Backend::Base
+    include I18n::Backend::Fallbacks
+  end
+
   def setup
-    I18n.backend = I18n::Backend::Simple.new
-    I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
+    I18n.backend = Backend.new
     backend_store_translations(:en, :foo => 'Foo in :en', :bar => 'Bar in :en', :buz => 'Buz in :en')
     backend_store_translations(:de, :bar => 'Bar in :de', :baz => 'Baz in :de')
     backend_store_translations(:'de-DE', :baz => 'Baz in :de-DE')

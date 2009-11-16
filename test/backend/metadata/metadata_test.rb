@@ -4,9 +4,13 @@ require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 require 'i18n/backend/metadata'
 
 class I18nTranslationMetadataTest < Test::Unit::TestCase
+  class Backend
+    include I18n::Backend::Base
+    include I18n::Backend::Metadata
+  end
+
   def setup
-    I18n::Backend::Simple.send(:include, I18n::Backend::Metadata)
-    I18n.backend = I18n::Backend::Simple.new
+    I18n.backend = Backend.new
     backend_store_translations(:en, :foo => 'Hi {{name}}')
   end
 
