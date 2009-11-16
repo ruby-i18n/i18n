@@ -1,7 +1,5 @@
 # encoding: utf-8
 
-require 'i18n/locale/tag'
-
 # Locale Fallbacks
 #
 # Extends the I18n module to hold a fallbacks instance which is set to an

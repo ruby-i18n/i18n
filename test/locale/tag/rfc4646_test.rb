@@ -1,14 +1,12 @@
 # encoding: utf-8
 
 require File.dirname(__FILE__) + '/../../test_helper.rb'
-require 'i18n/locale/tag'
-require 'i18n/locale/tag/rfc4646'
 
 # Rfc4646::Parser
 
 class I18nLocaleTagRfc4646ParserTest < Test::Unit::TestCase
   include I18n::Locale
-  
+
   test "Rfc4646::Parser given a valid tag 'de' returns an array of subtags" do
     assert_equal ['de', nil, nil, nil, nil, nil, nil], Tag::Rfc4646::Parser.match('de')
   end
@@ -38,7 +36,7 @@ end
 
 class I18nLocaleTagSubtagsTest < Test::Unit::TestCase
   include I18n::Locale
-  
+
   def setup
     subtags = %w(de Latn DE variant a-ext x-phonebk i-klingon)
     @tag = Tag::Rfc4646.new *subtags

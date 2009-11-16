@@ -1,7 +1,6 @@
 # encoding: utf-8
 
 require 'yaml'
-require 'i18n/backend/helpers'
 
 module I18n
   module Backend

@@ -7,8 +7,6 @@
 #
 # Rfc4646::Parser does not implement grandfathered tags.
 
-require 'i18n/locale/tag/parents'
-
 module I18n
   module Locale
     module Tag

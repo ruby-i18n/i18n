@@ -1,7 +1,5 @@
 # encoding: utf-8
 
-require 'i18n/backend/base'
-
 # Stub class for the Simple backend. The actual implementation is provided by
 # the backend Base class. This makes it easier to extend the Simple backend's
 # behaviour by including modules. E.g.:

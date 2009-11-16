@@ -1,10 +1,7 @@
 # encoding: utf-8
 
-require 'i18n/locale/tag/parents'
-
 # Simple Locale tag implementation that computes subtags by simply splitting
 # the locale tag at '-' occurences.
-
 module I18n
   module Locale
     module Tag

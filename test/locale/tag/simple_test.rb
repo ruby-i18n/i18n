@@ -14,7 +14,7 @@ class I18nLocaleTagSimpleTest < Test::Unit::TestCase
   test "returns a formatted tag string from #to_s" do
     assert_equal 'de-Latn-DE', Tag::Simple.new('de-Latn-DE').to_s
   end
-  
+
   test "returns an array containing the formatted subtags from #to_a" do
     assert_equal %w(de Latn DE), Tag::Simple.new('de-Latn-DE').to_a
   end

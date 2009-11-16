@@ -1,9 +1,9 @@
-require 'i18n/backend/base'
-require 'i18n/backend/active_record/translation'
-
 module I18n
   module Backend
     class ActiveRecord
+      autoload :StoreProcs,  'i18n/backend/active_record/store_procs'
+      autoload :Translation, 'i18n/backend/active_record/translation'
+
       include Base
 
       def reload!

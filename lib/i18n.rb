@@ -1,17 +1,20 @@
 # encoding: utf-8
 
-# Authors::   Matt Aimonetti (http://railsontherun.com/),
-#             Sven Fuchs (http://www.artweb-design.de),
+# Authors::   Sven Fuchs (http://www.artweb-design.de),
 #             Joshua Harvey (http://www.workingwithrails.com/person/759-joshua-harvey),
+#             Stephan Soller (http://www.arkanis-development.de/),
 #             Saimon Moore (http://saimonmoore.net),
-#             Stephan Soller (http://www.arkanis-development.de/)
+#             Matt Aimonetti (http://railsontherun.com/)
 # Copyright:: Copyright (c) 2008 The Ruby i18n Team
 # License::   MIT
-require 'i18n/backend/simple'
 require 'i18n/exceptions'
 require 'i18n/core_ext/string/interpolate'
 
 module I18n
+  autoload :Backend, 'i18n/backend'
+  autoload :Helpers, 'i18n/helpers'
+  autoload :Locale,  'i18n/locale'
+
   @@backend = nil
   @@load_path = nil
   @@default_locale = :en

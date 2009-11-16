@@ -6,7 +6,7 @@ module I18n
     CONTEXT_SEPARATOR = "\004"
 
     @@plural_keys = { :en => [:one, :other] }
-    
+
     class << self
       # returns an array of plural keys for the given locale so that we can
       # convert from gettext's integer-index based style

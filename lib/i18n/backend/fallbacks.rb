@@ -1,7 +1,5 @@
 # encoding: utf-8
 
-require 'i18n/locale/fallbacks'
-
 # I18n locale fallbacks are useful when you want your application to use
 # translations from other locales when translations for the current locale are
 # missing. E.g. you might want to use :en translations when translations in
