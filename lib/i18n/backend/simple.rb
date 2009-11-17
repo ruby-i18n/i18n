@@ -49,6 +49,7 @@ module I18n
         end
 
         format = resolve(locale, object, format, options.merge(:raise => true))
+        format = format.dup if format
 
         # TODO check which format strings are present, then bulk translate them, then replace them
         format.gsub!(/%a/, translate(locale, :"date.abbr_day_names",   :format => format)[object.wday])   if format.include?('%a')
