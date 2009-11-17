@@ -43,6 +43,13 @@ module Tests
             assert_equal '1ter März 2008 (MEZ)', I18n.backend.localize('de', date, :long_ordinalized, :timezone => 'MEZ')
           end
 
+          def test_localize_does_not_alter_the_stored_format_string
+            first_of_jan = I18n.backend.localize(:de, ::Date.parse('2009-01-01'), :long)
+            first_of_oct = I18n.backend.localize(:de, ::Date.parse('2009-10-01'), :long)
+            assert_equal '01. Januar 2009', first_of_jan
+            assert_equal '01. Oktober 2009', first_of_oct
+          end
+
           def test_localize_given_no_format_it_does_not_fail
             assert_nothing_raised{ I18n.backend.localize 'de', date }
           end

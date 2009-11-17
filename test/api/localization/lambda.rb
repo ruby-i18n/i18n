@@ -14,7 +14,7 @@ module Tests
             assert_match /марта/, I18n.backend.localize('ru', time, "%d %B %Y")
             assert_match /Март/, I18n.backend.localize('ru', time, "%B %Y")
           end
-  
+
           def test_localize_uses_lambda_abbr_day_names
             assert_match /марта/, I18n.backend.localize('ru', time, "%d %b %Y")
             assert_match /март/, I18n.backend.localize('ru', time, "%b %Y")
