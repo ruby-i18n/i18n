@@ -46,14 +46,16 @@ module I18n
     class ActiveRecord
       class Translation < ::ActiveRecord::Base
         set_table_name 'translations'
-        attr_protected :is_proc
+        attr_protected :is_proc, :interpolations
+        
         serialize :value
+        serialize :interpolations, Array
 
         named_scope :locale, lambda { |locale|
           { :conditions => { :locale => locale.to_s } }
         }
 
-        named_scope :lookup, lambda { |keys, separator|
+        named_scope :lookup, lambda { |keys, *separator|
           keys = Array(keys).map! { |key| key.to_s }
           separator ||= I18n.default_separator
           { :conditions => ["`key` IN (?) OR `key` LIKE '#{keys.last}#{separator}%'", keys] }
@@ -61,6 +63,10 @@ module I18n
 
         def self.available_locales
           Translation.find(:all, :select => 'DISTINCT locale').map { |t| t.locale }
+        end
+        
+        def interpolates?(key)
+          self.interpolations.include?(key) if self.interpolations
         end
 
         def value

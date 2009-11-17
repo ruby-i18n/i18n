@@ -1,3 +1,13 @@
+require 'i18n/backend/base'
+require 'i18n/backend/active_record/translation'
+
+#
+#  This backend reads translations from a Translations table in environment database. Note that the database
+#  will not automatically be prepopulated with missing keys. You can achieve this effect with the ActiveRecordMissing backend, 
+#  as the following example shows:
+#
+#     I18n.backend = I18n::Backend::Chain.new(I18n::Backend::ActiveRecord.new, I18.backend, I18n::Backend::ActiveRecordMissing.new)
+#  
 module I18n
   module Backend
     class ActiveRecord
