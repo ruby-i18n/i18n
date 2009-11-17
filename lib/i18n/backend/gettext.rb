@@ -41,15 +41,25 @@ module I18n
 
         def normalize(locale, data)
           data.inject({}) do |result, (key, value)|
-            key, value = normalize_pluralization(locale, key, value) if key.index("\000")
-            result[key] = value
+            unless key.blank?
+              key, value = normalize_pluralization(locale, key, value) if key.index("\000")
+
+              parts = key.split('|').reverse
+              normalized = parts.inject({}) do |normalized, part|
+                normalized = { part => normalized.empty? ? value : normalized }
+              end
+
+              # deep_merge by Stefan Rusterholz, see http://www.ruby-forum.com/topic/142809
+              merger = proc { |key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
+              result.merge!(normalized, &merger)
+            end
             result
           end
         end
 
         def normalize_pluralization(locale, key, value)
           # FIXME po_parser includes \000 chars that can not be turned into Symbols
-          key = key.dup.gsub("\000", I18n::Gettext::PLURAL_SEPARATOR)
+          key = key.gsub("\000", I18n::Gettext::PLURAL_SEPARATOR).split(I18n::Gettext::PLURAL_SEPARATOR).first
 
           keys = I18n::Gettext.plural_keys(locale)
           values = value.split("\000")

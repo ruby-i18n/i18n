@@ -59,3 +59,9 @@ msgid "this is a dynamic translation which was found thorugh gettext_test_log!"
 msgstr ""
 "Dies ist eine dynamische Übersetzung, die durch gettext_test_log "
 "gefunden wurde!"
+
+#: app/views/cars/nowhere_really
+msgid "Car|wheel"
+msgid_plural "Car|wheels"
+msgstr[0] "Rad"
+msgstr[1] "Räder"

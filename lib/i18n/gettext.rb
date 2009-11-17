@@ -15,8 +15,8 @@ module I18n
         @@plural_keys[locale] || @@plural_keys[:en]
       end
 
-      def extract_scope(msgid, separator = nil)
-        scope = msgid.to_s.split(separator || '|')
+      def extract_scope(msgid, separator)
+        scope = msgid.to_s.split(separator)
         msgid = scope.pop
         [scope, msgid]
       end
