@@ -3,9 +3,9 @@
 module I18n
   module Locale
     module Tag
-      autoload :Parents, 'lib/i18n/locale/tag/parents'
-      autoload :Rfc4646, 'lib/i18n/locale/tag/rfc4646'
-      autoload :Simple,  'lib/i18n/locale/tag/simple'
+      autoload :Parents, 'i18n/locale/tag/parents'
+      autoload :Rfc4646, 'i18n/locale/tag/rfc4646'
+      autoload :Simple,  'i18n/locale/tag/simple'
 
       class << self
         # Returns the current locale tag implementation. Defaults to +I18n::Locale::Tag::Simple+.
