@@ -63,5 +63,3 @@ class Test::Unit::TestCase
     Time.parse('2008-03-01 18:00 UTC')
   end
 end
-
-
