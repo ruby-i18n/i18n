@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 module Tests
   module Backend
     module Api
@@ -5,7 +7,7 @@ module Tests
         def interpolate(options)
           I18n.backend.translate('en', nil, options)
         end
-      
+
         def test_interpolation_given_no_interpolation_values_it_does_not_alter_the_string
           assert_equal 'Hi {{name}}!', interpolate(:default => 'Hi {{name}}!')
         end

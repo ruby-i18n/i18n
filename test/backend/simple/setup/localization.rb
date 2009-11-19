@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 module Tests
   module Backend
     module Simple
@@ -11,12 +13,12 @@ module Tests
             setup_datetime_lambda_translations
             @old_timezone, ENV['TZ'] = ENV['TZ'], 'UTC'
           end
-          
+
           def teardown
             super
             @old_timezone ? ENV['TZ'] = @old_timezone : ENV.delete('TZ')
           end
-          
+
           def setup_datetime_translations
             backend_store_translations :de, {
               :date => {
@@ -99,19 +101,19 @@ module Tests
           def setup_datetime_lambda_translations
             backend_store_translations 'ru', {
               :date => {
-                :'day_names' => lambda { |key, options| 
-                  (options[:format] =~ /^%A/) ? 
-                  %w(Воскресенье Понедельник Вторник Среда Четверг Пятница Суббота) : 
+                :'day_names' => lambda { |key, options|
+                  (options[:format] =~ /^%A/) ?
+                  %w(Воскресенье Понедельник Вторник Среда Четверг Пятница Суббота) :
                   %w(воскресенье понедельник вторник среда четверг пятница суббота)
                 },
                 :'abbr_day_names' => %w(Вс Пн Вт Ср Чт Пт Сб),
-                :'month_names' => lambda { |key, options| 
-                  (options[:format] =~ /(%d|%e)(\s*)?(%B)/) ? 
+                :'month_names' => lambda { |key, options|
+                  (options[:format] =~ /(%d|%e)(\s*)?(%B)/) ?
                   %w(января февраля марта апреля мая июня июля августа сентября октября ноября декабря).unshift(nil) :
-                  %w(Январь Февраль Март Апрель Май Июнь Июль Август Сентябрь Октябрь Ноябрь Декабрь).unshift(nil) 
+                  %w(Январь Февраль Март Апрель Май Июнь Июль Август Сентябрь Октябрь Ноябрь Декабрь).unshift(nil)
                 },
-                :'abbr_month_names' => lambda { |key, options| 
-                  (options[:format] =~ /(%d|%e)(\s*)(%b)/) ? 
+                :'abbr_month_names' => lambda { |key, options|
+                  (options[:format] =~ /(%d|%e)(\s*)(%b)/) ?
                   %w(янв. февр. марта апр. мая июня июля авг. сент. окт. нояб. дек.).unshift(nil) :
                   %w(янв. февр. март апр. май июнь июль авг. сент. окт. нояб. дек.).unshift(nil)
                 },

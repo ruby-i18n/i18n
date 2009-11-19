@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 module Tests
   module Backend
     module Api
@@ -28,7 +30,7 @@ module Tests
         end
 
         private
-  
+
           def setup_linked_translations
             I18n.backend.store_translations 'en', {
               :foo => 'foo',

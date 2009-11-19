@@ -1,4 +1,5 @@
 # encoding: utf-8
+
 $:.unshift "lib"
 
 require 'rubygems'
@@ -17,12 +18,12 @@ Dir[File.dirname(__FILE__) + '/api/**/*.rb'].each do |filename|
 end
 
 $KCODE = 'u' unless RUBY_VERSION >= '1.9'
-  
+
 class Test::Unit::TestCase
   def euc_jp(string)
     string.encode!(Encoding::EUC_JP)
   end
-  
+
   def locales_dir
     File.dirname(__FILE__) + '/fixtures/locales'
   end
