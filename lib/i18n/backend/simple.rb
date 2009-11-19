@@ -3,7 +3,7 @@ require 'yaml'
 module I18n
   module Backend
     class Simple
-      RESERVED_KEYS = [:scope, :default, :separator]
+      RESERVED_KEYS = [:scope, :default, :separator, :raise]
       INTERPOLATION_SYNTAX_PATTERN = /(\\\\)?\{\{([^\}]+)\}\}/
 
       # Accepts a list of paths to translation files. Loads translations from
