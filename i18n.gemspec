@@ -2,10 +2,10 @@
 
 Gem::Specification.new do |s|
   s.name = %q{i18n}
-  s.version = "0.2.0"
+  s.version = "0.2.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Sven Fuchs", "Joshua Harvey", "Matt Aimonetti", "Stephan Soller", "Saimon Moore"]
+  s.authors = ["Sven Fuchs", "Joshua Harvey", "Stephan Soller", "Saimon Moore", "Matt Aimonetti"]
   s.date = %q{2009-07-12}
   s.description = %q{Add Internationalization support to your Ruby application.}
   s.email = %q{rails-i18n@googlegroups.com}
