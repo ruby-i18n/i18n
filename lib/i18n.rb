@@ -204,9 +204,10 @@ module I18n
       options = args.last.is_a?(Hash) ? args.pop : {}
       key     = args.shift
       locale  = options.delete(:locale) || I18n.locale
+      raises  = options.delete(:raise)
       backend.translate(locale, key, options)
     rescue I18n::ArgumentError => exception
-      raise exception if options[:raise]
+      raise exception if raises
       handle_exception(exception, locale, key, options)
     end
     alias :t :translate
