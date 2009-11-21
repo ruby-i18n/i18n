@@ -14,7 +14,7 @@ module AllSetup
 
   def setup
     super
-    I18n.backend = I18n::Backend::Chain.new(Backend.new, I18n.backend || I18n::Backend::Simple.new)
+    I18n.backend = I18n::Backend::Chain.new(Backend.new, I18n.backend)
   end
 
   def test_using_all_features_backend

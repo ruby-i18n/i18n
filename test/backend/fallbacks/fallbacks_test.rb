@@ -1,7 +1,6 @@
 # encoding: utf-8
 
 require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
-require 'i18n/backend/fallbacks'
 
 class I18nFallbacksBackendTest < Test::Unit::TestCase
   class Backend
@@ -37,5 +36,22 @@ class I18nFallbacksBackendTest < Test::Unit::TestCase
   define_method "test: raises I18n::MissingTranslationData exception when no translation was found" do
     assert_raises(I18n::MissingTranslationData) { I18n.t(:faa, :locale => :en, :raise => true) }
     assert_raises(I18n::MissingTranslationData) { I18n.t(:faa, :locale => :de, :raise => true) }
+  end
+end
+
+class I18nChainWithFallbacksBackendTest < Test::Unit::TestCase
+  class Backend
+    include I18n::Backend::Base
+    include I18n::Backend::Fallbacks
+  end
+
+  def setup
+    backend = Backend.new
+    backend.store_translations(:de, :foo => 'FOO')
+    I18n.backend = I18n::Backend::Chain.new(I18n::Backend::Simple.new, backend)
+  end
+
+  define_method "test: falls back from de-DE to de when there is no translation for de-DE available" do
+    assert_equal 'FOO', I18n.t(:foo, :locale => :'de-DE')
   end
 end
