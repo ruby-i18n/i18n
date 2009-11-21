@@ -139,7 +139,7 @@ module I18n
         def resolve(locale, object, subject, options = {})
           case subject
           when Symbol
-            translate(locale, subject, options)
+            I18n.translate(subject, options.merge(:locale => locale, :raise => true))
           when Proc
             resolve(locale, object, subject.call(object, options), options = {})
           else
