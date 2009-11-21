@@ -17,13 +17,14 @@ module I18n
   module Backend
     module Pluralization
       # Overwrites the Base backend translate method so that it will check the
-      # translation meta data space (:i18n) for locale specific pluralizers
-      # and use them to pluralize the given entry.
+      # translation meta data space (:i18n) for a locale specific pluralization
+      # rule and use it to pluralize the given entry. I.e. the library expects
+      # pluralization rules to be stored at I18n.t(:'i18n.plural.rule')
       #
-      # Pluralizers are expected to respond to #call(entry, count) and return
-      # a pluralization key. Valid keys depend on the translation data hash
-      # (entry) but it is generally recommended to follow CLDR's style, i.e.
-      # return one of the keys :zero, :one, :few, :many, :other.
+      # Pluralization rules are expected to respond to #call(entry, count) and
+      # return a pluralization key. Valid keys depend on the translation data
+      # hash (entry) but it is generally recommended to follow CLDR's style,
+      # i.e., return one of the keys :zero, :one, :few, :many, :other.
       #
       # The :zero key is always picked directly when count equals 0 AND the
       # translation data has the key :zero. This way translators are free to
@@ -49,7 +50,7 @@ module I18n
         end
 
         def pluralizer(locale)
-          pluralizers[locale] ||= lookup(locale, :"i18n.pluralize")
+          pluralizers[locale] ||= lookup(locale, :'i18n.plural.rule')
         end
     end
   end

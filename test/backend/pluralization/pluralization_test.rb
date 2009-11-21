@@ -12,7 +12,7 @@ class I18nPluralizationBackendTest < Test::Unit::TestCase
   def setup
     I18n.backend = Backend.new
     @pluralizer = lambda { |n| n == 1 ? :one : n == 0 || (2..10).include?(n % 100) ? :few : (11..19).include?(n % 100) ? :many : :other }
-    backend_store_translations(:foo, :i18n => { :pluralize => @pluralizer })
+    backend_store_translations(:foo, :i18n => { :plural => { :rule => @pluralizer } })
     @entry = { :zero => 'zero', :one => 'one', :few => 'few', :many => 'many', :other => 'other' }
   end
 
