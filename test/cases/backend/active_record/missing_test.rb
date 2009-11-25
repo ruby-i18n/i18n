@@ -5,7 +5,7 @@ setup_active_record
 
 class I18nActiveRecordMissingTest < Test::Unit::TestCase
   def setup
-    store_translations(:en, :i18n => { :plural_keys => [:zero, :one, :other] })
+    store_translations(:en, :i18n => { :plural => { :keys => [:zero, :one, :other] } })
     
     I18n.backend = I18n::Backend::Chain.new(I18n.backend)
     I18n.backend.meta_class.send(:include, I18n::Backend::ActiveRecord::Missing)

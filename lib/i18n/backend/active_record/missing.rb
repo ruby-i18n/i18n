@@ -11,19 +11,21 @@
 #     I18n.backend = I18nChainBackend.new(I18n::Backend::ActiveRecord.new, I18n::Backend::Simple.new)
 #
 #  Stub records for pluralizations will also be created for each key defined
-#  in i18n.plural_keys.
+#  in i18n.plural.keys.
 #
 #  For example:
 #
 #    # en.yml
 #    en:
 #      i18n:
-#        plural_keys: [:zero, :one, :other]
+#        plural:
+#          keys: [:zero, :one, :other]
 #
 #    # pl.yml
 #    pl:
 #      i18n:
-#        plural_keys: [:zero, :one, :few, :other]
+#        plural:
+#          keys: [:zero, :one, :few, :other]
 #
 #  It will also persist interpolation keys in Translation#interpolations so
 #  translators will be able to review and use them.
@@ -40,7 +42,7 @@ module I18n
 
           unless ActiveRecord::Translation.locale(locale).lookup(key, separator).exists?
             interpolations = options.reject { |name, value| Base::RESERVED_KEYS.include?(name) }.keys
-            keys = count ? I18n.t('i18n.plural_keys', :locale => locale).map { |k| [key, k].join(separator) } : [key]
+            keys = count ? I18n.t('i18n.plural.keys', :locale => locale).map { |k| [key, k].join(separator) } : [key]
             keys.each { |key| store_default_translation(locale, key, interpolations) }
           end
         end
