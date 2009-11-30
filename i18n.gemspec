@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Sven Fuchs", "Joshua Harvey", "Stephan Soller", "Saimon Moore", "Matt Aimonetti"]
-  s.date = %q{2009-11-16}
+  s.authors = ["Sven Fuchs", "Joshua Harvey", "Matt Aimonetti", "Stephan Soller", "Saimon Moore"]
+  s.date = %q{2009-11-30}
   s.description = %q{Add Internationalization support to your Ruby application.}
   s.email = %q{rails-i18n@googlegroups.com}
   s.extra_rdoc_files = [
@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
      "lib/i18n/backend/active_record.rb",
      "lib/i18n/backend/active_record/store_procs.rb",
      "lib/i18n/backend/active_record/translation.rb",
+     "lib/i18n/backend/active_record_missing.rb",
      "lib/i18n/backend/base.rb",
      "lib/i18n/backend/cache.rb",
      "lib/i18n/backend/chain.rb",
@@ -62,6 +63,7 @@ Gem::Specification.new do |s|
      "test/backend/active_record/all.rb",
      "test/backend/active_record/api_test.rb",
      "test/backend/active_record/setup.rb",
+     "test/backend/active_record_missing/active_record_missing_test.rb",
      "test/backend/all/api_test.rb",
      "test/backend/cache/cache_test.rb",
      "test/backend/chain/api_test.rb",
@@ -115,6 +117,7 @@ Gem::Specification.new do |s|
      "test/backend/active_record/all.rb",
      "test/backend/active_record/api_test.rb",
      "test/backend/active_record/setup.rb",
+     "test/backend/active_record_missing/active_record_missing_test.rb",
      "test/backend/all/api_test.rb",
      "test/backend/cache/cache_test.rb",
      "test/backend/chain/api_test.rb",
