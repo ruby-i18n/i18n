@@ -65,3 +65,8 @@ msgid "Car|wheel"
 msgid_plural "Car|wheels"
 msgstr[0] "Rad"
 msgstr[1] "Räder"
+
+msgid "On %{count} wheel."
+msgid_plural "On %{count} wheels."
+msgstr[0] "Auf %{count} Achse."
+msgstr[1] "Auf %{count} Achsen."

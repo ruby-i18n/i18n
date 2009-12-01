@@ -40,7 +40,7 @@ module I18n
 
         scope, msgid = I18n::Gettext.extract_scope(msgid, separator)
         default = { :one => msgid, :other => msgid_plural }
-        I18n.t(msgid, :default => default, :count => n, :scope => scope)
+        I18n.t(msgid, :default => default, :count => n, :scope => scope, :separator => separator)
       end
       alias ns_ nsgettext
 

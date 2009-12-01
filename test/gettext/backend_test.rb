@@ -81,4 +81,11 @@ class I18nGettextBackendTest < Test::Unit::TestCase
     assert_equal 'Rad',   npgettext('Car', ['wheel', 'wheels'], 1)
     assert_equal 'Räder', npgettext('Car', ['wheel', 'wheels'], 2)
   end
+  
+  def test_ngettextpluralizes_entry_with_dots
+    I18n.locale = :de
+    assert_equal 'Auf 1 Achse.', n_("On %{count} wheel.", "On %{count} wheels.", 1)
+    assert_equal 'Auf 2 Achsen.', n_("On %{count} wheel.", "On %{count} wheels.", 2)
+  end
+  
 end
