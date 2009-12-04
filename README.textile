@@ -14,31 +14,40 @@ Features:
 * custom exception handlers
 * extensible architecture with a swappable backend
 
-Experimental, pluggable features:
+Pluggable features:
 
-* lambda pluralizers stored as translation data
-* RFC4647 compliant locale fallbacks (with optional RFC4646 locale validation)
-* backend cache
+* Cache
+* Pluralization: lambda pluralizers stored as translation data
+* Locale fallbacks, RFC4647 compliant (optionally: RFC4646 locale validation)
+* Gettext support
+* Translation metadata
+
+Alternative backends:
+
+* Chain
+* ActiveRecord (optionally: ActiveRecordMissing)
 
 For more information and lots of resources see: "http://rails-i18n.org/wiki":http://rails-i18n.org/wiki
 
-h2. Install
+h2. Installation
 
 gem install i18n
 
-h3. Install on Rails 2.3.4 (deprecated)
+h3. Installation on Rails < 2.3.5 (deprecated)
 
-Rails 2.3.4 will not accept i18n gems > 0.1.3. There is an unpacked gem inside of active_support/lib/vendor which gets loaded unless gem 'i18n', '~> 0.1.3'. This requirement is relaxed in http://github.com/rails/rails/commit/6da036538334fd459156ab2789c9fae5512be5d2
+Up to version 2.3.4 Rails will not accept i18n gems > 0.1.3. There is an unpacked 
+gem inside of active_support/lib/vendor which gets loaded unless gem 'i18n', '~> 0.1.3'. 
+This requirement is relaxed in "6da03653":http://github.com/rails/rails/commit/6da03653
 
-The following is needed to get the new i18n gem inside vendor/plugins loaded properly.
+The new i18n gem can be loaded from vendor/plugins like this:
 
-      def reload_i18n!
-        raise "Move to i18n version 0.2.0 or greater" if Rails.version > "2.3.4"
-
-        $:.grep(/i18n/).each { |path| $:.delete(path) }
-        I18n::Backend.send :remove_const, "Simple"
-        $: << Rails.root.join('vendor', 'plugins', 'i18n', 'lib').to_s
-      end
+  def reload_i18n!
+    raise "Move to i18n version 0.2.0 or greater" if Rails.version > "2.3.4"
+  
+    $:.grep(/i18n/).each { |path| $:.delete(path) }
+    I18n::Backend.send :remove_const, "Simple"
+    $: << Rails.root.join('vendor', 'plugins', 'i18n', 'lib').to_s
+  end
 
 Then you can `reload_i18n!` inside an i18n initializer. 
 
