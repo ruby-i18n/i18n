@@ -50,6 +50,22 @@ h2. Authors
 * "Saimon Moore":http://saimonmoore.net
 * "Matt Aimonetti":http://railsontherun.com
 
+h2. Contributors
+
+* Akira Matsuda
+* Andrew Briening
+* Clemens Kofler
+* Frederick Cheung
+* Jeremy Kemper
+* José Valim
+* Lawrence Pit
+* Luca Guidi
+* M4SSIVE
+* Marko Seppae
+* Michael Lang
+* Theo Cushion
+* Yaroslav Markin
+
 h2. License
 
 MIT License. See the included MIT-LICENCE file.
