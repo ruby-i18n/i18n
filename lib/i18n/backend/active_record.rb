@@ -7,10 +7,11 @@ require 'i18n/backend/active_record/translation'
 #  as the following example shows:
 #
 #     I18n.backend = I18n::Backend::Chain.new(I18n::Backend::ActiveRecord.new, I18.backend, I18n::Backend::ActiveRecordMissing.new)
-#  
+#
 module I18n
   module Backend
     class ActiveRecord
+      autoload :Missing,     'i18n/backend/active_record/missing'
       autoload :StoreProcs,  'i18n/backend/active_record/store_procs'
       autoload :Translation, 'i18n/backend/active_record/translation'
 
