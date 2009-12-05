@@ -1,6 +1,7 @@
 # encoding: utf-8
 
-$:.unshift "lib"
+$: << "lib"
+$: << File.expand_path(File.dirname(__FILE__))
 
 require 'rubygems'
 require 'test/unit'
@@ -10,56 +11,70 @@ require 'i18n/core_ext/object/meta_class'
 require 'time'
 require 'yaml'
 
-require File.dirname(__FILE__) + '/with_options'
-require File.dirname(__FILE__) + '/backend/simple/setup'
-require File.dirname(__FILE__) + '/backend/active_record/setup'
-
 Dir[File.dirname(__FILE__) + '/api/**/*.rb'].each do |filename|
   require filename
 end
 
 $KCODE = 'u' unless RUBY_VERSION >= '1.9'
 
-class Test::Unit::TestCase
+# wtf is wrong with this, why's there Kernel#test?
+# class Module
+#   def self.test(name, &block)
+#     define_method("test: " + name, &block)
+#   end
+# end
+
+class Test::Unit::TestCase  
   def self.test(name, &block)
     define_method("test: " + name, &block)
+  end
+
+  def teardown
+    I18n.locale = nil
+    I18n.default_locale = :en
+    I18n.load_path = []
+    I18n.available_locales = nil
+    I18n.backend = nil
+  end
+
+  def translations
+    I18n.backend.instance_variable_get(:@translations)
+  end
+  
+  def store_translations(*args)
+    data   = args.pop
+    locale = args.pop || :en
+    I18n.backend.store_translations(locale, data)
+  end
+  
+  def locales_dir
+    File.dirname(__FILE__) + '/fixtures/locales'
   end
 
   def euc_jp(string)
     string.encode!(Encoding::EUC_JP)
   end
+end
 
-  def locales_dir
-    File.dirname(__FILE__) + '/fixtures/locales'
+def setup_active_record
+  require 'active_record'
+  require 'i18n/backend/active_record/store_procs'
+
+  if I18n::Backend::Simple.method_defined?(:interpolate_with_deprecated_syntax)
+    I18n::Backend::Simple.send(:remove_method, :interpolate) rescue NameError
   end
 
-  def backend_store_translations(*args)
-    I18n.backend.store_translations(*args)
+  ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
+  ActiveRecord::Migration.verbose = false
+  ActiveRecord::Schema.define(:version => 1) do
+    create_table :translations do |t|
+      t.string :locale
+      t.string :key
+      t.string :value
+      t.string :interpolations
+      t.boolean :is_proc, :default => false
+    end
   end
 
-  def backend_get_translations
-    I18n.backend.instance_variable_get :@translations
-  end
-
-  def date
-    Date.new(2008, 3, 1)
-  end
-
-  def morning_datetime
-    DateTime.new(2008, 3, 1, 6)
-  end
-  alias :datetime :morning_datetime
-
-  def evening_datetime
-    DateTime.new(2008, 3, 1, 18)
-  end
-
-  def morning_time
-    Time.parse('2008-03-01 6:00 UTC')
-  end
-  alias :time :morning_time
-
-  def evening_time
-    Time.parse('2008-03-01 18:00 UTC')
-  end
+  I18n::Backend::ActiveRecord::Translation.send(:include, I18n::Backend::ActiveRecord::StoreProcs)
 end
