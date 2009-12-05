@@ -71,6 +71,7 @@ h2. Contributors
 * Luca Guidi
 * M4SSIVE
 * Marko Seppae
+* Mathias Meyer
 * Michael Lang
 * Theo Cushion
 * Yaroslav Markin
