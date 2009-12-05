@@ -62,7 +62,7 @@ module I18n
         }
 
         def self.available_locales
-          Translation.find(:all, :select => 'DISTINCT locale').map { |t| t.locale }
+          Translation.find(:all, :select => 'DISTINCT locale').map { |t| t.locale.to_sym }
         end
         
         def interpolates?(key)
