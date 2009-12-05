@@ -183,7 +183,7 @@ module I18n
               "%{#{key}}"
             end
           end
-          values.each { |key, value| values[key] = value.call if interpolate_lambda?(value, s, key) }
+          values.each { |key, value| values[key] = value.call(values) if interpolate_lambda?(value, s, key) }
           s % values
 
         rescue KeyError => e
