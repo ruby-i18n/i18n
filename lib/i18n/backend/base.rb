@@ -21,7 +21,7 @@ module I18n
       # This uses a deep merge for the translations hash, so existing
       # translations will be overwritten by new ones only at the deepest
       # level of the hash.
-      def store_translations(locale, data)
+      def store_translations(locale, data, options = {})
         merge_translations(locale, data)
       end
 

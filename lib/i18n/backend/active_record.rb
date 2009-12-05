@@ -20,9 +20,9 @@ module I18n
       def reload!
       end
 
-      def store_translations(locale, data)
-        separator = I18n.default_separator # TODO allow to pass as an option?
-        wind_keys(data).each do |key, v|
+      def store_translations(locale, data, options = {})
+        separator = options[:separator] || I18n.default_separator
+        wind_keys(data, separator).each do |key, v|
           Translation.locale(locale).lookup(expand_keys(key, separator), separator).delete_all
           Translation.create(:locale => locale.to_s, :key => key, :value => v)
         end
@@ -55,7 +55,7 @@ module I18n
               hash[r.key.slice(chop_range)] = r.value
               hash
             end
-            deep_symbolize_keys(unwind_keys(result))
+            deep_symbolize_keys(unwind_keys(result, separator))
           end
         end
 
