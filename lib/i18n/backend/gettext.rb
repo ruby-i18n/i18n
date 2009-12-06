@@ -41,7 +41,7 @@ module I18n
 
         def normalize(locale, data)
           data.inject({}) do |result, (key, value)|
-            unless key.blank?
+            unless key.nil? || key.empty?
               key, value = normalize_pluralization(locale, key, value) if key.index("\000")
 
               parts = key.split('|').reverse
