@@ -71,26 +71,28 @@ class I18nTest < Test::Unit::TestCase
     I18n.exception_handler = :default_exception_handler # revert it
   end
 
-  def test_uses_custom_exception_handler
-    I18n.exception_handler = :custom_exception_handler
-    I18n.expects(:custom_exception_handler)
-    I18n.translate :bogus
-    I18n.exception_handler = :default_exception_handler # revert it
-  end
+  with_mocha do
+    def test_uses_custom_exception_handler
+      I18n.exception_handler = :custom_exception_handler
+      I18n.expects(:custom_exception_handler)
+      I18n.translate :bogus
+      I18n.exception_handler = :default_exception_handler # revert it
+    end
 
-  def test_delegates_translate_to_backend
-    I18n.backend.expects(:translate).with 'de', :foo, {}
-    I18n.translate :foo, :locale => 'de'
-  end
+    def test_delegates_translate_to_backend
+      I18n.backend.expects(:translate).with 'de', :foo, {}
+      I18n.translate :foo, :locale => 'de'
+    end
 
-  def test_delegates_localize_to_backend
-    I18n.backend.expects(:localize).with 'de', :whatever, :default
-    I18n.localize :whatever, :locale => 'de'
-  end
+    def test_delegates_localize_to_backend
+      I18n.backend.expects(:localize).with 'de', :whatever, :default
+      I18n.localize :whatever, :locale => 'de'
+    end
 
-  def test_translate_given_no_locale_uses_i18n_locale
-    I18n.backend.expects(:translate).with :en, :foo, {}
-    I18n.translate :foo
+    def test_translate_given_no_locale_uses_i18n_locale
+      I18n.backend.expects(:translate).with :en, :foo, {}
+      I18n.translate :foo
+    end
   end
 
   def test_translate_on_nested_symbol_keys_works
@@ -117,10 +119,12 @@ class I18nTest < Test::Unit::TestCase
     assert_equal [".", ","], I18n.t(%w(format.separator format.delimiter), :scope => 'currency')
   end
 
-  def test_translate_with_options_using_scope_works
-    I18n.backend.expects(:translate).with('de', :precision, :scope => :"currency.format")
-    I18n.with_options :locale => 'de', :scope => :'currency.format' do |locale|
-      locale.t :precision
+  with_mocha do
+    def test_translate_with_options_using_scope_works
+      I18n.backend.expects(:translate).with('de', :precision, :scope => :"currency.format")
+      I18n.with_options :locale => 'de', :scope => :'currency.format' do |locale|
+        locale.t :precision
+      end
     end
   end
 

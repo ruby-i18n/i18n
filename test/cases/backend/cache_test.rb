@@ -29,22 +29,24 @@ class I18nBackendCacheTest < Test::Unit::TestCase
     assert I18n.cache_store.is_a?(ActiveSupport::Cache::MemoryStore)
   end
 
-  define_method "test translate hits the backend and caches the response" do
-    I18n.backend.expects(:lookup).returns('Foo')
-    assert_equal 'Foo', I18n.t(:foo)
+  with_mocha do
+    define_method "test translate hits the backend and caches the response" do
+      I18n.backend.expects(:lookup).returns('Foo')
+      assert_equal 'Foo', I18n.t(:foo)
 
-    I18n.backend.expects(:lookup).never
-    assert_equal 'Foo', I18n.t(:foo)
+      I18n.backend.expects(:lookup).never
+      assert_equal 'Foo', I18n.t(:foo)
 
-    I18n.backend.expects(:lookup).returns('Bar')
-    assert_equal 'Bar', I18n.t(:bar)
-  end
+      I18n.backend.expects(:lookup).returns('Bar')
+      assert_equal 'Bar', I18n.t(:bar)
+    end
 
-  define_method "test still raises MissingTranslationData but also caches it" do
-    I18n.backend.expects(:lookup).returns(nil)
-    assert_raises(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
-    I18n.backend.expects(:lookup).never
-    assert_raises(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
+    define_method "test still raises MissingTranslationData but also caches it" do
+      I18n.backend.expects(:lookup).returns(nil)
+      assert_raises(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
+      I18n.backend.expects(:lookup).never
+      assert_raises(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
+    end
   end
 
   define_method "test uses 'i18n' as a cache key namespace by default" do

@@ -5,11 +5,17 @@ $: << File.expand_path(File.dirname(__FILE__))
 
 require 'rubygems'
 require 'test/unit'
-require 'mocha'
 require 'i18n'
 require 'i18n/core_ext/object/meta_class'
 require 'time'
 require 'yaml'
+
+begin
+  require 'mocha'
+rescue LoadError
+  puts "skipping tests using mocha as mocha can't be found"
+end
+
 
 Dir[File.dirname(__FILE__) + '/api/**/*.rb'].each do |filename|
   require filename
@@ -24,9 +30,13 @@ $KCODE = 'u' unless RUBY_VERSION >= '1.9'
 #   end
 # end
 
-class Test::Unit::TestCase  
+class Test::Unit::TestCase
   def self.test(name, &block)
     define_method("test: " + name, &block)
+  end
+
+  def self.with_mocha
+    yield if Object.respond_to?(:expects)
   end
 
   def teardown
@@ -40,13 +50,13 @@ class Test::Unit::TestCase
   def translations
     I18n.backend.instance_variable_get(:@translations)
   end
-  
+
   def store_translations(*args)
     data   = args.pop
     locale = args.pop || :en
     I18n.backend.store_translations(locale, data)
   end
-  
+
   def locales_dir
     File.dirname(__FILE__) + '/fixtures/locales'
   end
