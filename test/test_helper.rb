@@ -87,8 +87,6 @@ def setup_active_record
       end
     end
 
-    I18n::Backend::ActiveRecord::Translation.send(:include, I18n::Backend::ActiveRecord::StoreProcs)
-
   rescue LoadError
     puts "skipping tests using activerecord as activerecord can't be found"
   end

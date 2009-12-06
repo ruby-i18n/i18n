@@ -8,19 +8,16 @@
 # was extracted from the original backend.
 #
 # ParseTree is not compatible with Ruby 1.9.
-module I18n
-  module Backend
-    class ActiveRecord
-      module StoreProcs
-        unless RUBY_VERSION >= '1.9'
-          class << self
-            def included(target)
-              require 'ruby2ruby'
-              require 'parse_tree'
-              require 'parse_tree_extensions'
-            end
-          end
 
+begin
+  require 'ruby2ruby'
+  require 'parse_tree'
+  require 'parse_tree_extensions'
+
+  module I18n
+    module Backend
+      class ActiveRecord
+        module StoreProcs
           def value=(v)
             case v
               when Proc
@@ -30,8 +27,13 @@ module I18n
                 write_attribute(:value, v)
             end
           end
+
+          Translation.send(:include, self)
         end
       end
     end
   end
-end
+
+rescue LoadError => e
+  puts "I18n::Backend::ActiveRecord:StoreProcs can not be used: #{e.message}"
+end unless RUBY_VERSION >= '1.9'
