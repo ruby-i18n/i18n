@@ -44,6 +44,7 @@ class I18nBackendCacheTest < Test::Unit::TestCase
     define_method "test still raises MissingTranslationData but also caches it" do
       I18n.backend.expects(:lookup).returns(nil)
       assert_raises(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
+
       I18n.backend.expects(:lookup).never
       assert_raises(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
     end
