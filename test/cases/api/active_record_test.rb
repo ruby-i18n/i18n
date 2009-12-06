@@ -3,6 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 
 setup_active_record
 
+
 class I18nActiveRecordApiTest < Test::Unit::TestCase
   def setup
     I18n.backend = I18n::Backend::ActiveRecord.new
@@ -24,5 +25,4 @@ class I18nActiveRecordApiTest < Test::Unit::TestCase
   define_method "test: make sure we use an ActiveRecord backend" do
     assert_equal I18n::Backend::ActiveRecord, I18n.backend.class
   end
-end
-
+end if defined?(ActiveRecord)

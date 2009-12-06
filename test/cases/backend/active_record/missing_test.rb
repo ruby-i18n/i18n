@@ -57,4 +57,4 @@ class I18nActiveRecordMissingTest < Test::Unit::TestCase
     translations = I18n::Backend::ActiveRecord::Translation.locale(:en).find_by_key %w{ foo.zero foo.one foo.other }
     assert !I18n::Backend::ActiveRecord::Translation.locale(:en).find_by_key("foo")
   end
-end
+end if defined?(ActiveRecord)

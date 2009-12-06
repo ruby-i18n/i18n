@@ -57,24 +57,29 @@ class Test::Unit::TestCase
 end
 
 def setup_active_record
-  require 'active_record'
-  require 'i18n/backend/active_record/store_procs'
+  begin
+    require 'activerecord'
+    require 'i18n/backend/active_record/store_procs'
 
-  if I18n::Backend::Simple.method_defined?(:interpolate_with_deprecated_syntax)
-    I18n::Backend::Simple.send(:remove_method, :interpolate) rescue NameError
-  end
-
-  ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
-  ActiveRecord::Migration.verbose = false
-  ActiveRecord::Schema.define(:version => 1) do
-    create_table :translations do |t|
-      t.string :locale
-      t.string :key
-      t.string :value
-      t.string :interpolations
-      t.boolean :is_proc, :default => false
+    if I18n::Backend::Simple.method_defined?(:interpolate_with_deprecated_syntax)
+      I18n::Backend::Simple.send(:remove_method, :interpolate) rescue NameError
     end
-  end
 
-  I18n::Backend::ActiveRecord::Translation.send(:include, I18n::Backend::ActiveRecord::StoreProcs)
+    ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
+    ActiveRecord::Migration.verbose = false
+    ActiveRecord::Schema.define(:version => 1) do
+      create_table :translations do |t|
+        t.string :locale
+        t.string :key
+        t.string :value
+        t.string :interpolations
+        t.boolean :is_proc, :default => false
+      end
+    end
+
+    I18n::Backend::ActiveRecord::Translation.send(:include, I18n::Backend::ActiveRecord::StoreProcs)
+
+  rescue LoadError
+    puts "skipping tests using activerecord as activerecord can't be found"
+  end
 end

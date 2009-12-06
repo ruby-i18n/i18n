@@ -3,6 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 
 setup_active_record
 
+
 class I18nBackendActiveRecordTest < Test::Unit::TestCase
   def setup
     I18n.backend = I18n::Backend::ActiveRecord.new
@@ -47,4 +48,4 @@ class I18nBackendActiveRecordTest < Test::Unit::TestCase
   def test_expand_keys
     assert_equal %w(foo foo.bar foo.bar.baz), I18n.backend.send(:expand_keys, :'foo.bar.baz')
   end
-end
+end if defined?(ActiveRecord)
