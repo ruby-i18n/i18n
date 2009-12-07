@@ -22,11 +22,11 @@ module Tests
       end
 
       define_method "test interpolation: given a lambda as a value it calls it if the string contains the key" do
-        assert_equal 'Hi David!', interpolate(:default => 'Hi {{name}}!', :name => lambda { 'David' })
+        assert_equal 'Hi David!', interpolate(:default => 'Hi {{name}}!', :name => lambda { |*args| 'David' })
       end
 
       define_method "test interpolation: given a lambda as a value it does not call it if the string does not contain the key" do
-        assert_nothing_raised { interpolate(:default => 'Hi!', :name => lambda { raise 'fail' }) }
+        assert_nothing_raised { interpolate(:default => 'Hi!', :name => lambda { |*args| raise 'fail' }) }
       end
 
       define_method "test interpolation: given values but missing a key it raises I18n::MissingInterpolationArgument" do
@@ -64,16 +64,16 @@ module Tests
       end
 
       if Kernel.const_defined?(:Encoding)
-        define_method "test interpolation: given a utf-8 translation and a euc-jp value it returns a translation in euc-jp" do
-          assert_equal euc_jp('Hi ゆきひろ!'), interpolate(:default => 'Hi {{name}}!', :name => euc_jp('ゆきひろ'))
-        end
-
         define_method "test interpolation: given a euc-jp translation and a utf-8 value it raises Encoding::CompatibilityError" do
           assert_raises(Encoding::CompatibilityError) do
             interpolate(:default => euc_jp('こんにちは、{{name}}さん!'), :name => 'ゆきひろ')
           end
         end
         
+        # define_method "test interpolation: given a utf-8 translation and a euc-jp value it returns a translation in euc-jp" do
+        #   assert_equal euc_jp('Hi ゆきひろ!'), interpolate(:default => 'Hi {{name}}!', :name => euc_jp('ゆきひろ'))
+        # end
+        # 
         # TODO should better explain how this relates to the test above with the simpler utf-8 default string
         define_method "test interpolation: given a utf-8 translation and a euc-jp value it raises Encoding::CompatibilityError" do
           assert_raises(Encoding::CompatibilityError) do
