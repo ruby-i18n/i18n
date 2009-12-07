@@ -16,7 +16,7 @@ class I18nActiveRecordApiTest < Test::Unit::TestCase
   include Tests::Api::Link
   include Tests::Api::Lookup
   include Tests::Api::Pluralization
-  include Tests::Api::Procs
+  include Tests::Api::Procs unless RUBY_VERSION >= '1.9.1'
   include Tests::Api::Localization::Date
   include Tests::Api::Localization::DateTime
   include Tests::Api::Localization::Time
