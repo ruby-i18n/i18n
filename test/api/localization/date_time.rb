@@ -48,9 +48,10 @@ module Tests
         end
 
         define_method "test localize Date: given a format that resolves to a Proc it calls the Proc with the object" do
-          assert_equal '[Sat Mar 01 06:00:00 UTC 2008, {}]', I18n.l(@time, :format => :proc, :locale => :de)
+          assert_equal '[Sat, 01 Mar 2008 06:00:00 +0000, {}]', I18n.l(@datetime, :format => :proc, :locale => :de)
         end
 
+        # TODO fails, but something along these lines probably should pass
         # define_method "test localize DateTime: given a format that resolves to a Proc it calls the Proc with the object and extra options" do
         #   assert_equal '1ter März 2008, 06:00 Uhr', I18n.l(@datetime, :long_ordinalized)
         # end
