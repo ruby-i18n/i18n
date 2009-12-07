@@ -173,21 +173,40 @@ module I18n
         def interpolate(locale, string, values = {})
           return string unless string.is_a?(String) && !values.empty?
 
-          s = string.gsub(INTERPOLATION_SYNTAX_PATTERN) do
-            escaped, key = $1, $2.to_sym
-            if escaped
-              "{{#{key}}}"
-            elsif RESERVED_KEYS.include?(key)
-              raise ReservedInterpolationKey.new(key, string)
-            else
-              "%{#{key}}"
+          preserve_encoding(string) do
+            s = string.gsub(INTERPOLATION_SYNTAX_PATTERN) do
+              escaped, key = $1, $2.to_sym
+              if escaped
+                "{{#{key}}}"
+              elsif RESERVED_KEYS.include?(key)
+                raise ReservedInterpolationKey.new(key, string)
+              else
+                "%{#{key}}"
+              end
             end
+
+            values.each do |key, value|
+              value = value.call(values) if interpolate_lambda?(value, s, key)
+              value = value.to_s unless value.is_a?(String)
+              values[key] = value
+            end
+
+            s % values
           end
-          values.each { |key, value| values[key] = value.call(values) if interpolate_lambda?(value, s, key) }
-          s % values
 
         rescue KeyError => e
           raise MissingInterpolationArgument.new(values, string)
+        end
+
+        def preserve_encoding(string)
+          if string.respond_to?(:encoding)
+            encoding = string.encoding
+            result = yield
+            result.force_encoding(encoding) if result.respond_to?(:force_encoding)
+            result
+          else
+            yield
+          end
         end
 
         # returns true when the given value responds to :call and the key is
