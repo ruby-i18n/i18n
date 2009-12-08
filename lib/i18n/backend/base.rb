@@ -25,20 +25,23 @@ module I18n
         merge_translations(locale, data)
       end
 
-      def translate(locale, key, options = {})
-        raise InvalidLocale.new(locale) if locale.nil?
-        return key.map { |k| translate(locale, k, options) } if key.is_a?(Array)
+      def translate(locale, key, opts = nil)
+        raise InvalidLocale.new(locale) unless locale
+        return key.map { |k| translate(locale, k, opts) } if key.is_a?(Array)
 
-        count, scope, default, separator = options.values_at(:count, *RESERVED_KEYS)
-        values = options.reject { |name, value| RESERVED_KEYS.include?(name) }
+        if opts
+          count = opts[:count]
+          scope = opts[:scope]
 
-        entry = lookup(locale, key, scope, separator)
-        entry = entry.nil? ? default(locale, key, default, options) : resolve(locale, key, entry, options)
-
-        raise(I18n::MissingTranslationData.new(locale, key, options)) if entry.nil?
-        entry = pluralize(locale, entry, count)
-        entry = interpolate(locale, entry, values)
-        entry
+          if entry = lookup(locale, key, scope, opts[:separator]) || ((default = opts.delete(:default)) && default(locale, key, default, opts))
+            entry = resolve(locale, key, entry, opts)
+            entry = pluralize(locale, entry, count) if count
+            entry = interpolate(locale, entry, opts)
+            entry
+          end
+        else
+          resolve(locale, key, lookup(locale, key), opts)
+        end || raise(I18n::MissingTranslationData.new(locale, key, opts))
       end
 
       # Acts the same as +strftime+, but uses a localized version of the
@@ -136,10 +139,10 @@ module I18n
         # If the given subject is a Symbol, it will be translated with the
         # given options. If it is a Proc then it will be evaluated. All other
         # subjects will be returned directly.
-        def resolve(locale, object, subject, options = {})
+        def resolve(locale, object, subject, options = nil)
           case subject
           when Symbol
-            I18n.translate(subject, options.merge(:locale => locale, :raise => true))
+            I18n.translate(subject, (options || {}).merge(:locale => locale, :raise => true))
           when Proc
             resolve(locale, object, subject.call(object, options), options = {})
           else

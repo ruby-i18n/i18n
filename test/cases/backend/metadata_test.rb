@@ -39,7 +39,7 @@ class I18nBackendMetadataTest < Test::Unit::TestCase
   end
 
   define_method "test: translate adds the default to metadata on Strings" do
-    assert_equal 'bar', I18n.t(:foo, :default => 'bar').translation_metadata[:default]
+    assert_equal 'bar', I18n.t(:foo, :default => 'bar', :name => '').translation_metadata[:default]
   end
 
   define_method "test: translation adds the interpolation values to metadata on Strings" do
