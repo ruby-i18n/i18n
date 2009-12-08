@@ -64,11 +64,17 @@ class Test::Unit::TestCase
   def euc_jp(string)
     string.encode!(Encoding::EUC_JP)
   end
+
+  def can_store_procs?
+    I18n::Backend::ActiveRecord === I18n.backend and
+    I18n::Backend::ActiveRecord.included_modules.include?(I18n::Backend::ActiveRecord::StoreProcs)
+  end
 end
 
 def setup_active_record
   begin
     require 'activerecord'
+    require 'i18n/backend/active_record'
     require 'i18n/backend/active_record/store_procs'
 
     if I18n::Backend::Simple.method_defined?(:interpolate_with_deprecated_syntax)
