@@ -16,6 +16,7 @@ module I18n
     autoload :Cache,                 'i18n/backend/cache'
     autoload :Chain,                 'i18n/backend/chain'
     autoload :Fallbacks,             'i18n/backend/fallbacks'
+    autoload :Fast,                  'i18n/backend/fast'
     autoload :Gettext,               'i18n/backend/gettext'
     autoload :Helpers,               'i18n/backend/helpers'
     autoload :InterpolationCompiler, 'i18n/backend/interpolation_compiler'
