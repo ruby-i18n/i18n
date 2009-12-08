@@ -13,27 +13,26 @@ begin
   require 'ruby2ruby'
   require 'parse_tree'
   require 'parse_tree_extensions'
+rescue LoadError => e
+  puts "can't use StoreProcs because: #{e.message}"
+end
 
-  module I18n
-    module Backend
-      class ActiveRecord
-        module StoreProcs
-          def value=(v)
-            case v
-              when Proc
-                write_attribute(:value, v.to_ruby)
-                write_attribute(:is_proc, true)
-              else
-                write_attribute(:value, v)
-            end
+module I18n
+  module Backend
+    class ActiveRecord
+      module StoreProcs
+        def value=(v)
+          case v
+            when Proc
+              write_attribute(:value, v.to_ruby)
+              write_attribute(:is_proc, true)
+            else
+              write_attribute(:value, v)
           end
-
-          Translation.send(:include, self)
         end
+
+        Translation.send(:include, self) unless RUBY_VERSION >= '1.9'
       end
     end
   end
-
-rescue LoadError => e
-  puts "I18n::Backend::ActiveRecord:StoreProcs can not be used: #{e.message}"
-end unless RUBY_VERSION >= '1.9'
+end
