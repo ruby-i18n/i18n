@@ -15,8 +15,8 @@ module Tests
 
       define_method "test defaults: given a default is a key that resolves to a Proc it calls it with the key and interpolation values" do
         store_translations(:a_lambda => lambda { |*args| args.inspect })
-        assert_equal '[:a_lambda, {:foo=>"foo"}]', I18n.t(nil, :default => :a_lambda, :foo => 'foo')
-        assert_equal '[:a_lambda, {:foo=>"foo"}]', I18n.t(nil, :default => [nil, :a_lambda], :foo => 'foo')
+        assert_equal '[:a_lambda, {:raise=>true, :foo=>"foo"}]', I18n.t(nil, :default => :a_lambda, :foo => 'foo')
+        assert_equal '[:a_lambda, {:raise=>true, :foo=>"foo"}]', I18n.t(nil, :default => [nil, :a_lambda], :foo => 'foo')
       end
 
       define_method "test interpolation: given an interpolation value is a lambda it calls it with key and values before interpolating it" do

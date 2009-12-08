@@ -206,8 +206,15 @@ module I18n
       locale  = options.delete(:locale) || I18n.locale
       raises  = options.delete(:raise)
       backend.translate(locale, key, options)
+    def translate(key, options = nil)
+      if options || (key.kind_of?(Hash) && options = key)
+        backend.translate(locale = options.key?(:locale) ? options.delete(:locale) : I18n.locale, key, options)
+      else
+        backend.translate(locale = I18n.locale, key)
+      end
     rescue I18n::ArgumentError => exception
-      raise exception if raises
+      options = options || {}
+      raise exception if options[:raise]
       handle_exception(exception, locale, key, options)
     end
     alias :t :translate

@@ -89,10 +89,9 @@ class I18nTest < Test::Unit::TestCase
       I18n.localize :whatever, :locale => 'de'
     end
 
-    def test_translate_given_no_locale_uses_i18n_locale
-      I18n.backend.expects(:translate).with :en, :foo, {}
-      I18n.translate :foo
-    end
+  def test_translate_given_no_locale_uses_i18n_locale
+    I18n.backend.expects(:translate).with :en, :foo, nil
+    I18n.translate :foo
   end
 
   def test_translate_on_nested_symbol_keys_works
