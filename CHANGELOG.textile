@@ -4,6 +4,25 @@ h2. master
 
 * (no changes)
 
+h2. 0.3.1 (2009-12-11)
+
+* "Add PoParser to gemspec":http://github.com/svenfuchs/i18n/commit/d6b2763f39c932f66adb039b96882a472f883c51
+* "Enable custom separators for ActiveRecord backend":http://github.com/svenfuchs/i18n/commit/9341d3fcfc951cc31807ba672d2b5d90909ef3e5
+* "Pass interpolation values to interpolation procs":http://github.com/svenfuchs/i18n/commit/39c2ed8fbad645671cd5520ce7ad0aeefe2b0cca
+* "Fix that ngettext supports keys with dots":http://github.com/svenfuchs/i18n/commit/7362a43c34364d500de8899cfcca6bf1a5e6d1c8
+
+h2. 0.3.0 (2009-11-30)
+
+* "Gettext backend and helpers":http://github.com/svenfuchs/i18n/commit/35a1740d2f10b808548af352006950da4017e374
+* "Metadata module":http://github.com/svenfuchs/i18n/commit/2677208555179b36fcbe958c0e8bc642cf5bc020
+* "Basic ActiveRecord backend":http://github.com/svenfuchs/i18n/commit/786632d0b42de423ecf0969622efc87f1691e2a2
+* "Set encoding to UTF8 for all files":http://github.com/svenfuchs/i18n/commit/9be3d4a311b5bf583eec5d39986176cc40c112f2
+* "Chain backend":http://github.com/svenfuchs/i18n/commit/08259ffb88b3005403648d77bc1cbca0b92f3cf5
+* "Backend/cache implementation":http://github.com/svenfuchs/i18n/commit/e7bf15351cd2e27f5972eb40e65a5dd6f4a0feed
+* "Pluralization module":http://github.com/svenfuchs/i18n/commit/9ca4c9ed52d4706566a6abeb2d78722dcc5d4764
+* "add and adapt Globalize2 fallback implementation":http://github.com/svenfuchs/i18n/commit/1b37a303b27d6222b17162804b06323e5628768f
+* "move Simple backend implementation to a Base backend class and extend Simple from Base.":http://github.com/svenfuchs/i18n/commit/32ddc80a04e6aa247f6d6613bde7f78c73396cb4
+
 h2. 0.2.0 (2009-07-12)
 
 * "Allow using Ruby 1.9 syntax for string interpolation (API addition)":http://github.com/svenfuchs/i18n/commit/c6e0b06d512f2af57199a843a1d8a40241b32861
