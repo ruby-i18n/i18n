@@ -203,7 +203,7 @@ module I18n
     def translate(*args)
       options = args.last.is_a?(Hash) ? args.pop : {}
       key     = args.shift
-      locale  = options.key?(:locale) ? options.delete(:locale) : I18n.locale
+      locale  = options.delete(:locale) || I18n.locale
       raises  = options.delete(:raise)
       backend.translate(locale, key, options)
     rescue I18n::ArgumentError => exception

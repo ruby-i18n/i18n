@@ -30,8 +30,11 @@ module Tests
         assert_equal 'bar', I18n.t('foo|bar', :separator => '|')
       end
 
-      define_method "test lookup: given nil as a locale it raises InvalidLocale" do
-        assert_raises(I18n::InvalidLocale) { I18n.t(:bar, :locale => nil) }
+      # In fact it probably *should* fail but Rails currently relies on using the default locale instead.
+      # So we'll stick to this for now until we get it fixed in Rails.
+      define_method "test lookup: given nil as a locale it does not raise but use the default locale" do
+        # assert_raises(I18n::InvalidLocale) { I18n.t(:bar, :locale => nil) }
+        assert_nothing_raised { I18n.t(:bar, :locale => nil) }
       end
     end
   end
