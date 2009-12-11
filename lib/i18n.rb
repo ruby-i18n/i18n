@@ -225,7 +225,9 @@ module I18n
     end
     alias :l :localize
 
-  protected
+  # making these private until Ruby 1.9.2 can send to protected methods again
+  # see http://redmine.ruby-lang.org/repositories/revision/ruby-19?rev=24280
+  private
 
     # Handles exceptions raised in the backend. All exceptions except for
     # MissingTranslationData exceptions are re-raised. When a MissingTranslationData
