@@ -73,7 +73,8 @@ module I18n
           if is_proc
             Kernel.eval read_attribute(:value)
           else
-            read_attribute(:value)
+            value = read_attribute(:value)
+            value == 'f' ? false : value
           end
         end
       end

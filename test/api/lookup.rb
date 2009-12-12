@@ -5,17 +5,21 @@ module Tests
     module Lookup
       def setup
         super
-        store_translations(:foo => { :bar => 'bar', :baz => 'baz' })
+        store_translations(:foo => { :bar => 'bar', :baz => 'baz' }, :bla => false)
       end
-      
+
       define_method "test lookup: given a nested key it looks up the nested hash value" do
         assert_equal 'bar', I18n.t(:'foo.bar')
+      end
+
+      define_method "test make sure we can store a native false value as well" do
+        assert_equal false, I18n.t(:bla)
       end
 
       define_method "test lookup: given a missing key, no default and no raise option it returns an error message" do
         assert_equal "translation missing: en, missing", I18n.t(:missing)
       end
-      
+
       define_method "test lookup: given a missing key, no default and the raise option it raises MissingTranslationData" do
         assert_raises(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
       end

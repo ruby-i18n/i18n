@@ -40,7 +40,8 @@ module I18n
       def translate(locale, key, options = {})
         I18n.fallbacks[locale].each do |fallback|
           begin
-            result = super(fallback, key, options) and return result
+            result = super(fallback, key, options)
+            return result unless result.nil?
           rescue I18n::MissingTranslationData
           end
         end

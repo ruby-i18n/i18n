@@ -46,7 +46,7 @@ module I18n
             translation = backend.translate(locale, key, options)
             if namespace_lookup?(translation, options)
               namespace.update(translation)
-            elsif translation
+            elsif !translation.nil?
               return translation
             end
           rescue MissingTranslationData
