@@ -201,20 +201,13 @@ module I18n
     # always return the same translations/values per unique combination of argument
     # values.
     def translate(*args)
-      options = args.last.is_a?(Hash) ? args.pop : {}
+      options = args.pop if args.last.is_a?(Hash)
       key     = args.shift
-      locale  = options.delete(:locale) || I18n.locale
-      raises  = options.delete(:raise)
-      backend.translate(locale, key, options)
-    def translate(key, options = nil)
-      if options || (key.kind_of?(Hash) && options = key)
-        backend.translate(locale = options.key?(:locale) ? options.delete(:locale) : I18n.locale, key, options)
-      else
-        backend.translate(locale = I18n.locale, key)
-      end
+      locale  = options && options.delete(:locale) || I18n.locale
+      raises  = options && options.delete(:raise)
+      backend.translate(locale, key, options || {})
     rescue I18n::ArgumentError => exception
-      options = options || {}
-      raise exception if options[:raise]
+      raise exception if raises
       handle_exception(exception, locale, key, options)
     end
     alias :t :translate

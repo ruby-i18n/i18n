@@ -34,13 +34,14 @@ module I18n
         def store_default_translations(locale, key, options = {})
           count, scope, default, separator = options.values_at(:count, *Base::RESERVED_KEYS)
           separator ||= I18n.default_separator
+
           keys = I18n.send(:normalize_translation_keys, locale, key, scope, separator)[1..-1]
           key = keys.join(separator || I18n.default_separator)
 
           unless ActiveRecord::Translation.locale(locale).lookup(key, separator).exists?
             interpolations = options.reject { |name, value| Base::RESERVED_KEYS.include?(name) }.keys
             keys = count ? I18n.t('i18n.plural_keys', :locale => locale).map { |k| [key, k].join(separator) } : [key]
-            keys.each { |key| store_default_translation(locale, key, interpolations) } 
+            keys.each { |key| store_default_translation(locale, key, interpolations) }
           end
         end
 
@@ -49,7 +50,7 @@ module I18n
           translation.interpolations = interpolations
           translation.save
         end
-      
+
         def translate(locale, key, options = {})
           super
 

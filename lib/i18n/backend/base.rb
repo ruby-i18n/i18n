@@ -25,23 +25,26 @@ module I18n
         merge_translations(locale, data)
       end
 
-      def translate(locale, key, opts = nil)
+      def translate(locale, key, options = {})
         raise InvalidLocale.new(locale) unless locale
-        return key.map { |k| translate(locale, k, opts) } if key.is_a?(Array)
+        return key.map { |k| translate(locale, k, options) } if key.is_a?(Array)
 
-        if opts
-          count = opts[:count]
-          scope = opts[:scope]
-
-          if entry = lookup(locale, key, scope, opts[:separator]) || ((default = opts.delete(:default)) && default(locale, key, default, opts))
-            entry = resolve(locale, key, entry, opts)
-            entry = pluralize(locale, entry, count) if count
-            entry = interpolate(locale, entry, opts)
-            entry
-          end
+        if options.empty?
+          entry = resolve(locale, key, lookup(locale, key), options)
+          raise(I18n::MissingTranslationData.new(locale, key, options)) if entry.nil?
         else
-          resolve(locale, key, lookup(locale, key), opts)
-        end || raise(I18n::MissingTranslationData.new(locale, key, opts))
+          count, scope, default, separator = options.values_at(:count, :scope, :default, :separator)
+          values = options.reject { |name, value| RESERVED_KEYS.include?(name) }
+
+          entry = lookup(locale, key, scope, separator)
+          entry = entry.nil? && default ? default(locale, key, default, options) : resolve(locale, key, entry, options)
+          raise(I18n::MissingTranslationData.new(locale, key, options)) if entry.nil?
+
+          entry = pluralize(locale, entry, count)    if count
+          entry = interpolate(locale, entry, values) if values
+        end
+
+        entry
       end
 
       # Acts the same as +strftime+, but uses a localized version of the
