@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{i18n}
-  s.version = "0.3.1"
+  s.version = "0.3.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Sven Fuchs", "Joshua Harvey", "Matt Aimonetti", "Stephan Soller", "Saimon Moore"]
-  s.date = %q{2009-12-10}
+  s.date = %q{2009-12-12}
   s.description = %q{Add Internationalization support to your Ruby application.}
   s.email = %q{rails-i18n@googlegroups.com}
   s.extra_rdoc_files = [
@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
      "lib/i18n/backend/active_record/translation.rb",
      "lib/i18n/backend/base.rb",
      "lib/i18n/backend/cache.rb",
+     "lib/i18n/backend/cascade.rb",
      "lib/i18n/backend/chain.rb",
      "lib/i18n/backend/fallbacks.rb",
      "lib/i18n/backend/gettext.rb",
@@ -69,6 +70,7 @@ Gem::Specification.new do |s|
      "test/cases/backend/active_record/missing_test.rb",
      "test/cases/backend/active_record_test.rb",
      "test/cases/backend/cache_test.rb",
+     "test/cases/backend/cascade_test.rb",
      "test/cases/backend/chain_test.rb",
      "test/cases/backend/fallbacks_test.rb",
      "test/cases/backend/helpers_test.rb",
@@ -119,6 +121,7 @@ Gem::Specification.new do |s|
      "test/cases/backend/active_record/missing_test.rb",
      "test/cases/backend/active_record_test.rb",
      "test/cases/backend/cache_test.rb",
+     "test/cases/backend/cascade_test.rb",
      "test/cases/backend/chain_test.rb",
      "test/cases/backend/fallbacks_test.rb",
      "test/cases/backend/helpers_test.rb",
