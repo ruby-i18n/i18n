@@ -1,5 +1,16 @@
 # encoding: utf-8
 
+# The InterpolationCompiler module contains optimizations that can tremendously
+# speed up the interpolation process on the Simple backend.
+#
+# It works by defining a pre-compiled method on stored translation Strings that
+# already bring all the knowledge about contained interpolation variables etc.
+# so that the actual recurring interpolation will be very fast.
+#
+# To enable pre-compiled interpolations you can simply include the
+# InterpolationCompiler module to the Simple backend:
+#
+#   I18n::Backend::Simple.send(:include, I18n::Backend::InterpolationCompiler)
 module I18n
   module Backend
     module InterpolationCompiler
@@ -80,7 +91,7 @@ module I18n
           key.to_sym.inspect
         end
       end
-      
+
       def interpolate(locale, string, values)
         if string.respond_to?(:i18n_interpolate)
           string.i18n_interpolate(values)
@@ -90,19 +101,19 @@ module I18n
           string
         end
       end
-      
+
       def merge_translations(locale, data)
         compile_all_strings_in(data)
         super
       end
-      
+
       protected
       def compile_all_strings_in(data)
         data.each_value do |value|
           Compiler.compile_if_an_interpolation(value)
           compile_all_strings_in(value) if value.kind_of?(Hash)
         end
-      end      
+      end
     end
   end
 end

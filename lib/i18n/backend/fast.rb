@@ -1,5 +1,14 @@
 # encoding: utf-8
 
+# The Fast module contains optimizations that can tremendously speed up the
+# lookup process on the Simple backend. It works by flattening the nested
+# translation hash to a flat hash (e.g. { :a => { :b => 'c' } } becomes
+# { :'a.b' => 'c' }).
+#
+# To enable these optimizations you can simply include the Fast module to
+# the Simple backend:
+#
+#   I18n::Backend::Simple.send(:include, I18n::Backend::Fast)
 module I18n
   module Backend
     module Fast
@@ -24,7 +33,7 @@ module I18n
       end
 
       protected
-        # flatten_hash({:a=>'a', :b=>{:c=>'c', :d=>'d', :f=>{:x=>'x'}}}) 
+        # flatten_hash({:a=>'a', :b=>{:c=>'c', :d=>'d', :f=>{:x=>'x'}}})
         # # => {:a=>'a', :b=>{:c=>'c', :d=>'d', :f=>{:x=>'x'}}, :"b.f" => {:x=>"x"}, :"b.c"=>"c", :"b.f.x"=>"x", :"b.d"=>"d"}
         def flatten_hash(h, nested_stack = [], flattened_h = {})
           h.each_pair do |k, v|
