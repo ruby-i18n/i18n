@@ -1,12 +1,13 @@
 # encoding: utf-8
 
-$: << "lib"
-$: << File.expand_path(File.dirname(__FILE__))
+$:.unshift File.expand_path("../lib", File.dirname(__FILE__))
+$:.unshift File.expand_path(File.dirname(__FILE__))
+
+require 'i18n'
+require 'i18n/core_ext/object/meta_class'
 
 require 'rubygems'
 require 'test/unit'
-require 'i18n'
-require 'i18n/core_ext/object/meta_class'
 require 'time'
 require 'yaml'
 

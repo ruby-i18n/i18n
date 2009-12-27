@@ -35,22 +35,8 @@ module I18n
       protected
         # flatten_hash({:a=>'a', :b=>{:c=>'c', :d=>'d', :f=>{:x=>'x'}}})
         # # => {:a=>'a', :b=>{:c=>'c', :d=>'d', :f=>{:x=>'x'}}, :"b.f" => {:x=>"x"}, :"b.c"=>"c", :"b.f.x"=>"x", :"b.d"=>"d"}
-        def flatten_hash(h, nested_stack = [], flattened_h = {})
-          h.each_pair do |k, v|
-            new_nested_stack = nested_stack + [escape_default_separator(k)]
-            flattened_h[nested_stack_to_flat_key(new_nested_stack)] = v
-            flatten_hash(v, new_nested_stack, flattened_h) if v.kind_of?(Hash)
-          end
-
-          flattened_h
-        end
-
-        def escape_default_separator(key)
-          key.to_s.tr(I18n.default_separator, SEPARATOR_ESCAPE_CHAR)
-        end
-
-        def nested_stack_to_flat_key(nested_stack)
-          nested_stack.join(I18n.default_separator).to_sym
+        def flatten_hash(h, nested_stack = [], flattened_h = {}, orig_h=h)
+          deep_symbolize_keys(wind_keys(h, nil, true))
         end
 
         def flatten_translations(translations)

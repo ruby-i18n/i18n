@@ -114,11 +114,10 @@ module I18n
           keys = I18n.send(:normalize_translation_keys, locale, key, scope, separator)
           keys.inject(translations) do |result, key|
             key = key.to_sym
-            if result.respond_to?(:has_key?) and result.has_key?(key)
-              result[key]
-            else
-              return nil
-            end
+            return nil unless result.is_a?(Hash) && result.has_key?(key)
+            result = result[key]
+            result = resolve(locale, key, result, :scope => scope, :separator => separator) if result.is_a?(Symbol)
+            result
           end
         end
 

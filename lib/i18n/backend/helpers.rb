@@ -1,6 +1,8 @@
 module I18n
   module Backend
     module Helpers
+      SEPARATOR_ESCAPE_CHAR = "\001"
+
       # Return a new hash with all keys and nested keys converted to symbols.
       def deep_symbolize_keys(hash)
         hash.inject({}) { |result, (key, value)|
@@ -13,16 +15,41 @@ module I18n
       # Flatten keys for nested Hashes by chaining up keys using the separator
       #   >> { "a" => { "b" => { "c" => "d", "e" => "f" }, "g" => "h" }, "i" => "j"}.wind
       #   => { "a.b.c" => "d", "a.b.e" => "f", "a.g" => "h", "i" => "j" }
-      def wind_keys(hash, separator = ".", prev_key = nil, result = {})
-        hash.inject(result) do |result, pair|
-          key, value = *pair
+      def wind_keys(hash, separator = nil, subtree = false, prev_key = nil, result = {}, orig_hash=hash)
+        separator ||= I18n.default_separator
+
+        hash.each_pair do |key, value|
+          key = escape_default_separator(key, separator)
           curr_key = [prev_key, key].compact.join(separator)
+
+          if value.is_a?(Symbol)
+            value = hash_lookup(orig_hash, value, separator) ||
+                    hash_lookup(hash, value, separator)
+          end
+
           if value.is_a?(Hash)
-            wind_keys(value, separator, curr_key, result)
+            result[curr_key] = value if subtree
+            wind_keys(value, separator, subtree, curr_key, result, orig_hash)
           else
             result[curr_key] = value
           end
-          result
+        end
+
+        result
+      end
+
+      def escape_default_separator(key, separator=nil)
+        key.to_s.tr(separator || I18n.default_separator, SEPARATOR_ESCAPE_CHAR)
+      end
+
+      def hash_lookup(hash, keys, separator = ".")
+        keys.to_s.split(separator).inject(hash) do |result, key|
+          key = key.to_sym
+          if result.respond_to?(:has_key?) and result.has_key?(key)
+            result[key]
+          else
+            return nil
+          end
         end
       end
 

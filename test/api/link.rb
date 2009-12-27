@@ -22,6 +22,11 @@ module Tests
         setup_linked_translations
         assert_equal('baz', I18n.backend.translate('en', :link_to_baz, :scope => :bar))
       end
+
+      define_method "test linked lookup: given the first key resolves to a symbol it looks up the symbol with remaining keys" do
+        setup_linked_translations
+        assert_equal('baz', I18n.backend.translate('en', :"link_to_bar.baz"))
+      end
       
       protected
 
