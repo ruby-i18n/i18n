@@ -53,7 +53,9 @@ module I18n
             key   = cleanup_non_standard_separator(key, separator)
             scope = Array(scope).map{|k| cleanup_non_standard_separator(k, separator)} if scope
           end
-          flattened_translations[locale.to_sym][(scope ? (Array(scope) + [key]).join(I18n.default_separator) : key).to_sym] rescue nil
+
+          key = (Array(scope) + [key]).join(I18n.default_separator) if scope
+          flattened_translations[locale.to_sym][key.to_sym] rescue nil
         end
 
         def cleanup_non_standard_separator(key, user_separator)
