@@ -129,8 +129,8 @@ module I18n
           options = options.dup.reject { |key, value| key == :default }
           case subject
           when Array
-            subject.each do |subject|
-              result = resolve(locale, object, subject, options) and return result
+            subject.each do |item|
+              result = resolve(locale, object, item, options) and return result
             end and nil
           else
             resolve(locale, object, subject, options)
