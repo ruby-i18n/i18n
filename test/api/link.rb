@@ -3,43 +3,45 @@
 module Tests
   module Api
     module Link
-      define_method "test linked lookup: given the key resolves to a symbol it looks up the symbol" do
-        setup_linked_translations
-        assert_equal 'foo', I18n.backend.translate('en', :link_to_foo)
+      define_method "test linked lookup: if a key resolves to a symbol it looks up the symbol" do
+        I18n.backend.store_translations 'en', {
+          :link  => :linked,
+          :linked => 'linked'
+        }
+        assert_equal 'linked', I18n.backend.translate('en', :link)
       end
 
-      define_method "test linked lookup: given the key resolves to a dot-separated symbol it looks up the dot-separated symbol (1)" do
-        setup_linked_translations
-        assert_equal('baz', I18n.backend.translate('en', :link_to_baz))
-      end
-      
-      define_method "test linked lookup: given the key resolves to a dot-separated symbol it looks up the dot-separated symbol (2)" do
-        setup_linked_translations
-        assert_equal('buz', I18n.backend.translate('en', :'bar.link_to_buz'))
-      end
-      
-      define_method "test linked lookup: given a scope and the key resolves to a symbol it looks up the symbol within the scope" do
-        setup_linked_translations
-        assert_equal('baz', I18n.backend.translate('en', :link_to_baz, :scope => :bar))
+      define_method "test linked lookup: if a key resolves to a dot-separated symbol it looks up the symbol" do
+        I18n.backend.store_translations 'en', {
+          :link => :"foo.linked",
+          :foo  => { :linked => 'linked' }
+        }
+        assert_equal('linked', I18n.backend.translate('en', :link))
       end
 
-      define_method "test linked lookup: given the first key resolves to a symbol it looks up the symbol with remaining keys" do
-        setup_linked_translations
-        assert_equal('baz', I18n.backend.translate('en', :"link_to_bar.baz"))
+      define_method "test linked lookup: if a dot-separated key resolves to a symbol it looks up the symbol" do
+        I18n.backend.store_translations 'en', {
+          :foo    => { :link => :linked },
+          :linked => 'linked'
+        }
+        assert_equal('linked', I18n.backend.translate('en', :'foo.link'))
       end
       
-      protected
-
-        def setup_linked_translations
-          I18n.backend.store_translations 'en', {
-            :foo => 'foo',
-            :bar => { :baz => 'baz', :link_to_baz => :baz, :link_to_buz => :'boz.buz' },
-            :boz => { :buz => 'buz' },
-            :link_to_foo => :foo,
-            :link_to_bar => :bar,
-            :link_to_baz => :'bar.baz'
-          }
-        end
+      define_method "test linked lookup: if a dot-separated key resolves to a dot-separated symbol it looks up the symbol" do
+        I18n.backend.store_translations 'en', {
+          :foo => { :link   => :"bar.linked" },
+          :bar => { :linked => 'linked' }
+        }
+        assert_equal('linked', I18n.backend.translate('en', :'foo.link'))
+      end
+      
+      define_method "test linked lookup: a link can resolve to a namespace in the middle of a dot-separated key" do
+        I18n.backend.store_translations 'en', {
+          :activemodel  => { :errors => { :messages => { :blank => "can't be blank" } } },
+          :activerecord => { :errors => { :messages => :"activemodel.errors.messages" } }
+        }
+        assert_equal "can't be blank", I18n.t(:"activerecord.errors.messages.blank")
+      end
     end
   end
 end
