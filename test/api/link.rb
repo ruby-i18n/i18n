@@ -35,6 +35,14 @@ module Tests
         assert_equal('linked', I18n.backend.translate('en', :'foo.link'))
       end
       
+      define_method "test linked lookup: links refer to absolute keys even if a scope was given" do
+        I18n.backend.store_translations 'en', {
+          :foo => { :link  => :linked, :linked => 'linked in foo' },
+          :linked => 'linked absolutely'
+        }
+        assert_equal 'linked absolutely', I18n.backend.translate('en', :link, :scope => :foo)
+      end
+
       define_method "test linked lookup: a link can resolve to a namespace in the middle of a dot-separated key" do
         I18n.backend.store_translations 'en', {
           :activemodel  => { :errors => { :messages => { :blank => "can't be blank" } } },
