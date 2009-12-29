@@ -12,18 +12,20 @@ YAML_HASH = YAML.load_file(File.expand_path("example.yml", File.dirname(__FILE__
 # Create benchmark backends
 def create_backend(*modules)
   Class.new do
-    modules.unshift(I18n::Backend::Base)
-    modules.each { |m| include m }
+    modules.unshift(:Base)
+    modules.each { |m| include I18n::Backend.const_get(m) }
   end
 end
 
 BACKENDS = []
-BACKENDS << (SimpleBackend = create_backend)
-BACKENDS << (FastBackend   = create_backend(I18n::Backend::Fast))
+BACKENDS << (SimpleBackend        = create_backend)
+BACKENDS << (FastBackend          = create_backend(:Fast))
+BACKENDS << (InterpolationBackend = create_backend(:InterpolationCompiler))
+BACKENDS << (FastInterpolBackend  = create_backend(:Fast, :InterpolationCompiler))
 
 # Hack Report to print ms
 module Benchmark
-  def self.ms(label = "", width=15, &blk) # :yield:
+  def self.ms(label = "", width=20, &blk) # :yield:
     print label.ljust(width)
     res = Benchmark::measure(&blk)
     print format("%10.6f ms\n", res.real * 1000)
@@ -46,15 +48,19 @@ BACKENDS.each do |backend|
   end
 
   Benchmark.ms "t (depth=5)" do
-    I18n.backend.translate :en, :"activerecord.errors.models.user.blank"
+    I18n.backend.translate :en, :"activerecord.attributes.admins.user.login"
   end
 
   Benchmark.ms "t (depth=7)" do
     I18n.backend.translate :en, :"activerecord.errors.models.user.attributes.login.blank"
   end
 
-  Benchmark.ms "t with default" do
+  Benchmark.ms "t w/ default" do
     I18n.backend.translate :en, :"activerecord.models.another", :default => "Another"
+  end
+
+  Benchmark.ms "t w/ interpolation" do
+    I18n.backend.translate :en, :"activerecord.errors.models.user.blank", :model => "User", :attribute => "name"
   end
 
   Benchmark.ms "t subtree" do

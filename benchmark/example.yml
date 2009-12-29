@@ -36,8 +36,9 @@ en:
       user: "Dude"
     
     attributes:
-      user:
-        login: "Handle"
+      admins:
+        user:
+          login: "Handle"
 
   date:
     formats:
