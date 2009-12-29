@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{i18n}
-  s.version = "0.3.2"
+  s.version = "0.3.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Sven Fuchs", "Joshua Harvey", "Matt Aimonetti", "Stephan Soller", "Saimon Moore"]
-  s.date = %q{2009-12-12}
+  s.date = %q{2009-12-29}
   s.description = %q{Add Internationalization support to your Ruby application.}
   s.email = %q{rails-i18n@googlegroups.com}
   s.extra_rdoc_files = [
@@ -20,7 +20,6 @@ Gem::Specification.new do |s|
      "MIT-LICENSE",
      "README.textile",
      "Rakefile",
-     "VERSION",
      "lib/i18n.rb",
      "lib/i18n/backend.rb",
      "lib/i18n/backend/active_record.rb",
@@ -32,8 +31,10 @@ Gem::Specification.new do |s|
      "lib/i18n/backend/cascade.rb",
      "lib/i18n/backend/chain.rb",
      "lib/i18n/backend/fallbacks.rb",
+     "lib/i18n/backend/fast.rb",
      "lib/i18n/backend/gettext.rb",
      "lib/i18n/backend/helpers.rb",
+     "lib/i18n/backend/interpolation_compiler.rb",
      "lib/i18n/backend/metadata.rb",
      "lib/i18n/backend/pluralization.rb",
      "lib/i18n/backend/simple.rb",
@@ -49,6 +50,7 @@ Gem::Specification.new do |s|
      "lib/i18n/locale/tag/parents.rb",
      "lib/i18n/locale/tag/rfc4646.rb",
      "lib/i18n/locale/tag/simple.rb",
+     "lib/i18n/version.rb",
      "test/all.rb",
      "test/api/basics.rb",
      "test/api/defaults.rb",
@@ -63,8 +65,10 @@ Gem::Specification.new do |s|
      "test/api/procs.rb",
      "test/cases/api/active_record_test.rb",
      "test/cases/api/all_features_test.rb",
+     "test/cases/api/cascade_test.rb",
      "test/cases/api/chain_test.rb",
      "test/cases/api/fallbacks_test.rb",
+     "test/cases/api/fast_test.rb",
      "test/cases/api/pluralization_test.rb",
      "test/cases/api/simple_test.rb",
      "test/cases/backend/active_record/missing_test.rb",
@@ -73,7 +77,9 @@ Gem::Specification.new do |s|
      "test/cases/backend/cascade_test.rb",
      "test/cases/backend/chain_test.rb",
      "test/cases/backend/fallbacks_test.rb",
+     "test/cases/backend/fast_test.rb",
      "test/cases/backend/helpers_test.rb",
+     "test/cases/backend/interpolation_compiler_test.rb",
      "test/cases/backend/metadata_test.rb",
      "test/cases/backend/pluralization_test.rb",
      "test/cases/backend/simple_test.rb",
@@ -114,8 +120,10 @@ Gem::Specification.new do |s|
      "test/api/procs.rb",
      "test/cases/api/active_record_test.rb",
      "test/cases/api/all_features_test.rb",
+     "test/cases/api/cascade_test.rb",
      "test/cases/api/chain_test.rb",
      "test/cases/api/fallbacks_test.rb",
+     "test/cases/api/fast_test.rb",
      "test/cases/api/pluralization_test.rb",
      "test/cases/api/simple_test.rb",
      "test/cases/backend/active_record/missing_test.rb",
@@ -124,7 +132,9 @@ Gem::Specification.new do |s|
      "test/cases/backend/cascade_test.rb",
      "test/cases/backend/chain_test.rb",
      "test/cases/backend/fallbacks_test.rb",
+     "test/cases/backend/fast_test.rb",
      "test/cases/backend/helpers_test.rb",
+     "test/cases/backend/interpolation_compiler_test.rb",
      "test/cases/backend/metadata_test.rb",
      "test/cases/backend/pluralization_test.rb",
      "test/cases/backend/simple_test.rb",
