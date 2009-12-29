@@ -20,7 +20,7 @@ module I18n
 
         hash.each_pair do |key, value|
           key = escape_default_separator(key, separator)
-          curr_key = [prev_key, key].compact.join(separator)
+          curr_key = [prev_key, key].compact.join(separator).to_sym
 
           if value.is_a?(Symbol)
             value = hash_lookup(orig_hash, value, separator) ||
@@ -59,7 +59,7 @@ module I18n
       def unwind_keys(hash, separator = ".")
         result = {}
         hash.each do |key, value|
-          keys = key.split(separator)
+          keys = key.to_s.split(separator)
           curr = result
           curr = curr[keys.shift] ||= {} while keys.size > 1
           curr[keys.shift] = value

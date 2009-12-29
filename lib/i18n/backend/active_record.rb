@@ -24,7 +24,7 @@ module I18n
         separator = options[:separator] || I18n.default_separator
         wind_keys(data, separator).each do |key, v|
           Translation.locale(locale).lookup(expand_keys(key, separator), separator).delete_all
-          Translation.create(:locale => locale.to_s, :key => key, :value => v)
+          Translation.create(:locale => locale.to_s, :key => key.to_s, :value => v)
         end
       end
 

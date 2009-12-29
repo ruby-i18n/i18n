@@ -36,7 +36,7 @@ module I18n
         # flatten_hash({:a=>'a', :b=>{:c=>'c', :d=>'d', :f=>{:x=>'x'}}})
         # # => {:a=>'a', :b=>{:c=>'c', :d=>'d', :f=>{:x=>'x'}}, :"b.f" => {:x=>"x"}, :"b.c"=>"c", :"b.f.x"=>"x", :"b.d"=>"d"}
         def flatten_hash(h, nested_stack = [], flattened_h = {}, orig_h=h)
-          deep_symbolize_keys(wind_keys(h, nil, true))
+          wind_keys(h, nil, true)
         end
 
         def flatten_translations(translations)
@@ -48,14 +48,16 @@ module I18n
         end
 
         def lookup(locale, key, scope = nil, separator = nil)
-          init_translations unless @initialized
-          if separator
+          return unless key
+          init_translations unless initialized?
+
+          if separator && I18n.default_separator != separator
             key   = cleanup_non_standard_separator(key, separator)
             scope = Array(scope).map{|k| cleanup_non_standard_separator(k, separator)} if scope
           end
 
           key = (Array(scope) + [key]).join(I18n.default_separator) if scope
-          flattened_translations[locale.to_sym][key.to_sym] rescue nil
+          flattened_translations[locale.to_sym][key.to_sym]
         end
 
         def cleanup_non_standard_separator(key, user_separator)
