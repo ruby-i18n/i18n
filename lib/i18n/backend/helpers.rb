@@ -24,7 +24,7 @@ module I18n
 
           if value.is_a?(Symbol)
             value = hash_lookup(orig_hash, value, separator) ||
-                    hash_lookup(hash, value, separator)
+                    hash_lookup(hash, value, separator) || value
           end
 
           if value.is_a?(Hash)
