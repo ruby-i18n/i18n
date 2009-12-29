@@ -4,10 +4,13 @@ task :test do
   ruby "test/all.rb"
 end
 
+require File.expand_path("lib/i18n/version", File.dirname(__FILE__))
+
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |s|
     s.name = "i18n"
+    s.version = I18n::VERSION
     s.rubyforge_project = "i18n"
     s.summary = "New wave Internationalization support for Ruby"
     s.email = "rails-i18n@googlegroups.com"
