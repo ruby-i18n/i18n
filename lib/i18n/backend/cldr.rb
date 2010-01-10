@@ -1,5 +1,4 @@
 # encoding: utf-8
-$:.unshift '/Volumes/Users/sven/Development/projects/i18n/cldr/lib'
 require 'cldr'
 
 module I18n
