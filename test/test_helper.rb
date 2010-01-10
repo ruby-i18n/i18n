@@ -59,7 +59,7 @@ class Test::Unit::TestCase
   end
 
   def locales_dir
-    File.dirname(__FILE__) + '/fixtures/locales'
+    File.dirname(__FILE__) + '/locales'
   end
 
   def euc_jp(string)

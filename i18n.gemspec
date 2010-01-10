@@ -92,10 +92,10 @@ Gem::Specification.new do |s|
      "test/cases/locale/fallbacks_test.rb",
      "test/cases/locale/tag/rfc4646_test.rb",
      "test/cases/locale/tag/simple_test.rb",
-     "test/fixtures/locales/de.po",
-     "test/fixtures/locales/en.rb",
-     "test/fixtures/locales/en.yml",
-     "test/fixtures/locales/plurals.rb",
+     "test/locales/de.po",
+     "test/locales/en.rb",
+     "test/locales/en.yml",
+     "test/locales/plurals.rb",
      "test/test_helper.rb",
      "vendor/po_parser.rb"
   ]

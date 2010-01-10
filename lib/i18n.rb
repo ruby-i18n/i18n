@@ -221,7 +221,7 @@ module I18n
     def localize(object, options = {})
       locale = options[:locale] || I18n.locale
       format = options[:format] || :default
-      backend.localize(locale, object, format)
+      backend.localize(locale, object, format, options)
     end
     alias :l :localize
 
