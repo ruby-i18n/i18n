@@ -5,6 +5,7 @@ module I18n
     autoload :Cache,                 'i18n/backend/cache'
     autoload :Cascade,               'i18n/backend/cascade'
     autoload :Chain,                 'i18n/backend/chain'
+    autoload :Cldr,                  'i18n/backend/cldr'
     autoload :Fallbacks,             'i18n/backend/fallbacks'
     autoload :Fast,                  'i18n/backend/fast'
     autoload :Gettext,               'i18n/backend/gettext'

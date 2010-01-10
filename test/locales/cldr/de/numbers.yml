@@ -1,0 +1,31 @@
+de: 
+  numbers: 
+    formats: 
+      currency: 
+        default:
+          pattern: "#,##0.00 ¤"
+          unit: 
+            one: "{0} {1}"
+            other: "{0} {1}"
+      decimal: 
+        default:
+          pattern: "#,##0.###"
+      percent: 
+        default:
+          pattern: "#,##0 %"
+      scientific: 
+        default:
+          pattern: "#E0"
+    symbols: 
+      decimal: ","
+      exponential: E
+      group: "."
+      infinity: ∞
+      list: ;
+      minus_sign: "-"
+      nan: NaN
+      native_zero_digit: 0
+      pattern_digit: "#"
+      per_mille: ‰
+      percent_sign: "%"
+      plus_sign: +
