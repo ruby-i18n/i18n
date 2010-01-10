@@ -9,7 +9,7 @@ module I18n
       def localize(locale, object, format = :default, options = {})
         case object
         when ::Numeric
-          format(locale, object, { :as => :number }.merge(options))
+          format(locale, object, { :as => :number }.merge(options.merge(:format => format)))
         else
           super
         end
