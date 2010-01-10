@@ -227,7 +227,7 @@ module I18n
         def load_file(filename)
           type = File.extname(filename).tr('.', '').downcase
           raise UnknownFileType.new(type, filename) unless respond_to?(:"load_#{type}")
-          data = send :"load_#{type}", filename # TODO raise a meaningful exception if this does not yield a Hash
+          data = send(:"load_#{type}", filename) # TODO raise a meaningful exception if this does not yield a Hash
           data.each { |locale, d| merge_translations(locale, d) }
         end
 
@@ -251,7 +251,11 @@ module I18n
           data = deep_symbolize_keys(data)
 
           # deep_merge by Stefan Rusterholz, see http://www.ruby-forum.com/topic/142809
-          merger = proc { |key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
+          merger = proc do |key, v1, v2|
+            # TODO should probably be:
+            # raise TypeError.new("can't merge #{v1.inspect} and #{v2.inspect}") unless Hash === v1 && Hash === v2
+            Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : (v2 || v1)
+          end
           translations[locale].merge!(data, &merger)
         end
     end
