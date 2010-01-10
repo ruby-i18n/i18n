@@ -219,8 +219,8 @@ module I18n
 
     # Localizes certain objects, such as dates and numbers to local formatting.
     def localize(object, options = {})
-      locale = options[:locale] || I18n.locale
-      format = options[:format] || :default
+      locale = options.delete(:locale) || I18n.locale
+      format = options.delete(:format) || :default
       backend.localize(locale, object, format, options)
     end
     alias :l :localize
