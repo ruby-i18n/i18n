@@ -18,7 +18,7 @@ module I18n
       protected
 
         def lookup_number_format(locale, type, format)
-          I18n.t(:"numbers.formats.#{type}.#{format || :default}.pattern", :locale => locale)
+          I18n.t(:"numbers.formats.#{type}.patterns.#{format || :default}", :locale => locale)
         end
 
         def lookup_number_symbols(locale)

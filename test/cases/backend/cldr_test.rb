@@ -25,7 +25,7 @@ class I18nBackendCldrTest < Test::Unit::TestCase
   end
 
   # hu? does this actually make any sense?
-  define_method :"test: format_currency translating currency names" do 
+  define_method :"test: format_currency translating currency names" do
     assert_equal '1,00 Irisches Pfund', I18n.l(1, :currency => :IEP)
     assert_equal '2,00 Irische Pfund',  I18n.l(2, :currency => :IEP)
   end
@@ -38,5 +38,20 @@ class I18nBackendCldrTest < Test::Unit::TestCase
   # so we can pass a precision manually
   define_method :"test: format_percent w/ precision" do
     assert_equal '123.456,70 %', I18n.l(123456.7, :as => :percent, :precision => 2)
+  end
+
+  define_method :"test: can deal with customized formats data" do
+    store_translations :de, :numbers => {
+      :formats => {
+        :decimal => {
+          :patterns => {
+            :default => "#,##0.###",
+            :stupid  => "#"
+          }
+        }
+      }
+    }
+    assert_equal '123.456,78', I18n.l(123456.78)
+    assert_equal '123457',     I18n.l(123456.78, :format => :stupid)
   end
 end
