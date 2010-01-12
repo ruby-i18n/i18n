@@ -24,6 +24,10 @@ module Tests
         assert_raises(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
       end
 
+      define_method "test lookup: does not raise an exception if no translation data is present for the given locale" do
+        assert_nothing_raised { I18n.t(:foo, :locale => :xx) }
+      end
+
       define_method "test lookup: given an array of keys it translates all of them" do
         assert_equal %w(bar baz), I18n.t([:bar, :baz], :scope => [:foo])
       end
