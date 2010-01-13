@@ -2,6 +2,7 @@
 
 require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 require 'i18n/backend/cldr'
+require 'date'
 
 class I18nBackendCldrTest < Test::Unit::TestCase
   class Backend
@@ -38,6 +39,38 @@ class I18nBackendCldrTest < Test::Unit::TestCase
   # so we can pass a precision manually
   define_method :"test: format_percent w/ precision" do
     assert_equal '123.456,70 %', I18n.l(123456.7, :as => :percent, :precision => 2)
+  end
+
+  define_method :"test: format_date :full" do
+    assert_equal 'Freitag, 1. Januar 2010', I18n.l(Date.new(2010, 1, 1), :format => :full)
+  end
+
+  define_method :"test: format_date :long" do
+    assert_equal '1. Januar 2010', I18n.l(Date.new(2010, 1, 1), :format => :long)
+  end
+
+  define_method :"test: format_date :medium" do
+    assert_equal '01.01.2010', I18n.l(Date.new(2010, 1, 1))
+  end
+
+  define_method :"test: format_date :short" do
+    assert_equal '01.01.10', I18n.l(Date.new(2010, 1, 1), :format => :short)
+  end
+
+  # define_method :"test: format_time :full" do
+  #   assert_equal 'Freitag, 1. Januar 2010', I18n.l(Time.utc(2010, 1, 1, 13, 15, 17), :format => :full)
+  # end
+
+  define_method :"test: format_time :long" do
+    assert_equal '13:15:17 UTC', I18n.l(Time.utc(2010, 1, 1, 13, 15, 17), :format => :long)
+  end
+
+  define_method :"test: format_time :medium" do
+    assert_equal '13:15:17', I18n.l(Time.utc(2010, 1, 1, 13, 15, 17))
+  end
+
+  define_method :"test: format_time :short" do
+    assert_equal '13:15', I18n.l(Time.utc(2010, 1, 1, 13, 15, 17), :format => :short)
   end
 
   define_method :"test: can deal with customized formats data" do
