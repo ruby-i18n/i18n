@@ -12,8 +12,7 @@
 module I18n
   module Backend
     module Fast
-      SEPARATOR_ESCAPE_CHAR = "\001"
-
+ 
       def reset_flattened_translations!
         @flattened_translations = nil
       end
