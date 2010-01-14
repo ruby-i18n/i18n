@@ -17,9 +17,13 @@ class I18nBackendCldrTest < Test::Unit::TestCase
     super
   end
 
+  # NUMBER
+
   define_method :"test: format_number" do
     assert_equal '123.456,78', I18n.l(123456.78)
   end
+
+  # CURRENCY
 
   define_method :"test: format_currency" do
     assert_equal '123.456,78 EUR', I18n.l(123456.78, :currency => 'EUR')
@@ -31,6 +35,8 @@ class I18nBackendCldrTest < Test::Unit::TestCase
     assert_equal '2,00 Irische Pfund',  I18n.l(2, :currency => :IEP)
   end
 
+  # PERCENT
+
   # this is odd but the cldr percent format does not include a fraction
   define_method :"test: format_percent" do
     assert_equal '123.457 %', I18n.l(123456.78, :as => :percent)
@@ -41,37 +47,83 @@ class I18nBackendCldrTest < Test::Unit::TestCase
     assert_equal '123.456,70 %', I18n.l(123456.7, :as => :percent, :precision => 2)
   end
 
+  # DATE
+
+  def date
+    Date.new(2010, 1, 1)
+  end
+
   define_method :"test: format_date :full" do
-    assert_equal 'Freitag, 1. Januar 2010', I18n.l(Date.new(2010, 1, 1), :format => :full)
+    assert_equal 'Freitag, 1. Januar 2010', I18n.l(date, :format => :full)
   end
 
   define_method :"test: format_date :long" do
-    assert_equal '1. Januar 2010', I18n.l(Date.new(2010, 1, 1), :format => :long)
+    assert_equal '1. Januar 2010', I18n.l(date, :format => :long)
   end
 
   define_method :"test: format_date :medium" do
-    assert_equal '01.01.2010', I18n.l(Date.new(2010, 1, 1))
+    assert_equal '01.01.2010', I18n.l(date)
   end
 
   define_method :"test: format_date :short" do
-    assert_equal '01.01.10', I18n.l(Date.new(2010, 1, 1), :format => :short)
+    assert_equal '01.01.10', I18n.l(date, :format => :short)
   end
 
+  # TIME
+
+  def time
+    Time.utc(2010, 1, 1, 13, 15, 17)
+  end
+
+  # TODO cldr export lacks localized timezone data
   # define_method :"test: format_time :full" do
-  #   assert_equal 'Freitag, 1. Januar 2010', I18n.l(Time.utc(2010, 1, 1, 13, 15, 17), :format => :full)
+  #   assert_equal 'Freitag, 1. Januar 2010', I18n.l(time, :format => :full)
   # end
 
   define_method :"test: format_time :long" do
-    assert_equal '13:15:17 UTC', I18n.l(Time.utc(2010, 1, 1, 13, 15, 17), :format => :long)
+    assert_equal '13:15:17 UTC', I18n.l(time, :format => :long)
   end
 
   define_method :"test: format_time :medium" do
-    assert_equal '13:15:17', I18n.l(Time.utc(2010, 1, 1, 13, 15, 17))
+    assert_equal '13:15:17', I18n.l(time)
   end
 
   define_method :"test: format_time :short" do
-    assert_equal '13:15', I18n.l(Time.utc(2010, 1, 1, 13, 15, 17), :format => :short)
+    assert_equal '13:15', I18n.l(time, :format => :short)
   end
+
+  # DATETIME
+
+  def datetime
+    DateTime.new(2010, 11, 12, 13, 14, 15)
+  end
+
+  # TODO cldr export lacks localized timezone data
+  # define_method :"test: format_datetime :full" do
+  #   assert_equal 'Thursday, 12. November 2010 13:14:15', I18n.l(datetime, :format => :full)
+  # end
+
+  define_method :"test: format_datetime :long" do
+    assert_equal '12. November 2010 13:14:15 +00:00', I18n.l(datetime, :format => :long)
+  end
+
+  define_method :"test: format_datetime :medium" do
+    assert_equal '12.11.2010 13:14:15', I18n.l(datetime)
+  end
+
+  define_method :"test: format_datetime :short" do
+    assert_equal '12.11.10 13:14', I18n.l(datetime, :format => :short)
+  end
+
+  define_method :"test: format_datetime mixed :long + :short" do
+    assert_equal '12. November 2010 13:14', I18n.l(datetime, :date_format => :long, :time_format => :short)
+  end
+
+  define_method :"test: format_datetime mixed :short + :long" do
+    assert_equal '12.11.10 13:14:15 +00:00', I18n.l(datetime, :date_format => :short, :time_format => :long)
+  end
+
+  # CUSTOM FORMATS
 
   define_method :"test: can deal with customized formats data" do
     store_translations :de, :numbers => {
