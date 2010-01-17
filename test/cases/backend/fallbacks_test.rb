@@ -2,7 +2,7 @@
 
 require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 
-class I18nBackendFallbacksTest < Test::Unit::TestCase
+class I18nBackendFallbacksTranslateTest < Test::Unit::TestCase
   class Backend
     include I18n::Backend::Base
     include I18n::Backend::Fallbacks
@@ -36,6 +36,39 @@ class I18nBackendFallbacksTest < Test::Unit::TestCase
   define_method "test: raises I18n::MissingTranslationData exception when no translation was found" do
     assert_raises(I18n::MissingTranslationData) { I18n.t(:faa, :locale => :en, :raise => true) }
     assert_raises(I18n::MissingTranslationData) { I18n.t(:faa, :locale => :de, :raise => true) }
+  end
+end
+
+class I18nBackendFallbacksLocalizeTest < Test::Unit::TestCase
+  class Backend
+    include I18n::Backend::Base
+    include I18n::Backend::Fallbacks
+  end
+
+  def setup
+    I18n.backend = Backend.new
+    store_translations(:en, :date => { :formats => { :en => 'en' }, :day_names => %w(Sunday) })
+    store_translations(:de, :date => { :formats => { :de => 'de' } })
+  end
+
+  define_method "test: still uses an existing format as usual" do
+    assert_equal 'en', I18n.l(Date.today, :format => :en, :locale => :en)
+  end
+
+  define_method "test: looks up and uses a fallback locale's format for a key missing in the given locale (1)" do
+    assert_equal 'en', I18n.l(Date.today, :format => :en, :locale => :de)
+  end
+
+  define_method "test: looks up and uses a fallback locale's format for a key missing in the given locale (2)" do
+    assert_equal 'de', I18n.l(Date.today, :format => :de, :locale => :'de-DE')
+  end
+
+  define_method "test: still uses an existing day name translation as usual" do
+    assert_equal 'Sunday', I18n.l(Date.new(2010, 1, 3), :format => '%A', :locale => :en)
+  end
+
+  define_method "test: uses a fallback locale's translation for a key missing in the given locale" do
+    assert_equal 'Sunday', I18n.l(Date.new(2010, 1, 3), :format => '%A', :locale => :de)
   end
 end
 
