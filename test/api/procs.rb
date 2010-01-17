@@ -23,7 +23,7 @@ module Tests
         proc = lambda { |*args| args.inspect }
         assert_match %r(\[\{:foo=>#<Proc.*>\}\]), I18n.t(nil, :default => '{{foo}}', :foo => proc)
       end
-      
+
       define_method "test interpolation: given a key resolves to a Proc that returns a string then interpolation still works" do
         proc = lambda { |*args| "{{foo}}: " + args.inspect }
         assert_equal 'foo: [nil, {:foo=>"foo"}]', I18n.t(nil, :default => proc, :foo => 'foo')
@@ -34,6 +34,15 @@ module Tests
         assert_equal 'zero',  I18n.t(:default => proc, :count => 0)
         assert_equal 'one',   I18n.t(:default => proc, :count => 1)
         assert_equal 'other', I18n.t(:default => proc, :count => 2)
+      end
+
+      define_method "test lookup: given the option :resolve => false was passed it does not resolve proc translations" do
+        store_translations(:a_lambda => lambda { |*args| args.inspect })
+        assert_equal Proc, I18n.t(:a_lambda, :resolve => false).class
+      end
+
+      define_method "test lookup: given the option :resolve => false was passed it does not resolve proc default" do
+        assert_equal Proc, I18n.t(nil, :default => lambda { |*args| args.inspect }, :resolve => false).class
       end
     end
   end
