@@ -50,7 +50,7 @@ module I18n
         end
 
         def pluralizer(locale)
-          pluralizers[locale] ||= lookup(locale, :'i18n.plural.rule')
+          pluralizers[locale] ||= I18n.t(:'i18n.plural.rule', :locale => locale, :resolve => false)
         end
     end
   end
