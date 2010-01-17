@@ -10,7 +10,7 @@ module Tests
           @datetime = ::DateTime.new(2008, 3, 1, 6)
           @other_datetime = ::DateTime.new(2008, 3, 1, 18)
         end
-        
+
         define_method "test localize DateTime: given the short format it uses it" do
           # TODO should be Mrz, shouldn't it?
           assert_equal '01. Mar 06:00', I18n.l(@datetime, :format => :short, :locale => :de)
@@ -61,9 +61,13 @@ module Tests
         define_method "test localize DateTime: given an unknown format it does not fail" do
           assert_nothing_raised { I18n.l(@datetime, :format => '%x') }
         end
-        
+
+        define_method "test localize DateTime: given a format is missing it raises I18n::MissingTranslationData" do
+          assert_raises(I18n::MissingTranslationData) { I18n.l(@datetime, :format => :missing) }
+        end
+
         protected
-        
+
           def setup_datetime_translations
             # time translations might have been set up in Tests::Api::Localization::Time
             I18n.t(:'time.formats.default', :locale => :de, :raise => true)

@@ -56,8 +56,7 @@ module I18n
         if Symbol === format
           key = format
           type = object.respond_to?(:sec) ? 'time' : 'date'
-          format = I18n.t(:"#{type}.formats.#{key}", :locale => locale)
-          raise(MissingTranslationData.new(locale, key, options)) if format.nil?
+          format = I18n.t(:"#{type}.formats.#{key}", :locale => locale, :raise => true)
         end
 
         format = resolve(locale, object, format, options)

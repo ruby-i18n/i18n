@@ -61,6 +61,10 @@ module Tests
         define_method "test localize Date: given a plain Object it raises I18n::ArgumentError" do
           assert_raises(I18n::ArgumentError) { I18n.l(Object.new) }
         end
+
+        define_method "test localize Date: given a format is missing it raises I18n::MissingTranslationData" do
+          assert_raises(I18n::MissingTranslationData) { I18n.l(@date, :format => :missing) }
+        end
         
         define_method "test localize Date: it does not alter the format string" do
           assert_equal '01. Februar 2009', I18n.l(::Date.parse('2009-02-01'), :format => :long, :locale => :de)

@@ -62,7 +62,8 @@ module I18n
             result = backend.localize(locale, object, format, options) and return result
           rescue MissingTranslationData
           end
-        end and nil
+        end
+        raise(I18n::MissingTranslationData.new(locale, format, options))
       end
 
       protected
