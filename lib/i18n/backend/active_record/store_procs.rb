@@ -23,11 +23,11 @@ module I18n
       module StoreProcs
         def value=(v)
           case v
-            when Proc
-              write_attribute(:value, v.to_ruby)
-              write_attribute(:is_proc, true)
-            else
-              write_attribute(:value, v)
+          when Proc
+            write_attribute(:value, v.to_ruby)
+            write_attribute(:is_proc, true)
+          else
+            write_attribute(:value, v)
           end
         end
 
