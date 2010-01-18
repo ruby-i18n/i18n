@@ -11,6 +11,15 @@ require 'test/unit'
 require 'time'
 require 'yaml'
 
+# Overwrite *gem* to not load i18n gem by libraries like active_support
+def gem(gem_name, *version_requirements)
+  if gem_name =='i18n'
+    puts "Skiping loading i18n gem..."
+    return
+  end
+  super(gem_name, *version_requirements)
+end
+
 begin
   require 'mocha'
 rescue LoadError
