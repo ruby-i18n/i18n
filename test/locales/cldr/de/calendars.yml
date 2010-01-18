@@ -57,13 +57,13 @@ de:
         datetime: 
           default: :"calendars.gregorian.formats.datetime.medium"
           full: 
-            pattern: "{1} {0}"
+            pattern: "{{date}} {{time}}"
           long: 
-            pattern: "{1} {0}"
+            pattern: "{{date}} {{time}}"
           medium: 
-            pattern: "{1} {0}"
+            pattern: "{{date}} {{time}}"
           short: 
-            pattern: "{1} {0}"
+            pattern: "{{date}} {{time}}"
         time: 
           default: :"calendars.gregorian.formats.time.medium"
           full: 
