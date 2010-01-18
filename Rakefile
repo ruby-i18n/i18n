@@ -1,8 +1,12 @@
+require 'rake/testtask'
+
 task :default => [:test]
 
-task :test do
-  ruby "test/all.rb"
+Rake::TestTask.new(:test) do |t|
+  t.pattern = "#{File.dirname(__FILE__)}/**/*_test.rb"
+  t.verbose = true
 end
+Rake::Task['test'].comment = "Run all i18n tests"
 
 require File.expand_path("lib/i18n/version", File.dirname(__FILE__))
 
