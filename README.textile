@@ -101,4 +101,4 @@ h2. Contributors
 
 h2. License
 
-MIT License. See the included MIT-LICENCE file.
+MIT License. See the included MIT-LICENSE file.
