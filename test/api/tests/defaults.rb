@@ -25,7 +25,7 @@ module Tests
       end
 
       define_method "test defaults: given an array of missing keys it raises a MissingTranslationData exception" do
-        assert_raises I18n::MissingTranslationData do
+        assert_raise I18n::MissingTranslationData do
           I18n.t(:does_not_exist, :default => [:does_not_exist_2, :does_not_exist_3], :raise => true)
         end
       end

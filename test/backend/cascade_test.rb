@@ -34,9 +34,9 @@ class I18nBackendCascadeTest < Test::Unit::TestCase
   end
 
   test "raises I18n::MissingTranslationData exception when no translation was found" do
-    assert_raises(I18n::MissingTranslationData) { lookup(:'foo.missing', :raise => true) }
-    assert_raises(I18n::MissingTranslationData) { lookup(:'bar.baz.missing', :raise => true) }
-    assert_raises(I18n::MissingTranslationData) { lookup(:'missing.bar.baz', :raise => true) }
+    assert_raise(I18n::MissingTranslationData) { lookup(:'foo.missing', :raise => true) }
+    assert_raise(I18n::MissingTranslationData) { lookup(:'bar.baz.missing', :raise => true) }
+    assert_raise(I18n::MissingTranslationData) { lookup(:'missing.bar.baz', :raise => true) }
   end
 
   test "cascades before evaluating the default" do

@@ -34,8 +34,8 @@ class I18nBackendFallbacksTranslateTest < Test::Unit::TestCase
   end
 
   test "raises I18n::MissingTranslationData exception when no translation was found" do
-    assert_raises(I18n::MissingTranslationData) { I18n.t(:faa, :locale => :en, :raise => true) }
-    assert_raises(I18n::MissingTranslationData) { I18n.t(:faa, :locale => :de, :raise => true) }
+    assert_raise(I18n::MissingTranslationData) { I18n.t(:faa, :locale => :en, :raise => true) }
+    assert_raise(I18n::MissingTranslationData) { I18n.t(:faa, :locale => :de, :raise => true) }
   end
 end
 

@@ -54,13 +54,13 @@ class I18nCoreExtStringInterpolationTest < Test::Unit::TestCase
   end
 
   test "String interpolation raises an ArgumentError when the string has extra placeholders (Array)" do
-    assert_raises(ArgumentError) do # Ruby 1.9 msg: "too few arguments"
+    assert_raise(ArgumentError) do # Ruby 1.9 msg: "too few arguments"
       "%s %s" % %w(Masao)
     end
   end
 
   test "String interpolation raises a KeyError when the string has extra placeholders (Hash)" do
-    assert_raises(KeyError) do # Ruby 1.9 msg: "key not found"
+    assert_raise(KeyError) do # Ruby 1.9 msg: "key not found"
       "%{first} %{last}" % { :first => 'Masao' }
     end
   end
@@ -88,7 +88,7 @@ class I18nCoreExtStringInterpolationTest < Test::Unit::TestCase
   end
   
   def test_string_interpolation_raises_an_argument_error_when_mixing_named_and_unnamed_placeholders
-    assert_raises(ArgumentError) { "%{name} %f" % [1.0] }
-    assert_raises(ArgumentError) { "%{name} %f" % [1.0, 2.0] }
+    assert_raise(ArgumentError) { "%{name} %f" % [1.0] }
+    assert_raise(ArgumentError) { "%{name} %f" % [1.0, 2.0] }
   end
 end

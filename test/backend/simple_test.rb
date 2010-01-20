@@ -16,7 +16,7 @@ class I18nBackendSimpleTest < Test::Unit::TestCase
   # loading translations
       
   test "simple load_translations: given an unknown file type it raises I18n::UnknownFileType" do
-    assert_raises(I18n::UnknownFileType) { I18n.backend.load_translations("#{locales_dir}/en.xml") }
+    assert_raise(I18n::UnknownFileType) { I18n.backend.load_translations("#{locales_dir}/en.xml") }
   end
   
   test "simple load_translations: given a Ruby file name it does not raise anything" do

@@ -55,15 +55,15 @@ module Tests
         end
 
         define_method "test localize Date: given nil it raises I18n::ArgumentError" do
-          assert_raises(I18n::ArgumentError) { I18n.l(nil) }
+          assert_raise(I18n::ArgumentError) { I18n.l(nil) }
         end
 
         define_method "test localize Date: given a plain Object it raises I18n::ArgumentError" do
-          assert_raises(I18n::ArgumentError) { I18n.l(Object.new) }
+          assert_raise(I18n::ArgumentError) { I18n.l(Object.new) }
         end
 
         define_method "test localize Date: given a format is missing it raises I18n::MissingTranslationData" do
-          assert_raises(I18n::MissingTranslationData) { I18n.l(@date, :format => :missing) }
+          assert_raise(I18n::MissingTranslationData) { I18n.l(@date, :format => :missing) }
         end
         
         define_method "test localize Date: it does not alter the format string" do
