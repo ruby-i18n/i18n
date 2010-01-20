@@ -15,7 +15,7 @@ class I18nSimpleBackendApiTest < Test::Unit::TestCase
   include Tests::Api::Localization::Time
   include Tests::Api::Localization::Procs
 
-  define_method "test: make sure we use the Simple backend" do
+  test "make sure we use the Simple backend" do
     assert_equal I18n::Backend::Simple, I18n.backend.class
   end
 end

@@ -14,43 +14,43 @@ class I18nBackendMetadataTest < Test::Unit::TestCase
     store_translations(:en, :foo => 'Hi {{name}}')
   end
 
-  define_method "test: translation strings carry metadata" do
+  test "translation strings carry metadata" do
     translation = I18n.t(:foo)
     assert translation.respond_to?(:translation_metadata)
     assert translation.translation_metadata.is_a?(Hash)
   end
 
-  define_method "test: translate preserves metadata stored on original Strings" do
+  test "translate preserves metadata stored on original Strings" do
     store_metadata(:foo, :bar, 'bar')
     assert_equal 'bar', I18n.t(:foo).translation_metadata[:bar]
   end
 
-  define_method "test: translate preserves metadata stored on original Strings (when interpolated)" do
+  test "translate preserves metadata stored on original Strings (when interpolated)" do
     store_metadata(:foo, :bar, 'bar')
     assert_equal 'bar', I18n.t(:foo, :name => 'David').translation_metadata[:bar]
   end
 
-  define_method "test: translate adds the locale to metadata on Strings" do
+  test "translate adds the locale to metadata on Strings" do
     assert_equal :en, I18n.t(:foo, :locale => :en).translation_metadata[:locale]
   end
 
-  define_method "test: translate adds the key to metadata on Strings" do
+  test "translate adds the key to metadata on Strings" do
     assert_equal :foo, I18n.t(:foo).translation_metadata[:key]
   end
 
-  define_method "test: translate adds the default to metadata on Strings" do
+  test "translate adds the default to metadata on Strings" do
     assert_equal 'bar', I18n.t(:foo, :default => 'bar', :name => '').translation_metadata[:default]
   end
 
-  define_method "test: translation adds the interpolation values to metadata on Strings" do
+  test "translation adds the interpolation values to metadata on Strings" do
     assert_equal({:name => 'David'}, I18n.t(:foo, :name => 'David').translation_metadata[:values])
   end
 
-  define_method "test: interpolation adds the original string to metadata on Strings" do
+  test "interpolation adds the original string to metadata on Strings" do
     assert_equal('Hi {{name}}', I18n.t(:foo, :name => 'David').translation_metadata[:original])
   end
 
-  define_method "test: pluralizatoin adds the count to metadata on Strings" do
+  test "pluralizatoin adds the count to metadata on Strings" do
     assert_equal(1, I18n.t(:missing, :count => 1, :default => { :one => 'foo' }).translation_metadata[:count])
   end
   

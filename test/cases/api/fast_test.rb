@@ -25,7 +25,7 @@ class I18nFastBackendApiTest < Test::Unit::TestCase
     super
   end
   
-  define_method "test: make sure we use the FastBackend backend" do
+  test "make sure we use the FastBackend backend" do
     assert_equal FastBackend, I18n.backend.class
   end
 end

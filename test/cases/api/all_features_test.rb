@@ -31,7 +31,7 @@ class I18nAllFeaturesApiTest < Test::Unit::TestCase
   include Tests::Api::Localization::Time
   include Tests::Api::Localization::Procs
 
-  define_method "test: make sure we use a Chain backend with an all features backend" do
+  test "make sure we use a Chain backend with an all features backend" do
     assert_equal I18n::Backend::Chain, I18n.backend.class
     assert_equal Backend, I18n.backend.backends.first.class
   end

@@ -17,32 +17,32 @@ class I18nBackendPluralizationTest < Test::Unit::TestCase
     @entry = { :zero => 'zero', :one => 'one', :few => 'few', :many => 'many', :other => 'other' }
   end
 
-  define_method "test: pluralization picks a pluralizer from :'i18n.pluralize'" do
+  test "pluralization picks a pluralizer from :'i18n.pluralize'" do
     assert_equal @rule, I18n.backend.send(:pluralizer, :xx)
   end
 
-  define_method "test: pluralization picks :one for 1" do
+  test "pluralization picks :one for 1" do
     assert_equal 'one', I18n.t(:count => 1, :default => @entry, :locale => :xx)
   end
 
-  define_method "test: pluralization picks :few for 2" do
+  test "pluralization picks :few for 2" do
     assert_equal 'few', I18n.t(:count => 2, :default => @entry, :locale => :xx)
   end
 
-  define_method "test: pluralization picks :many for 11" do
+  test "pluralization picks :many for 11" do
     assert_equal 'many', I18n.t(:count => 11, :default => @entry, :locale => :xx)
   end
 
-  define_method "test: pluralization picks zero for 0 if the key is contained in the data" do
+  test "pluralization picks zero for 0 if the key is contained in the data" do
     assert_equal 'zero', I18n.t(:count => 0, :default => @entry, :locale => :xx)
   end
 
-  define_method "test: pluralization picks few for 0 if the key is not contained in the data" do
+  test "pluralization picks few for 0 if the key is not contained in the data" do
     @entry.delete(:zero)
     assert_equal 'few', I18n.t(:count => 0, :default => @entry, :locale => :xx)
   end
 
-  define_method "test: Fallbacks can pick up rules from fallback locales, too" do
+  test "Fallbacks can pick up rules from fallback locales, too" do
     assert_equal @rule, I18n.backend.send(:pluralizer, :'xx-XX')
   end
 end

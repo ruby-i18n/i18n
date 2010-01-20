@@ -23,7 +23,7 @@ class I18nActiveRecordApiTest < Test::Unit::TestCase
   include Tests::Api::Localization::Time
   include Tests::Api::Localization::Procs unless RUBY_VERSION >= '1.9.1'
 
-  define_method "test: make sure we use an ActiveRecord backend" do
+  test "make sure we use an ActiveRecord backend" do
     assert_equal I18n::Backend::ActiveRecord, I18n.backend.class
   end
 end if defined?(ActiveRecord)

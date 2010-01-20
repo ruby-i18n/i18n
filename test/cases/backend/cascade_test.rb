@@ -16,12 +16,12 @@ class I18nBackendCascadeTest < Test::Unit::TestCase
     )
   end
 
-  define_method "test: still returns an existing translation as usual" do
+  test "still returns an existing translation as usual" do
     assert_equal 'foo', I18n.t(:foo)
     assert_equal 'baz', I18n.t(:'bar.baz')
   end
 
-  define_method "test: falls back by cutting keys off the end of the scope" do
+  test "falls back by cutting keys off the end of the scope" do
     assert_equal 'foo', I18n.t(:'does_not_exist.foo')
     assert_equal 'foo', I18n.t(:'does_not_exist.does_not_exist.foo')
 
@@ -29,17 +29,17 @@ class I18nBackendCascadeTest < Test::Unit::TestCase
     assert_equal 'baz', I18n.t(:'bar.does_not_exist.does_not_exist.baz')
   end
 
-  define_method "test: raises I18n::MissingTranslationData exception when no translation was found" do
+  test "raises I18n::MissingTranslationData exception when no translation was found" do
     assert_raises(I18n::MissingTranslationData) { I18n.t(:'foo.does_not_exist', :raise => true) }
     assert_raises(I18n::MissingTranslationData) { I18n.t(:'bar.baz.does_not_exist', :raise => true) }
     assert_raises(I18n::MissingTranslationData) { I18n.t(:'does_not_exist.bar.baz', :raise => true) }
   end
 
-  define_method "test: cascades before evaluating the default" do
+  test "cascades before evaluating the default" do
     assert_equal 'foo', I18n.t(:foo, :scope => :does_not_exist, :default => 'default')
   end
 
-  define_method "test: let's us assemble required fallbacks for ActiveRecord validation messages" do
+  test "let's us assemble required fallbacks for ActiveRecord validation messages" do
     store_translations(:en,
       :errors => {
         :reply => {

@@ -25,7 +25,7 @@ class I18nCascadeApiTest < Test::Unit::TestCase
   include Tests::Api::Localization::Time
   include Tests::Api::Localization::Procs
 
-  define_method "test: make sure we use a backend with Cascade included" do
+  test "make sure we use a backend with Cascade included" do
     assert_equal Backend, I18n.backend.class
   end
 end
