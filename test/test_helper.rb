@@ -18,7 +18,7 @@ def gem(gem_name, *version_requirements)
     return
   end
   super(gem_name, *version_requirements)
-end
+end unless RUBY_VERSION >= '1.9' # TODO fix this for 1.9. gives a super ugly seg fault
 
 begin
   require 'mocha'
@@ -32,13 +32,6 @@ Dir[File.dirname(__FILE__) + '/api/**/*.rb'].each do |filename|
 end
 
 $KCODE = 'u' unless RUBY_VERSION >= '1.9'
-
-# wtf is wrong with this, why's there Kernel#test?
-# class Module
-#   def self.test(name, &block)
-#     define_method("test: " + name, &block)
-#   end
-# end
 
 class Test::Unit::TestCase
   def self.test(name, &block)
