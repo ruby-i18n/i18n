@@ -1,7 +1,5 @@
 # encoding: utf-8
 
-# EXPERIMENTAL
-#
 # The cascade module adds the ability to do cascading lookups to backends that
 # are compatible to the Simple backend.
 #
@@ -15,7 +13,15 @@
 # then the remaining scope segment :foo will be omitted, too, and again the
 # key :baz will be looked up (now with no scope).
 #
-# Defaults will only kick in after the cascading lookups haven't succeeded.
+# To enable a cascading lookup one passes the :cascade option:
+#
+#   I18n.t(:'foo.bar.baz', :cascade => true)
+#
+# This will return the first translation found for :"foo.bar.baz", :"foo.baz"
+# or :baz in this order.
+#
+# The cascading lookup takes precedence over resolving any given defaults.
+# I.e. defaults will kick in after the cascading lookups haven't succeeded.
 #
 # This behavior is useful for libraries like ActiveRecord validations where
 # the library wants to give users a bunch of more or less fine-grained options
@@ -25,13 +31,12 @@
 # http://github.com/clemens/i18n-cascading-backend
 
 module I18n
-  @@fallbacks = nil
-
   module Backend
     module Cascade
-      def lookup(locale, key, scope = [], separator = nil)
+      def lookup(locale, key, scope = [], options = {})
         return unless key
-        locale, *scope = I18n.send(:normalize_translation_keys, locale, key, scope, separator)
+
+        locale, *scope = I18n.send(:normalize_translation_keys, locale, key, scope, options[:separator])
         key = scope.pop
 
         begin

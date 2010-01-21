@@ -33,10 +33,10 @@ module I18n
           entry = resolve(locale, key, lookup(locale, key), options)
           raise(I18n::MissingTranslationData.new(locale, key, options)) if entry.nil?
         else
-          count, scope, default, separator = options.values_at(:count, :scope, :default, :separator)
+          count, scope, default = options.values_at(:count, :scope, :default)
           values = options.reject { |name, value| RESERVED_KEYS.include?(name) }
 
-          entry = lookup(locale, key, scope, separator)
+          entry = lookup(locale, key, scope, options)
           entry = entry.nil? && default ? default(locale, key, default, options) : resolve(locale, key, entry, options)
           raise(I18n::MissingTranslationData.new(locale, key, options)) if entry.nil?
 
@@ -107,15 +107,15 @@ module I18n
         # nested translations hash. Splits keys or scopes containing dots
         # into multiple keys, i.e. <tt>currency.format</tt> is regarded the same as
         # <tt>%w(currency format)</tt>.
-        def lookup(locale, key, scope = [], separator = nil)
+        def lookup(locale, key, scope = [], options = {})
           return unless key
           init_translations unless initialized?
-          keys = I18n.send(:normalize_translation_keys, locale, key, scope, separator)
+          keys = I18n.send(:normalize_translation_keys, locale, key, scope, options[:separator])
           keys.inject(translations) do |result, key|
             key = key.to_sym
             return nil unless result.is_a?(Hash) && result.has_key?(key)
             result = result[key]
-            result = resolve(locale, key, result, :separator => separator) if result.is_a?(Symbol)
+            result = resolve(locale, key, result, options.except(:scope)) if result.is_a?(Symbol)
             result
           end
         end

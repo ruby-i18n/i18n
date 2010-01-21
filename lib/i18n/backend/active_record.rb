@@ -38,10 +38,10 @@ module I18n
 
       protected
 
-        def lookup(locale, key, scope = [], separator = nil)
+        def lookup(locale, key, scope = [], options = {})
           return unless key
 
-          separator ||= I18n.default_separator
+          separator = options[:separator] || I18n.default_separator
           key = (Array(scope) + Array(key)).join(separator)
 
           result = Translation.locale(locale).lookup(key, separator).all
