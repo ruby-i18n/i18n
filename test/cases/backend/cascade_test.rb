@@ -16,27 +16,35 @@ class I18nBackendCascadeTest < Test::Unit::TestCase
     )
   end
 
+  def lookup(key, options = {})
+    I18n.t(key, options.merge(:cascade => true))
+  end
+
   test "still returns an existing translation as usual" do
-    assert_equal 'foo', I18n.t(:foo)
-    assert_equal 'baz', I18n.t(:'bar.baz')
+    assert_equal 'foo', lookup(:foo)
+    assert_equal 'baz', lookup(:'bar.baz')
   end
 
   test "falls back by cutting keys off the end of the scope" do
-    assert_equal 'foo', I18n.t(:'does_not_exist.foo')
-    assert_equal 'foo', I18n.t(:'does_not_exist.does_not_exist.foo')
+    assert_equal 'foo', lookup(:'missing.foo')
+    assert_equal 'foo', lookup(:'missing.missing.foo')
 
-    assert_equal 'baz', I18n.t(:'bar.does_not_exist.baz')
-    assert_equal 'baz', I18n.t(:'bar.does_not_exist.does_not_exist.baz')
+    assert_equal 'baz', lookup(:'bar.missing.baz')
+    assert_equal 'baz', lookup(:'bar.missing.missing.baz')
   end
 
   test "raises I18n::MissingTranslationData exception when no translation was found" do
-    assert_raises(I18n::MissingTranslationData) { I18n.t(:'foo.does_not_exist', :raise => true) }
-    assert_raises(I18n::MissingTranslationData) { I18n.t(:'bar.baz.does_not_exist', :raise => true) }
-    assert_raises(I18n::MissingTranslationData) { I18n.t(:'does_not_exist.bar.baz', :raise => true) }
+    assert_raises(I18n::MissingTranslationData) { lookup(:'foo.missing', :raise => true) }
+    assert_raises(I18n::MissingTranslationData) { lookup(:'bar.baz.missing', :raise => true) }
+    assert_raises(I18n::MissingTranslationData) { lookup(:'missing.bar.baz', :raise => true) }
   end
 
   test "cascades before evaluating the default" do
-    assert_equal 'foo', I18n.t(:foo, :scope => :does_not_exist, :default => 'default')
+    assert_equal 'foo', lookup(:foo, :scope => :missing, :default => 'default')
+  end
+  
+  test "cascades defaults, too" do
+    assert_equal 'foo', lookup(nil, :default => [:'missing.missing', :'missing.foo'])
   end
 
   test "let's us assemble required fallbacks for ActiveRecord validation messages" do
@@ -57,10 +65,10 @@ class I18nBackendCascadeTest < Test::Unit::TestCase
         :odd => 'odd on errors'
       }
     )
-    assert_equal 'blank on reply title',  I18n.t(:'errors.reply.title.blank',  :default => :'errors.topic.title.blank')
-    assert_equal 'taken on reply',        I18n.t(:'errors.reply.title.taken',  :default => :'errors.topic.title.taken')
-    assert_equal 'format on topic title', I18n.t(:'errors.reply.title.format', :default => :'errors.topic.title.format')
-    assert_equal 'length on topic',       I18n.t(:'errors.reply.title.length', :default => :'errors.topic.title.length')
-    assert_equal 'odd on errors',         I18n.t(:'errors.reply.title.odd',    :default => :'errors.topic.title.odd')
+    assert_equal 'blank on reply title',  lookup(:'errors.reply.title.blank',  :default => :'errors.topic.title.blank')
+    assert_equal 'taken on reply',        lookup(:'errors.reply.title.taken',  :default => :'errors.topic.title.taken')
+    assert_equal 'format on topic title', lookup(:'errors.reply.title.format', :default => :'errors.topic.title.format')
+    assert_equal 'length on topic',       lookup(:'errors.reply.title.length', :default => :'errors.topic.title.length')
+    assert_equal 'odd on errors',         lookup(:'errors.reply.title.odd',    :default => :'errors.topic.title.odd')
   end
 end

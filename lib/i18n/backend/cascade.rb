@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-# The cascade module adds the ability to do cascading lookups to backends that
+# The Cascade module adds the ability to do cascading lookups to backends that
 # are compatible to the Simple backend.
 #
 # By cascading lookups we mean that for any key that can not be found the
@@ -35,6 +35,7 @@ module I18n
     module Cascade
       def lookup(locale, key, scope = [], options = {})
         return unless key
+        return super unless options[:cascade]
 
         locale, *scope = I18n.send(:normalize_translation_keys, locale, key, scope, options[:separator])
         key = scope.pop
