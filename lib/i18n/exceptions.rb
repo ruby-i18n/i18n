@@ -21,7 +21,7 @@ module I18n
     attr_reader :locale, :key, :options
     def initialize(locale, key, opts = nil)
       @key, @locale, @options = key, locale, opts || {}
-      keys = I18n.send(:normalize_translation_keys, locale, key, options[:scope])
+      keys = I18n.normalize_keys(locale, key, options[:scope])
       keys << 'no key' if keys.size < 2
       super "translation missing: #{keys.join(', ')}"
     end

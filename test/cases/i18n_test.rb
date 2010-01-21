@@ -55,20 +55,20 @@ class I18nTest < Test::Unit::TestCase
   end
 
   def test_normalize_keys
-    assert_equal [:en, :foo, :bar], I18n.send(:normalize_translation_keys, :en, :bar, :foo)
-    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.send(:normalize_translation_keys, :en, :'baz.buz', :'foo.bar')
-    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.send(:normalize_translation_keys, :en, 'baz.buz', 'foo.bar')
-    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.send(:normalize_translation_keys, :en, %w(baz buz), %w(foo bar))
-    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.send(:normalize_translation_keys, :en, [:baz, :buz], [:foo, :bar])
+    assert_equal [:en, :foo, :bar], I18n.normalize_keys(:en, :bar, :foo)
+    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.normalize_keys(:en, :'baz.buz', :'foo.bar')
+    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.normalize_keys(:en, 'baz.buz', 'foo.bar')
+    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.normalize_keys(:en, %w(baz buz), %w(foo bar))
+    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.normalize_keys(:en, [:baz, :buz], [:foo, :bar])
   end
 
   def test_normalize_keys_should_not_attempt_to_sym_on_empty_string
-    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.send(:normalize_translation_keys, :en, :'baz.buz', :'foo..bar')
-    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.send(:normalize_translation_keys, :en, :'baz.buz', :'foo......bar')
+    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.normalize_keys(:en, :'baz.buz', :'foo..bar')
+    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.normalize_keys(:en, :'baz.buz', :'foo......bar')
   end
 
   def test_uses_passed_separator_to_normalize_keys
-    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.send(:normalize_translation_keys, :en, :'baz|buz', :'foo|bar', '|')
+    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.normalize_keys(:en, :'baz|buz', :'foo|bar', '|')
   end
 
   def test_can_set_exception_handler

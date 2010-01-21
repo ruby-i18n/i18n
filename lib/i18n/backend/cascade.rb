@@ -37,7 +37,7 @@ module I18n
         return unless key
         return super unless options[:cascade]
 
-        locale, *scope = I18n.send(:normalize_translation_keys, locale, key, scope, options[:separator])
+        locale, *scope = I18n.normalize_keys(locale, key, scope, options[:separator])
         key = scope.pop
 
         begin

@@ -37,7 +37,7 @@ module I18n
           count, scope, default, separator = options.values_at(:count, *Base::RESERVED_KEYS)
           separator ||= I18n.default_separator
 
-          keys = I18n.send(:normalize_translation_keys, locale, key, scope, separator)[1..-1]
+          keys = I18n.normalize_keys(locale, key, scope, separator)[1..-1]
           key = keys.join(separator || I18n.default_separator)
 
           unless ActiveRecord::Translation.locale(locale).lookup(key, separator).exists?

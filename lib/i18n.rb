@@ -225,6 +225,16 @@ module I18n
     end
     alias :l :localize
 
+    # Merges the given locale, key and scope into a single array of keys.
+    # Splits keys that contain dots into multiple keys. Makes sure all
+    # keys are Symbols.
+    def normalize_keys(locale, key, scope, separator = nil)
+      keys = [locale] + Array(scope) + Array(key)
+      keys = keys.map { |k| k.to_s.split(separator || I18n.default_separator) }
+      keys = keys.flatten - ['']
+      keys.map { |k| k.to_sym }
+    end
+
   # making these private until Ruby 1.9.2 can send to protected methods again
   # see http://redmine.ruby-lang.org/repositories/revision/ruby-19?rev=24280
   private
@@ -262,16 +272,6 @@ module I18n
       else
         @@exception_handler.call(exception, locale, key, options)
       end
-    end
-
-    # Merges the given locale, key and scope into a single array of keys.
-    # Splits keys that contain dots into multiple keys. Makes sure all
-    # keys are Symbols.
-    def normalize_translation_keys(locale, key, scope, separator = nil)
-      keys = [locale] + Array(scope) + Array(key)
-      keys = keys.map { |k| k.to_s.split(separator || I18n.default_separator) }
-      keys = keys.flatten - ['']
-      keys.map { |k| k.to_sym }
     end
   end
 end

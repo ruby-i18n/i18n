@@ -110,7 +110,7 @@ module I18n
         def lookup(locale, key, scope = [], options = {})
           return unless key
           init_translations unless initialized?
-          keys = I18n.send(:normalize_translation_keys, locale, key, scope, options[:separator])
+          keys = I18n.normalize_keys(locale, key, scope, options[:separator])
           keys.inject(translations) do |result, key|
             key = key.to_sym
             return nil unless result.is_a?(Hash) && result.has_key?(key)
