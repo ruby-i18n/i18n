@@ -58,7 +58,8 @@ module I18n
         named_scope :lookup, lambda { |keys, *separator|
           keys = Array(keys).map! { |key| key.to_s }
           separator = separator.first || I18n.default_separator
-          { :conditions => ["`key` IN (?) OR `key` LIKE '#{keys.last}#{separator}%'", keys] }
+          column_name = connection.quote_column_name('key')
+          { :conditions => ["#{column_name} IN (?) OR #{column_name} LIKE '#{keys.last}#{separator}%'", keys] }
         }
 
         def self.available_locales
