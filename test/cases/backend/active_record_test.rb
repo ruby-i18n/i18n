@@ -38,6 +38,11 @@ class I18nBackendActiveRecordTest < Test::Unit::TestCase
 
     assert_equal 'foo', I18n.t(:foo)
   end
+  
+  test "can store translations with keys that are translations containing special chars" do
+    I18n.backend.store_translations(:es, :"Pagina's" => "Pagina's" )
+    assert_equal "Pagina's", I18n.t(:"Pagina's", :locale => :es)
+  end
 
   with_mocha do
     def test_missing_translations_table_does_not_cause_available_locales_to_error
