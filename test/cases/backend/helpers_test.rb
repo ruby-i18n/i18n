@@ -6,19 +6,19 @@ class I18nBackendHelpersTest < Test::Unit::TestCase
     @backend = I18n::Backend::Simple.new
   end
   
-  def test_wind_keys
+  test "wind_keys" do
     hash = { "a" => { "b" => { "c" => "d", "e" => "f" }, "g" => "h" }, "i" => "j"}
     expected = { :"a.b.c" => "d", :"a.b.e" => "f", :"a.g" => "h", :"i" => "j" }
     assert_equal expected, @backend.wind_keys(hash)
   end
 
-  def test_unwind_keys
+  test "unwind_keys" do
     hash = { "a.b.c" => "d", :"a.b.e" => "f", :"a.g" => "h", "i" => "j" }
     expected = { "a" => { "b" => { "c" => "d", "e" => "f" }, "g" => "h" }, "i" => "j"}
     assert_equal expected, @backend.unwind_keys(hash)
   end
 
-  def test_deep_symbolize_keys
+  test "deep_symbolize_keys" do
     result = @backend.deep_symbolize_keys('foo' => { 'bar' => { 'baz' => 'bar' } })
     expected = {:foo => {:bar => {:baz => 'bar'}}}
     assert_equal expected, result

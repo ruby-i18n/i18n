@@ -15,7 +15,7 @@ class I18nBackendActiveRecordTest < Test::Unit::TestCase
     super
   end
 
-  def test_store_translations_does_not_allow_ambigous_keys_1
+  test "store_translations does not allow ambiguous keys (1)" do
     I18n::Backend::ActiveRecord::Translation.delete_all
     I18n.backend.store_translations(:en, :foo => 'foo')
     I18n.backend.store_translations(:en, :foo => { :bar => 'bar' })
@@ -27,7 +27,7 @@ class I18nBackendActiveRecordTest < Test::Unit::TestCase
     assert_equal({ :bar => 'bar', :baz => 'baz' }, I18n.t(:foo))
   end
 
-  def test_store_translations_does_not_allow_ambigous_keys_2
+  test "store_translations does not allow ambiguous keys (2)" do
     I18n::Backend::ActiveRecord::Translation.delete_all
     I18n.backend.store_translations(:en, :foo => { :bar => 'bar' })
     I18n.backend.store_translations(:en, :foo => { :baz => 'baz' })
@@ -45,7 +45,7 @@ class I18nBackendActiveRecordTest < Test::Unit::TestCase
   end
 
   with_mocha do
-    def test_missing_translations_table_does_not_cause_available_locales_to_error
+    test "missing translations table does not cause an error in #available_locales" do
       I18n::Backend::ActiveRecord::Translation.expects(:available_locales).raises(::ActiveRecord::StatementInvalid)
       assert_equal [], I18n.backend.available_locales
     end

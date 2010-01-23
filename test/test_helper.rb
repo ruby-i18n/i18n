@@ -26,7 +26,6 @@ rescue LoadError
   puts "skipping tests using mocha as mocha can't be found"
 end
 
-
 Dir[File.dirname(__FILE__) + '/api/**/*.rb'].each do |filename|
   require filename
 end

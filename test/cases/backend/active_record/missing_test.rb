@@ -13,47 +13,37 @@ class I18nActiveRecordMissingTest < Test::Unit::TestCase
     I18n::Backend::ActiveRecord::Translation.delete_all
   end
   
-  def test_can_persist_interpolations
-    translation = I18n::Backend::ActiveRecord::Translation.new \
-      :key => 'foo', 
-      :value => 'bar', 
-      :locale => :en
-    
-    translation.interpolations = %w{ count name }
+  test "can persist interpolations" do
+    translation = I18n::Backend::ActiveRecord::Translation.new(:key => 'foo', :value => 'bar', :locale => :en)
+    translation.interpolations = %w(count name)
     translation.save
-    
     assert translation.valid?
   end
 
-  def test_lookup_persists_key
+  test "lookup persists the key" do
     I18n.t('foo.bar.baz')
-    
     assert_equal 1, I18n::Backend::ActiveRecord::Translation.count
   end
 
-  def test_lookup_does_not_persist_key_twice
+  test "lookup does not persist the key twice" do
     2.times { I18n.t('foo.bar.baz') }
-    
     assert_equal 1, I18n::Backend::ActiveRecord::Translation.count
   end
   
-  def test_persists_interpolation_keys_when_looked_up_directly
+  test "lookup persists interpolation keys when looked up directly" do
     I18n.t('foo.bar.baz', :cow => "lucy" )  # creates stub translation.
-    
     translation_stub = I18n::Backend::ActiveRecord::Translation.locale(:en).lookup('foo.bar.baz').first
     assert translation_stub.interpolates?(:cow)
   end
 
-  def test_creates_one_stub_per_pluralization
+  test "creates one stub per pluralization" do
     I18n.t('foo', :count => 999)
-    
     translations = I18n::Backend::ActiveRecord::Translation.locale(:en).find_all_by_key %w{ foo.zero foo.one foo.other }
     assert_equal 3, translations.length
   end
-  
-  def test_creates_no_stub_for_base_key_in_pluralization
+
+  test "creates no stub for base key in pluralization" do
     I18n.t('foo', :count => 999)
-    
     translations = I18n::Backend::ActiveRecord::Translation.locale(:en).find_by_key %w{ foo.zero foo.one foo.other }
     assert !I18n::Backend::ActiveRecord::Translation.locale(:en).find_by_key("foo")
   end

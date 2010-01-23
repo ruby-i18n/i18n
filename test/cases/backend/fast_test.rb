@@ -1,7 +1,7 @@
 # encoding: utf-8
 
-require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
-require File.expand_path(File.dirname(__FILE__) + '/simple_test')
+require 'test_helper'
+require 'cases/backend/simple_test'
 
 class I18nBackendFastTest < I18nBackendSimpleTest
   class FastBackend
@@ -29,7 +29,7 @@ class I18nBackendFastSpecificTest < Test::Unit::TestCase
     assert_equal expected, @backend.send(:flatten_hash, nested)
   end
 
-  def test_hash_flattening_works
+  test "hash flattening works" do
     assert_flattens(
       {:a=>'a', :b=>{:c=>'c', :d=>'d', :f=>{:x=>'x'}}, :"b.f" => {:x=>"x"}, :"b.c"=>"c", :"b.f.x"=>"x", :"b.d"=>"d"},
       {:a=>'a', :b=>{:c=>'c', :d=>'d', :f=>{:x=>'x'}}}
@@ -37,13 +37,13 @@ class I18nBackendFastSpecificTest < Test::Unit::TestCase
     assert_flattens({:a=>{:b =>['a', 'b']}, :"a.b"=>['a', 'b']}, {:a=>{:b =>['a', 'b']}})
   end
 
-  def test_pluralization_logic_and_lookup_works
+  test "pluralization logic and lookup works" do
     counts_hash = {:zero => 'zero', :one => 'one', :other => 'other'}
     @backend.store_translations :en, {:a => counts_hash}
     assert_equal 'one', @backend.translate(:en, :a, :count => 1)
   end
 
-  def test_translation_subtree_retrieval
+  test "translation subtree retrieval" do
     @backend.store_translations :en, :a => {:foo => 'bar'}
     assert_equal({:foo => 'bar'}, @backend.translate(:en, :a))
   end
