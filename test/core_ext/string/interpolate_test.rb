@@ -83,10 +83,15 @@ class I18nCoreExtStringInterpolationTest < Test::Unit::TestCase
     assert_equal("%{num} %<num>d", "%%{num} %%<num>d" % {:num => 1})
   end
 
+  test "% can be used in Ruby's own sprintf behavior" do
+    assert_equal "70%", "%d%%" % 70
+    assert_equal "70-100%", "%d-%d%%" % [70, 100]
+  end
+
   def test_sprintf_mix_unformatted_and_formatted_named_placeholders
     assert_equal("foo 1.000000", "%{name} %<num>f" % {:name => "foo", :num => 1.0})
   end
-  
+
   def test_string_interpolation_raises_an_argument_error_when_mixing_named_and_unnamed_placeholders
     assert_raise(ArgumentError) { "%{name} %f" % [1.0] }
     assert_raise(ArgumentError) { "%{name} %f" % [1.0, 2.0] }
