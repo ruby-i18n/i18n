@@ -51,6 +51,29 @@ The new i18n gem can be loaded from vendor/plugins like this:
 
 Then you can `reload_i18n!` inside an i18n initializer. 
 
+h2. Tests
+
+You can run tests both with 
+
+* `rake test` or just `rake`
+* run any test file directly, e.g. `ruby test/api/simple_test.rb`
+* run all tests with `ruby test/all.rb`
+
+The structure of the test suite is a bit unusual as it uses modules to reuse
+particular tests in different test cases.
+
+The reason for this is that we need to enforce the I18n API across various 
+combinations of extensions. E.g. the Simple backend alone needs to support
+the same API as any combination of feature and/or optimization modules included
+to the Simple backend. We test this by reusing the same API defition (implemented
+as test methods) in test cases with different setups.
+
+You can find the test cases that enforce the API in test/api. And you can find
+the API definition test methods in test/api/tests.
+
+All other test cases (e.g. as defined in test/backend, test/core\_ext) etc. 
+follow the usual test setup and should be easy to grok.
+
 h2. Authors
 
 * "Sven Fuchs":http://www.artweb-design.de

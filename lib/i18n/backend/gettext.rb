@@ -1,7 +1,8 @@
 # encoding: utf-8
 
+$:.unshift File.expand_path(File.dirname(__FILE__) + '/../../../vendor/')
 require 'i18n/gettext'
-require File.expand_path(File.dirname(__FILE__) + '/../../../vendor/po_parser.rb')
+require 'po_parser'
 
 # Experimental support for using Gettext po files to store translations.
 #

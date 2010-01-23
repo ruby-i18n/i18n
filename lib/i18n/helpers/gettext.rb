@@ -1,4 +1,5 @@
 # encoding: utf-8
+require 'i18n/gettext'
 
 module I18n
   module Helpers

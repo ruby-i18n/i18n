@@ -1,7 +1,10 @@
 # encoding: utf-8
 
+$KCODE = 'u' unless RUBY_VERSION >= '1.9'
+
 $:.unshift File.expand_path("../lib", File.dirname(__FILE__))
-$:.unshift File.expand_path(File.dirname(__FILE__))
+$:.unshift(File.expand_path(File.dirname(__FILE__)))
+$:.uniq!
 
 require 'i18n'
 require 'i18n/core_ext/object/meta_class'
@@ -25,12 +28,6 @@ begin
 rescue LoadError
   puts "skipping tests using mocha as mocha can't be found"
 end
-
-Dir[File.dirname(__FILE__) + '/api/**/*.rb'].each do |filename|
-  require filename
-end
-
-$KCODE = 'u' unless RUBY_VERSION >= '1.9'
 
 class Test::Unit::TestCase
   def self.test(name, &block)
@@ -69,7 +66,7 @@ class Test::Unit::TestCase
   end
 
   def locales_dir
-    File.dirname(__FILE__) + '/locales'
+    File.dirname(__FILE__) + '/test_data/locales'
   end
 
   def euc_jp(string)
@@ -82,29 +79,35 @@ class Test::Unit::TestCase
   end
 end
 
-def setup_active_record
+def require_active_record!
   begin
     require 'activerecord'
+    ActiveRecord::Base.connection
+    true
+  rescue ActiveRecord::ConnectionNotEstablished
     require 'i18n/backend/active_record'
     require 'i18n/backend/active_record/store_procs'
-
-    if I18n::Backend::Simple.method_defined?(:interpolate_with_deprecated_syntax)
-      I18n::Backend::Simple.send(:remove_method, :interpolate) rescue NameError
-    end
-
-    ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
-    ActiveRecord::Migration.verbose = false
-    ActiveRecord::Schema.define(:version => 1) do
-      create_table :translations do |t|
-        t.string :locale
-        t.string :key
-        t.string :value
-        t.string :interpolations
-        t.boolean :is_proc, :default => false
-      end
-    end
-
+    setup_active_record
+    true
   rescue LoadError
     puts "skipping tests using activerecord as activerecord can't be found"
+  end
+end
+
+def setup_active_record
+  if I18n::Backend::Simple.method_defined?(:interpolate_with_deprecated_syntax)
+    I18n::Backend::Simple.send(:remove_method, :interpolate) rescue NameError
+  end
+
+  ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
+  ActiveRecord::Migration.verbose = false
+  ActiveRecord::Schema.define(:version => 1) do
+    create_table :translations do |t|
+      t.string :locale
+      t.string :key
+      t.string :value
+      t.string :interpolations
+      t.boolean :is_proc, :default => false
+    end
   end
 end
