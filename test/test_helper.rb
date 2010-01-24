@@ -81,7 +81,7 @@ end
 
 def require_active_record!
   begin
-    require 'activerecord'
+    require 'active_record'
     ActiveRecord::Base.connection
     true
   rescue ActiveRecord::ConnectionNotEstablished
