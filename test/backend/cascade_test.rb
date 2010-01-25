@@ -17,7 +17,7 @@ class I18nBackendCascadeTest < Test::Unit::TestCase
   end
 
   def lookup(key, options = {})
-    I18n.t(key, options.merge(:cascade => true))
+    I18n.t(key, options.merge(:cascade => { :step => 1, :length => 1, :skip_root => false }))
   end
 
   test "still returns an existing translation as usual" do
@@ -26,11 +26,10 @@ class I18nBackendCascadeTest < Test::Unit::TestCase
   end
 
   test "falls back by cutting keys off the end of the scope" do
-    assert_equal 'foo', lookup(:'missing.foo')
-    assert_equal 'foo', lookup(:'missing.missing.foo')
-
-    assert_equal 'baz', lookup(:'bar.missing.baz')
-    assert_equal 'baz', lookup(:'bar.missing.missing.baz')
+    assert_equal 'foo', lookup(:foo, :scope => :'missing')
+    assert_equal 'foo', lookup(:foo, :scope => :'missing.missing')
+    assert_equal 'baz', lookup(:baz, :scope => :'bar.missing')
+    assert_equal 'baz', lookup(:baz, :scope => :'bar.missing.missing')
   end
 
   test "raises I18n::MissingTranslationData exception when no translation was found" do

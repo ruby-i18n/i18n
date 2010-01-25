@@ -35,15 +35,21 @@ module I18n
     module Cascade
       def lookup(locale, key, scope = [], options = {})
         return unless key
-        return super unless options[:cascade]
+        return super unless cascade = options[:cascade]
 
-        locale, *scope = I18n.normalize_keys(locale, key, scope, options[:separator])
-        key = scope.pop
+        separator = options[:separator] || I18n.default_separator
+        step, skip_root = cascade.values_at(:step, :skip_root)
+
+        key    = I18n.normalize_keys(nil, key, nil, separator)
+        length = options[:cascade][:length] || key.length
+
+        scope  = I18n.normalize_keys(nil, nil, scope, separator) + key
+        key    = scope.slice!(-length, length).join(separator)
 
         begin
           result = super
           return result unless result.nil?
-        end while scope.pop
+        end while scope.slice!(-step, step) && (!scope.empty? || !skip_root)
       end
     end
   end
