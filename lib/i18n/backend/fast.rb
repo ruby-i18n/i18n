@@ -21,7 +21,7 @@ module I18n
         @flattened_translations ||= flatten_translations(translations)
       end
 
-      def merge_translations(locale, data)
+      def merge_translations(locale, data, options = {})
         super
         reset_flattened_translations!
       end

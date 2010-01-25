@@ -23,7 +23,7 @@ module I18n
       # translations will be overwritten by new ones only at the deepest
       # level of the hash.
       def store_translations(locale, data, options = {})
-        merge_translations(locale, data)
+        merge_translations(locale, data, options)
       end
 
       def translate(locale, key, options = {})
@@ -246,9 +246,11 @@ module I18n
 
         # Deep merges the given translations hash with the existing translations
         # for the given locale
-        def merge_translations(locale, data)
+        def merge_translations(locale, data, options = {})
           locale = locale.to_sym
           translations[locale] ||= {}
+          separator = options[:separator] || I18n.default_separator
+          data = unwind_keys(data, separator)
           data = deep_symbolize_keys(data)
 
           # deep_merge by Stefan Rusterholz, see http://www.ruby-forum.com/topic/142809

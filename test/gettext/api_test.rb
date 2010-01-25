@@ -14,7 +14,7 @@ class I18nGettextApiTest < Test::Unit::TestCase
       "An apple" => { :one => 'Ein Apfel', :other => '{{count}} Äpfel' },
       :special => { "A special apple" => { :one => 'Ein spezieller Apfel', :other => '{{count}} spezielle Äpfel' } },
       :foo => { :bar => 'bar-de' }
-    }
+    }, :separator => '|'
   end
 
   # gettext

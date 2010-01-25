@@ -102,7 +102,7 @@ module I18n
         end
       end
 
-      def merge_translations(locale, data)
+      def merge_translations(locale, data, options = {})
         compile_all_strings_in(data)
         super
       end

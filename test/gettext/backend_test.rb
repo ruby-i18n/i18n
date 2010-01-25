@@ -14,11 +14,13 @@ class I18nGettextBackendTest < Test::Unit::TestCase
     I18n.backend = Backend.new
     I18n.locale = :en
     I18n.load_path = ["#{locales_dir}/de.po"]
+    @old_separator, I18n.default_separator = I18n.default_separator, '|'
   end
 
   def teardown
     I18n.load_path = nil
     I18n.backend = nil
+    I18n.default_separator = @old_separator
   end
 
   def test_backend_loads_po_file
