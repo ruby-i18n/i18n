@@ -1,13 +1,6 @@
 require 'i18n/backend/base'
 require 'i18n/backend/active_record/translation'
 
-#
-#  This backend reads translations from a Translations table in environment database. Note that the database
-#  will not automatically be prepopulated with missing keys. You can achieve this effect with the ActiveRecordMissing backend, 
-#  as the following example shows:
-#
-#     I18n.backend = I18n::Backend::Chain.new(I18n::Backend::ActiveRecord.new, I18.backend, I18n::Backend::ActiveRecordMissing.new)
-#
 module I18n
   module Backend
     class ActiveRecord
@@ -15,16 +8,17 @@ module I18n
       autoload :StoreProcs,  'i18n/backend/active_record/store_procs'
       autoload :Translation, 'i18n/backend/active_record/translation'
 
-      include Base
+      include Base, Links
 
       def reload!
       end
 
       def store_translations(locale, data, options = {})
         separator = options[:separator] || I18n.default_separator
-        wind_keys(data, separator).each do |key, v|
+        wind_keys(data, separator).each do |key, value|
+          store_link(locale, key, value) if value.is_a?(Symbol)
           Translation.locale(locale).lookup(expand_keys(key, separator), separator).delete_all
-          Translation.create(:locale => locale.to_s, :key => key.to_s, :value => v)
+          Translation.create(:locale => locale.to_s, :key => key.to_s, :value => value)
         end
       end
 
@@ -42,9 +36,11 @@ module I18n
           return unless key
 
           separator = options[:separator] || I18n.default_separator
-          key = (Array(scope) + Array(key)).join(separator)
 
+          key = resolve_link(locale, key)
+          key = (Array(scope) + Array(key)).join(separator)
           result = Translation.locale(locale).lookup(key, separator).all
+
           if result.empty?
             return nil
           elsif result.first.key == key

@@ -116,7 +116,7 @@ module I18n
             key = key.to_sym
             return nil unless result.is_a?(Hash) && result.has_key?(key)
             result = result[key]
-            result = resolve(locale, key, result, options.except(:scope)) if result.is_a?(Symbol)
+            result = resolve(locale, key, result, options) if result.is_a?(Symbol)
             result
           end
         end

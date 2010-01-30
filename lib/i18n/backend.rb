@@ -10,6 +10,7 @@ module I18n
     autoload :Fast,                  'i18n/backend/fast'
     autoload :Gettext,               'i18n/backend/gettext'
     autoload :Helpers,               'i18n/backend/helpers'
+    autoload :Links,                 'i18n/backend/links'
     autoload :InterpolationCompiler, 'i18n/backend/interpolation_compiler'
     autoload :Metadata,              'i18n/backend/metadata'
     autoload :Pluralization,         'i18n/backend/pluralization'

@@ -22,11 +22,6 @@ module I18n
           key = escape_default_separator(key, separator)
           curr_key = [prev_key, key].compact.join(separator).to_sym
 
-          if value.is_a?(Symbol)
-            value = hash_lookup(orig_hash, value, separator) ||
-                    hash_lookup(hash, value, separator) || value
-          end
-
           if value.is_a?(Hash)
             result[curr_key] = value if subtree
             wind_keys(value, separator, subtree, curr_key, result, orig_hash)
@@ -40,17 +35,6 @@ module I18n
 
       def escape_default_separator(key, separator=nil)
         key.to_s.tr(separator || I18n.default_separator, SEPARATOR_ESCAPE_CHAR)
-      end
-
-      def hash_lookup(hash, keys, separator = ".")
-        keys.to_s.split(separator).inject(hash) do |result, key|
-          key = key.to_sym
-          if result.respond_to?(:has_key?) and result.has_key?(key)
-            result[key]
-          else
-            return nil
-          end
-        end
       end
 
       # Expand keys chained by the the given separator through nested Hashes

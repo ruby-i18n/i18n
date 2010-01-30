@@ -26,7 +26,7 @@ class I18nBackendFastSpecificTest < Test::Unit::TestCase
   end
 
   def assert_flattens(expected, nested)
-    assert_equal expected, @backend.send(:flatten_hash, nested)
+    assert_equal expected, @backend.send(:wind_keys, nested, nil, true)
   end
 
   test "hash flattening works" do
