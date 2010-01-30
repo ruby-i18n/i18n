@@ -33,7 +33,7 @@ module I18n
         end
 
         def interpolated_str?(str)
-          str.kind_of?(String) && str =~ INTERPOLATION_SYNTAX_PATTERN
+          str.kind_of?(::String) && str =~ INTERPOLATION_SYNTAX_PATTERN
         end
 
         protected
