@@ -38,13 +38,13 @@ module I18n
         return super unless cascade = options[:cascade]
 
         separator = options[:separator] || I18n.default_separator
-        step, skip_root = cascade.values_at(:step, :skip_root)
+        skip_root = cascade.has_key?(:skip_root) ? cascade[:skip_root] : true
+        step      = cascade[:step]
 
-        key    = I18n.normalize_keys(nil, key, nil, separator)
-        length = options[:cascade][:length] || key.length
-
-        scope  = I18n.normalize_keys(nil, nil, scope, separator) + key
-        key    = scope.slice!(-length, length).join(separator)
+        keys   = I18n.normalize_keys(nil, key, nil, separator)
+        offset = options[:cascade][:offset] || keys.length
+        scope  = I18n.normalize_keys(nil, nil, scope, separator) + keys
+        key    = scope.slice!(-offset, offset).join(separator)
 
         begin
           result = super

@@ -17,7 +17,7 @@ class I18nBackendCascadeTest < Test::Unit::TestCase
   end
 
   def lookup(key, options = {})
-    I18n.t(key, options.merge(:cascade => { :step => 1, :length => 1, :skip_root => false }))
+    I18n.t(key, options.merge(:cascade => { :step => 1, :offset => 1, :skip_root => false }))
   end
 
   test "still returns an existing translation as usual" do
