@@ -55,6 +55,7 @@ module I18n
         def fetch(*args, &block)
           result = I18n.cache_store.fetch(cache_key(*args), &block)
           raise result if result.is_a?(Exception)
+          result = result.dup if result.frozen?
           result
         rescue MissingTranslationData => exception
           I18n.cache_store.write(cache_key(*args), exception)

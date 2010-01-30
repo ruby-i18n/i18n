@@ -5,7 +5,7 @@ module Tests
     module Lookup
       def setup
         super
-        store_translations(:foo => { :bar => 'bar', :baz => 'baz' }, :bla => false)
+        store_translations(:foo => { :bar => 'bar', :baz => 'baz' }, :bla => false, :ble => %(a b c))
       end
 
       define_method "test lookup: given a nested key it looks up the nested hash value" do
@@ -43,6 +43,19 @@ module Tests
       define_method "test lookup: given nil as a locale it does not raise but use the default locale" do
         # assert_raise(I18n::InvalidLocale) { I18n.t(:bar, :locale => nil) }
         assert_nothing_raised { I18n.t(:bar, :locale => nil) }
+      end
+
+      define_method "test lookup: a resulting String is not frozen" do
+        I18n.t(:'foo.bar')
+        assert !I18n.t(:'foo.bar').frozen?
+      end
+
+      define_method "test lookup: a resulting Array is not frozen" do
+        assert !I18n.t(:'foo.bar').frozen?
+      end
+
+      define_method "test lookup: a resulting Hash is not frozen" do
+        assert !I18n.t(:'foo').frozen?
       end
     end
   end

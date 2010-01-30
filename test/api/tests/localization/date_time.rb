@@ -70,8 +70,6 @@ module Tests
 
           def setup_datetime_translations
             # time translations might have been set up in Tests::Api::Localization::Time
-            I18n.t(:'time.formats.default', :locale => :de, :raise => true)
-          rescue
             store_translations :de, {
               :time => {
                 :formats => {

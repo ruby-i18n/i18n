@@ -1,5 +1,12 @@
 # encoding: utf-8
 $:.unshift(File.expand_path(File.dirname(__FILE__) + '/../')); $:.uniq!
+begin
+  require 'rubygems'
+  require 'active_support'
+rescue LoadError
+  puts "not testing with Cache enabled because active_support can not be found"
+end
+
 require 'test_helper'
 require 'api'
 
@@ -17,7 +24,18 @@ class I18nAllFeaturesApiTest < Test::Unit::TestCase
 
   def setup
     I18n.backend = I18n::Backend::Chain.new(Backend.new, I18n::Backend::Simple.new)
+    I18n.cache_store = cache_store
     super
+  end
+
+  def teardown
+    I18n.cache_store.clear
+    I18n.cache_store = nil
+    super
+  end
+
+  def cache_store
+    ActiveSupport::Cache.lookup_store(:memory_store) if defined?(ActiveSupport) && defined?(ActiveSupport::Cache)
   end
 
   include Tests::Api::Basics
@@ -36,6 +54,6 @@ class I18nAllFeaturesApiTest < Test::Unit::TestCase
     assert_equal I18n::Backend::Chain, I18n.backend.class
     assert_equal Backend, I18n.backend.backends.first.class
   end
-  
+
   # links: test that keys stored on one backend can link to keys stored on another backend
 end
