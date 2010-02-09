@@ -13,7 +13,8 @@ class I18nGettextApiTest < Test::Unit::TestCase
       'Sentence 1. Sentence 2.' => 'Satz 1. Satz 2.',
       "An apple" => { :one => 'Ein Apfel', :other => '{{count}} Äpfel' },
       :special => { "A special apple" => { :one => 'Ein spezieller Apfel', :other => '{{count}} spezielle Äpfel' } },
-      :foo => { :bar => 'bar-de' }
+      :foo => { :bar => 'bar-de' },
+      'foo.bar' => 'Foo Bar'
     }, :separator => '|'
   end
 
@@ -49,6 +50,12 @@ class I18nGettextApiTest < Test::Unit::TestCase
     I18n.locale = :de
     assert_equal 'bar-de', sgettext('foo|bar')
     assert_equal 'bar-de', s_('foo|bar')
+  end
+
+  def test_sgettext_ignores_dots
+    I18n.locale = :de
+    assert_equal 'Foo Bar', sgettext('foo.bar')
+    assert_equal 'Foo Bar', s_('foo.bar')
   end
 
   # pgettext
