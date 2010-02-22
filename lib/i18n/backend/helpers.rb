@@ -26,7 +26,7 @@ module I18n
             result[curr_key] = value if subtree
             wind_keys(value, separator, subtree, curr_key, result, orig_hash)
           else
-            result[curr_key] = value
+            result[unescape_default_separator(curr_key)] = value
           end
         end
 
@@ -35,6 +35,10 @@ module I18n
 
       def escape_default_separator(key, separator=nil)
         key.to_s.tr(separator || I18n.default_separator, SEPARATOR_ESCAPE_CHAR)
+      end
+      
+      def unescape_default_separator(key, separator=nil)
+        key.to_s.tr(SEPARATOR_ESCAPE_CHAR, separator || I18n.default_separator)
       end
 
       # Expand keys chained by the the given separator through nested Hashes
