@@ -273,5 +273,11 @@ module I18n
         @@exception_handler.call(exception, locale, key, options)
       end
     end
+
+    # Deprecated. Will raise a warning in future versions and then finally be
+    # removed. Use I18n.normalize_keys instead.
+    def normalize_translation_keys(locale, key, scope, separator = nil)
+      normalize_keys(locale, key, scope, separator)
+    end
   end
 end
