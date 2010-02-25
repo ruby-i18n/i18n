@@ -10,7 +10,8 @@ module I18n
     #   create_table :translations do |t|
     #     t.string :locale
     #     t.string :key
-    #     t.string :value
+    #     t.text   :value
+    #     t.text   :interpolations
     #     t.boolean :is_proc, :default => false
     #   end
     #
