@@ -8,8 +8,8 @@ class I18nBackendHelpersTest < Test::Unit::TestCase
   end
   
   test "wind_keys" do
-    hash = { "a" => { "b" => { "c" => "d", "e" => "f" }, "g" => "h" }, "i.a" => "j"}
-    expected = { "a.b.c" => "d", "a.b.e" => "f", "a.g" => "h", "i.a" => "j" }
+    hash = { "a" => { "b" => { "c" => "d", "e" => "f" }, "g" => "h" }, :"i.a" => "j", "g.a" => "h"}
+    expected = { :"a.b.c" => "d", :"a.b.e" => "f", :"a.g" => "h", :"i.a" => "j", :"g.a" => "h" }
     assert_equal expected, @backend.wind_keys(hash)
   end
 

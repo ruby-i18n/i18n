@@ -38,7 +38,7 @@ module I18n
       end
       
       def unescape_default_separator(key, separator=nil)
-        key.to_s.tr(SEPARATOR_ESCAPE_CHAR, separator || I18n.default_separator)
+        key.to_s.tr(SEPARATOR_ESCAPE_CHAR, separator || I18n.default_separator).to_sym
       end
 
       # Expand keys chained by the the given separator through nested Hashes
