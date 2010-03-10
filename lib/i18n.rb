@@ -15,13 +15,18 @@ module I18n
   autoload :Helpers, 'i18n/helpers'
   autoload :Locale,  'i18n/locale'
 
-  @@backend = nil
-  @@load_path = nil
-  @@default_locale = :en
-  @@default_separator = '.'
-  @@exception_handler = :default_exception_handler
+  class Config
+    # The only configuration value that is not global and scoped to thread is :locale.
+    # It defaults to the default_locale.
+    def locale
+      @locale ||= default_locale
+    end
 
-  class << self
+    # Sets the current locale pseudo-globally, i.e. in the Thread.current hash.
+    def locale=(locale)
+      @locale = locale.to_sym rescue nil
+    end
+
     # Returns the current backend. Defaults to +Backend::Simple+.
     def backend
       @@backend ||= Backend::Simple.new
@@ -34,22 +39,12 @@ module I18n
 
     # Returns the current default locale. Defaults to :'en'
     def default_locale
-      @@default_locale
+      @@default_locale ||= :en
     end
 
     # Sets the current default locale. Used to set a custom default locale.
     def default_locale=(locale)
       @@default_locale = locale.to_sym rescue nil
-    end
-
-    # Returns the current locale. Defaults to I18n.default_locale.
-    def locale
-      Thread.current[:locale] ||= default_locale
-    end
-
-    # Sets the current locale pseudo-globally, i.e. in the Thread.current hash.
-    def locale=(locale)
-      Thread.current[:locale] = locale.to_sym rescue nil
     end
 
     # Returns an array of locales for which translations are available.
@@ -66,12 +61,17 @@ module I18n
 
     # Returns the current default scope separator. Defaults to '.'
     def default_separator
-      @@default_separator
+      @@default_separator ||= '.'
     end
 
     # Sets the current default scope separator.
     def default_separator=(separator)
       @@default_separator = separator
+    end
+
+    # Return the current exception handler. Defaults to :default_exception_handler.
+    def exception_handler
+      @@exception_handler ||= :default_exception_handler
     end
 
     # Sets the exception handler.
@@ -96,12 +96,39 @@ module I18n
     def load_path=(load_path)
       @@load_path = load_path
     end
+  end
+
+  class << self
+
+    # Gets I18n configuration object.
+    def config
+      Thread.current[:i18n_config] ||= I18n::Config.new
+    end
+
+    # Sets I18n configuration object.
+    def config=(value)
+      Thread.current[:i18n_config] = value
+    end
+
+    # Write methods which delegates to the configuration object
+    %w(locale backend default_locale available_locales default_separator
+      exception_handler load_path).each do |method|
+      module_eval <<-DELEGATORS, __FILE__, __LINE__ + 1
+        def #{method}
+          config.#{method}
+        end
+
+        def #{method}=(value)
+          config.#{method} = (value)
+        end
+      DELEGATORS
+    end
 
     # Tells the backend to reload translations. Used in situations like the
     # Rails development environment. Backends can implement whatever strategy
     # is useful.
     def reload!
-      backend.reload!
+      config.backend.reload!
     end
 
     # Translates, pluralizes and interpolates a given key using a given locale,
@@ -203,9 +230,9 @@ module I18n
     def translate(*args)
       options = args.pop if args.last.is_a?(Hash)
       key     = args.shift
-      locale  = options && options.delete(:locale) || I18n.locale
+      locale  = options && options.delete(:locale) || config.locale
       raises  = options && options.delete(:raise)
-      backend.translate(locale, key, options || {})
+      config.backend.translate(locale, key, options || {})
     rescue I18n::ArgumentError => exception
       raise exception if raises
       handle_exception(exception, locale, key, options)
@@ -219,9 +246,9 @@ module I18n
 
     # Localizes certain objects, such as dates and numbers to local formatting.
     def localize(object, options = {})
-      locale = options.delete(:locale) || I18n.locale
+      locale = options.delete(:locale) || config.locale
       format = options.delete(:format) || :default
-      backend.localize(locale, object, format, options)
+      config.backend.localize(locale, object, format, options)
     end
     alias :l :localize
 
@@ -266,11 +293,11 @@ module I18n
     #  I18n.exception_handler = I18nExceptionHandler.new                # an object
     #  I18n.exception_handler.call(exception, locale, key, options)     # will be called like this
     def handle_exception(exception, locale, key, options)
-      case @@exception_handler
+      case config.exception_handler
       when Symbol
-        send(@@exception_handler, exception, locale, key, options)
+        send(config.exception_handler, exception, locale, key, options)
       else
-        @@exception_handler.call(exception, locale, key, options)
+        config.exception_handler.call(exception, locale, key, options)
       end
     end
 

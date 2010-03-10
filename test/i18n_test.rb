@@ -21,6 +21,7 @@ class I18nTest < Test::Unit::TestCase
   def test_can_set_backend
     assert_nothing_raised { I18n.backend = self }
     assert_equal self, I18n.backend
+  ensure
     I18n.backend = I18n::Backend::Simple.new
   end
 
@@ -31,6 +32,7 @@ class I18nTest < Test::Unit::TestCase
   def test_can_set_default_locale
     assert_nothing_raised { I18n.default_locale = 'de' }
     assert_equal :de, I18n.default_locale
+  ensure
     I18n.default_locale = :en
   end
 
@@ -41,8 +43,38 @@ class I18nTest < Test::Unit::TestCase
   def test_can_set_locale_to_thread_current
     assert_nothing_raised { I18n.locale = 'de' }
     assert_equal :de, I18n.locale
-    assert_equal :de, Thread.current[:locale]
+    assert_equal :de, Thread.current[:i18n_config].locale
     I18n.locale = :en
+  end
+
+  def test_can_set_i18n_config
+    I18n.config = self
+    assert_equal self, I18n.config
+    assert_equal self, Thread.current[:i18n_config]
+  ensure
+    I18n.config = ::I18n::Config.new
+  end
+
+  def test_locale_is_not_shared_between_configurations
+    a = I18n::Config.new
+    b = I18n::Config.new
+    a.locale = :fr
+    b.locale = :es
+    assert_equal :fr, a.locale
+    assert_equal :es, b.locale
+    assert_equal :en, I18n.locale
+  end
+
+  def test_other_options_are_shared_between_configurations
+    a = I18n::Config.new
+    b = I18n::Config.new
+    a.default_locale = :fr
+    b.default_locale = :es
+    assert_equal :es, a.default_locale
+    assert_equal :es, b.default_locale
+    assert_equal :es, I18n.default_locale
+  ensure
+    I18n.default_locale = :en
   end
 
   def test_defaults_to_dot_as_separator
@@ -51,6 +83,7 @@ class I18nTest < Test::Unit::TestCase
 
   def test_can_set_default_separator
     assert_nothing_raised { I18n.default_separator = "\001" }
+  ensure
     I18n.default_separator = '.' # revert it
   end
 
@@ -73,7 +106,8 @@ class I18nTest < Test::Unit::TestCase
 
   def test_can_set_exception_handler
     assert_nothing_raised { I18n.exception_handler = :custom_exception_handler }
-    I18n.exception_handler = :default_exception_handler # revert it
+  ensure
+    I18n.exception_handler = :default_exception_handler
   end
 
   with_mocha do
@@ -81,6 +115,7 @@ class I18nTest < Test::Unit::TestCase
       I18n.exception_handler = :custom_exception_handler
       I18n.expects(:custom_exception_handler)
       I18n.translate :bogus
+    ensure
       I18n.exception_handler = :default_exception_handler # revert it
     end
 
