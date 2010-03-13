@@ -159,14 +159,14 @@ class I18nTest < Test::Unit::TestCase
     assert_equal [".", ","], I18n.t(%w(format.separator format.delimiter), :scope => 'currency')
   end
 
-  with_mocha do
-    def test_translate_with_options_using_scope_works
-      I18n.backend.expects(:translate).with('de', :precision, :scope => :"currency.format")
-      I18n.with_options :locale => 'de', :scope => :'currency.format' do |locale|
-        locale.t :precision
-      end
-    end
-  end
+  # with_mocha do
+  #   def test_translate_with_options_using_scope_works
+  #     I18n.backend.expects(:translate).with('de', :precision, :scope => :"currency.format")
+  #     I18n.with_options :locale => 'de', :scope => :'currency.format' do |locale|
+  #       locale.t :precision
+  #     end
+  #   end
+  # end
 
   # def test_translate_given_no_args_raises_missing_translation_data
   #   assert_equal "translation missing: en, no key", I18n.t
