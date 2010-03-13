@@ -5,24 +5,30 @@ module Tests
     module Localization
       module Procs
         define_method "test localize: using day names from lambdas" do
-          setup_time_proc_translations
-          time = ::Time.parse('2008-03-01 6:00 UTC')
-          assert_match /Суббота/, I18n.l(time, :format => "%A, %d %B", :locale => :ru)
-          assert_match /суббота/, I18n.l(time, :format => "%d %B (%A)", :locale => :ru)
+          if can_store_procs?
+            setup_time_proc_translations
+            time = ::Time.parse('2008-03-01 6:00 UTC')
+            assert_match /Суббота/, I18n.l(time, :format => "%A, %d %B", :locale => :ru)
+            assert_match /суббота/, I18n.l(time, :format => "%d %B (%A)", :locale => :ru)
+          end
         end
 
         define_method "test localize: using month names from lambdas" do
-          setup_time_proc_translations
-          time = ::Time.parse('2008-03-01 6:00 UTC')
-          assert_match /марта/, I18n.l(time, :format => "%d %B %Y", :locale => :ru)
-          assert_match /Март /, I18n.l(time, :format => "%B %Y", :locale => :ru)
+          if can_store_procs?
+            setup_time_proc_translations
+            time = ::Time.parse('2008-03-01 6:00 UTC')
+            assert_match /марта/, I18n.l(time, :format => "%d %B %Y", :locale => :ru)
+            assert_match /Март /, I18n.l(time, :format => "%B %Y", :locale => :ru)
+          end
         end
 
         define_method "test localize: using abbreviated day names from lambdas" do
-          setup_time_proc_translations
-          time = ::Time.parse('2008-03-01 6:00 UTC')
-          assert_match /марта/, I18n.l(time, :format => "%d %b %Y", :locale => :ru)
-          assert_match /март /, I18n.l(time, :format => "%b %Y", :locale => :ru)
+          if can_store_procs?
+            setup_time_proc_translations
+            time = ::Time.parse('2008-03-01 6:00 UTC')
+            assert_match /марта/, I18n.l(time, :format => "%d %b %Y", :locale => :ru)
+            assert_match /март /, I18n.l(time, :format => "%b %Y", :locale => :ru)
+          end
         end
 
         protected

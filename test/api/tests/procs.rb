@@ -4,8 +4,10 @@ module Tests
   module Api
     module Procs
       define_method "test lookup: given a translation is a proc it calls the proc with the key and interpolation values" do
-        store_translations(:a_lambda => lambda { |*args| args.inspect })
-        assert_equal '[:a_lambda, {:foo=>"foo"}]', I18n.t(:a_lambda, :foo => 'foo')
+        if can_store_procs?
+          store_translations(:a_lambda => lambda { |*args| args.inspect })
+          assert_equal '[:a_lambda, {:foo=>"foo"}]', I18n.t(:a_lambda, :foo => 'foo')
+        end
       end
 
       define_method "test defaults: given a default is a Proc it calls it with the key and interpolation values" do
@@ -14,9 +16,11 @@ module Tests
       end
 
       define_method "test defaults: given a default is a key that resolves to a Proc it calls it with the key and interpolation values" do
-        store_translations(:a_lambda => lambda { |*args| args.inspect })
-        assert_equal '[:a_lambda, {:foo=>"foo"}]', I18n.t(nil, :default => :a_lambda, :foo => 'foo')
-        assert_equal '[:a_lambda, {:foo=>"foo"}]', I18n.t(nil, :default => [nil, :a_lambda], :foo => 'foo')
+        if can_store_procs?
+          store_translations(:a_lambda => lambda { |*args| args.inspect })
+          assert_equal '[:a_lambda, {:foo=>"foo"}]', I18n.t(nil, :default => :a_lambda, :foo => 'foo')
+          assert_equal '[:a_lambda, {:foo=>"foo"}]', I18n.t(nil, :default => [nil, :a_lambda], :foo => 'foo')
+        end
       end
 
       define_method "test interpolation: given an interpolation value is a lambda it calls it with key and values before interpolating it" do
@@ -37,8 +41,10 @@ module Tests
       end
 
       define_method "test lookup: given the option :resolve => false was passed it does not resolve proc translations" do
-        store_translations(:a_lambda => lambda { |*args| args.inspect })
-        assert_equal Proc, I18n.t(:a_lambda, :resolve => false).class
+        if can_store_procs?
+          store_translations(:a_lambda => lambda { |*args| args.inspect })
+          assert_equal Proc, I18n.t(:a_lambda, :resolve => false).class
+        end
       end
 
       define_method "test lookup: given the option :resolve => false was passed it does not resolve proc default" do
