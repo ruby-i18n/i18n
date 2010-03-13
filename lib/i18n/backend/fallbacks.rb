@@ -54,10 +54,15 @@ module I18n
 
       def extract_string_default!(options)
         defaults = Array(options[:default])
-        if index = defaults.index { |default| default.is_a?(::String) }
+        if index = find_first_string_default(defaults)
           options[:default] = defaults[0, index]
           defaults[index]
         end
+      end
+
+      def find_first_string_default(defaults)
+        defaults.each_index { |ix| return ix if String === defaults[ix] }
+        nil
       end
     end
   end
