@@ -51,7 +51,7 @@ module I18n
         begin
           result = super
           return result unless result.nil?
-        end while scope.slice!(-step, step) && (!scope.empty? || !skip_root)
+        end while !scope.empty? && scope.slice!(-step, step) && (!scope.empty? || !skip_root)
       end
     end
   end
