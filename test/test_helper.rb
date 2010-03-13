@@ -14,14 +14,17 @@ require 'test/unit'
 require 'time'
 require 'yaml'
 
-# Overwrite *gem* to not load i18n gem by libraries like active_support
+# Overwrite #gem to not load i18n gem by libraries like active_support
+alias gem_for_ruby_19 gem # for 1.9. gives a super ugly seg fault otherwise
 def gem(gem_name, *version_requirements)
   if gem_name =='i18n'
     puts "Skiping loading i18n gem..."
     return
   end
   super(gem_name, *version_requirements)
-end unless RUBY_VERSION >= '1.9' # TODO fix this for 1.9. gives a super ugly seg fault
+end
+
+require 'active_record'
 
 begin
   require 'mocha'
