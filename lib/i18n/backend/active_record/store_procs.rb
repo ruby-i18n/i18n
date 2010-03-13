@@ -31,7 +31,7 @@ module I18n
           end
         end
 
-        Translation.send(:include, self) unless RUBY_VERSION >= '1.9'
+        Translation.send(:include, self) if method(:to_s).respond_to?(:to_ruby)
       end
     end
   end
