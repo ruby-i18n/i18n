@@ -41,8 +41,9 @@ module Tests
         end
 
         define_method "test localize Date: given a format that resolves to a Proc it calls the Proc with the object" do
-          # TODO should be Mrz, shouldn't it?
-          assert_equal '[Sat, 01 Mar 2008, {}]', I18n.l(@date, :format => :proc, :locale => :de)
+          if can_store_procs?
+            assert_equal '[:"date.formats.proc", {}]', I18n.l(@date, :format => :proc, :locale => :de)
+          end
         end
 
         # TODO fails, but something along these lines probably should pass

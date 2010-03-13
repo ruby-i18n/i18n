@@ -77,7 +77,7 @@ class Test::Unit::TestCase
   end
 
   def can_store_procs?
-    I18n::Backend::ActiveRecord === I18n.backend and
+    I18n.backend.class != I18n::Backend::ActiveRecord or
     I18n::Backend::ActiveRecord.included_modules.include?(I18n::Backend::ActiveRecord::StoreProcs)
   end
 end

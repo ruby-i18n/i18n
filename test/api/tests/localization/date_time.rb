@@ -47,9 +47,9 @@ module Tests
           assert_equal 'pm', I18n.l(@other_datetime, :format => '%p', :locale => :de)
         end
 
-        define_method "test localize Date: given a format that resolves to a Proc it calls the Proc with the object" do
+        define_method "test localize DateTime: given a format that resolves to a Proc it calls the Proc with the object" do
           if can_store_procs?
-            assert_equal '[Sat, 01 Mar 2008 06:00:00 +0000, {}]', I18n.l(@datetime, :format => :proc, :locale => :de)
+            assert_equal '[:"time.formats.proc", {}]', I18n.l(@datetime, :format => :proc, :locale => :de)
           end
         end
 
@@ -79,7 +79,8 @@ module Tests
                   :long_ordinalized => lambda { |date, options|
                     tz = " (#{options[:timezone]})" if options[:timezone]
                     "#{date.day}ter %B %Y, %H:%M Uhr#{tz}"
-                  }
+                  },
+                  :proc => lambda { |*args| args.inspect }
                 },
                 :am => 'am',
                 :pm => 'pm'

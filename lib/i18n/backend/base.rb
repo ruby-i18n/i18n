@@ -60,7 +60,7 @@ module I18n
           format = I18n.t(:"#{type}.formats.#{key}", :locale => locale, :raise => true)
         end
 
-        format = resolve(locale, object, format, options)
+        # format = resolve(locale, object, format, options)
         format = format.to_s.gsub(/%[aAbBp]/) do |match|
           case match
           when '%a' then I18n.t(:"date.abbr_day_names",                  :locale => locale, :format => format)[object.wday]
