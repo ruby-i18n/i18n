@@ -117,7 +117,7 @@ module I18n
             return nil unless result.is_a?(Hash) && result.has_key?(key)
             result = result[key]
             result = resolve(locale, key, result, options) if result.is_a?(Symbol)
-            result
+            String === result ? result.dup : result
           end
         end
 
