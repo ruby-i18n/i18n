@@ -49,6 +49,15 @@ module I18n
         entry
       end
 
+      # Given a locale and a UTF-8 string, return the locale's ASCII
+      # approximation for the string.
+      def transliterate(locale, string, replacement = nil)
+        @transliterators ||= {}
+        @transliterators[locale] ||= Transliterator.get I18n.t(:'i18n.transliterate.rule',
+          :locale => locale, :resolve => false, :default => {})
+        @transliterators[locale].transliterate(string, replacement)
+      end
+
       # Acts the same as +strftime+, but uses a localized version of the
       # format string. Takes a key from the date/time formats translations as
       # a format argument (<em>e.g.</em>, <tt>:short</tt> in <tt>:'date.formats'</tt>).

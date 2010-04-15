@@ -244,6 +244,69 @@ module I18n
     end
     alias :t! :translate!
 
+    # Transliterates UTF-8 characters to ASCII. By default this method will
+    # transliterate only Latin strings to an ASCII approximation:
+    #
+    #    I18N.transliterate("Ærøskøbing")
+    #    # => "AEroskobing"
+    #
+    #    I18N.transliterate("日本語")
+    #    # => "???"
+    #
+    # It's also possible to add support for per-locale transliterations. I18N
+    # expects transliteration rules to be stored at
+    # <tt>i18n.transliterate.rule</tt>.
+    #
+    # Transliteration rules can either be a Hash or a Proc. Procs must accept a
+    # single string argument. Hash rules inherit the default transliteration
+    # rules, while Procs do not.
+    #
+    # *Examples*
+    #
+    # Setting a Hash in <locale>.yml:
+    #
+    #    i18n:
+    #      transliterate:
+    #        rule:
+    #          ü: "ue"
+    #          ö: "oe"
+    #
+    # Setting a Hash using Ruby:
+    #
+    #     store_translations(:de, :i18n => {
+    #       :transliterate => {
+    #         :rule => {
+    #           "ü" => "ue",
+    #           "ö" => "oe"
+    #         }
+    #       }
+    #     )
+    #
+    # Setting a Proc:
+    #
+    #     translit = lambda {|string| MyTransliterator.transliterate(string) }
+    #     store_translations(:xx, :i18n => {:transliterate => {:rule => translit})
+    #
+    # Transliterating strings:
+    #
+    #     I18N.locale = :en
+    #     I18N.transliterate("Jürgen") # => "Jurgen"
+    #     I18N.locale = :de
+    #     I18N.transliterate("Jürgen") # => "Juergen"
+    #     I18N.transliterate("Jürgen", :locale => :en) # => "Jurgen"
+    #     I18N.transliterate("Jürgen", :locale => :de) # => "Juergen"
+    def transliterate(*args)
+      options      = args.pop if args.last.is_a?(Hash)
+      key          = args.shift
+      locale       = options && options.delete(:locale) || config.locale
+      raises       = options && options.delete(:raise)
+      replacement  = options && options.delete(:replacement)
+      config.backend.transliterate(locale, key, replacement)
+    rescue I18n::ArgumentError => exception
+      raise exception if raises
+      handle_exception(exception, locale, key, options)
+    end
+
     # Localizes certain objects, such as dates and numbers to local formatting.
     def localize(object, options = {})
       locale = options.delete(:locale) || config.locale
