@@ -6,6 +6,8 @@ require 'i18n/core_ext/object/meta_class'
 require 'benchmark'
 require 'yaml'
 
+N = (ARGV.shift || 1000).to_i
+
 # Load YAML example file
 YAML_HASH = YAML.load_file(File.expand_path("example.yml", File.dirname(__FILE__)))
 
@@ -27,16 +29,28 @@ BACKENDS << (FastInterpolBackend  = create_backend(:Fast, :InterpolationCompiler
 module Benchmark
   def self.ms(label = "", width=20, &blk) # :yield:
     print label.ljust(width)
-    res = Benchmark::measure(&blk)
-    print format("%10.6f ms\n", res.real * 1000)
-    res
+    t, obj = measure_objects(&blk)
+    print format("%8.2f ms  %8d objects\n", t * 1000, obj)
+    t
+  end
+
+  if ObjectSpace.respond_to?(:allocated_objects)
+    def self.measure_objects(&blk)
+      obj = ObjectSpace.allocated_objects
+      t = Benchmark.realtime { N.times(&blk) }
+      [t, ObjectSpace.allocated_objects - obj]
+    end
+  else
+    def self.measure_objects(&blk)
+      [Benchmark.measure { N.times(&blk) }, 0]
+    end
   end
 end
 
 # Run!
 BACKENDS.each do |backend|
   I18n.backend = backend.new
-  puts "===> #{backend.name}\n\n"
+  puts "===> #{backend.name} (#{N} translations)\n\n"
 
   Benchmark.ms "store" do
     I18n.backend.store_translations *(YAML_HASH.to_a.first)
