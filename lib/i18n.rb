@@ -256,10 +256,10 @@ module I18n
     # Splits keys that contain dots into multiple keys. Makes sure all
     # keys are Symbols.
     def normalize_keys(locale, key, scope, separator = nil)
-      keys = [locale] + Array(scope) + Array(key)
-      keys = keys.map { |k| k.to_s.split(separator || I18n.default_separator) }
-      keys = keys.flatten - ['']
-      keys.map { |k| k.to_sym }
+      separator ||= I18n.default_separator
+      normalize_key(locale, separator) +
+        normalize_key(scope, separator) +
+        normalize_key(key, separator)
     end
 
   # making these private until Ruby 1.9.2 can send to protected methods again
@@ -305,6 +305,31 @@ module I18n
     # removed. Use I18n.normalize_keys instead.
     def normalize_translation_keys(locale, key, scope, separator = nil)
       normalize_keys(locale, key, scope, separator)
+    end
+
+    def normalize_key(key, separator)
+      normalized_key_cache(separator)[key] ||=
+        case key
+        when Array
+          key.map { |k| normalize_key(k, separator) }.flatten
+        when nil
+          []
+        else
+          key = key.to_s
+          if key == ''
+            []
+          elsif key.include?(separator)
+            keys = key.split(separator) - ['']
+            keys.map { |k| k.to_sym }
+          else
+            [key.to_sym]
+          end
+        end
+    end
+
+    def normalized_key_cache(separator)
+      @normalized_key_cache ||= Hash.new { |h,k| h[k] = {} }
+      @normalized_key_cache[separator]
     end
   end
 end
