@@ -86,6 +86,7 @@ class I18nCoreExtStringInterpolationTest < Test::Unit::TestCase
   test "% can be used in Ruby's own sprintf behavior" do
     assert_equal "70%", "%d%%" % 70
     assert_equal "70-100%", "%d-%d%%" % [70, 100]
+    assert_equal "+2.30%", "%+.2f%%" % 2.3
   end
 
   def test_sprintf_mix_unformatted_and_formatted_named_placeholders
