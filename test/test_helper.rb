@@ -1,36 +1,18 @@
 # encoding: utf-8
-
 $KCODE = 'u' unless RUBY_VERSION >= '1.9'
 
 $:.unshift File.expand_path("../lib", File.dirname(__FILE__))
-$:.unshift(File.expand_path(File.dirname(__FILE__)))
+$:.unshift File.expand_path(File.dirname(__FILE__))
 $:.uniq!
-
-require 'i18n'
-require 'i18n/core_ext/object/meta_class'
 
 require 'rubygems'
 require 'test/unit'
 require 'time'
 require 'yaml'
 
-# Overwrite #gem to not load i18n gem by libraries like active_support
-alias gem_for_ruby_19 gem # for 1.9. gives a super ugly seg fault otherwise
-def gem(gem_name, *version_requirements)
-  if gem_name =='i18n'
-    puts "Skiping loading i18n gem..."
-    return
-  end
-  super(gem_name, *version_requirements)
-end
-
-require 'active_record'
-
-begin
-  require 'mocha'
-rescue LoadError
-  puts "skipping tests using mocha as mocha can't be found"
-end
+require 'i18n'
+require 'i18n/core_ext/object/meta_class'
+require 'test_setup_requirements'
 
 class Test::Unit::TestCase
   def self.test(name, &block)
@@ -82,35 +64,3 @@ class Test::Unit::TestCase
   end
 end
 
-def require_active_record!
-  begin
-    require 'active_record'
-    ActiveRecord::Base.connection
-    true
-  rescue ActiveRecord::ConnectionNotEstablished
-    require 'i18n/backend/active_record'
-    require 'i18n/backend/active_record/store_procs'
-    setup_active_record
-    true
-  rescue LoadError
-    puts "skipping tests using activerecord as activerecord can't be found"
-  end
-end
-
-def setup_active_record
-  if I18n::Backend::Simple.method_defined?(:interpolate_with_deprecated_syntax)
-    I18n::Backend::Simple.send(:remove_method, :interpolate) rescue NameError
-  end
-
-  ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
-  ActiveRecord::Migration.verbose = false
-  ActiveRecord::Schema.define(:version => 1) do
-    create_table :translations do |t|
-      t.string :locale
-      t.string :key
-      t.string :value
-      t.string :interpolations
-      t.boolean :is_proc, :default => false
-    end
-  end
-end

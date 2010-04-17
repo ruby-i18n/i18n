@@ -3,7 +3,7 @@ $:.unshift(File.expand_path(File.dirname(__FILE__) + '/../')); $:.uniq!
 require 'test_helper'
 require 'api'
 
-require_active_record!
+setup_active_record
 
 class I18nActiveRecordApiTest < Test::Unit::TestCase
   def setup
