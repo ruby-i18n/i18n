@@ -1,3 +1,5 @@
 .DS_Store
 test/rails/fixtures
 vendor/cldr
+*.swp
+pkg
