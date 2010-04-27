@@ -11,7 +11,6 @@ require 'time'
 require 'yaml'
 
 require 'i18n'
-require 'i18n/core_ext/object/meta_class'
 require 'test_setup_requirements'
 
 class Test::Unit::TestCase

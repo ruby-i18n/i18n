@@ -13,9 +13,7 @@
 # into the Simple backend class - or whatever other backend you are using:
 #
 #   I18n::Backend::Simple.send(:include, I18n::Backend::Metadata)
-
-require 'i18n/core_ext/object/meta_class'
-
+#
 module I18n
   module Backend
     module Metadata

@@ -2,7 +2,6 @@
 $:.unshift File.expand_path("../lib", File.dirname(__FILE__))
 
 require 'i18n'
-require 'i18n/core_ext/object/meta_class'
 require 'benchmark'
 require 'yaml'
 
