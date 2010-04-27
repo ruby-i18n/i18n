@@ -1,5 +1,10 @@
 en:
   first: "First"
+
+  activemodel:
+    errors:
+      messages: :"activerecord.errors.messages"
+
   activerecord:
     errors:
       messages:

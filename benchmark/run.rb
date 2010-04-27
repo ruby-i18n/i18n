@@ -79,6 +79,10 @@ BACKENDS.each do |backend|
     I18n.backend.translate :en, :"activerecord.errors.models.user.blank", :model => "User", :attribute => "name"
   end
 
+  Benchmark.ms "t w/ link" do
+    I18n.backend.translate :en, :"activemodel.errors.messages.blank"
+  end
+
   Benchmark.ms "t subtree" do
     I18n.backend.translate :en, :"activerecord.errors.messages"
   end
