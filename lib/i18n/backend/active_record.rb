@@ -51,7 +51,7 @@ module I18n
               hash[r.key.slice(chop_range)] = r.value
               hash
             end
-            deep_symbolize_keys(unwind_keys(result, separator))
+            deep_symbolize_keys(result)
           end
         end
 

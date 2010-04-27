@@ -249,8 +249,7 @@ module I18n
         def merge_translations(locale, data, options = {})
           locale = locale.to_sym
           translations[locale] ||= {}
-          separator = options[:separator] || I18n.default_separator
-          data = unwind_keys(data, separator)
+
           data = deep_symbolize_keys(data)
 
           # deep_merge by Stefan Rusterholz, see http://www.ruby-forum.com/topic/142809

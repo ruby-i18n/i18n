@@ -40,29 +40,6 @@ module I18n
       def unescape_default_separator(key, separator=nil)
         key.to_s.tr(SEPARATOR_ESCAPE_CHAR, separator || I18n.default_separator).to_sym
       end
-
-      # Expand keys chained by the the given separator through nested Hashes
-      #   >> { "a.b.c" => "d", "a.b.e" => "f", "a.g" => "h", "i" => "j" }.unwind
-      #   => { "a" => { "b" => { "c" => "d", "e" => "f" }, "g" => "h" }, "i" => "j"}
-      def unwind_keys(hash, separator = ".")
-        result = {}
-        hash.each do |key, value|
-          keys = key.to_s.split(separator)
-          curr = result
-          curr = curr[keys.shift] ||= {} while keys.size > 1
-          curr[keys.shift] = value
-        end
-        result
-      end
-
-      # # Flatten the given array once
-      # def flatten_once(array)
-      #   result = []
-      #   for element in array # a little faster than each
-      #     result.push(*element)
-      #   end
-      #   result
-      # end
     end
   end
 end

@@ -13,12 +13,6 @@ class I18nBackendHelpersTest < Test::Unit::TestCase
     assert_equal expected, @backend.wind_keys(hash)
   end
 
-  test "unwind_keys" do
-    hash = { "a.b.c" => "d", :"a.b.e" => "f", :"a.g" => "h", "i" => "j" }
-    expected = { "a" => { "b" => { "c" => "d", "e" => "f" }, "g" => "h" }, "i" => "j"}
-    assert_equal expected, @backend.unwind_keys(hash)
-  end
-
   test "deep_symbolize_keys" do
     result = @backend.deep_symbolize_keys('foo' => { 'bar' => { 'baz' => 'bar' } })
     expected = {:foo => {:bar => {:baz => 'bar'}}}
