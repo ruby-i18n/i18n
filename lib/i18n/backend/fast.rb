@@ -29,9 +29,6 @@ module I18n
         end
 
         def lookup(locale, key, scope = nil, options = {})
-          return unless key
-          init_translations unless initialized?
-
           locale = locale.to_sym
           return nil unless flattened_translations[locale]
 
@@ -60,7 +57,6 @@ module I18n
           super
           reset_flattened_translations!
         end
-
     end
   end
 end

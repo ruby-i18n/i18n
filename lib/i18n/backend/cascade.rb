@@ -36,7 +36,6 @@ module I18n
   module Backend
     module Cascade
       def lookup(locale, key, scope = [], options = {})
-        return unless key
         return super unless cascade = options[:cascade]
 
         separator = options[:separator] || I18n.default_separator

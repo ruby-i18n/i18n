@@ -13,13 +13,6 @@ module I18n
       def reload!
       end
 
-      def store_translations(locale, data, options = {})
-        flatten_translations(locale, data).each do |key, value|
-          Translation.locale(locale).lookup(expand_keys(key, "."), ".").delete_all
-          Translation.create(:locale => locale.to_s, :key => key.to_s, :value => value)
-        end
-      end
-
       def available_locales
         begin
           Translation.available_locales
@@ -31,8 +24,6 @@ module I18n
       protected
 
         def lookup(locale, key, scope = [], options = {})
-          return unless key
-
           key = normalize_keys(locale, key, scope, options[:separator])
           result = Translation.locale(locale).lookup(key, ".").all
 
@@ -47,6 +38,13 @@ module I18n
               hash
             end
             deep_symbolize_keys(result)
+          end
+        end
+
+        def merge_translations(locale, data, options = {})
+          flatten_translations(locale, data).each do |key, value|
+            Translation.locale(locale).lookup(expand_keys(key, "."), ".").delete_all
+            Translation.create(:locale => locale.to_s, :key => key.to_s, :value => value)
           end
         end
 
