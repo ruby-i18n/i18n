@@ -5,6 +5,8 @@ module I18n
     PLURAL_SEPARATOR  = "\001"
     CONTEXT_SEPARATOR = "\004"
 
+    autoload :Helpers, 'i18n/gettext/helpers'
+
     @@plural_keys = { :en => [:one, :other] }
 
     class << self

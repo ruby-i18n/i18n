@@ -51,6 +51,7 @@ end
 # Run!
 BACKENDS.each do |backend|
   I18n.backend = backend.new
+
   puts "===> #{backend.name} (#{N} translations)\n\n"
 
   Benchmark.ms "store" do

@@ -3,7 +3,7 @@ $:.unshift(File.expand_path(File.dirname(__FILE__) + '/../')); $:.uniq!
 require 'test_helper'
 
 class I18nGettextBackendTest < Test::Unit::TestCase
-  include I18n::Helpers::Gettext
+  include I18n::Gettext::Helpers
 
   class Backend
     include I18n::Backend::Base

@@ -1,9 +1,9 @@
 # encoding: utf-8
 $:.unshift(File.expand_path(File.dirname(__FILE__) + '/../')); $:.uniq!
 require 'test_helper'
-require 'i18n/helpers/gettext'
+require 'i18n/gettext/helpers'
 
-include I18n::Helpers::Gettext
+include I18n::Gettext::Helpers
 
 class I18nGettextApiTest < Test::Unit::TestCase
   def setup
