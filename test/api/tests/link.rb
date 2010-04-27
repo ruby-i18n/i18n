@@ -34,7 +34,7 @@ module Tests
         }
         assert_equal('linked', I18n.backend.translate('en', :'foo.link'))
       end
-      
+
       define_method "test linked lookup: links refer to a key relative to the given scope" do
         I18n.backend.store_translations 'en', {
           :foo => { :link => :linked, :linked => 'linked in foo' },

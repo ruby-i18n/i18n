@@ -26,7 +26,7 @@ class I18nBackendFastSpecificTest < Test::Unit::TestCase
   end
 
   def assert_flattens(expected, nested)
-    assert_equal expected, @backend.send(:wind_keys, nested, true)
+    assert_equal expected, @backend.flatten_translations("en", nested, true)
   end
 
   test "hash flattening works" do
@@ -35,16 +35,12 @@ class I18nBackendFastSpecificTest < Test::Unit::TestCase
       {:a=>'a', :b=>{:c=>'c', :d=>'d', :f=>{:x=>'x'}}}
     )
     assert_flattens({:a=>{:b =>['a', 'b']}, :"a.b"=>['a', 'b']}, {:a=>{:b =>['a', 'b']}})
+    assert_flattens({:"a\001b" => "c"}, {:"a.b" => "c"})
   end
 
   test "pluralization logic and lookup works" do
     counts_hash = {:zero => 'zero', :one => 'one', :other => 'other'}
     @backend.store_translations :en, {:a => counts_hash}
     assert_equal 'one', @backend.translate(:en, :a, :count => 1)
-  end
-
-  test "translation subtree retrieval" do
-    @backend.store_translations :en, :a => {:foo => 'bar'}
-    assert_equal({:foo => 'bar'}, @backend.translate(:en, :a))
   end
 end

@@ -12,7 +12,7 @@
 module I18n
   module Backend
     module Fast
-      include Links
+      include Flatten
 
       # Overwrite reload! to also clean up flattened translations.
       def reload!
@@ -28,17 +28,6 @@ module I18n
           flattened_translations
         end
 
-        def flatten_translations(translations)
-          # don't flatten locale roots
-          translations.inject({}) do |result, (locale, translations)|
-            result[locale] = wind_keys(translations, true)
-            result[locale].each do |key, value|
-              store_link(locale, key, value) if value.is_a?(Symbol)
-            end
-            result
-          end
-        end
-
         def lookup(locale, key, scope = nil, options = {})
           return unless key
           init_translations unless initialized?
@@ -46,18 +35,17 @@ module I18n
           locale = locale.to_sym
           return nil unless flattened_translations[locale]
 
-          # TODO Should link resolve locally or always globally?
-          key = resolve_link(locale, key)
-
-          keys = I18n.normalize_keys(locale, key, scope, options[:separator])
-          key = keys[1..-1].map!{ |k| escape_default_separator(k) }.join(".").to_sym
-
+          key = normalize_keys(locale, key, scope, options[:separator]).to_sym
           flattened_translations[locale][key]
         end
 
         # Store flattened translations in a variable.
         def flattened_translations
-          @flattened_translations ||= flatten_translations(translations)
+          @flattened_translations ||=
+            translations.inject({}) do |result, (locale, data)|
+              result[locale] = flatten_translations(locale, data, true)
+              result
+            end
         end
 
         # Clean up flattened translations variable. Should be called whenever

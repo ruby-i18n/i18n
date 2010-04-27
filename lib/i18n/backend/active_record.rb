@@ -8,14 +8,13 @@ module I18n
       autoload :StoreProcs,  'i18n/backend/active_record/store_procs'
       autoload :Translation, 'i18n/backend/active_record/translation'
 
-      include Base, Links
+      include Base, Flatten
 
       def reload!
       end
 
       def store_translations(locale, data, options = {})
-        wind_keys(data).each do |key, value|
-          store_link(locale, key, value) if value.is_a?(Symbol)
+        flatten_translations(locale, data).each do |key, value|
           Translation.locale(locale).lookup(expand_keys(key, "."), ".").delete_all
           Translation.create(:locale => locale.to_s, :key => key.to_s, :value => value)
         end
@@ -33,19 +32,16 @@ module I18n
 
         def lookup(locale, key, scope = [], options = {})
           return unless key
-          key = resolve_link(locale, key)
 
-          keys = I18n.normalize_keys(locale, key, scope, options[:separator])
-          key = keys[1..-1].map!{ |k| escape_default_separator(k) }.join(".")
-
+          key = normalize_keys(locale, key, scope, options[:separator])
           result = Translation.locale(locale).lookup(key, ".").all
 
           if result.empty?
-            return nil
+            nil
           elsif result.first.key == key
-            return result.first.value
+            result.first.value
           else
-            chop_range = (key.size + 1)..-1
+            chop_range = (key.size + FLATTEN_SEPARATOR.size)..-1
             result = result.inject({}) do |hash, r|
               hash[r.key.slice(chop_range)] = r.value
               hash

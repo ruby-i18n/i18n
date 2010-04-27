@@ -30,7 +30,8 @@ module Benchmark
   def self.ms(label = "", width=20, &blk) # :yield:
     print label.ljust(width)
     t, obj = measure_objects(&blk)
-    print format("%8.2f ms  %8d objects\n", t.real * 1000, obj)
+    t = t.respond_to?(:real) ? t.read : t
+    print format("%8.2f ms  %8d objects\n", t * 1000, obj)
     t
   end
 
