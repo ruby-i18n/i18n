@@ -9,7 +9,7 @@ class I18nBackendHelpersTest < Test::Unit::TestCase
   
   test "wind_keys" do
     hash = { "a" => { "b" => { "c" => "d", "e" => "f" }, "g" => "h" }, :"i.a" => "j", "g.a" => "h"}
-    expected = { :"a.b.c" => "d", :"a.b.e" => "f", :"a.g" => "h", :"i.a" => "j", :"g.a" => "h" }
+    expected = { :"a.b.c" => "d", :"a.b.e" => "f", :"a.g" => "h", :"i\001a".to_sym => "j", :"g\001a".to_sym => "h" }
     assert_equal expected, @backend.wind_keys(hash)
   end
 

@@ -14,29 +14,24 @@ module I18n
     module Fast
       include Links
 
-      def reset_flattened_translations!
-        @flattened_translations = nil
-      end
-
-      def flattened_translations
-        @flattened_translations ||= flatten_translations(translations)
-      end
-
-      def merge_translations(locale, data, options = {})
-        super
-        reset_flattened_translations!
-      end
-
-      def init_translations
+      # Overwrite reload! to also clean up flattened translations.
+      def reload!
         super
         reset_flattened_translations!
       end
 
       protected
+
+        # Generate flattened translations after translations are initialized.
+        def init_translations
+          super
+          flattened_translations
+        end
+
         def flatten_translations(translations)
           # don't flatten locale roots
           translations.inject({}) do |result, (locale, translations)|
-            result[locale] = wind_keys(translations, nil, true)
+            result[locale] = wind_keys(translations, true)
             result[locale].each do |key, value|
               store_link(locale, key, value) if value.is_a?(Symbol)
             end
@@ -48,22 +43,36 @@ module I18n
           return unless key
           init_translations unless initialized?
 
-          return nil unless flattened_translations.has_key?(locale.to_sym)
+          locale = locale.to_sym
+          return nil unless flattened_translations[locale]
 
-          separator = options[:separator]
-          if separator && I18n.default_separator != separator
-            key   = cleanup_non_standard_separator(key, separator)
-            scope = Array(scope).map{|k| cleanup_non_standard_separator(k, separator)} if scope
-          end
-          
+          # TODO Should link resolve locally or always globally?
           key = resolve_link(locale, key)
-          key = (Array(scope) + [key]).join(I18n.default_separator) if scope
-          flattened_translations[locale.to_sym][key.to_sym]
+
+          keys = I18n.normalize_keys(locale, key, scope, options[:separator])
+          key = keys[1..-1].map!{ |k| escape_default_separator(k) }.join(".").to_sym
+
+          flattened_translations[locale][key]
         end
 
-        def cleanup_non_standard_separator(key, user_separator)
-          escape_default_separator(key).tr(user_separator, I18n.default_separator)
+        # Store flattened translations in a variable.
+        def flattened_translations
+          @flattened_translations ||= flatten_translations(translations)
         end
+
+        # Clean up flattened translations variable. Should be called whenever
+        # the internal hash is changed.
+        def reset_flattened_translations!
+          @flattened_translations = nil
+        end
+
+        # Overwrite merge_translations to clean up the internal hash so added
+        # translations are also cached.
+        def merge_translations(locale, data, options = {})
+          super
+          reset_flattened_translations!
+        end
+
     end
   end
 end
