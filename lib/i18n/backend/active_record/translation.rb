@@ -60,9 +60,14 @@ module I18n
 
         send scope_method, :lookup, lambda { |keys, *separator|
           column_name = connection.quote_column_name('key')
-          keys        = Array(keys).map! { |key| key.to_s }
-          separator   = separator.first || I18n.default_separator
-          namespace   = "#{keys.last}#{separator}%"
+          keys = Array(keys).map! { |key| key.to_s }
+
+          unless separator.empty?
+            warn "[DEPRECATION] Giving a separator to Translation.lookup is deprecated. " <<
+              "You can change the internal separator by overwriting FLATTEN_SEPARATOR."
+          end
+
+          namespace = "#{keys.last}#{I18n::Backend::Flatten::FLATTEN_SEPARATOR}%"
           { :conditions => ["#{column_name} IN (?) OR #{column_name} LIKE ?", keys, namespace] }
         }
 

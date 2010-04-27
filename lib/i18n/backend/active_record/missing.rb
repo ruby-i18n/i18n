@@ -40,7 +40,7 @@ module I18n
           keys = I18n.normalize_keys(locale, key, scope, separator)[1..-1]
           key = keys.join(separator || I18n.default_separator)
 
-          unless ActiveRecord::Translation.locale(locale).lookup(key, separator).exists?
+          unless ActiveRecord::Translation.locale(locale).lookup(key).exists?
             interpolations = options.reject { |name, value| Base::RESERVED_KEYS.include?(name) }.keys
             keys = count ? I18n.t('i18n.plural.keys', :locale => locale).map { |k| [key, k].join(separator) } : [key]
             keys.each { |key| store_default_translation(locale, key, interpolations) }
@@ -55,11 +55,9 @@ module I18n
 
         def translate(locale, key, options = {})
           super
-
-          rescue I18n::MissingTranslationData => e
-            self.store_default_translations(locale, key, options)
-
-            raise e
+        rescue I18n::MissingTranslationData => e
+          self.store_default_translations(locale, key, options)
+          raise e
         end
       end
     end

@@ -21,7 +21,7 @@ class I18nBackendActiveRecordTest < Test::Unit::TestCase
     I18n.backend.store_translations(:en, :foo => { :bar => 'bar' })
     I18n.backend.store_translations(:en, :foo => { :baz => 'baz' })
 
-    translations = I18n::Backend::ActiveRecord::Translation.locale(:en).lookup('foo', '.').all
+    translations = I18n::Backend::ActiveRecord::Translation.locale(:en).lookup('foo').all
     assert_equal %w(bar baz), translations.map(&:value)
 
     assert_equal({ :bar => 'bar', :baz => 'baz' }, I18n.t(:foo))
@@ -33,7 +33,7 @@ class I18nBackendActiveRecordTest < Test::Unit::TestCase
     I18n.backend.store_translations(:en, :foo => { :baz => 'baz' })
     I18n.backend.store_translations(:en, :foo => 'foo')
 
-    translations = I18n::Backend::ActiveRecord::Translation.locale(:en).lookup('foo', '.').all
+    translations = I18n::Backend::ActiveRecord::Translation.locale(:en).lookup('foo').all
     assert_equal %w(foo), translations.map(&:value)
 
     assert_equal 'foo', I18n.t(:foo)
