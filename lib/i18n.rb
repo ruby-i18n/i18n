@@ -257,9 +257,12 @@ module I18n
     # keys are Symbols.
     def normalize_keys(locale, key, scope, separator = nil)
       separator ||= I18n.default_separator
-      normalize_key(locale, separator) +
-        normalize_key(scope, separator) +
-        normalize_key(key, separator)
+
+      keys = []
+      keys.concat normalize_key(locale, separator)
+      keys.concat normalize_key(scope, separator)
+      keys.concat normalize_key(key, separator)
+      keys
     end
 
   # making these private until Ruby 1.9.2 can send to protected methods again
@@ -308,28 +311,20 @@ module I18n
     end
 
     def normalize_key(key, separator)
-      normalized_key_cache(separator)[key] ||=
+      normalized_key_cache[separator][key] ||=
         case key
         when Array
           key.map { |k| normalize_key(k, separator) }.flatten
-        when nil
-          []
         else
-          key = key.to_s
-          if key == ''
-            []
-          elsif key.include?(separator)
-            keys = key.split(separator) - ['']
-            keys.map { |k| k.to_sym }
-          else
-            [key.to_sym]
-          end
+          keys = key.to_s.split(separator)
+          keys.delete('')
+          keys.map!{ |k| k.to_sym }
+          keys
         end
     end
 
-    def normalized_key_cache(separator)
+    def normalized_key_cache
       @normalized_key_cache ||= Hash.new { |h,k| h[k] = {} }
-      @normalized_key_cache[separator]
     end
   end
 end
