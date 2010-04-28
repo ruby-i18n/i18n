@@ -79,7 +79,7 @@ module I18n
             when Hash
               if @subtrees && (old_value = @store[key])
                 old_value = ActiveSupport::JSON.decode(old_value) 
-                value = old_value.merge(value) if old_value.is_a?(Hash)
+                value = deep_symbolize_keys(old_value).merge(value) if old_value.is_a?(Hash)
               end
             when Proc
               raise "Key-value stores cannot handle procs"
