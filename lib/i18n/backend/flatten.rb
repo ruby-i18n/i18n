@@ -54,7 +54,7 @@ module I18n
       # and creates way less objects than the one at I18n.normalize_keys.
       # It also handles escaping the translation keys.
       def normalize_keys(locale, key, scope, separator)
-        keys = [scope, resolve_link(locale, key)].flatten.compact
+        keys = [scope, key].flatten.compact
         separator ||= I18n.default_separator
 
         if separator != FLATTEN_SEPARATOR
@@ -64,7 +64,7 @@ module I18n
           end
         end
 
-        keys.join(".")
+        resolve_link(locale, keys.join("."))
       end
 
       protected
