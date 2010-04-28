@@ -28,13 +28,26 @@ module I18n
     #   require 'rufus/tokyo/cabinet' # gem install rufus-tokyo
     #   I18n.backend = I18n::Backend::KeyValue.new(Rufus::Tokyo::Cabinet.new('*'))
     #
+    # == Subtrees
+    #
+    # In most backends, you are allowed to retrieve part of a translation tree:
+    #
+    #   I18n.backend.store_translations :en, :foo => { :bar => :baz }
+    #   I18n.t "foo" #=> { :bar => :baz }
+    #
+    # This backend supports this feature by default, but it slows down the storage
+    # of new data considerably and makes hard to delete entries. That said, you are
+    # allowed to disable the storage of subtrees on initialization:
+    #
+    #   I18n::Backend::KeyValue.new(@store, false)
+    #
     class KeyValue
       attr_accessor :store
 
       include Base, Flatten
 
-      def initialize(store)
-        @store = store
+      def initialize(store, subtrees=true)
+        @store, @subtrees = store, subtrees
       end
 
       # Mute reload! since we really don't want to clean the database.
@@ -59,13 +72,12 @@ module I18n
         end
 
         def merge_translations(locale, data, options = {})
-          flatten_translations(locale, data, true).each do |key, value|
+          flatten_translations(locale, data, @subtrees).each do |key, value|
             key = "#{locale}.#{key}"
 
             case value
             when Hash
-              old_value = @store[key]
-              if old_value
+              if @subtrees && (old_value = @store[key])
                 old_value = ActiveSupport::JSON.decode(old_value) 
                 value = old_value.merge(value) if old_value.is_a?(Hash)
               end
