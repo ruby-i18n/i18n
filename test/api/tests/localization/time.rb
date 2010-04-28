@@ -47,12 +47,6 @@ module Tests
           assert_equal 'pm', I18n.l(@other_time, :format => '%p', :locale => :de)
         end
 
-        define_method "test localize Time: given a format that resolves to a Proc it calls the Proc with the object" do
-          if can_store_procs?
-            assert_equal '[:"time.formats.proc", {}]', I18n.l(@time, :format => :proc, :locale => :de)
-          end
-        end
-
         # TODO fails, but something along these lines probably should pass
         # define_method "test localize Time: given a format that resolves to a Proc it calls the Proc with the object and extra options" do
         #   assert_equal '[Sat Mar 01 06:00:00 UTC 2008, {:foo=>"foo"}]', I18n.l(@time, :format => :proc, :foo => 'foo', :locale => :de)
@@ -75,7 +69,6 @@ module Tests
                   :default => "%a, %d. %b %Y %H:%M:%S %z",
                   :short => "%d. %b %H:%M",
                   :long => "%d. %B %Y %H:%M",
-                  :proc => lambda { |*args| args.inspect }
                 },
                 :am => 'am',
                 :pm => 'pm'

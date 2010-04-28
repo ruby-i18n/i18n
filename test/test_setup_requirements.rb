@@ -17,7 +17,7 @@ options[:with].each do |dep|
 end
 
 # Do not load the i18n gem from libraries like active_support, we'll load it from here :)
-alias gem_for_ruby_19 gem # for 1.9. gives a super ugly seg fault otherwise
+alias :gem_for_ruby_19 :gem # for 1.9. gives a super ugly seg fault otherwise
 def gem(gem_name, *version_requirements)
   if gem_name =='i18n'
     puts "skipping loading the i18n gem ..."
@@ -48,10 +48,6 @@ def setup_active_record
 end
 
 def connect_active_record
-  if I18n::Backend::Simple.method_defined?(:interpolate_with_deprecated_syntax)
-    I18n::Backend::Simple.send(:remove_method, :interpolate) rescue NameError
-  end
-
   ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
   ActiveRecord::Migration.verbose = false
   ActiveRecord::Schema.define(:version => 1) do
@@ -64,9 +60,3 @@ def connect_active_record
     end
   end
 end
-
-Object.class_eval do
-  def meta_class
-    class << self; self; end
-  end
-end unless Object.method_defined?(:meta_class)

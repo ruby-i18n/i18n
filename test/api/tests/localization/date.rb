@@ -40,12 +40,6 @@ module Tests
           assert_equal 'Mar', I18n.l(@date, :format => '%b', :locale => :de)
         end
 
-        define_method "test localize Date: given a format that resolves to a Proc it calls the Proc with the object" do
-          if can_store_procs?
-            assert_equal '[:"date.formats.proc", {}]', I18n.l(@date, :format => :proc, :locale => :de)
-          end
-        end
-
         # TODO fails, but something along these lines probably should pass
         # define_method "test localize Date: given a format that resolves to a Proc it calls the Proc with the object and extra options" do
         #   assert_equal '[Sat Mar 01 06:00:00 UTC 2008, {:foo=>"foo"}]', I18n.l(@time, :format => :proc, :foo => 'foo', :locale => :de)
@@ -81,7 +75,6 @@ module Tests
                   :default => "%d.%m.%Y",
                   :short => "%d. %b",
                   :long => "%d. %B %Y",
-                  :proc => lambda { |*args| args.inspect }
                 },
                 :day_names => %w(Sonntag Montag Dienstag Mittwoch Donnerstag Freitag Samstag),
                 :abbr_day_names => %w(So Mo Di Mi Do Fr  Sa),

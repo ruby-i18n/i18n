@@ -47,15 +47,17 @@ module Tests
           assert_equal 'pm', I18n.l(@other_datetime, :format => '%p', :locale => :de)
         end
 
-        define_method "test localize DateTime: given a format that resolves to a Proc it calls the Proc with the object" do
-          if can_store_procs?
-            assert_equal '[:"time.formats.proc", {}]', I18n.l(@datetime, :format => :proc, :locale => :de)
-          end
-        end
-
         # TODO fails, but something along these lines probably should pass
         # define_method "test localize DateTime: given a format that resolves to a Proc it calls the Proc with the object and extra options" do
-        #   assert_equal '1ter März 2008, 06:00 Uhr', I18n.l(@datetime, :long_ordinalized)
+        #   if can_store_procs?
+        #     store_translations :de, :time => { :formats =>
+        #       :long_ordinalized => lambda { |date, options|
+        #         tz = " (#{options[:timezone]})" if options[:timezone]
+        #         "#{date.day}ter %B %Y, %H:%M Uhr#{tz}"
+        #       }
+        #     }
+        #     assert_equal '1ter März 2008, 06:00 Uhr', I18n.l(@datetime, :long_ordinalized)
+        #   end
         # end
 
         define_method "test localize DateTime: given an unknown format it does not fail" do
@@ -75,12 +77,7 @@ module Tests
                 :formats => {
                   :default => "%a, %d. %b %Y %H:%M:%S %z",
                   :short => "%d. %b %H:%M",
-                  :long => "%d. %B %Y %H:%M",
-                  :long_ordinalized => lambda { |date, options|
-                    tz = " (#{options[:timezone]})" if options[:timezone]
-                    "#{date.day}ter %B %Y, %H:%M Uhr#{tz}"
-                  },
-                  :proc => lambda { |*args| args.inspect }
+                  :long => "%d. %B %Y %H:%M"
                 },
                 :am => 'am',
                 :pm => 'pm'

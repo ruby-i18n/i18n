@@ -5,18 +5,23 @@ module Tests
     module Lookup
       def setup
         super
-        store_translations(:foo => { :bar => 'bar', :baz => 'baz' }, :bla => false, :ble => %(a b c), :nested => { "a" => "b" })
+        store_translations(:foo => { :bar => 'bar', :baz => 'baz' }, :bla => false,
+          :string => "a", :array => %w(a b c), :hash => { "a" => "b" })
       end
 
-      define_method "test lookup: given a nested key it looks up the nested hash value" do
-        assert_equal 'bar', I18n.t(:'foo.bar')
+      define_method "test lookup: it returns a string" do
+        assert_equal("a", I18n.t(:string))
       end
 
-      define_method "test lookup: given a key it returns the hash" do
-        assert_equal({ :a => "b" }, I18n.t(:nested))
+      define_method "test lookup: it returns hash" do
+        assert_equal({ :a => "b" }, I18n.t(:hash))
       end
 
-      define_method "test make sure we can store a native false value as well" do
+      define_method "test lookup: it returns a array" do
+        assert_equal(%w(a b c), I18n.t(:array))
+      end
+
+      define_method "test lookup: it returns a native false" do
         assert_equal false, I18n.t(:bla)
       end
 
@@ -50,16 +55,15 @@ module Tests
       end
 
       define_method "test lookup: a resulting String is not frozen" do
-        I18n.t(:'foo.bar')
-        assert !I18n.t(:'foo.bar').frozen?
+        assert !I18n.t(:string).frozen?
       end
 
       define_method "test lookup: a resulting Array is not frozen" do
-        assert !I18n.t(:'foo.bar').frozen?
+        assert !I18n.t(:array).frozen?
       end
 
       define_method "test lookup: a resulting Hash is not frozen" do
-        assert !I18n.t(:'foo').frozen?
+        assert !I18n.t(:hash).frozen?
       end
     end
   end

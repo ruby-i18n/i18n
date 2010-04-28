@@ -31,11 +31,43 @@ module Tests
           end
         end
 
+        define_method "test localize Date: given a format that resolves to a Proc it calls the Proc with the object" do
+          if can_store_procs?
+            setup_time_proc_translations
+            date = ::Date.new(2008, 3, 1, 6)
+            assert_equal '[:"date.formats.proc", {}]', I18n.l(date, :format => :proc, :locale => :ru)
+          end
+        end
+
+        define_method "test localize DateTime: given a format that resolves to a Proc it calls the Proc with the object" do
+          if can_store_procs?
+            setup_time_proc_translations
+            datetime = ::DateTime.new(2008, 3, 1, 6)
+            assert_equal '[:"time.formats.proc", {}]', I18n.l(datetime, :format => :proc, :locale => :ru)
+          end
+        end
+
+        define_method "test localize Time: given a format that resolves to a Proc it calls the Proc with the object" do
+          if can_store_procs?
+            setup_time_proc_translations
+            time = ::Time.parse('2008-03-01 6:00 UTC')
+            assert_equal '[:"time.formats.proc", {}]', I18n.l(time, :format => :proc, :locale => :ru)
+          end
+        end
+
         protected
 
           def setup_time_proc_translations
             store_translations :ru, {
+              :time => {
+                :formats => {
+                  :proc => lambda { |*args| args.inspect }
+                }
+              },
               :date => {
+                :formats => {
+                  :proc => lambda { |*args| args.inspect }
+                },
                 :'day_names' => lambda { |key, options|
                   (options[:format] =~ /^%A/) ?
                   %w(Воскресенье Понедельник Вторник Среда Четверг Пятница Суббота) :
