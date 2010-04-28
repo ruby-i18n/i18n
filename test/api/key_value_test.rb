@@ -2,10 +2,8 @@
 $:.unshift(File.expand_path(File.dirname(__FILE__) + '/../')); $:.uniq!
 require 'test_helper'
 require 'api'
-require 'rubygems'
-require 'rufus/tokyo'
 
-$store = Rufus::Tokyo::Cabinet.new('*')
+setup_rufus_tokyo
 
 class I18nKeyValueApiTest < Test::Unit::TestCase
   include Tests::Api::Basics
@@ -19,13 +17,15 @@ class I18nKeyValueApiTest < Test::Unit::TestCase
   include Tests::Api::Localization::DateTime
   include Tests::Api::Localization::Time
   # include Tests::Api::Localization::Procs
-  
+
+  STORE = Rufus::Tokyo::Cabinet.new('*')
+
   def setup
-    I18n.backend = I18n::Backend::KeyValue.new($store)
+    I18n.backend = I18n::Backend::KeyValue.new(STORE)
     super
   end
 
   test "make sure we use the KeyValue backend" do
     assert_equal I18n::Backend::KeyValue, I18n.backend.class
   end
-end
+end if defined?(Rufus::Tokyo::Cabinet)

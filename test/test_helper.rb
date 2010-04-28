@@ -13,6 +13,8 @@ require 'yaml'
 require 'i18n'
 require 'test_setup_requirements'
 
+setup_mocha
+
 class Test::Unit::TestCase
   def self.test(name, &block)
     test_name = "test_#{name.gsub(/\s+/,'_')}".to_sym

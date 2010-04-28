@@ -42,7 +42,11 @@ module I18n
       end
 
       def available_locales
-        @store.keys.map { |k| k.split(".").first.to_sym }.uniq
+        locales = @store.keys.map { |k| k =~ /\./; $` }
+        locales.uniq!
+        locales.compact!
+        locales.map! { |k| k.to_sym }
+        locales
       end
 
       protected

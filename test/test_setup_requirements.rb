@@ -26,10 +26,12 @@ def gem(gem_name, *version_requirements)
   super(gem_name, *version_requirements)
 end
 
-begin
-  require 'mocha'
-rescue LoadError
-  puts "skipping tests using mocha as mocha can't be found"
+def setup_mocha
+  begin
+    require 'mocha'
+  rescue LoadError
+    puts "skipping tests using mocha as mocha can't be found"
+  end
 end
 
 def setup_active_record
@@ -37,8 +39,8 @@ def setup_active_record
     require 'active_record'
     ActiveRecord::Base.connection
     true
-  rescue LoadError
-    puts "skipping tests using activerecord as activerecord can't be found"
+  rescue LoadError => e
+    puts "can't use ActiveRecord backend because: #{e.message}"
   rescue ActiveRecord::ConnectionNotEstablished
     require 'i18n/backend/active_record'
     require 'i18n/backend/active_record/store_procs'
@@ -59,4 +61,11 @@ def connect_active_record
       t.boolean :is_proc, :default => false
     end
   end
+end
+
+def setup_rufus_tokyo
+  require 'rubygems'
+  require 'rufus/tokyo'
+rescue LoadError => e
+  puts "can't use KeyValue backend because: #{e.message}"
 end

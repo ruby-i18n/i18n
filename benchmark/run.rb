@@ -1,10 +1,11 @@
 #! /usr/bin/ruby
-$:.unshift File.expand_path("../lib", File.dirname(__FILE__))
+$:.unshift File.expand_path('../../lib', __FILE__)
 
 require 'i18n'
 require 'benchmark'
 require 'yaml'
 
+DATA_STORES = ARGV.delete("-ds")
 N = (ARGV.shift || 1000).to_i
 YAML_HASH = YAML.load_file(File.expand_path("example.yml", File.dirname(__FILE__)))
 
@@ -26,7 +27,20 @@ module Backends
     include I18n::Backend::Fast
     include I18n::Backend::InterpolationCompiler
   end.new
+
+  if DATA_STORES
+    require 'rubygems'
+    require File.expand_path('../../test/test_setup_requirements', __FILE__)
+
+    setup_active_record
+    ActiveRecord = I18n::Backend::ActiveRecord.new if defined?(::ActiveRecord)
+
+    setup_rufus_tokyo
+    TokyoCabinet = I18n::Backend::KeyValue.new(Rufus::Tokyo::Cabinet.new("*")) if defined?(::Rufus::Tokyo)
+  end
 end
+
+ORDER = %w(Simple Fast Interpolation FastInterpolation ActiveRecord TokyoCabinet)
 
 module Benchmark
   WIDTH = 20
@@ -54,13 +68,17 @@ end
 # Run!
 puts "Running benchmarks with N = #{N}\n\n"
 
-Backends.constants.each do |backend_name|
+(ORDER & Backends.constants).each do |backend_name|
   I18n.backend = Backends.const_get(backend_name)
   puts "===> #{backend_name}\n\n"
 
   Benchmark.rt "store", 1 do
     I18n.backend.store_translations *(YAML_HASH.to_a.first)
     I18n.backend.translate :en, :first
+  end
+
+  Benchmark.rt "available_locales" do
+    I18n.backend.available_locales
   end
 
   Benchmark.rt "t (depth=3)" do
