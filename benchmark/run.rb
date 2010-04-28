@@ -36,7 +36,7 @@ module Backends
     ActiveRecord = I18n::Backend::ActiveRecord.new if defined?(::ActiveRecord)
 
     setup_rufus_tokyo
-    TokyoCabinet = I18n::Backend::KeyValue.new(Rufus::Tokyo::Cabinet.new("*")) if defined?(::Rufus::Tokyo)
+    TokyoCabinet = I18n::Backend::KeyValue.new(Rufus::Tokyo::Cabinet.new("*"), true) if defined?(::Rufus::Tokyo)
   end
 end
 
@@ -50,6 +50,8 @@ module Benchmark
     time, objects = measure_objects(n, &blk)
     time = time.respond_to?(:real) ? time.real : time
     print format("%8.2f ms  %8d objects\n", time * 1000, objects)
+  rescue Exception => e
+    print "FAILED: #{e.message}"
   end
 
   if ObjectSpace.respond_to?(:allocated_objects)
