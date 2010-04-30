@@ -86,22 +86,7 @@ h2. Authors
 
 h2. Contributors
 
-* Akira Matsuda
-* Andrew Briening
-* Clemens Kofler
-* Frederick Cheung
-* Jeremy Kemper
-* José Valim
-* Krzysztof Knapik
-* Lawrence Pit
-* Luca Guidi
-* M4SSIVE
-* Marko Seppae
-* Mathias Meyer
-* Michael Lang
-* Norman Clarke
-* Theo Cushion
-* Yaroslav Markin
+http://github.com/svenfuchs/i18n/contributors
 
 h2. License
 

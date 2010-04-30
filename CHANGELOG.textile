@@ -2,7 +2,56 @@ h1. Changelog
 
 h2. master
 
-* (no changes)
+*
+
+h2. 0.4.0.beta (2010-04-30)
+
+* "Added a KeyValue backend":http://github.com/svenfuchs/i18n/commit/28ca5f53ade7f545f8c0804e93564d4686b416a4
+
+* "Added transliteration support":http://github.com/svenfuchs/i18n/commit/928fdb4794959e779e90f360eb01ba043672d8d5
+
+* "Create Flatten backend module to aid handling flatten translations":http://github.com/svenfuchs/i18n/commit/2ec9d6998aa8facd7b15a3ef47a96cf2471cd8a1
+
+* "Decouple the external separator (used when storing translations) from the internal separator in Fast and ActiveRecord backends":http://github.com/svenfuchs/i18n/commit/274cb4daa0ca5e3b2bd23b45eb7f9fc58f75a79d
+
+h2. 0.3.7 (2010-04-17)
+
+* "Speed up I18n.normalize_keys by caching reused normalizations and producing less garbage":http://github.com/svenfuchs/i18n/commit/819dac0fea9c29e6545801aa107e63e355728cd4
+
+h2. 0.3.6 (2010-03-23)
+
+* "Move gettext po parser to lib":http://github.com/svenfuchs/i18n/commit/b2f038663b55727ac2327e6f07a46ba5d69d600c
+
+* "Move I18n configuration to I18n.config":http://github.com/svenfuchs/i18n/commit/4a7baea86663ead8c681008c3e80a622f0546b07
+
+h2. 0.3.5 (2010-02-26)
+
+* "Delegate I18n.normalize_translation_keys to I18n.normalize_keys and deprecate 
+the former":http://github.com/svenfuchs/i18n/commit/7284b04d5f5dd9679cb68875515cdd0cdfc96fef
+
+h2. 0.3.4 (2010-02-25)
+
+* "Rename I18n.normalize_translation_keys to I18n.normalize_keys and finally make it public":http://github.com/svenfuchs/i18n/commit/20b05fe5802df6c90fb70a4e3760b2b851b791b3
+
+* "Added CLDR supoprt":http://github.com/svenfuchs/i18n/commit/860eadf671a231e7f5dffb1bb27fa318ff7a8786
+
+h2. 0.3.3 (2009-12-29)
+
+* "Use lib/i18n/version":http://github.com/svenfuchs/i18n/commit/ff426c8e7a2438b814cb303adadec292dacb752e
+
+* "Added a benchmark suite":http://github.com/svenfuchs/i18n/commit/f9b5b9b113097724638bdab96862ffa404e67e70
+
+* "Ensure links can be handled recursively":http://github.com/svenfuchs/i18n/commit/2c50bd209f3fc24fe9dfa694c81be64340f09b7d
+
+* "Make sure we can lookup false values as translation data":http://github.com/svenfuchs/i18n/commit/561c82ba4b8921d03bfdf56cb2d0c2f287629001
+
+* "Added Fast backend module":http://github.com/svenfuchs/i18n/commit/bd2f09f0a251ca793b0e8ecc7e32177a2f091c23
+
+* "Added InterpolationCompiler backend module":http://github.com/svenfuchs/i18n/commit/91810887d1abfb28996a9183bc9004678290d28b
+
+h2. 0.3.2 (2009-12-12)
+
+* "Added Cascade backend":http://github.com/svenfuchs/i18n/commit/8009aef293e9ef8564c9005090d8380feabcaf6f
 
 h2. 0.3.1 (2009-12-11)
 
