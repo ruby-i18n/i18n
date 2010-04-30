@@ -27,7 +27,7 @@ module I18n
             def translation_metadata=(translation_metadata)
               @translation_metadata = translation_metadata
             end
-          end
+          end unless Object.method_defined?(:translation_metadata)
         end
       end
 

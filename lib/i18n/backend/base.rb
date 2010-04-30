@@ -1,12 +1,11 @@
 # encoding: utf-8
 
 require 'yaml'
-require 'i18n/core_ext/hash/except'
+require 'i18n/core_ext/hash'
 
 module I18n
   module Backend
     module Base
-      include I18n::Backend::Helpers
       include I18n::Backend::Transliterator
 
       RESERVED_KEYS = [:scope, :default, :separator, :resolve]
@@ -259,8 +258,8 @@ module I18n
           locale = locale.to_sym
           translations[locale] ||= {}
 
-          data = deep_symbolize_keys(data)
-          deep_merge_hash!(translations[locale], data)
+          data = data.deep_symbolize_keys
+          translations[locale].deep_merge!(data)
         end
     end
   end

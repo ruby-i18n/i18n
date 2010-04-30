@@ -68,7 +68,7 @@ module I18n
           key   = normalize_keys(locale, key, scope, options[:separator])
           value = @store["#{locale}.#{key}"]
           value = ActiveSupport::JSON.decode(value) if value
-          value.is_a?(Hash) ? deep_symbolize_keys(value) : value
+          value.is_a?(Hash) ? value.deep_symbolize_keys : value
         end
 
         def merge_translations(locale, data, options = {})
@@ -79,7 +79,7 @@ module I18n
             when Hash
               if @subtrees && (old_value = @store[key])
                 old_value = ActiveSupport::JSON.decode(old_value) 
-                value = deep_symbolize_keys(old_value).merge(value) if old_value.is_a?(Hash)
+                value = old_value.deep_symbolize_keys.deep_merge!(value) if old_value.is_a?(Hash)
               end
             when Proc
               raise "Key-value stores cannot handle procs"

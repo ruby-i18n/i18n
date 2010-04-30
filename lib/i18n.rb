@@ -12,9 +12,9 @@ require 'i18n/core_ext/string/interpolate'
 
 module I18n
   autoload :Backend, 'i18n/backend'
-  autoload :Helpers, 'i18n/helpers'
-  autoload :Locale,  'i18n/locale'
   autoload :Config,  'i18n/config'
+  autoload :Gettext, 'i18n/gettext'
+  autoload :Locale,  'i18n/locale'
 
   class << self
     # Gets I18n configuration object.

@@ -10,7 +10,6 @@ module I18n
     autoload :Fast,                  'i18n/backend/fast'
     autoload :Flatten,               'i18n/backend/flatten'
     autoload :Gettext,               'i18n/backend/gettext'
-    autoload :Helpers,               'i18n/backend/helpers'
     autoload :InterpolationCompiler, 'i18n/backend/interpolation_compiler'
     autoload :KeyValue,              'i18n/backend/key_value'
     autoload :Metadata,              'i18n/backend/metadata'
