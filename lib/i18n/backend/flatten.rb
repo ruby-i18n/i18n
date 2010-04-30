@@ -12,6 +12,35 @@ module I18n
       SEPARATOR_ESCAPE_CHAR = "\001"
       FLATTEN_SEPARATOR = "."
 
+      # normalize_keys the flatten way. This method is significantly faster
+      # and creates way less objects than the one at I18n.normalize_keys.
+      # It also handles escaping the translation keys.
+      def self.normalize_flat_keys(locale, key, scope, separator)
+        keys = [scope, key].flatten.compact
+        separator ||= I18n.default_separator
+
+        if separator != FLATTEN_SEPARATOR
+          keys.map! do |k|
+            k.to_s.tr("#{FLATTEN_SEPARATOR}#{separator}",
+              "#{SEPARATOR_ESCAPE_CHAR}#{FLATTEN_SEPARATOR}")
+          end
+        end
+
+        keys.join(".")
+      end
+
+      # Receives a string and escape the default separator.
+      def self.escape_default_separator(key) #:nodoc:
+        key.to_s.tr(FLATTEN_SEPARATOR, SEPARATOR_ESCAPE_CHAR)
+      end
+
+      # Shortcut to I18n::Backend::Flatten.normalize_flat_keys
+      # and then resolve_links.
+      def normalize_flat_keys(locale, key, scope, separator)
+        key = I18n::Backend::Flatten.normalize_flat_keys(locale, key, scope, separator)
+        resolve_link(locale, key)
+      end
+
       # Store flattened links.
       def links
         @links ||= Hash.new { |h,k| h[k] = {} }
@@ -50,23 +79,6 @@ module I18n
         hash
       end
 
-      # normalize_keys the flatten way. This method is significantly faster
-      # and creates way less objects than the one at I18n.normalize_keys.
-      # It also handles escaping the translation keys.
-      def normalize_keys(locale, key, scope, separator)
-        keys = [scope, key].flatten.compact
-        separator ||= I18n.default_separator
-
-        if separator != FLATTEN_SEPARATOR
-          keys.map! do |k|
-            k.to_s.tr("#{FLATTEN_SEPARATOR}#{separator}",
-              "#{SEPARATOR_ESCAPE_CHAR}#{FLATTEN_SEPARATOR}")
-          end
-        end
-
-        resolve_link(locale, keys.join("."))
-      end
-
       protected
 
         def store_link(locale, key, link)
@@ -86,15 +98,16 @@ module I18n
           end
         end
 
-        def find_link(locale, key)
+        def find_link(locale, key) #:nodoc:
           links[locale].each do |from, to|
             return [from, to] if key[0, from.length] == from
           end && nil
         end
 
-        def escape_default_separator(key)
-          key.to_s.tr(FLATTEN_SEPARATOR, SEPARATOR_ESCAPE_CHAR)
+        def escape_default_separator(key) #:nodoc:
+          I18n::Backend::Flatten.escape_default_separator(key)
         end
+
     end
   end
 end

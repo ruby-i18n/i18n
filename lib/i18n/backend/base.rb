@@ -95,6 +95,7 @@ module I18n
       end
 
       protected
+
         def init_translations
           load_translations(*I18n.load_path.flatten)
           @initialized = true

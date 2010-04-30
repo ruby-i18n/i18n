@@ -8,23 +8,26 @@ module I18n
       autoload :StoreProcs,  'i18n/backend/active_record/store_procs'
       autoload :Translation, 'i18n/backend/active_record/translation'
 
-      include Base, Flatten
+      module Implementation
+        include Base, Flatten
 
-      def reload!
-      end
-
-      def available_locales
-        begin
-          Translation.available_locales
-        rescue ::ActiveRecord::StatementInvalid
-          []
+        def reload!
         end
-      end
+
+        def available_locales
+          init_translations unless initialized?
+
+          begin
+            Translation.available_locales
+          rescue ::ActiveRecord::StatementInvalid
+            []
+          end
+        end
 
       protected
 
         def lookup(locale, key, scope = [], options = {})
-          key = normalize_keys(locale, key, scope, options[:separator])
+          key = normalize_flat_keys(locale, key, scope, options[:separator])
           result = Translation.locale(locale).lookup(key).all
 
           if result.empty?
@@ -54,6 +57,9 @@ module I18n
             keys << [keys.last, key].compact.join(FLATTEN_SEPARATOR)
           end
         end
+      end
+
+      include Implementation
     end
   end
 end

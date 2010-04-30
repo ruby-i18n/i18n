@@ -18,7 +18,7 @@ class I18nAllFeaturesApiTest < Test::Unit::TestCase
     include I18n::Backend::Cascade
     include I18n::Backend::Fallbacks
     include I18n::Backend::Pluralization
-    include I18n::Backend::Fast
+    include I18n::Backend::Memoize
   end
 
   def setup

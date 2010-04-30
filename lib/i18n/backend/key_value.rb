@@ -28,6 +28,12 @@ module I18n
     #   require 'rufus/tokyo/cabinet' # gem install rufus-tokyo
     #   I18n.backend = I18n::Backend::KeyValue.new(Rufus::Tokyo::Cabinet.new('*'))
     #
+    # == Performance
+    #
+    # You may make this backend even faster by including the Memoize module.
+    # However, notice that you should properly clear the cache if you change
+    # values directly in the key-store.
+    #
     # == Subtrees
     #
     # In most backends, you are allowed to retrieve part of a translation tree:
@@ -42,30 +48,33 @@ module I18n
     #   I18n::Backend::KeyValue.new(@store, false)
     #
     class KeyValue
-      attr_accessor :store
+      module Implementation
+        attr_accessor :store
 
-      include Base, Flatten
+        include Base, Flatten
 
-      def initialize(store, subtrees=true)
-        @store, @subtrees = store, subtrees
-      end
+        def initialize(store, subtrees=true)
+          @store, @subtrees = store, subtrees
+        end
 
-      # Mute reload! since we really don't want to clean the database.
-      def reload!
-      end
+        # Mute reload! since we really don't want to clean the database.
+        def reload!
+        end
 
-      def available_locales
-        locales = @store.keys.map { |k| k =~ /\./; $` }
-        locales.uniq!
-        locales.compact!
-        locales.map! { |k| k.to_sym }
-        locales
-      end
+        def available_locales
+          init_translations unless initialized?
+
+          locales = @store.keys.map { |k| k =~ /\./; $` }
+          locales.uniq!
+          locales.compact!
+          locales.map! { |k| k.to_sym }
+          locales
+        end
 
       protected
 
         def lookup(locale, key, scope = [], options = {})
-          key   = normalize_keys(locale, key, scope, options[:separator])
+          key   = normalize_flat_keys(locale, key, scope, options[:separator])
           value = @store["#{locale}.#{key}"]
           value = ActiveSupport::JSON.decode(value) if value
           value.is_a?(Hash) ? value.deep_symbolize_keys : value
@@ -90,6 +99,9 @@ module I18n
             @store[key] = ActiveSupport::JSON.encode(value) unless value.nil?
           end
         end
+      end
+
+      include Implementation
     end
   end
 end

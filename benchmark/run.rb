@@ -12,11 +12,6 @@ YAML_HASH = YAML.load_file(File.expand_path("example.yml", File.dirname(__FILE__
 module Backends
   Simple = I18n::Backend::Simple.new
 
-  Fast = Class.new do
-    include I18n::Backend::Base
-    include I18n::Backend::Fast
-  end.new
-
   if DATA_STORES
     require 'rubygems'
     require File.expand_path('../../test/test_setup_requirements', __FILE__)
@@ -29,7 +24,7 @@ module Backends
   end
 end
 
-ORDER = %w(Simple Fast ActiveRecord TokyoCabinet)
+ORDER = %w(Simple ActiveRecord TokyoCabinet)
 ORDER.map!(&:to_sym) if RUBY_VERSION > '1.9'
 
 module Benchmark
@@ -57,12 +52,9 @@ module Benchmark
   end
 end
 
-# Run!
-puts "Running benchmarks with N = #{N}\n\n"
-
-(ORDER & Backends.constants).each do |backend_name|
+benchmarker = lambda do |backend_name|
   I18n.backend = Backends.const_get(backend_name)
-  puts "===> #{backend_name}\n\n"
+  puts "=> #{backend_name}\n\n"
 
   Benchmark.rt "store", 1 do
     I18n.backend.store_translations *(YAML_HASH.to_a.first)
@@ -103,3 +95,17 @@ puts "Running benchmarks with N = #{N}\n\n"
 
   puts
 end
+
+# Run!
+puts
+puts "Running benchmarks with N = #{N}\n\n"
+(ORDER & Backends.constants).each(&benchmarker)
+
+Backends.constants.each do |backend_name|
+ backend = Backends.const_get(backend_name)
+ backend.reload!
+ backend.extend I18n::Backend::Memoize
+end
+
+puts "Running memoized benchmarks with N = #{N}\n\n"
+(ORDER & Backends.constants).each(&benchmarker)
