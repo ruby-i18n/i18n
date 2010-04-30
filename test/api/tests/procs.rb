@@ -25,11 +25,11 @@ module Tests
 
       define_method "test interpolation: given an interpolation value is a lambda it calls it with key and values before interpolating it" do
         proc = lambda { |*args| args.inspect }
-        assert_match %r(\[\{:foo=>#<Proc.*>\}\]), I18n.t(nil, :default => '{{foo}}', :foo => proc)
+        assert_match %r(\[\{:foo=>#<Proc.*>\}\]), I18n.t(nil, :default => '%{foo}', :foo => proc)
       end
 
       define_method "test interpolation: given a key resolves to a Proc that returns a string then interpolation still works" do
-        proc = lambda { |*args| "{{foo}}: " + args.inspect }
+        proc = lambda { |*args| "%{foo}: " + args.inspect }
         assert_equal 'foo: [nil, {:foo=>"foo"}]', I18n.t(nil, :default => proc, :foo => 'foo')
       end
 

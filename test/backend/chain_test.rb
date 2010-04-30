@@ -5,7 +5,7 @@ require 'test_helper'
 class I18nBackendChainTest < Test::Unit::TestCase
   def setup
     @first  = backend(:en => {
-      :foo => 'Foo', :formats => { :short => 'short' }, :plural_1 => { :one => '{{count}}' }
+      :foo => 'Foo', :formats => { :short => 'short' }, :plural_1 => { :one => '%{count}' }
     })
     @second = backend(:en => {
       :bar => 'Bar', :formats => { :long => 'long' }, :plural_2 => { :one => 'one' }
@@ -41,7 +41,7 @@ class I18nBackendChainTest < Test::Unit::TestCase
   end
 
   test "namespace lookup with only the first backend returning a result" do
-    assert_equal({ :one => '{{count}}' }, I18n.t(:plural_1))
+    assert_equal({ :one => '%{count}' }, I18n.t(:plural_1))
   end
 
   test "pluralization still works" do

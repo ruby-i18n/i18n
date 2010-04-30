@@ -17,17 +17,6 @@ module Backends
     include I18n::Backend::Fast
   end.new
 
-  Interpolation = Class.new do
-    include I18n::Backend::Base
-    include I18n::Backend::InterpolationCompiler
-  end.new
-
-  FastInterpolation = Class.new do
-    include I18n::Backend::Base
-    include I18n::Backend::Fast
-    include I18n::Backend::InterpolationCompiler
-  end.new
-
   if DATA_STORES
     require 'rubygems'
     require File.expand_path('../../test/test_setup_requirements', __FILE__)
@@ -40,7 +29,7 @@ module Backends
   end
 end
 
-ORDER = %w(Simple Fast Interpolation FastInterpolation ActiveRecord TokyoCabinet)
+ORDER = %w(Simple Fast ActiveRecord TokyoCabinet)
 ORDER.map!(&:to_sym) if RUBY_VERSION > '1.9'
 
 module Benchmark

@@ -80,7 +80,7 @@ module I18n
     # values passed to #translate as part of the options hash, with the keys matching
     # the interpolation variable names.
     #
-    # <em>E.g.</em>, with a translation <tt>:foo => "foo {{bar}}"</tt> the option
+    # <em>E.g.</em>, with a translation <tt>:foo => "foo %{bar}"</tt> the option
     # value for the key +bar+ will be interpolated into the translation:
     #   I18n.t :foo, :bar => 'baz' # => 'foo baz'
     #
@@ -101,7 +101,7 @@ module I18n
     #
     # The <tt>:count</tt> option can be used both for pluralization and interpolation.
     # <em>E.g.</em>, with the translation
-    # <tt>:foo => ['{{count}} foo', '{{count}} foos']</tt>, count will
+    # <tt>:foo => ['%{count} foo', '%{count} foos']</tt>, count will
     # be interpolated to the pluralized translation:
     #   I18n.t :foo, :count => 1 # => '1 foo'
     #
@@ -135,7 +135,7 @@ module I18n
     # called and passed the key and options.
     #
     # E.g. assuming the key <tt>:salutation</tt> resolves to:
-    #   lambda { |key, options| options[:gender] == 'm' ? "Mr. {{options[:name]}}" : "Mrs. {{options[:name]}}" }
+    #   lambda { |key, options| options[:gender] == 'm' ? "Mr. %{options[:name]}" : "Mrs. %{options[:name]}" }
     #
     # Then <tt>I18n.t(:salutation, :gender => 'w', :name => 'Smith') will result in "Mrs. Smith".
     #

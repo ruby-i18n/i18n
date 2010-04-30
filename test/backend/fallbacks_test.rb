@@ -47,7 +47,7 @@ class I18nBackendFallbacksTranslateTest < Test::Unit::TestCase
   end
 
   test "returns the default translation for a missing :'de-DE' and existing :de when default is a Hash" do
-    assert_equal 'Default 6 Bars', I18n.t(:missing_foo, :locale => :'de-DE', :default => [:missing_bar, {:other => "Default {{count}} Bars"}, "Default Bar"], :count => 6)
+    assert_equal 'Default 6 Bars', I18n.t(:missing_foo, :locale => :'de-DE', :default => [:missing_bar, {:other => "Default %{count} Bars"}, "Default Bar"], :count => 6)
   end
 
   test "raises I18n::MissingTranslationData exception when no translation was found" do
