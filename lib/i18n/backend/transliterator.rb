@@ -2,8 +2,16 @@
 module I18n
   module Backend
     module Transliterator
-
       DEFAULT_REPLACEMENT_CHAR = "?"
+
+      # Given a locale and a UTF-8 string, return the locale's ASCII
+      # approximation for the string.
+      def transliterate(locale, string, replacement = nil)
+        @transliterators ||= {}
+        @transliterators[locale] ||= Transliterator.get I18n.t(:'i18n.transliterate.rule',
+          :locale => locale, :resolve => false, :default => {})
+        @transliterators[locale].transliterate(string, replacement)
+      end
 
       # Get a transliterator instance.
       def self.get(rule = nil)
@@ -18,7 +26,6 @@ module I18n
 
       # A transliterator which accepts a Proc as its transliteration rule.
       class ProcTransliterator
-
         def initialize(rule)
           @rule = rule
         end
@@ -26,13 +33,11 @@ module I18n
         def transliterate(string, replacement = nil)
           @rule.call(string)
         end
-
       end
 
       # A transliterator which accepts a Hash of characters as its translation
       # rule.
       class HashTransliterator
-
         DEFAULT_APPROXIMATIONS = {
           "À"=>"A", "Á"=>"A", "Â"=>"A", "Ã"=>"A", "Ä"=>"A", "Å"=>"A", "Æ"=>"AE",
           "Ç"=>"C", "È"=>"E", "É"=>"E", "Ê"=>"E", "Ë"=>"E", "Ì"=>"I", "Í"=>"I",
@@ -87,7 +92,6 @@ module I18n
             hash.keys.each {|key| hash[key.to_s] = hash.delete(key).to_s}
             approximations.merge! hash
           end
-
       end
     end
   end

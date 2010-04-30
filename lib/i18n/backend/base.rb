@@ -7,6 +7,7 @@ module I18n
   module Backend
     module Base
       include I18n::Backend::Helpers
+      include I18n::Backend::Transliterator
 
       RESERVED_KEYS = [:scope, :default, :separator, :resolve]
       INTERPOLATION_SYNTAX_PATTERN = /(\\)?\{\{([^\}]+)\}\}/
@@ -47,15 +48,6 @@ module I18n
         end
 
         entry
-      end
-
-      # Given a locale and a UTF-8 string, return the locale's ASCII
-      # approximation for the string.
-      def transliterate(locale, string, replacement = nil)
-        @transliterators ||= {}
-        @transliterators[locale] ||= Transliterator.get I18n.t(:'i18n.transliterate.rule',
-          :locale => locale, :resolve => false, :default => {})
-        @transliterators[locale].transliterate(string, replacement)
       end
 
       # Acts the same as +strftime+, but uses a localized version of the
