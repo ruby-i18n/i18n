@@ -26,7 +26,8 @@ Pluggable features:
 Alternative backends:
 
 * Chain
-* ActiveRecord (optionally: ActiveRecordMissing)
+* ActiveRecord (optionally: ActiveRecord::Missing and ActiveRecord::StoreProcs)
+* KeyValue (uses active_support/json and cannot store procs)
 
 For more information and lots of resources see: "http://rails-i18n.org/wiki":http://rails-i18n.org/wiki
 
