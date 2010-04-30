@@ -41,6 +41,7 @@ module Backends
 end
 
 ORDER = %w(Simple Fast Interpolation FastInterpolation ActiveRecord TokyoCabinet)
+ORDER.map!(&:to_sym) if RUBY_VERSION > '1.9'
 
 module Benchmark
   WIDTH = 20
