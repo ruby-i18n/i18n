@@ -58,8 +58,9 @@ benchmarker = lambda do |backend_name|
 
   Benchmark.rt "store", 1 do
     I18n.backend.store_translations *(YAML_HASH.to_a.first)
-    I18n.backend.translate :en, :first
   end
+
+  I18n.backend.translate :en, :first
 
   Benchmark.rt "available_locales" do
     I18n.backend.available_locales

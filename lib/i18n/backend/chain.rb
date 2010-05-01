@@ -17,6 +17,8 @@ module I18n
     # The implementation assumes that all backends added to the Chain implement
     # a lookup method with the same API as Simple backend does.
     class Chain
+      include Base
+
       attr_accessor :backends
 
       def initialize(*backends)

@@ -24,9 +24,10 @@ module I18n
       protected
 
         def lookup(locale, key, scope = nil, options = {})
-          flat_key = I18n::Backend::Flatten.normalize_flat_keys(locale,
+          flat_key  = I18n::Backend::Flatten.normalize_flat_keys(locale,
             key, scope, options[:separator]).to_sym
-          memoized_lookup[locale.to_sym][flat_key] ||= super
+          flat_hash = memoized_lookup[locale.to_sym]
+          flat_hash.key?(flat_key) ? flat_hash[flat_key] : (flat_hash[flat_key] = super)
         end
 
         def memoized_lookup
