@@ -10,6 +10,14 @@ module Tests
         assert I18n.available_locales.include?(:de)
         assert I18n.available_locales.include?(:en)
       end
+
+      def test_delete_value
+        store_translations(:foo => 'bar')
+        assert_equal 'bar', I18n.t('foo', :default => 'baz')
+
+        store_translations(:foo => nil)
+        assert_equal 'baz', I18n.t('foo', :default => 'baz')
+      end
     end
   end
 end
