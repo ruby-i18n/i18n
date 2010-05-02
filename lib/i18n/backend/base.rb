@@ -92,6 +92,7 @@ module I18n
       def reload!
         @initialized = false
         @translations = nil
+        @skip_syntax_deprecation = false
       end
 
       protected
@@ -196,7 +197,10 @@ module I18n
               elsif RESERVED_KEYS.include?(key)
                 raise ReservedInterpolationKey.new(key, string)
               else
-                warn "The {{key}} interpolation syntax in I18n messages is deprecated. Please use %{key} instead."
+                @skip_syntax_deprecation ||= begin
+                  warn "The {{key}} interpolation syntax in I18n messages is deprecated. Please use %{key} instead."
+                  true
+                end
                 "%{#{key}}"
               end
             end
