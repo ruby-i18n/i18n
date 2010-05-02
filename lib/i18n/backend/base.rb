@@ -9,6 +9,7 @@ module I18n
       include I18n::Backend::Transliterator
 
       RESERVED_KEYS = [:scope, :default, :separator, :resolve]
+      RESERVED_KEYS_PATTERN = /%?%\{(#{RESERVED_KEYS.join("|")})\}/
       INTERPOLATION_SYNTAX_PATTERN = /(\\)?\{\{([^\}]+)\}\}/
 
       # Accepts a list of paths to translation files. Loads translations from
@@ -37,7 +38,7 @@ module I18n
           raise(I18n::MissingTranslationData.new(locale, key, options)) if entry.nil?
         else
           count, default = options.values_at(:count, :default)
-          values = options.reject { |name, value| RESERVED_KEYS.include?(name) }
+          values = options.except(*RESERVED_KEYS)
 
           entry = entry.nil? && default ? default(locale, key, default, options) : resolve(locale, key, entry, options)
           raise(I18n::MissingTranslationData.new(locale, key, options)) if entry.nil?
@@ -190,32 +191,30 @@ module I18n
           return string unless string.is_a?(::String) && !values.empty?
 
           preserve_encoding(string) do
-            s = string.gsub(INTERPOLATION_SYNTAX_PATTERN) do
+            string = string.gsub(INTERPOLATION_SYNTAX_PATTERN) do
               escaped, key = $1, $2.to_sym
               if escaped
                 "{{#{key}}}"
-              elsif RESERVED_KEYS.include?(key)
-                raise ReservedInterpolationKey.new(key, string)
               else
-                @skip_syntax_deprecation ||= begin
-                  warn "The {{key}} interpolation syntax in I18n messages is deprecated. Please use %{key} instead."
-                  true
-                end
+                warn_syntax_deprecation!
                 "%{#{key}}"
               end
             end
 
             values.each do |key, value|
-              value = value.call(values) if interpolate_lambda?(value, s, key)
+              value = value.call(values) if interpolate_lambda?(value, string, key)
               value = value.to_s unless value.is_a?(::String)
               values[key] = value
             end
 
-            s % values
+            string % values
           end
-
         rescue KeyError => e
-          raise MissingInterpolationArgument.new(values, string)
+          if string =~ RESERVED_KEYS_PATTERN
+            raise ReservedInterpolationKey.new($1.to_sym, string)
+          else
+            raise MissingInterpolationArgument.new(values, string)
+          end
         end
 
         def preserve_encoding(string)
@@ -266,6 +265,12 @@ module I18n
 
           data = data.deep_symbolize_keys
           translations[locale].deep_merge!(data)
+        end
+
+        def warn_syntax_deprecation! #:nodoc:
+          return if @skip_syntax_deprecation
+          warn "The {{key}} interpolation syntax in I18n messages is deprecated. Please use %{key} instead.\n#{caller.join("\n")}"
+          @skip_syntax_deprecation = true
         end
     end
   end

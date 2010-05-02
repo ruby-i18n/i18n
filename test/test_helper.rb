@@ -63,6 +63,19 @@ class Test::Unit::TestCase
     I18n.backend.class != I18n::Backend::ActiveRecord or
     I18n::Backend::ActiveRecord.included_modules.include?(I18n::Backend::ActiveRecord::StoreProcs)
   end
+
+  def capture(stream)
+    begin
+      stream = stream.to_s
+      eval "$#{stream} = StringIO.new"
+      yield
+      result = eval("$#{stream}").string
+    ensure 
+      eval("$#{stream} = #{stream.upcase}")
+    end
+
+    result
+  end
 end
 
 Object.class_eval do

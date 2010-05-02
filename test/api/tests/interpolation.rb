@@ -48,7 +48,10 @@ module Tests
       end
 
       define_method "test interpolation: works with the deprecated syntax" do
-        assert_equal 'Hi David!', interpolate(:default => 'Hi {{name}}!', :name => 'David')
+        deprecation = capture(:stderr) do
+          assert_equal 'Hi David!', interpolate(:default => 'Hi {{name}}!', :name => 'David')
+        end
+        assert_match "The {{key}} interpolation syntax in I18n messages is deprecated", deprecation
       end
 
       define_method "test interpolation: given the translation is in utf-8 it still works" do
@@ -83,9 +86,9 @@ module Tests
       end
 
       define_method "test interpolation: given a translations containing a reserved key it raises I18n::ReservedInterpolationKey" do
-        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:default => '{{default}}',   :foo => :bar) }
-        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:default => '{{scope}}',     :foo => :bar) }
-        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:default => '{{separator}}', :foo => :bar) }
+        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:default => '%{default}',   :foo => :bar) }
+        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:default => '%{scope}',     :foo => :bar) }
+        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:default => '%{separator}', :foo => :bar) }
       end
     end
   end

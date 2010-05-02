@@ -48,26 +48,26 @@ class I18nExceptionsTest < Test::Unit::TestCase
     force_missing_interpolation_argument
   rescue I18n::ArgumentError => e
     # assert_equal :bar, e.key
-    assert_equal "{{bar}}", e.string
+    assert_equal "%{bar}", e.string
   end
 
   def test_missing_interpolation_argument_message
     force_missing_interpolation_argument
   rescue I18n::ArgumentError => e
-    assert_equal 'missing interpolation argument in "{{bar}}" ({:baz=>"baz"} given)', e.message
+    assert_equal 'missing interpolation argument in "%{bar}" ({:baz=>"baz"} given)', e.message
   end
 
   def test_reserved_interpolation_key_stores_key_and_string
     force_reserved_interpolation_key
   rescue I18n::ArgumentError => e
     assert_equal :scope, e.key
-    assert_equal "{{scope}}", e.string
+    assert_equal "%{scope}", e.string
   end
 
   def test_reserved_interpolation_key_message
     force_reserved_interpolation_key
   rescue I18n::ArgumentError => e
-    assert_equal 'reserved key :scope used in "{{scope}}"', e.message
+    assert_equal 'reserved key :scope used in "%{scope}"', e.message
   end
 
   private
@@ -86,12 +86,12 @@ class I18nExceptionsTest < Test::Unit::TestCase
     end
 
     def force_missing_interpolation_argument
-      I18n.backend.store_translations 'de', :foo => "{{bar}}"
+      I18n.backend.store_translations 'de', :foo => "%{bar}"
       I18n.backend.translate 'de', :foo, :baz => 'baz'
     end
 
     def force_reserved_interpolation_key
-      I18n.backend.store_translations 'de', :foo => "{{scope}}"
+      I18n.backend.store_translations 'de', :foo => "%{scope}"
       I18n.backend.translate 'de', :foo, :baz => 'baz'
     end
 end
