@@ -46,7 +46,7 @@ module I18n
           entry = interpolate(locale, entry, values)
         end
 
-        entry
+        String === entry ? entry.dup : entry
       end
 
       # Acts the same as +strftime+, but uses a localized version of the
@@ -127,7 +127,7 @@ module I18n
             return nil unless result.is_a?(Hash) && result.has_key?(key)
             result = result[key]
             result = resolve(locale, key, result, options.merge(:scope => nil)) if result.is_a?(Symbol)
-            String === result ? result.dup : result
+            result
           end
         end
 

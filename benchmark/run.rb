@@ -12,6 +12,11 @@ YAML_HASH = YAML.load_file(File.expand_path("example.yml", File.dirname(__FILE__
 module Backends
   Simple = I18n::Backend::Simple.new
 
+  Interpolation = Class.new do
+    include I18n::Backend::Base
+    include I18n::Backend::InterpolationCompiler
+  end.new
+
   if DATA_STORES
     require 'rubygems'
     require File.expand_path('../../test/test_setup_requirements', __FILE__)
@@ -24,7 +29,7 @@ module Backends
   end
 end
 
-ORDER = %w(Simple ActiveRecord TokyoCabinet)
+ORDER = %w(Simple Interpolation ActiveRecord TokyoCabinet)
 ORDER.map!(&:to_sym) if RUBY_VERSION > '1.9'
 
 module Benchmark
