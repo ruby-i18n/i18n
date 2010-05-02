@@ -11,6 +11,10 @@
 # InterpolationCompiler module to the Simple backend:
 #
 #   I18n::Backend::Simple.send(:include, I18n::Backend::InterpolationCompiler)
+#
+# Note that InterpolationCompiler does not yield meaningful results and consequently
+# should not be used with Ruby 1.9 (YARV) but improves performance everywhere else
+# (jRuby, Rubinius and 1.8.7).
 module I18n
   module Backend
     module InterpolationCompiler
