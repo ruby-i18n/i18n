@@ -7,13 +7,13 @@
   You may redistribute it and/or modify it under the same license terms as Ruby.
 =end
 
-if RUBY_VERSION < '1.9'
-
+begin
+  raise ArgumentError if ("a %{x}" % {:x=>'b'}) != 'a b'
+rescue ArgumentError
   # KeyError is raised by String#% when the string contains a named placeholder
   # that is not contained in the given arguments hash. Ruby 1.9 includes and
   # raises this exception natively. We define it to mimic Ruby 1.9's behaviour
   # in Ruby 1.8.x
-
   class KeyError < IndexError
     def initialize(message = nil)
       super(message || "key not found")
@@ -24,7 +24,6 @@ if RUBY_VERSION < '1.9'
   #
   # String#% method which accept "named argument". The translator can know
   # the meaning of the msgids using "named argument" instead of %s/%d style.
-
   class String
     # For older ruby versions, such as ruby-1.8.5
     alias :bytesize :size unless instance_methods.find {|m| m.to_s == 'bytesize'}
