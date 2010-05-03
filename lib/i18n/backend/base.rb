@@ -24,7 +24,11 @@ module I18n
       # translations will be overwritten by new ones only at the deepest
       # level of the hash.
       def store_translations(locale, data, options = {})
-        merge_translations(locale, data, options)
+        locale = locale.to_sym
+        translations[locale] ||= {}
+
+        data = data.deep_symbolize_keys
+        translations[locale].deep_merge!(data)
       end
 
       def translate(locale, key, options = {})
@@ -242,7 +246,7 @@ module I18n
           type = File.extname(filename).tr('.', '').downcase
           raise UnknownFileType.new(type, filename) unless respond_to?(:"load_#{type}")
           data = send(:"load_#{type}", filename) # TODO raise a meaningful exception if this does not yield a Hash
-          data.each { |locale, d| merge_translations(locale, d) }
+          data.each { |locale, d| store_translations(locale, d) }
         end
 
         # Loads a plain Ruby translations file. eval'ing the file must yield
@@ -255,16 +259,6 @@ module I18n
         # toplevel keys.
         def load_yml(filename)
           YAML::load(IO.read(filename))
-        end
-
-        # Deep merges the given translations hash with the existing translations
-        # for the given locale
-        def merge_translations(locale, data, options = {})
-          locale = locale.to_sym
-          translations[locale] ||= {}
-
-          data = data.deep_symbolize_keys
-          translations[locale].deep_merge!(data)
         end
 
         def warn_syntax_deprecation! #:nodoc:

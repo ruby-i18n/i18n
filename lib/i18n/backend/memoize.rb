@@ -16,6 +16,11 @@ module I18n
         @memoized_locales ||= super
       end
 
+      def store_translations(locale, data, options = {})
+        reset_memoizations!(locale)
+        super
+      end
+
       def reload!
         reset_memoizations!
         super
@@ -32,11 +37,6 @@ module I18n
 
         def memoized_lookup
           @memoized_lookup ||= Hash.new { |h, k| h[k] = {} }
-        end
-
-        def merge_translations(locale, data, options = {})
-          reset_memoizations!(locale)
-          super
         end
 
         def reset_memoizations!(locale=nil)

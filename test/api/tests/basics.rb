@@ -12,11 +12,12 @@ module Tests
       end
 
       def test_delete_value
-        store_translations(:foo => 'bar')
-        assert_equal 'bar', I18n.t('foo', :default => 'baz')
+        store_translations(:to_be_deleted => 'bar')
+        assert_equal 'bar', I18n.t('to_be_deleted', :default => 'baz')
 
-        store_translations(:foo => nil)
-        assert_equal 'baz', I18n.t('foo', :default => 'baz')
+        I18n.cache_store.clear if I18n.cache_store
+        store_translations(:to_be_deleted => nil)
+        assert_equal 'baz', I18n.t('to_be_deleted', :default => 'baz')
       end
     end
   end

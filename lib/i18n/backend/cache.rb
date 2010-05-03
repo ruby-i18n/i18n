@@ -45,6 +45,7 @@ module I18n
   end
 
   module Backend
+    # TODO Should the cache be cleared if new translations are stored?
     module Cache
       def translate(*args)
         I18n.perform_caching? ? fetch(*args) { super } : super

@@ -61,6 +61,24 @@ module I18n
         def reload!
         end
 
+        def store_translations(locale, data, options = {})
+          flatten_translations(locale, data, @subtrees).each do |key, value|
+            key = "#{locale}.#{key}"
+
+            case value
+            when Hash
+              if @subtrees && (old_value = @store[key])
+                old_value = ActiveSupport::JSON.decode(old_value)
+                value = old_value.deep_symbolize_keys.deep_merge!(value) if old_value.is_a?(Hash)
+              end
+            when Proc
+              raise "Key-value stores cannot handle procs"
+            end
+
+            @store[key] = ActiveSupport::JSON.encode(value) unless value.is_a?(Symbol)
+          end
+        end
+
         def available_locales
           init_translations unless initialized?
 
@@ -78,26 +96,6 @@ module I18n
           value = @store["#{locale}.#{key}"]
           value = ActiveSupport::JSON.decode(value) if value
           value.is_a?(Hash) ? value.deep_symbolize_keys : value
-        end
-
-        def merge_translations(locale, data, options = {})
-          flatten_translations(locale, data, @subtrees).each do |key, value|
-            key = "#{locale}.#{key}"
-
-            case value
-            when Hash
-              if @subtrees && (old_value = @store[key])
-                old_value = ActiveSupport::JSON.decode(old_value) 
-                value = old_value.deep_symbolize_keys.deep_merge!(value) if old_value.is_a?(Hash)
-              end
-            when Proc
-              raise "Key-value stores cannot handle procs"
-            when Symbol
-              value = nil
-            end
-
-            @store[key] = ActiveSupport::JSON.encode(value) unless value.nil?
-          end
         end
       end
 

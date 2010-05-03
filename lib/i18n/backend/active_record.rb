@@ -24,6 +24,13 @@ module I18n
           end
         end
 
+        def store_translations(locale, data, options = {})
+          flatten_translations(locale, data).each do |key, value|
+            Translation.locale(locale).lookup(expand_keys(key)).delete_all
+            Translation.create(:locale => locale.to_s, :key => key.to_s, :value => value)
+          end
+        end
+
       protected
 
         def lookup(locale, key, scope = [], options = {})
@@ -41,13 +48,6 @@ module I18n
               hash
             end
             result.deep_symbolize_keys
-          end
-        end
-
-        def merge_translations(locale, data, options = {})
-          flatten_translations(locale, data).each do |key, value|
-            Translation.locale(locale).lookup(expand_keys(key)).delete_all
-            Translation.create(:locale => locale.to_s, :key => key.to_s, :value => value)
           end
         end
 
