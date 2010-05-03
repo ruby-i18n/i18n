@@ -35,7 +35,15 @@ module Tests
           if can_store_procs?
             setup_time_proc_translations
             date = ::Date.new(2008, 3, 1, 6)
-            assert_equal '[:"date.formats.proc", {}]', I18n.l(date, :format => :proc, :locale => :ru)
+            assert_equal '[Sat, 01 Mar 2008, {}]', I18n.l(date, :format => :proc, :locale => :ru)
+          end
+        end
+
+        define_method "test localize Date: given a format that resolves to a Proc it calls the Proc with the object and extra options" do
+          if can_store_procs?
+            setup_time_proc_translations
+            date = ::Date.new(2008, 3, 1, 6)
+            assert_equal '[Sat, 01 Mar 2008, {:foo=>"foo"}]', I18n.l(date, :format => :proc, :foo => 'foo', :locale => :ru)
           end
         end
 
@@ -43,7 +51,15 @@ module Tests
           if can_store_procs?
             setup_time_proc_translations
             datetime = ::DateTime.new(2008, 3, 1, 6)
-            assert_equal '[:"time.formats.proc", {}]', I18n.l(datetime, :format => :proc, :locale => :ru)
+            assert_equal '[Sat, 01 Mar 2008 06:00:00 +0000, {}]', I18n.l(datetime, :format => :proc, :locale => :ru)
+          end
+        end
+
+        define_method "test localize DateTime: given a format that resolves to a Proc it calls the Proc with the object and extra options" do
+          if can_store_procs?
+            setup_time_proc_translations
+            datetime = ::DateTime.new(2008, 3, 1, 6)
+            assert_equal '[Sat, 01 Mar 2008 06:00:00 +0000, {:foo=>"foo"}]', I18n.l(datetime, :format => :proc, :foo => 'foo', :locale => :ru)
           end
         end
 
@@ -51,7 +67,15 @@ module Tests
           if can_store_procs?
             setup_time_proc_translations
             time = ::Time.parse('2008-03-01 6:00 UTC')
-            assert_equal '[:"time.formats.proc", {}]', I18n.l(time, :format => :proc, :locale => :ru)
+            assert_equal '[Sat Mar 01 06:00:00 UTC 2008, {}]', I18n.l(time, :format => :proc, :locale => :ru)
+          end
+        end
+
+        define_method "test localize Time: given a format that resolves to a Proc it calls the Proc with the object and extra options" do
+          if can_store_procs?
+            setup_time_proc_translations
+            time = ::Time.parse('2008-03-01 6:00 UTC')
+            assert_equal '[Sat Mar 01 06:00:00 UTC 2008, {:foo=>"foo"}]', I18n.l(time, :format => :proc, :foo => 'foo', :locale => :ru)
           end
         end
 

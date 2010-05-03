@@ -63,7 +63,7 @@ module I18n
         if Symbol === format
           key = format
           type = object.respond_to?(:sec) ? 'time' : 'date'
-          format = I18n.t(:"#{type}.formats.#{key}", :locale => locale, :raise => true)
+          format = I18n.t(:"#{type}.formats.#{key}", options.merge(:raise => true, :object => object, :locale => locale))
         end
 
         # format = resolve(locale, object, format, options)
@@ -162,7 +162,8 @@ module I18n
           when Symbol
             I18n.translate(subject, (options || {}).merge(:locale => locale, :raise => true))
           when Proc
-            resolve(locale, object, subject.call(object, options), options = {})
+            date_or_time = options.delete(:object) || object
+            resolve(locale, object, subject.call(date_or_time, options), options = {})
           else
             subject
           end
