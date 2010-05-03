@@ -43,10 +43,9 @@ module I18n
         with_metadata(metadata) { super }
       end
 
-      def interpolate(locale, string, values = {})
-        with_metadata(:original => string) do
-          preserve_translation_metadata(string) { super }
-        end if string
+      def interpolate(locale, entry, values = {})
+        metadata = entry.translation_metadata.merge(:original => entry)
+        with_metadata(metadata) { super }
       end
 
       def pluralize(locale, entry, count)
@@ -61,11 +60,6 @@ module I18n
           result
         end
 
-        def preserve_translation_metadata(object, &block)
-          result = yield
-          result.translation_metadata = object.translation_metadata if result
-          result
-        end
     end
   end
 end

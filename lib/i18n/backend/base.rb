@@ -39,19 +39,19 @@ module I18n
 
         if options.empty?
           entry = resolve(locale, key, entry, options)
-          raise(I18n::MissingTranslationData.new(locale, key, options)) if entry.nil?
         else
           count, default = options.values_at(:count, :default)
           values = options.except(*RESERVED_KEYS)
-
-          entry = entry.nil? && default ? default(locale, key, default, options) : resolve(locale, key, entry, options)
-          raise(I18n::MissingTranslationData.new(locale, key, options)) if entry.nil?
-
-          entry = pluralize(locale, entry, count) if count
-          entry = interpolate(locale, entry, values)
+          entry = entry.nil? && default ?
+            default(locale, key, default, options) : resolve(locale, key, entry, options)
         end
 
-        String === entry ? entry.dup : entry
+        raise(I18n::MissingTranslationData.new(locale, key, options)) if entry.nil?
+        entry = entry.dup if entry.is_a?(String)
+
+        entry = pluralize(locale, entry, count) if count
+        entry = interpolate(locale, entry, values) if values
+        entry
       end
 
       # Acts the same as +strftime+, but uses a localized version of the
