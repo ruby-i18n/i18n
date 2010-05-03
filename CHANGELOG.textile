@@ -4,6 +4,14 @@ h2. master
 
 *
 
+h2. 0.4.0.beta1 (2010-05-03)
+
+* "Renamed Fast backend to Memoize backend":http://github.com/svenfuchs/i18n/commit/f7f7dc12c00a19d3876223771e14f8671ff313cd
+
+* "Deprecate {{}} as interpolation syntax":http://github.com/svenfuchs/i18n/commit/8894ee521ef5788c415b625a6daf522af4c416e0
+
+* "Allow nil translation to be stored again":http://github.com/svenfuchs/i18n/commit/f2074f1e82d10c2e9a801c8cc2f2a0c7c30703ba
+
 h2. 0.4.0.beta (2010-04-30)
 
 * "Added a KeyValue backend":http://github.com/svenfuchs/i18n/commit/28ca5f53ade7f545f8c0804e93564d4686b416a4
