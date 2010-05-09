@@ -3,7 +3,7 @@ module I18n
     # This module contains several helpers to assist flattening translations.
     # You may want to flatten translations for:
     #
-    #   1) speed up lookups, as in the Fast backend;
+    #   1) speed up lookups, as in the Memoize backend;
     #   2) In case you want to store translations in a data store, as in ActiveRecord backend;
     #
     # You can check both backends above for some examples.

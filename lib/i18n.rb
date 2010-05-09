@@ -164,13 +164,13 @@ module I18n
     # Transliterates UTF-8 characters to ASCII. By default this method will
     # transliterate only Latin strings to an ASCII approximation:
     #
-    #    I18N.transliterate("Ærøskøbing")
+    #    I18n.transliterate("Ærøskøbing")
     #    # => "AEroskobing"
     #
-    #    I18N.transliterate("日本語")
+    #    I18n.transliterate("日本語")
     #    # => "???"
     #
-    # It's also possible to add support for per-locale transliterations. I18N
+    # It's also possible to add support for per-locale transliterations. I18n
     # expects transliteration rules to be stored at
     # <tt>i18n.transliterate.rule</tt>.
     #
@@ -206,12 +206,12 @@ module I18n
     #
     # Transliterating strings:
     #
-    #     I18N.locale = :en
-    #     I18N.transliterate("Jürgen") # => "Jurgen"
-    #     I18N.locale = :de
-    #     I18N.transliterate("Jürgen") # => "Juergen"
-    #     I18N.transliterate("Jürgen", :locale => :en) # => "Jurgen"
-    #     I18N.transliterate("Jürgen", :locale => :de) # => "Juergen"
+    #     I18n.locale = :en
+    #     I18n.transliterate("Jürgen") # => "Jurgen"
+    #     I18n.locale = :de
+    #     I18n.transliterate("Jürgen") # => "Juergen"
+    #     I18n.transliterate("Jürgen", :locale => :en) # => "Jurgen"
+    #     I18n.transliterate("Jürgen", :locale => :de) # => "Juergen"
     def transliterate(*args)
       options      = args.pop if args.last.is_a?(Hash)
       key          = args.shift
