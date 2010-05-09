@@ -204,4 +204,32 @@ class I18nTest < Test::Unit::TestCase
     I18n.exception_handler = :default_exception_handler
   end
 
+  test "I18n.with_locale" do
+    store_translations(:en, :foo => 'Foo in :en')
+    store_translations(:de, :foo => 'Foo in :de')
+    store_translations(:pl, :foo => 'Foo in :pl')
+
+    I18n.with_locale do
+      assert_equal I18n.default_locale, I18n.locale
+      assert_equal 'Foo in :en', I18n.t(:foo)
+    end
+
+    I18n.with_locale(:de) do
+      assert_equal :de, I18n.locale
+      assert_equal 'Foo in :de', I18n.t(:foo)
+    end
+
+    I18n.with_locale(:pl) do
+      assert_equal :pl, I18n.locale
+      assert_equal 'Foo in :pl', I18n.t(:foo)
+    end
+    
+    I18n.with_locale(:en) do
+      assert_equal :en, I18n.locale
+      assert_equal 'Foo in :en', I18n.t(:foo)
+    end
+
+    assert_equal I18n.default_locale, I18n.locale
+  end
+
 end

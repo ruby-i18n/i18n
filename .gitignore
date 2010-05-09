@@ -1,5 +1,6 @@
 .DS_Store
 test/rails/fixtures
+nbproject/
 vendor/cldr
 *.swp
 pkg

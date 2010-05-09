@@ -232,6 +232,20 @@ module I18n
     end
     alias :l :localize
 
+    # Executes block with given I18n.locale set.
+    def with_locale(tmp_locale = nil)
+      if tmp_locale
+        current_locale = self.locale
+        self.locale    = tmp_locale
+      end
+      block_result = yield
+      if tmp_locale
+        self.locale = current_locale
+      end
+      return block_result
+    end
+
+
     # Merges the given locale, key and scope into a single array of keys.
     # Splits keys that contain dots into multiple keys. Makes sure all
     # keys are Symbols.
