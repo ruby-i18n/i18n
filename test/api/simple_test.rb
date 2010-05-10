@@ -2,7 +2,6 @@
 $:.unshift(File.expand_path(File.dirname(__FILE__) + '/../')); $:.uniq!
 require 'test_helper'
 require 'api'
-require 'api'
 
 class I18nSimpleBackendApiTest < Test::Unit::TestCase
   include Tests::Api::Basics

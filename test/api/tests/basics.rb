@@ -15,7 +15,7 @@ module Tests
         store_translations(:to_be_deleted => 'bar')
         assert_equal 'bar', I18n.t('to_be_deleted', :default => 'baz')
 
-        I18n.cache_store.clear if I18n.cache_store
+        I18n.cache_store.clear if I18n.respond_to?(:cache_store) && I18n.cache_store
         store_translations(:to_be_deleted => nil)
         assert_equal 'baz', I18n.t('to_be_deleted', :default => 'baz')
       end
