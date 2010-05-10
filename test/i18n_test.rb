@@ -232,4 +232,13 @@ class I18nTest < Test::Unit::TestCase
     assert_equal I18n.default_locale, I18n.locale
   end
 
+  test "whether I18n.with_locale reset the locale in case of errors" do
+    assert_raise(I18n::ArgumentError) do
+      I18n.with_locale(:pl) do
+        raise I18n::ArgumentError
+      end
+    end
+    assert_equal I18n.default_locale, I18n.locale
+  end
+
 end

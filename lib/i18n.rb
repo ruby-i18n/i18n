@@ -238,11 +238,9 @@ module I18n
         current_locale = self.locale
         self.locale    = tmp_locale
       end
-      block_result = yield
-      if tmp_locale
-        self.locale = current_locale
-      end
-      return block_result
+      yield
+    ensure
+      self.locale = current_locale if tmp_locale
     end
 
 
