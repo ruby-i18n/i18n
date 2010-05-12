@@ -9,8 +9,24 @@ module Tests
         I18n.backend.translate('en', key, options)
       end
 
-      define_method "test interpolation: given no values it does not alter the string" do
-        assert_equal 'Hi %{name}!', interpolate(:default => 'Hi %{name}!')
+      define_method "test interpolation: it raise I18n::MissingInterpolationArgument when no values given and default passed" do
+        assert_raise(I18n::MissingInterpolationArgument) do
+          interpolate(:default => 'Hi %{name}!')
+        end
+      end
+
+      define_method "test interpolation: it raise I18n::MissingInterpolationArgument when no values given" do
+        I18n.backend.store_translations(:en, :interpolate => 'Hi %{name}!')
+        assert_raise(I18n::MissingInterpolationArgument) do
+          interpolate(:interpolate)
+        end
+      end
+
+      define_method "test interpolation: it raise I18n::MissingInterpolationArgument when no values given" do
+        I18n.backend.store_translations(:en, :interpolate => 'Hi %{name}!')
+        assert_raise(I18n::MissingInterpolationArgument) do
+          interpolate(:default => 'Hi %{name}!')
+        end
       end
 
       define_method "test interpolation: given values it interpolates them into the string" do

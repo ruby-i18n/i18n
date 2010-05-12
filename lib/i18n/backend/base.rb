@@ -10,7 +10,9 @@ module I18n
 
       RESERVED_KEYS = [:scope, :default, :separator, :resolve]
       RESERVED_KEYS_PATTERN = /%?%\{(#{RESERVED_KEYS.join("|")})\}/
-      INTERPOLATION_SYNTAX_PATTERN = /(\\)?\{\{([^\}]+)\}\}/
+
+      INTERPOLATION_SYNTAX_PATTERN = /(%)?(%\{([^\}]+)\})/
+      DEPRACATED_INTERPOLATION_SYNTAX_PATTERN = /(\\)?\{\{([^\}]+)\}\}/
 
       # Accepts a list of paths to translation files. Loads translations from
       # plain Ruby (*.rb) or YAML files (*.yml). See #load_rb and #load_yml
@@ -39,6 +41,7 @@ module I18n
 
         if options.empty?
           entry = resolve(locale, key, entry, options)
+          values = {}
         else
           count, default = options.values_at(:count, :default)
           values = options.except(*RESERVED_KEYS)
@@ -50,7 +53,7 @@ module I18n
         entry = entry.dup if entry.is_a?(String)
 
         entry = pluralize(locale, entry, count) if count
-        entry = interpolate(locale, entry, values) if values
+        entry = interpolate(locale, entry, values)
         entry
       end
 
@@ -193,10 +196,10 @@ module I18n
         # the <tt>{{...}}</tt> key in a string (once for the string and once for the
         # interpolation).
         def interpolate(locale, string, values = {})
-          return string unless string.is_a?(::String) && !values.empty?
-
+          return string unless string.is_a?(::String)
+          
           preserve_encoding(string) do
-            string = string.gsub(INTERPOLATION_SYNTAX_PATTERN) do
+            string = string.gsub(DEPRACATED_INTERPOLATION_SYNTAX_PATTERN) do
               escaped, key = $1, $2.to_sym
               if escaped
                 "{{#{key}}}"
@@ -205,14 +208,18 @@ module I18n
                 "%{#{key}}"
               end
             end
+            if values.empty?
+              raise(KeyError) if string =~ INTERPOLATION_SYNTAX_PATTERN
+              string
+            else
+              values.each do |key, value|
+                value = value.call(values) if interpolate_lambda?(value, string, key)
+                value = value.to_s unless value.is_a?(::String)
+                values[key] = value
+              end
 
-            values.each do |key, value|
-              value = value.call(values) if interpolate_lambda?(value, string, key)
-              value = value.to_s unless value.is_a?(::String)
-              values[key] = value
+              string % values
             end
-
-            string % values
           end
         rescue KeyError => e
           if string =~ RESERVED_KEYS_PATTERN
