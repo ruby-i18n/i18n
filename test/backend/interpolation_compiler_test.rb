@@ -102,7 +102,5 @@ class I18nBackendInterpolationCompilerTest < Test::Unit::TestCase
     end
     super
   end
-  
-  # I kinda don't think this really is a correct behavior
-#  undef :'test interpolation: given no values it does not alter the string'
+
 end
