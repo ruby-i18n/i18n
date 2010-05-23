@@ -1,14 +1,14 @@
 # encoding: utf-8
 $:.unshift(File.expand_path(File.dirname(__FILE__) + '/../')); $:.uniq!
+require 'test_helper'
+require 'api'
+
 begin
   require 'rubygems'
   require 'active_support'
 rescue LoadError
   puts "not testing with Cache enabled because active_support can not be found"
 end
-
-require 'test_helper'
-require 'api'
 
 class I18nAllFeaturesApiTest < Test::Unit::TestCase
   class Backend
