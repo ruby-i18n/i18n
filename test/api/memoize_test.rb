@@ -16,8 +16,7 @@ class I18nMemoizeBackendWithSimpleApiTest < Test::Unit::TestCase
   include Tests::Api::Localization::Time
   include Tests::Api::Localization::Procs
   
-  class MemoizeBackend
-    include I18n::Backend::Base
+  class MemoizeBackend < I18n::Backend::Simple
     include I18n::Backend::Memoize
   end
 

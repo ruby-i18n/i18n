@@ -9,8 +9,7 @@ rescue LoadError
 else
 
 class I18nBackendCacheTest < Test::Unit::TestCase
-  class Backend
-    include I18n::Backend::Base
+  class Backend < I18n::Backend::Simple
     include I18n::Backend::Cache
   end
 

@@ -13,8 +13,7 @@ if defined?(Cldr)
   require 'date'
 
   class I18nBackendCldrTest < Test::Unit::TestCase
-    class Backend
-      include I18n::Backend::Base
+    class Backend < I18n::Backend::Simple
       include I18n::Backend::Cldr
     end
 

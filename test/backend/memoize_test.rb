@@ -4,8 +4,7 @@ require 'test_helper'
 require 'backend/simple_test'
 
 class I18nBackendMemoizeTest < I18nBackendSimpleTest
-  class MemoizeBackend
-    include I18n::Backend::Base
+  class MemoizeBackend < I18n::Backend::Simple
     include I18n::Backend::Memoize
   end
   

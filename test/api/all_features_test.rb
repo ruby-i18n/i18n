@@ -11,8 +11,7 @@ rescue LoadError
 end
 
 class I18nAllFeaturesApiTest < Test::Unit::TestCase
-  class Backend
-    include I18n::Backend::Base
+  class Backend < I18n::Backend::Simple
     include I18n::Backend::Cache
     include I18n::Backend::Metadata
     include I18n::Backend::Cascade

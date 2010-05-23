@@ -4,12 +4,8 @@ require 'test_helper'
 
 class I18nBackendTransliterator < Test::Unit::TestCase
 
-  class Backend
-    include I18n::Backend::Base
-  end
-
   def setup
-    I18n.backend = Backend.new
+    I18n.backend = I18n::Backend::Simple.new
     @proc = lambda { |n| n.upcase }
     @hash = { :"ü" => "ue", :"ö" => "oe" }
     @transliterator = I18n::Backend::Transliterator.get

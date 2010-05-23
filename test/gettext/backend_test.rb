@@ -5,8 +5,7 @@ require 'test_helper'
 class I18nGettextBackendTest < Test::Unit::TestCase
   include I18n::Gettext::Helpers
 
-  class Backend
-    include I18n::Backend::Base
+  class Backend < I18n::Backend::Simple
     include I18n::Backend::Gettext
   end
 

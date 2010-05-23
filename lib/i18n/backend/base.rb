@@ -16,26 +16,21 @@ module I18n
       # plain Ruby (*.rb) or YAML files (*.yml). See #load_rb and #load_yml
       # for details.
       def load_translations(*filenames)
+        filenames = I18n.load_path.flatten if filenames.empty?
         filenames.each { |filename| load_file(filename) }
       end
 
-      # Stores translations for the given locale in memory.
-      # This uses a deep merge for the translations hash, so existing
-      # translations will be overwritten by new ones only at the deepest
-      # level of the hash.
+      # This method receives a locale, a data hash and options for storing translations.
+      # Should be implemented
       def store_translations(locale, data, options = {})
-        locale = locale.to_sym
-        translations[locale] ||= {}
-
-        data = data.deep_symbolize_keys
-        translations[locale].deep_merge!(data)
+        raise NotImplementedError
       end
 
       def translate(locale, key, options = {})
         raise InvalidLocale.new(locale) unless locale
         return key.map { |k| translate(locale, k, options) } if key.is_a?(Array)
 
-        entry = lookup!(locale, key, options)
+        entry = key && lookup(locale, key, options[:scope], options)
 
         if options.empty?
           entry = resolve(locale, key, entry, options)
@@ -80,60 +75,21 @@ module I18n
         object.strftime(format)
       end
 
-      def initialized?
-        @initialized ||= false
-      end
-
       # Returns an array of locales for which translations are available
       # ignoring the reserved translation meta data key :i18n.
       def available_locales
-        init_translations unless initialized?
-        translations.inject([]) do |locales, (locale, data)|
-          locales << locale unless (data.keys - [:i18n]).empty?
-          locales
-        end
+        raise NotImplementedError
       end
 
       def reload!
-        @initialized = false
-        @translations = nil
         @skip_syntax_deprecation = false
       end
 
       protected
 
-        def init_translations
-          load_translations(*I18n.load_path.flatten)
-          @initialized = true
-        end
-
-        def translations
-          @translations ||= {}
-        end
-
-        # Check if the key is valid and then initialize the translation and
-        # trigger the default lookup behavior.
-        def lookup!(locale, key, options)
-          return unless key
-          init_translations unless initialized?
-          lookup(locale, key, options[:scope], options)
-        end
-
-        # Looks up a translation from the translations hash. Returns nil if
-        # eiher key is nil, or locale, scope or key do not exist as a key in the
-        # nested translations hash. Splits keys or scopes containing dots
-        # into multiple keys, i.e. <tt>currency.format</tt> is regarded the same as
-        # <tt>%w(currency format)</tt>.
+        # The method which actually looks up for the translation in the store.
         def lookup(locale, key, scope = [], options = {})
-          keys = I18n.normalize_keys(locale, key, scope, options[:separator])
-
-          keys.inject(translations) do |result, key|
-            key = key.to_sym
-            return nil unless result.is_a?(Hash) && result.has_key?(key)
-            result = result[key]
-            result = resolve(locale, key, result, options.merge(:scope => nil)) if result.is_a?(Symbol)
-            result
-          end
+          raise NotImplementedError
         end
 
         # Evaluates defaults.

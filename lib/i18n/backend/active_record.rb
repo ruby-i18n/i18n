@@ -11,12 +11,7 @@ module I18n
       module Implementation
         include Base, Flatten
 
-        def reload!
-        end
-
         def available_locales
-          init_translations unless initialized?
-
           begin
             Translation.available_locales
           rescue ::ActiveRecord::StatementInvalid

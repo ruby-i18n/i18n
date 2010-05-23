@@ -9,18 +9,22 @@ class I18nBackendSimpleTest < Test::Unit::TestCase
   end
 
   # useful because this way we can use the backend with no key for interpolation/pluralization
-  test "simple backend lookup: given nil as a key it returns nil" do
-    assert_nil I18n.backend.send(:lookup, :en, nil)
+  test "simple backend translate: given nil as a key it still interpolations the default value" do
+    assert_equal "Hi David", I18n.t(nil, :default => "Hi %{name}", :name => "David")
   end
   
   # loading translations
-      
   test "simple load_translations: given an unknown file type it raises I18n::UnknownFileType" do
     assert_raise(I18n::UnknownFileType) { I18n.backend.load_translations("#{locales_dir}/en.xml") }
   end
   
   test "simple load_translations: given a Ruby file name it does not raise anything" do
     assert_nothing_raised { I18n.backend.load_translations("#{locales_dir}/en.rb") }
+  end
+
+  test "simple load_translations: given no argument, it uses I18n.load_path" do
+    I18n.backend.load_translations
+    assert_equal({ :en => { :foo => { :bar => 'baz' } } }, I18n.backend.send(:translations))
   end
   
   test "simple load_rb: loads data from a Ruby file" do
