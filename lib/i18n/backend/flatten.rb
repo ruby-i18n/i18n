@@ -51,12 +51,12 @@ module I18n
       #   >> { "a" => { "b" => { "c" => "d", "e" => "f" }, "g" => "h" }, "i" => "j"}.wind
       #   => { "a.b.c" => "d", "a.b.e" => "f", "a.g" => "h", "i" => "j" }
       #
-      def flatten_keys(hash, prev_key = nil, &block)
+      def flatten_keys(hash, escape, prev_key=nil, &block)
         hash.each_pair do |key, value|
-          key = escape_default_separator(key)
+          key = escape_default_separator(key) if escape
           curr_key = [prev_key, key].compact.join(FLATTEN_SEPARATOR).to_sym
           yield curr_key, value
-          flatten_keys(value, curr_key, &block) if value.is_a?(Hash)
+          flatten_keys(value, escape, curr_key, &block) if value.is_a?(Hash)
         end
       end
 
@@ -66,9 +66,9 @@ module I18n
       #
       # Nested hashes are included in the flattened hash just if subtree
       # is true and Symbols are automatically stored as links.
-      def flatten_translations(locale, data, subtree=false)
+      def flatten_translations(locale, data, escape, subtree)
         hash = {}
-        flatten_keys(data) do |key, value|
+        flatten_keys(data, escape) do |key, value|
           if value.is_a?(Hash)
             hash[key] = value if subtree
           else

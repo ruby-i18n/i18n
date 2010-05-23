@@ -60,7 +60,8 @@ module I18n
         end
 
         def store_translations(locale, data, options = {})
-          flatten_translations(locale, data, @subtrees).each do |key, value|
+          escape = options.fetch(:escape, true)
+          flatten_translations(locale, data, escape, @subtrees).each do |key, value|
             key = "#{locale}.#{key}"
 
             case value

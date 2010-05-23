@@ -12,8 +12,8 @@ class I18nBackendKeyValueTest < Test::Unit::TestCase
     store_translations(:en, :foo => { :bar => 'bar', :baz => 'baz' })
   end
 
-  def assert_flattens(expected, nested)
-    assert_equal expected, I18n.backend.flatten_translations("en", nested, true)
+  def assert_flattens(expected, nested, escape=true, subtree=true)
+    assert_equal expected, I18n.backend.flatten_translations("en", nested, escape, subtree)
   end
 
   test "hash flattening works" do
@@ -24,6 +24,8 @@ class I18nBackendKeyValueTest < Test::Unit::TestCase
     )
     assert_flattens({:a=>{:b =>['a', 'b']}, :"a.b"=>['a', 'b']}, {:a=>{:b =>['a', 'b']}})
     assert_flattens({:"a\001b" => "c"}, {:"a.b" => "c"})
+    assert_flattens({:"a.b"=>['a', 'b']}, {:a=>{:b =>['a', 'b']}}, true, false)
+    assert_flattens({:"a.b" => "c"}, {:"a.b" => "c"}, false)
   end
 
   test "store_translations handle subtrees by default" do
