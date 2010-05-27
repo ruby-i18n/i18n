@@ -2,7 +2,9 @@ h1. Changelog
 
 h2. master
 
-*
+h2. 0.4.0 (2010-05-27)
+
+* "The localization proc also receives the object as option":http://github.com/svenfuchs/i18n/commit/4a8cd9fa660daaa3078e24c5851353ca377d9213
 
 h2. 0.4.0.beta1 (2010-05-03)
 
