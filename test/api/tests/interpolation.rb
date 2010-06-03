@@ -9,22 +9,22 @@ module Tests
         I18n.backend.translate('en', key, options)
       end
 
-      # These tests currently fails for performance reasons (and have been failing since I18n 0.2.x).
-      # If we always check if a key is missing when no values are given, there is a HUGE performance
-      # hit on simple lookups including in cache and memoize backends.
+      # If no interpolation parameter is not given, I18n should not alter the string.
+      # This behavior is due to three reasons:
       #
-      # define_method "test interpolation: it raise I18n::MissingInterpolationArgument when no values given and default passed" do
-      #   assert_raise(I18n::MissingInterpolationArgument) do
-      #     interpolate(:default => 'Hi %{name}!')
-      #   end
-      # end
+      #   * Checking interpolation keys in all strings hits performance, badly;
       #
-      # define_method "test interpolation: it raise I18n::MissingInterpolationArgument when no values given" do
-      #   I18n.backend.store_translations(:en, :interpolate => 'Hi %{name}!')
-      #   assert_raise(I18n::MissingInterpolationArgument) do
-      #     interpolate(:interpolate)
-      #   end
-      # end
+      #   * This allows us to retrieve untouched values through I18n. For example
+      #     I could have a middleware that returns I18n lookup results in JSON
+      #     to be processed through Javascript. Leaving the keys untouched allows
+      #     the interpolation to happen at the javascript level;
+      #
+      #   * Security concerns: if I allow users to translate a web site, they can
+      #     insert %{} in messages causing the I18n lookup to fail in every request.
+      #
+      define_method "test interpolation: given no values it does not alter the string" do
+        assert_equal 'Hi %{name}!', interpolate(:default => 'Hi %{name}!')
+      end
 
       define_method "test interpolation: given values it interpolates them into the string" do
         assert_equal 'Hi David!', interpolate(:default => 'Hi %{name}!', :name => 'David')
