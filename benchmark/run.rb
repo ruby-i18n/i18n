@@ -12,8 +12,7 @@ YAML_HASH = YAML.load_file(File.expand_path("example.yml", File.dirname(__FILE__
 module Backends
   Simple = I18n::Backend::Simple.new
 
-  Interpolation = Class.new do
-    include I18n::Backend::Base
+  Interpolation = Class.new(I18n::Backend::Simple) do
     include I18n::Backend::InterpolationCompiler
   end.new
 
