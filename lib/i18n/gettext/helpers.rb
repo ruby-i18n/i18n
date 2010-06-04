@@ -6,7 +6,7 @@ module I18n
     # Implements classical Gettext style accessors. To use this include the
     # module to the global namespace or wherever you want to use it.
     #
-    #   include I18n::Helpers::Gettext
+    #   include I18n::Gettext::Helpers
     module Helpers
       def gettext(msgid, options = {})
         I18n.t(msgid, { :default => msgid, :separator => '|' }.merge(options))

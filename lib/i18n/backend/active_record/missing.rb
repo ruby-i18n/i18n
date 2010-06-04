@@ -8,7 +8,7 @@
 #  Example usage:
 #
 #     I18n::Backend::Chain.send(:include, I18n::Backend::ActiveRecord::Missing)
-#     I18n.backend = I18nChainBackend.new(I18n::Backend::ActiveRecord.new, I18n::Backend::Simple.new)
+#     I18n.backend = I18n::Backend::Chain.new(I18n::Backend::ActiveRecord.new, I18n::Backend::Simple.new)
 #
 #  Stub records for pluralizations will also be created for each key defined
 #  in i18n.plural.keys.
