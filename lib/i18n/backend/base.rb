@@ -158,7 +158,7 @@ module I18n
               if escaped
                 "{{#{key}}}"
               else
-                warn_syntax_deprecation!
+                warn_syntax_deprecation!(locale, string)
                 "%{#{key}}"
               end
             end
@@ -219,9 +219,9 @@ module I18n
           YAML::load(IO.read(filename))
         end
 
-        def warn_syntax_deprecation! #:nodoc:
+        def warn_syntax_deprecation!(locale, string) #:nodoc:
           return if @skip_syntax_deprecation
-          warn "The {{key}} interpolation syntax in I18n messages is deprecated. Please use %{key} instead.\n#{caller.join("\n")}"
+          warn "The {{key}} interpolation syntax in I18n messages is deprecated. Please use %{key} instead.\n#{locale} - #{string}\n#{caller.join("\n")}"
           @skip_syntax_deprecation = true
         end
     end
