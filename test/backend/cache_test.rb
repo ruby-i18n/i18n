@@ -55,12 +55,12 @@ class I18nBackendCacheTest < Test::Unit::TestCase
 
   test "adds a custom cache key namespace" do
     with_cache_namespace('bar') do
-      assert_equal 0, I18n.backend.send(:cache_key, :en, :foo, {}).index('i18n|bar|')
+      assert_equal 0, I18n.backend.send(:cache_key, :en, :foo, {}).index('i18n/bar/')
     end
   end
 
   test "adds locale and hash of key and hash of options" do
-    assert_equal "i18n||en|#{:foo.hash}|#{{:bar=>1}.hash}", I18n.backend.send(:cache_key, :en, :foo, {:bar=>1})
+    assert_equal "i18n//en/#{:foo.hash}/#{{:bar=>1}.hash}", I18n.backend.send(:cache_key, :en, :foo, {:bar=>1})
   end
 
   protected
