@@ -54,13 +54,15 @@ module I18n
       protected
 
         def fetch(cache_key, &block)
-          result = I18n.cache_store.fetch(cache_key, &block)
+          result = begin
+            I18n.cache_store.fetch(cache_key, &block)
+          rescue MissingTranslationData => exception
+            I18n.cache_store.write(cache_key, exception)
+            exception
+          end
           raise result if result.is_a?(Exception)
           result = result.dup if result.frozen? rescue result
           result
-        rescue MissingTranslationData => exception
-          I18n.cache_store.write(cache_key, exception)
-          raise exception
         end
 
         def cache_key(locale, key, options)

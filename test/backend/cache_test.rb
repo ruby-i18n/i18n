@@ -43,6 +43,7 @@ class I18nBackendCacheTest < Test::Unit::TestCase
       I18n.backend.expects(:lookup).returns(nil)
       assert_raise(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
 
+      I18n.cache_store.expects(:write).never
       I18n.backend.expects(:lookup).never
       assert_raise(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
     end
