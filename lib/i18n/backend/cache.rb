@@ -47,30 +47,30 @@ module I18n
   module Backend
     # TODO Should the cache be cleared if new translations are stored?
     module Cache
-      def translate(*args)
-        I18n.perform_caching? ? fetch(*args) { super } : super
+      def translate(locale, key, options = {})
+        I18n.perform_caching? ? fetch(cache_key(locale, key, options)) { super } : super
       end
 
       protected
 
-        def fetch(*args, &block)
-          result = I18n.cache_store.fetch(cache_key(*args), &block)
+        def fetch(cache_key, &block)
+          result = I18n.cache_store.fetch(cache_key, &block)
           raise result if result.is_a?(Exception)
           result = result.dup if result.frozen? rescue result
           result
         rescue MissingTranslationData => exception
-          I18n.cache_store.write(cache_key(*args), exception)
+          I18n.cache_store.write(cache_key, exception)
           raise exception
         end
 
-        def cache_key(*args)
+        def cache_key(locale, key, options)
           # This assumes that only simple, native Ruby values are passed to I18n.translate.
           # Also, in Ruby < 1.8.7 {}.hash != {}.hash
           # (see http://paulbarry.com/articles/2009/09/14/why-rails-3-will-require-ruby-1-8-7)
           # If args.inspect does not work for you for some reason, patches are very welcome :)
-          hash = RUBY_VERSION >= "1.8.7" ? args.hash : args.inspect
-          keys = ['i18n', I18n.cache_namespace, hash]
-          keys.compact.join('-')
+          hash = RUBY_VERSION >= "1.8.7" ? options.hash : options.inspect
+          keys = ['i18n', I18n.cache_namespace, locale, key.hash, hash]
+          keys.join('|')
         end
     end
   end
