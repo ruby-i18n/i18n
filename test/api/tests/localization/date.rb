@@ -9,7 +9,7 @@ module Tests
           setup_date_translations
           @date = ::Date.new(2008, 3, 1)
         end
-        
+
         define_method "test localize Date: given the short format it uses it" do
           # TODO should be Mrz, shouldn't it?
           assert_equal '01. Mar', I18n.l(@date, :format => :short, :locale => :de)
@@ -55,14 +55,14 @@ module Tests
         define_method "test localize Date: given a format is missing it raises I18n::MissingTranslationData" do
           assert_raise(I18n::MissingTranslationData) { I18n.l(@date, :format => :missing) }
         end
-        
+
         define_method "test localize Date: it does not alter the format string" do
           assert_equal '01. Februar 2009', I18n.l(::Date.parse('2009-02-01'), :format => :long, :locale => :de)
           assert_equal '01. Oktober 2009', I18n.l(::Date.parse('2009-10-01'), :format => :long, :locale => :de)
         end
 
         protected
-        
+
           def setup_date_translations
             store_translations :de, {
               :date => {

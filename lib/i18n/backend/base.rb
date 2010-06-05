@@ -11,6 +11,7 @@ module I18n
       RESERVED_KEYS = [:scope, :default, :separator, :resolve]
       RESERVED_KEYS_PATTERN = /%\{(#{RESERVED_KEYS.join("|")})\}/
       DEPRECATED_INTERPOLATION_SYNTAX_PATTERN = /(\\)?\{\{([^\}]+)\}\}/
+      INTERPOLATION_SYNTAX_PATTERN = /%\{([^\}]+)\}/
 
       # Accepts a list of paths to translation files. Loads translations from
       # plain Ruby (*.rb) or YAML files (*.yml). See #load_rb and #load_yml
@@ -150,7 +151,8 @@ module I18n
         # interpolation).
         def interpolate(locale, string, values = {})
           return string unless string.is_a?(::String) && !values.empty?
-          
+          original_values = values.dup
+
           preserve_encoding(string) do
             string = string.gsub(DEPRECATED_INTERPOLATION_SYNTAX_PATTERN) do
               escaped, key = $1, $2.to_sym
@@ -162,10 +164,17 @@ module I18n
               end
             end
 
+            keys = string.scan(INTERPOLATION_SYNTAX_PATTERN).flatten
+            return string if keys.empty?
+
             values.each do |key, value|
-              value = value.call(values) if interpolate_lambda?(value, string, key)
-              value = value.to_s unless value.is_a?(::String)
-              values[key] = value
+              if keys.include?(key.to_s)
+                value = value.call(values) if interpolate_lambda?(value, string, key)
+                value = value.to_s unless value.is_a?(::String)
+                values[key] = value
+              else
+                values.delete(key)
+              end
             end
 
             string % values
@@ -174,7 +183,7 @@ module I18n
           if string =~ RESERVED_KEYS_PATTERN
             raise ReservedInterpolationKey.new($1.to_sym, string)
           else
-            raise MissingInterpolationArgument.new(values, string)
+            raise MissingInterpolationArgument.new(original_values, string)
           end
         end
 
