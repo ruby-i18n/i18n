@@ -82,16 +82,20 @@ module Tests
 
         protected
 
+          def filter_args(*args)
+            args.map {|arg| arg.delete(:fallback) if arg.is_a?(Hash) ; arg }.inspect
+          end
+
           def setup_time_proc_translations
             store_translations :ru, {
               :time => {
                 :formats => {
-                  :proc => lambda { |*args| args.inspect }
+                  :proc => lambda { |*args| filter_args(*args) }
                 }
               },
               :date => {
                 :formats => {
-                  :proc => lambda { |*args| args.inspect }
+                  :proc => lambda { |*args| filter_args(*args) }
                 },
                 :'day_names' => lambda { |key, options|
                   (options[:format] =~ /^%A/) ?

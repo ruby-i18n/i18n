@@ -8,7 +8,7 @@ module I18n
     module Base
       include I18n::Backend::Transliterator
 
-      RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object]
+      RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback]
       RESERVED_KEYS_PATTERN = /%\{(#{RESERVED_KEYS.join("|")})\}/
       DEPRECATED_INTERPOLATION_SYNTAX_PATTERN = /(\\)?\{\{([^\}]+)\}\}/
 

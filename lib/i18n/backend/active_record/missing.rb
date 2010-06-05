@@ -34,14 +34,14 @@ module I18n
     class ActiveRecord
       module Missing
         def store_default_translations(locale, key, options = {})
-          count, scope, default, separator = options.values_at(:count, *Base::RESERVED_KEYS)
+          count, scope, default, separator = options.values_at(:count, :scope, :default, :separator)
           separator ||= I18n.default_separator
 
           keys = I18n.normalize_keys(locale, key, scope, separator)[1..-1]
           key = keys.join(separator || I18n.default_separator)
 
           unless ActiveRecord::Translation.locale(locale).lookup(key).exists?
-            interpolations = options.reject { |name, value| Base::RESERVED_KEYS.include?(name) }.keys
+            interpolations = options.reject { |name, _| Base::RESERVED_KEYS.include?(name) }.keys
             keys = count ? I18n.t('i18n.plural.keys', :locale => locale).map { |k| [key, k].join(separator) } : [key]
             keys.each { |key| store_default_translation(locale, key, interpolations) }
           end
