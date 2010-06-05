@@ -49,9 +49,7 @@ module I18n
                 normalized = { part => normalized.empty? ? value : normalized }
               end
 
-              # deep_merge by Stefan Rusterholz, see http://www.ruby-forum.com/topic/142809
-              merger = proc { |key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
-              result.merge!(normalized, &merger)
+              result.deep_merge!(normalized)
             end
             result
           end
