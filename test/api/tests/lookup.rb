@@ -5,7 +5,7 @@ module Tests
     module Lookup
       def setup
         super
-        store_translations(:foo => { :bar => 'bar', :baz => 'baz' }, :bla => false,
+        store_translations(:foo => { :bar => 'bar', :baz => 'baz' }, :falsy => false, :truthy => true,
           :string => "a", :array => %w(a b c), :hash => { "a" => "b" })
       end
 
@@ -21,8 +21,12 @@ module Tests
         assert_equal(%w(a b c), I18n.t(:array))
       end
 
+      define_method "test lookup: it returns a native true" do
+        assert I18n.t(:truthy) === true
+      end
+
       define_method "test lookup: it returns a native false" do
-        assert_equal false, I18n.t(:bla)
+        assert I18n.t(:falsy) === false
       end
 
       define_method "test lookup: given a missing key, no default and no raise option it returns an error message" do

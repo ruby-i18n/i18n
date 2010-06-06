@@ -46,6 +46,9 @@ module I18n
     #   # => 'FOO'
     class ActiveRecord
       class Translation < ::ActiveRecord::Base
+        TRUTHY_CHAR = "\001"
+        FALSY_CHAR = "\002"
+
         set_table_name 'translations'
         attr_protected :is_proc, :interpolations
 
@@ -80,12 +83,25 @@ module I18n
         end
 
         def value
+          value = read_attribute(:value)
           if is_proc
-            Kernel.eval(read_attribute(:value))
+            Kernel.eval(value)
+          elsif value == FALSY_CHAR
+            false
+          elsif value == TRUTHY_CHAR
+            true
           else
-            value = read_attribute(:value)
-            value == 'f' ? false : value
+            value
           end
+        end
+
+        def value=(value)
+          if value === false
+            value = FALSY_CHAR
+          elsif value === true
+            value = TRUTHY_CHAR
+          end
+          self.write_attribute(:value, value)
         end
       end
     end
