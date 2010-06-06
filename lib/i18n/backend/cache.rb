@@ -6,11 +6,11 @@
 # To enable caching you can simply include the Cache module to the Simple
 # backend - or whatever other backend you are using:
 #
-#  I18n::Backend::Simple.send(:include, I18n::Backend::Cache)
+#   I18n::Backend::Simple.send(:include, I18n::Backend::Cache)
 #
 # You will also need to set a cache store implementation that you want to use:
 #
-#  I18n.cache_store = ActiveSupport::Cache.lookup_store(:memory_store)
+#   I18n.cache_store = ActiveSupport::Cache.lookup_store(:memory_store)
 #
 # You can use any cache implementation you want that provides the same API as
 # ActiveSupport::Cache (only the methods #fetch and #write are being used).
@@ -18,6 +18,23 @@
 # The cache_key implementation assumes that you only pass values to
 # I18n.translate that return a valid key from #hash (see
 # http://www.ruby-doc.org/core/classes/Object.html#M000337).
+#
+# If you use a lambda as a default value in your translation like this:
+#
+#   I18n.t(:"date.order", :default => lambda {[:month, :day, :year]})
+#
+# Then you will always have a cache miss, because each time this method
+# is called the lambda will have a different hash value. If you know
+# the result of the lambda is a constant as in the example above, then
+# to cache this you can make the lambda a constant, like this:
+#
+#   DEFAULT_DATE_ORDER = lambda {[:month, :day, :year]}
+#   ...
+#   I18n.t(:"date.order", :default => DEFAULT_DATE_ORDER)
+#
+# If the lambda may result in different values for each call then consider
+# also using the Memoize backend.
+#
 module I18n
   class << self
     @@cache_store = nil
