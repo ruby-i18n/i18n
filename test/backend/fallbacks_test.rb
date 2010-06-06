@@ -45,12 +45,18 @@ class I18nBackendFallbacksTranslateTest < Test::Unit::TestCase
     assert_equal "Baz in :de-DE", I18n.t(:bar, :locale => :'de-DE', :default => [:baz])
   end
 
+  test "returns the :de translation for a missing :'de-DE' when :default is a Proc" do
+    assert_equal 'Bar in :de', I18n.t(:bar, :locale => :'de-DE', :default => lambda{"Default Bar"})
+    assert_equal "Default Bar", I18n.t(:missing_bar, :locale => :'de-DE', :default => lambda{"Default Bar"})
+  end
+
   test "returns the :'de-DE' default :baz translation for a missing :'de-DE' when defaults contains Symbol" do
     assert_equal 'Baz in :de-DE', I18n.t(:missing_foo, :locale => :'de-DE', :default => [:baz, "Default Bar"])
   end
 
-  test "returns the defaults translation for a missing :'de-DE' when defaults a contains String before Symbol" do
+  test "returns the defaults translation for a missing :'de-DE' when defaults contains a String or Proc before Symbol" do
     assert_equal "Default Bar", I18n.t(:missing_foo, :locale => :'de-DE', :default => [:missing_bar, "Default Bar", :baz])
+    assert_equal "Default Bar", I18n.t(:missing_foo, :locale => :'de-DE', :default => [:missing_bar, lambda{"Default Bar"}, :baz])
   end
 
   test "returns the default translation for a missing :'de-DE' and existing :de when default is a Hash" do
