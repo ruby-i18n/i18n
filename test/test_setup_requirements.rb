@@ -1,13 +1,16 @@
 require 'optparse'
 
-options = { :with => [] }
+@options = { :with => [], :adapter => "sqlite3" }
 OptionParser.new do |o|
    o.on('-w', '--with DEPENDENCIES', 'Define dependencies') do |dep|
-     options[:with] = dep.split(',').map { |group| group.to_sym }
+     @options[:with] = dep.split(',').map { |group| group.to_sym }
+   end
+   o.on('-a', '--adapter DATABASE_ADAPTER', 'Define database to use') do |dep|
+     @options[:adapter] = dep
    end
 end.parse!
 
-options[:with].each do |dep|
+@options[:with].each do |dep|
   case dep
   when :ar23, :'activerecord-2.3'
     gem 'activerecord', '~> 2.3'
@@ -50,15 +53,30 @@ def setup_active_record
 end
 
 def connect_active_record
-  ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
+  connect_adapter
   ActiveRecord::Migration.verbose = false
   ActiveRecord::Schema.define(:version => 1) do
-    create_table :translations do |t|
+    create_table :translations, :force => true do |t|
       t.string :locale
       t.string :key
-      t.string :value
-      t.string :interpolations
+      t.text :value
+      t.text :interpolations
       t.boolean :is_proc, :default => false
+    end
+    add_index :translations, [:locale, :key], :unique => true
+  end
+end
+
+def connect_adapter
+  @options[:adapter].each do |dep|
+    case dep.to_sym
+    when :sqlite3
+      ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
+    when :mysql
+      # CREATE DATABASE i18n_unittest;
+      # CREATE USER 'i18n'@'localhost' IDENTIFIED BY '';
+      # GRANT ALL PRIVILEGES ON i18n_unittest.* to 'i18n'@'localhost';
+      ActiveRecord::Base.establish_connection(:adapter => "mysql", :database => "i18n_unittest", :username => "i18n", :password => "", :host => "localhost")
     end
   end
 end
