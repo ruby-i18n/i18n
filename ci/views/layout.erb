@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Helvetica;
+      }
+      .pass a {
+        color: green;
+      }
+      .fail a {
+        color: red;
+      }
+      ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+      pre {
+        background-color: #eee;
+        padding: 25px;
+      }
+      .pass pre {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <%= yield %>
+  </body>
+</html>
