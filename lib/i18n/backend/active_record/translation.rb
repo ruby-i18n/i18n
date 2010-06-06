@@ -55,27 +55,27 @@ module I18n
         serialize :value
         serialize :interpolations, Array
 
-        scope_method = ::ActiveRecord::VERSION::MAJOR == 2 ? :named_scope : :scope
-
-        send scope_method, :locale, lambda { |locale|
-          { :conditions => { :locale => locale.to_s } }
-        }
-
-        send scope_method, :lookup, lambda { |keys, *separator|
-          column_name = connection.quote_column_name('key')
-          keys = Array(keys).map! { |key| key.to_s }
-
-          unless separator.empty?
-            warn "[DEPRECATION] Giving a separator to Translation.lookup is deprecated. " <<
-              "You can change the internal separator by overwriting FLATTEN_SEPARATOR."
+        class << self
+          def locale(locale)
+            scoped(:conditions => { :locale => locale.to_s })
           end
 
-          namespace = "#{keys.last}#{I18n::Backend::Flatten::FLATTEN_SEPARATOR}%"
-          { :conditions => ["#{column_name} IN (?) OR #{column_name} LIKE ?", keys, namespace] }
-        }
+          def lookup(keys, *separator)
+            column_name = connection.quote_column_name('key')
+            keys = Array(keys).map! { |key| key.to_s }
 
-        def self.available_locales
-          Translation.find(:all, :select => 'DISTINCT locale').map { |t| t.locale.to_sym }
+            unless separator.empty?
+              warn "[DEPRECATION] Giving a separator to Translation.lookup is deprecated. " <<
+                "You can change the internal separator by overwriting FLATTEN_SEPARATOR."
+            end
+
+            namespace = "#{keys.last}#{I18n::Backend::Flatten::FLATTEN_SEPARATOR}%"
+            scoped(:conditions => ["#{column_name} IN (?) OR #{column_name} LIKE ?", keys, namespace])
+          end
+
+          def available_locales
+            Translation.find(:all, :select => 'DISTINCT locale').map { |t| t.locale.to_sym }
+          end
         end
 
         def interpolates?(key)
