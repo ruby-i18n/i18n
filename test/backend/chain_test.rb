@@ -51,6 +51,8 @@ class I18nBackendChainTest < Test::Unit::TestCase
 
   test "bulk lookup collects results from all backends" do
     assert_equal ['Foo', 'Bar'], I18n.t([:foo, :bar])
+    assert_equal ['Foo', 'Bar', 'Bah'], I18n.t([:foo, :bar, :bah], :default => 'Bah')
+    assert_equal [{ :short => 'short', :long => 'long' }, { :one => 'one' }, 'Bah'], I18n.t([:formats, :plural_2, :bah], :default => 'Bah')
   end
 
   protected
