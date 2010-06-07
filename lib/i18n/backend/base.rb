@@ -8,10 +8,9 @@ module I18n
     module Base
       include I18n::Backend::Transliterator
 
-      RESERVED_KEYS = [:scope, :default, :separator, :resolve]
+      RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object]
       RESERVED_KEYS_PATTERN = /%\{(#{RESERVED_KEYS.join("|")})\}/
       DEPRECATED_INTERPOLATION_SYNTAX_PATTERN = /(\\)?\{\{([^\}]+)\}\}/
-      INTERPOLATION_SYNTAX_PATTERN = /%\{([^\}]+)\}/
 
       # Accepts a list of paths to translation files. Loads translations from
       # plain Ruby (*.rb) or YAML files (*.yml). See #load_rb and #load_yml
@@ -57,9 +56,10 @@ module I18n
         raise ArgumentError, "Object must be a Date, DateTime or Time object. #{object.inspect} given." unless object.respond_to?(:strftime)
 
         if Symbol === format
-          key = format
+          key  = format
           type = object.respond_to?(:sec) ? 'time' : 'date'
-          format = I18n.t(:"#{type}.formats.#{key}", options.merge(:raise => true, :object => object, :locale => locale))
+          options = options.merge(:raise => true, :object => object, :locale => locale)
+          format  = I18n.t(:"#{type}.formats.#{key}", options)
         end
 
         # format = resolve(locale, object, format, options)
@@ -113,14 +113,14 @@ module I18n
         # If the given subject is a Symbol, it will be translated with the
         # given options. If it is a Proc then it will be evaluated. All other
         # subjects will be returned directly.
-        def resolve(locale, object, subject, options = nil)
+        def resolve(locale, object, subject, options = {})
           return subject if options[:resolve] == false
           case subject
           when Symbol
-            I18n.translate(subject, (options || {}).merge(:locale => locale, :raise => true))
+            I18n.translate(subject, options.merge(:locale => locale, :raise => true))
           when Proc
             date_or_time = options.delete(:object) || object
-            resolve(locale, object, subject.call(date_or_time, options), options = {})
+            resolve(locale, object, subject.call(date_or_time, options))
           else
             subject
           end
@@ -151,7 +151,6 @@ module I18n
         # interpolation).
         def interpolate(locale, string, values = {})
           return string unless string.is_a?(::String) && !values.empty?
-          original_values = values.dup
 
           preserve_encoding(string) do
             string = string.gsub(DEPRECATED_INTERPOLATION_SYNTAX_PATTERN) do
@@ -164,17 +163,10 @@ module I18n
               end
             end
 
-            keys = string.scan(INTERPOLATION_SYNTAX_PATTERN).flatten
-            return string if keys.empty?
-
             values.each do |key, value|
-              if keys.include?(key.to_s)
-                value = value.call(values) if interpolate_lambda?(value, string, key)
-                value = value.to_s unless value.is_a?(::String)
-                values[key] = value
-              else
-                values.delete(key)
-              end
+              value = value.call(values) if interpolate_lambda?(value, string, key)
+              value = value.to_s unless value.is_a?(::String)
+              values[key] = value
             end
 
             string % values
@@ -183,7 +175,7 @@ module I18n
           if string =~ RESERVED_KEYS_PATTERN
             raise ReservedInterpolationKey.new($1.to_sym, string)
           else
-            raise MissingInterpolationArgument.new(original_values, string)
+            raise MissingInterpolationArgument.new(values, string)
           end
         end
 
