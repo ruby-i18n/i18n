@@ -39,8 +39,6 @@ module I18n
         end
 
         def translate(locale, key, options = {})
-          return key.map { |k| translate(locale, k, options) } if key.is_a?(Array)
-
           default = options.delete(:default)
           namespace = {}
           backends.each do |backend|

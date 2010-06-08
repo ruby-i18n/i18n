@@ -28,8 +28,6 @@ module I18n
 
       def translate(locale, key, options = {})
         raise InvalidLocale.new(locale) unless locale
-        return key.map { |k| translate(locale, k, options) } if key.is_a?(Array)
-
         entry = key && lookup(locale, key, options[:scope], options)
 
         if options.empty?

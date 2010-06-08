@@ -145,19 +145,25 @@ module I18n
     # always return the same translations/values per unique combination of argument
     # values.
     def translate(*args)
-      options = args.pop if args.last.is_a?(Hash)
+      options = args.last.is_a?(Hash) ? args.pop : {}
       key     = args.shift
-      locale  = options && options.delete(:locale) || config.locale
-      raises  = options && options.delete(:raise)
-      config.backend.translate(locale, key, options || {})
+      backend = config.backend
+      locale  = options.delete(:locale) || config.locale
+      raises  = options.delete(:raise)
+
+      if key.is_a?(Array)
+        key.map { |k| backend.translate(locale, k, options) }
+      else
+        backend.translate(locale, key, options)
+      end
     rescue I18n::ArgumentError => exception
       raise exception if raises
       handle_exception(exception, locale, key, options)
     end
     alias :t :translate
 
-    def translate!(key, options = {})
-      translate(key, options.merge( :raise => true ))
+    def translate!(key, options={})
+      translate(key, options.merge(:raise => true))
     end
     alias :t! :translate!
 
