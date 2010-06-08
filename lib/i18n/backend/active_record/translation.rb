@@ -101,7 +101,8 @@ module I18n
           elsif value === true
             value = TRUTHY_CHAR
           end
-          self.write_attribute(:value, value)
+
+          write_attribute(:value, value)
         end
       end
     end

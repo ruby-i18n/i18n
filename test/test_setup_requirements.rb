@@ -68,16 +68,14 @@ def connect_active_record
 end
 
 def connect_adapter
-  @options[:adapter].each do |dep|
-    case dep.to_sym
-    when :sqlite3
-      ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
-    when :mysql
-      # CREATE DATABASE i18n_unittest;
-      # CREATE USER 'i18n'@'localhost' IDENTIFIED BY '';
-      # GRANT ALL PRIVILEGES ON i18n_unittest.* to 'i18n'@'localhost';
-      ActiveRecord::Base.establish_connection(:adapter => "mysql", :database => "i18n_unittest", :username => "i18n", :password => "", :host => "localhost")
-    end
+  case @options[:adapter].to_sym
+  when :sqlite3
+    ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
+  when :mysql
+    # CREATE DATABASE i18n_unittest;
+    # CREATE USER 'i18n'@'localhost' IDENTIFIED BY '';
+    # GRANT ALL PRIVILEGES ON i18n_unittest.* to 'i18n'@'localhost';
+    ActiveRecord::Base.establish_connection(:adapter => "mysql", :database => "i18n_unittest", :username => "i18n", :password => "", :host => "localhost")
   end
 end
 
