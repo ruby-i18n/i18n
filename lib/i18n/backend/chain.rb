@@ -38,24 +38,21 @@ module I18n
           backends.map { |backend| backend.available_locales }.flatten.uniq
         end
 
-        def translate(locale, key, options = {})
+        def translate(locale, key, default_options = {})
           namespace = {}
-          default = options.delete(:default)
-          begin
-            backends.each do |backend|
-              begin
-                options.update(:default => default) if default and backend == backends.last
-                translation = backend.translate(locale, key, options)
-                if namespace_lookup?(translation, options)
-                  namespace.update(translation)
-                elsif !translation.nil?
-                  return translation
-                end
-              rescue MissingTranslationData
+          options   = default_options.except(:default)
+
+          backends.each do |backend|
+            begin
+              options = default_options if backend == backends.last
+              translation = backend.translate(locale, key, options)
+              if namespace_lookup?(translation, options)
+                namespace.update(translation)
+              elsif !translation.nil?
+                return translation
               end
+            rescue MissingTranslationData
             end
-          ensure
-            options.update(:default => default)
           end
 
           return namespace unless namespace.empty?
