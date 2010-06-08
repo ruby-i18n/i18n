@@ -55,7 +55,7 @@ module I18n
             end
           end
 
-          return namespace unless namespace.empty?
+          return namespace unless namespace.empty? and namespace != default
           raise(I18n::MissingTranslationData.new(locale, key, options))
         end
 
