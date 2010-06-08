@@ -25,7 +25,7 @@ class I18nBackendMemoizeTest < I18nBackendSimpleTest
 
   def test_memoizes_available_locales
     I18n.backend.spy_calls = 0
-    assert I18n.available_locales, I18n.available_locales
+    assert_equal I18n.available_locales, I18n.available_locales
     assert_equal 1, I18n.backend.spy_calls
   end
 
@@ -33,7 +33,7 @@ class I18nBackendMemoizeTest < I18nBackendSimpleTest
     I18n.available_locales
     I18n.backend.spy_calls = 0
     I18n.reload!
-    assert I18n.available_locales, I18n.available_locales
+    assert_equal I18n.available_locales, I18n.available_locales
     assert_equal 1, I18n.backend.spy_calls
   end
 
@@ -41,7 +41,7 @@ class I18nBackendMemoizeTest < I18nBackendSimpleTest
     I18n.available_locales
     I18n.backend.spy_calls = 0
     I18n.backend.store_translations(:copa, :ca => :bana)
-    assert I18n.available_locales, I18n.available_locales
+    assert_equal I18n.available_locales, I18n.available_locales
     assert I18n.available_locales.include?(:copa)
     assert_equal 1, I18n.backend.spy_calls
   end
