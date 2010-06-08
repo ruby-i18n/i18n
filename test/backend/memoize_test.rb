@@ -6,8 +6,9 @@ require 'backend/simple_test'
 class I18nBackendMemoizeTest < I18nBackendSimpleTest
   module MemoizeSpy
     attr_accessor :spy_calls
+
     def available_locales
-      self.spy_calls = (self.spy_calls||0) + 1
+      self.spy_calls = (self.spy_calls || 0) + 1
       super
     end
   end
@@ -18,8 +19,8 @@ class I18nBackendMemoizeTest < I18nBackendSimpleTest
   end
 
   def setup
-    I18n.backend = MemoizeBackend.new
     super
+    I18n.backend = MemoizeBackend.new
   end
 
   def test_memoizes_available_locales
