@@ -4,6 +4,15 @@ require 'test_helper'
 require 'api'
 
 class I18nSimpleBackendApiTest < Test::Unit::TestCase
+  class Backend < I18n::Backend::Simple
+    include I18n::Backend::Pluralization
+  end
+
+  def setup
+    I18n.backend = I18n::Backend::Simple.new
+    super
+  end
+
   include Tests::Api::Basics
   include Tests::Api::Defaults
   include Tests::Api::Interpolation
