@@ -39,15 +39,16 @@ module I18n
         end
 
         def translate(locale, key, default_options = {})
-          namespace = {}
-          options   = default_options.except(:default)
+          namespace = nil
+          options = default_options.except(:default)
 
           backends.each do |backend|
             begin
               options = default_options if backend == backends.last
               translation = backend.translate(locale, key, options)
               if namespace_lookup?(translation, options)
-                namespace.update(translation)
+                namespace ||= {}
+                namespace.merge!(translation)
               elsif !translation.nil?
                 return translation
               end
@@ -55,7 +56,7 @@ module I18n
             end
           end
 
-          return namespace unless namespace.empty? and namespace != default
+          return namespace if namespace
           raise(I18n::MissingTranslationData.new(locale, key, options))
         end
 
@@ -71,7 +72,7 @@ module I18n
 
         protected
           def namespace_lookup?(result, options)
-            result.is_a?(Hash) and not options.has_key?(:count)
+            result.is_a?(Hash) && !options.has_key?(:count)
           end
       end
 
