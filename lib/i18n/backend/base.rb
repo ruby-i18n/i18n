@@ -219,7 +219,7 @@ module I18n
 
         def warn_syntax_deprecation!(locale, string) #:nodoc:
           return if @skip_syntax_deprecation
-          warn "The {{key}} interpolation syntax in I18n messages is deprecated. Please use %{key} instead.\n#{locale} - #{string}\n#{caller.join("\n")}"
+          warn "The {{key}} interpolation syntax in I18n messages is deprecated. Please use %{key} instead.\n#{locale} - #{string}\n"
           @skip_syntax_deprecation = true
         end
     end
