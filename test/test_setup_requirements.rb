@@ -8,7 +8,7 @@ OptionParser.new do |o|
    o.on('-a', '--adapter DATABASE_ADAPTER', 'Define database to use') do |dep|
      @options[:adapter] = dep
    end
-end.parse!
+end.parse
 
 @options[:with].each do |dep|
   case dep

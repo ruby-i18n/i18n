@@ -16,9 +16,11 @@ class I18nLoadPathTest < Test::Unit::TestCase
     assert_equal "baz", I18n.t(:'foo.bar')
   end
 
-  def test_load_empty_yml_works
-    I18n.load_path = [[locales_dir + '/empty.yml']]
-    assert_equal "baz", I18n.t(:default => "baz")
+  def test_load_empty_yml_raises_an_error
+    assert_raise I18n::InvalidLocaleData do
+      I18n.load_path = [[locales_dir + '/invalid/empty.yml']]
+      I18n.t(:'foo.bar', :default => "baz")
+    end
   end
 
   def test_adding_arrays_of_filenames_to_load_path_do_not_break_locale_loading

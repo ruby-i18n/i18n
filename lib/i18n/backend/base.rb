@@ -201,7 +201,8 @@ module I18n
         def load_file(filename)
           type = File.extname(filename).tr('.', '').downcase
           raise UnknownFileType.new(type, filename) unless respond_to?(:"load_#{type}", true)
-          data = send(:"load_#{type}", filename) # TODO raise a meaningful exception if this does not yield a Hash
+          data = send(:"load_#{type}", filename)
+          raise InvalidLocaleData.new(filename) unless data.is_a?(Hash)
           data.each { |locale, d| store_translations(locale, d || {}) }
         end
 
@@ -214,7 +215,7 @@ module I18n
         # Loads a YAML translations file. The data must have locales as
         # toplevel keys.
         def load_yml(filename)
-          YAML::load(IO.read(filename))
+          YAML.load_file(filename)
         end
 
         def warn_syntax_deprecation!(locale, string) #:nodoc:

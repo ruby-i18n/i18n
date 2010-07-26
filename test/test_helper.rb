@@ -9,6 +9,7 @@ require 'rubygems'
 require 'test/unit'
 require 'time'
 require 'yaml'
+require 'digest'
 
 require 'i18n'
 require 'test_setup_requirements'

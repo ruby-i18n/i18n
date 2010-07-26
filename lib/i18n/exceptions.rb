@@ -17,6 +17,14 @@ module I18n
     end
   end
 
+  class InvalidLocaleData < ArgumentError
+    attr_reader :filename
+    def initialize(filename)
+      @filename = filename
+      super "can not load translations from #{filename}, expected it to return a hash, but does not"
+    end
+  end
+
   class MissingTranslationData < ArgumentError
     attr_reader :locale, :key, :options
     def initialize(locale, key, opts = nil)
