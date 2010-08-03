@@ -14,6 +14,10 @@ class I18nTest < Test::Unit::TestCase
     }
   end
 
+  def test_version
+    assert I18n::VERSION
+  end
+
   def test_uses_simple_backend_set_by_default
     assert I18n.backend.is_a?(I18n::Backend::Simple)
   end

@@ -7,6 +7,7 @@
 #             Matt Aimonetti (http://railsontherun.com/)
 # Copyright:: Copyright (c) 2008 The Ruby i18n Team
 # License::   MIT
+require 'i18n/version'
 require 'i18n/exceptions'
 require 'i18n/core_ext/string/interpolate'
 
