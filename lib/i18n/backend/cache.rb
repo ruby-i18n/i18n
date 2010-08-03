@@ -84,11 +84,15 @@ module I18n
 
         def cache_key(locale, key, options)
           # This assumes that only simple, native Ruby values are passed to I18n.translate.
-          # Also, in Ruby < 1.8.7 {}.hash != {}.hash
-          # (see http://paulbarry.com/articles/2009/09/14/why-rails-3-will-require-ruby-1-8-7)
-          # If args.inspect does not work for you for some reason, patches are very welcome :)
-          ['i18n', I18n.cache_namespace, locale, key.hash, RUBY_VERSION >= "1.8.7" ? options.hash : options.inspect.hash].join('/')
+          "i18n/#{I18n.cache_namespace}/#{locale}/#{key.hash}/#{HASH_HASH ? options.hash : options.inspect.hash}"
         end
+
+      private
+        # In Ruby < 1.8.7 {}.hash != {}.hash
+        # (see http://paulbarry.com/articles/2009/09/14/why-rails-3-will-require-ruby-1-8-7)
+        # If options.inspect.hash does not work for you for some reason, patches are very welcome :)
+        HASH_HASH = RUBY_VERSION >= "1.8.7"
+
     end
   end
 end
