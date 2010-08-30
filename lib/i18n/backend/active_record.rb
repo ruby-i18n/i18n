@@ -7,6 +7,10 @@ module I18n
       autoload :Missing,     'i18n/backend/active_record/missing'
       autoload :StoreProcs,  'i18n/backend/active_record/store_procs'
       autoload :Translation, 'i18n/backend/active_record/translation'
+      
+      # Method added to conform common backend API
+      def self.reload!
+      end
 
       module Implementation
         include Base, Flatten
