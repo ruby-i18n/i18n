@@ -31,5 +31,10 @@ class I18nActiveRecordApiTest < Test::Unit::TestCase
   test "must have reload! method" do
     assert_respond_to I18n.backend.class, :reload!
   end
+
+  test "must have translate method" do
+    assert_respond_to I18n.backend.class, :translate
+  end
+
   
 end if defined?(ActiveRecord)

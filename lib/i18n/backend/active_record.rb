@@ -8,10 +8,22 @@ module I18n
       autoload :StoreProcs,  'i18n/backend/active_record/store_procs'
       autoload :Translation, 'i18n/backend/active_record/translation'
       
-      # Method added to conform common backend API
+      # API requirement
       def self.reload!
       end
-
+      
+      def self.translate(locale, key, options = {})
+        result = begin
+          entry = I18n::Backend::ActiveRecord::Translation.find_by_locale_and_key(locale, key)
+          raise(I18n::MissingTranslationData.new(locale, key, options)) if entry.nil?
+          entry.value
+        rescue MissingTranslationData => exception
+          Translation.create(:locale => locale, :key => key, :value => lambda { |key, options| exception })
+          exception
+        end
+        raise result if result.is_a?(Exception)
+      end
+      
       module Implementation
         include Base, Flatten
 
