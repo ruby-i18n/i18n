@@ -27,4 +27,9 @@ class I18nActiveRecordApiTest < Test::Unit::TestCase
   test "make sure we use an ActiveRecord backend" do
     assert_equal I18n::Backend::ActiveRecord, I18n.backend.class
   end
+  
+  test "must have reload! method" do
+    assert_respond_to I18n.backend.class, :reload!
+  end
+  
 end if defined?(ActiveRecord)
