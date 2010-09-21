@@ -176,6 +176,10 @@ class I18nTest < Test::Unit::TestCase
     assert_equal "translation missing: en, bogus", I18n.t(:bogus)
   end
 
+  def test_translate_empty_string_raises_argument_error
+    assert_raise(I18n::ArgumentError) { I18n.t("") }
+  end
+
   def test_localize_nil_raises_argument_error
     assert_raise(I18n::ArgumentError) { I18n.l nil }
   end

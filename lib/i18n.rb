@@ -151,6 +151,8 @@ module I18n
       locale  = options.delete(:locale) || config.locale
       raises  = options.delete(:raise)
 
+      raise I18n::ArgumentError if key.is_a?(String) && key.empty?
+
       if key.is_a?(Array)
         key.map { |k| backend.translate(locale, k, options) }
       else
