@@ -16,5 +16,5 @@ Gem::Specification.new do |s|
   s.platform     = Gem::Platform::RUBY
   s.require_path = 'lib'
   s.rubyforge_project = '[none]'
-  s.required_rubygems_version = '>= 1.3.6'
+  s.required_rubygems_version = '>= 1.3.5'
 end
