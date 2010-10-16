@@ -28,7 +28,9 @@ module I18n
   class MissingTranslationData < ArgumentError
     attr_reader :locale, :key, :options
     def initialize(locale, key, opts = nil)
-      @key, @locale, @options = key, locale, opts || {}
+      @key, @locale, @options = key, locale, opts.dup || {}
+      options.each { |k, v| options[k] = v.inspect if v.is_a?(Proc) }
+
       keys = I18n.normalize_keys(locale, key, options[:scope])
       keys << 'no key' if keys.size < 2
       super "translation missing: #{keys.join(', ')}"

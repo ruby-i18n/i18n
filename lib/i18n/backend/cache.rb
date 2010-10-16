@@ -71,15 +71,23 @@ module I18n
       protected
 
         def fetch(cache_key, &block)
-          result = begin
-            I18n.cache_store.fetch(cache_key, &block)
-          rescue MissingTranslationData => exception
-            I18n.cache_store.write(cache_key, exception)
-            exception
-          end
+          result = fetch_storing_missing_translation_exception(cache_key, &block)
           raise result if result.is_a?(Exception)
           result = result.dup if result.frozen? rescue result
           result
+        end
+
+        def fetch_storing_missing_translation_exception(cache_key, &block)
+          fetch_ignoring_procs(cache_key, &block)
+        rescue MissingTranslationData => exception
+          I18n.cache_store.write(cache_key, exception)
+          exception
+        end
+
+        def fetch_ignoring_procs(cache_key, &block)
+          I18n.cache_store.read(cache_key) || yield.tap do |result|
+            I18n.cache_store.write(cache_key, result) unless result.is_a?(Proc)
+          end
         end
 
         def cache_key(locale, key, options)
@@ -91,7 +99,6 @@ module I18n
         # In Ruby < 1.9 the following is true: { :foo => 1, :bar => 2 }.hash == { :foo => 2, :bar => 1 }.hash
         # Therefore we must use the hash of the inspect string instead to avoid cache key colisions.
         USE_INSPECT_HASH = RUBY_VERSION <= "1.9"
-
     end
   end
 end
