@@ -27,13 +27,17 @@ class I18nAllFeaturesApiTest < Test::Unit::TestCase
   end
 
   def teardown
-    I18n.cache_store.clear
+    I18n.cache_store.clear if I18n.cache_store
     I18n.cache_store = nil
     super
   end
 
   def cache_store
-    ActiveSupport::Cache.lookup_store(:memory_store) if defined?(ActiveSupport) && defined?(ActiveSupport::Cache)
+    ActiveSupport::Cache.lookup_store(:memory_store) if cache_available?
+  end
+
+  def cache_available?
+    defined?(ActiveSupport) && defined?(ActiveSupport::Cache)
   end
 
   include Tests::Api::Basics

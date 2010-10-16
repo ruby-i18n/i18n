@@ -3,7 +3,7 @@ $:.unshift(File.expand_path(File.dirname(__FILE__) + '/../')); $:.uniq!
 require 'test_helper'
 require 'api'
 
-setup_active_record
+Test.setup_active_record
 
 class I18nActiveRecordApiTest < Test::Unit::TestCase
   def setup
@@ -18,7 +18,7 @@ class I18nActiveRecordApiTest < Test::Unit::TestCase
   include Tests::Api::Lookup
   include Tests::Api::Pluralization
   include Tests::Api::Procs # unless RUBY_VERSION >= '1.9.1'
-          
+
   include Tests::Api::Localization::Date
   include Tests::Api::Localization::DateTime
   include Tests::Api::Localization::Time

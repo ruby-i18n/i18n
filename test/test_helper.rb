@@ -1,20 +1,14 @@
 # encoding: utf-8
-$KCODE = 'u' unless RUBY_VERSION >= '1.9'
-
-$:.unshift File.expand_path("../lib", File.dirname(__FILE__))
-$:.unshift File.expand_path(File.dirname(__FILE__))
-$:.uniq!
+$KCODE = 'u' if RUBY_VERSION <= '1.9'
 
 require 'rubygems'
 require 'test/unit'
-require 'time'
-require 'yaml'
-require 'digest'
 
-require 'i18n'
-require 'test_setup_requirements'
-
-setup_mocha
+require 'test_setup/options'
+require 'test_setup/bundle'
+require 'test_setup/active_record'
+require 'test_setup/rufus_tokyo'
+require 'mocha'
 
 class Test::Unit::TestCase
   def self.test(name, &block)
@@ -61,6 +55,14 @@ class Test::Unit::TestCase
   end
 
   def can_store_procs?
+    active_record_available? && non_active_record_backend?
+  end
+
+  def active_record_available?
+    defined?(ActiveRecord)
+  end
+
+  def non_active_record_backend?
     I18n.backend.class != I18n::Backend::ActiveRecord or
     I18n::Backend::ActiveRecord.included_modules.include?(I18n::Backend::ActiveRecord::StoreProcs)
   end
@@ -71,7 +73,7 @@ class Test::Unit::TestCase
       eval "$#{stream} = StringIO.new"
       yield
       result = eval("$#{stream}").string
-    ensure 
+    ensure
       eval("$#{stream} = #{stream.upcase}")
     end
 

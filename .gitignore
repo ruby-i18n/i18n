@@ -4,3 +4,4 @@ nbproject/
 vendor/cldr
 *.swp
 pkg
+.bundle

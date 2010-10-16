@@ -3,7 +3,7 @@ $:.unshift(File.expand_path(File.dirname(__FILE__) + '/../')); $:.uniq!
 require 'test_helper'
 require 'api'
 
-setup_rufus_tokyo
+Test.setup_rufus_tokyo
 
 class I18nKeyValueApiTest < Test::Unit::TestCase
   include Tests::Api::Basics

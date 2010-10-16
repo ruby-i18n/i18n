@@ -2,7 +2,7 @@
 $:.unshift(File.expand_path(File.dirname(__FILE__) + '/../../')); $:.uniq!
 require 'test_helper'
 
-setup_active_record
+Test.setup_active_record
 
 class I18nActiveRecordMissingTest < Test::Unit::TestCase
   class Backend < I18n::Backend::ActiveRecord

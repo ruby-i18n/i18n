@@ -1,0 +1,11 @@
+GEM
+  specs:
+    mocha (0.9.8)
+      rake
+    rake (0.8.7)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  mocha

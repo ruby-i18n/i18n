@@ -47,6 +47,7 @@ This requirement is relaxed in "6da03653":http://github.com/rails/rails/commit/6
 
 The new i18n gem can be loaded from vendor/plugins like this:
 
+<pre>
   def reload_i18n!
     raise "Move to i18n version 0.2.0 or greater" if Rails.version > "2.3.4"
 
@@ -54,6 +55,7 @@ The new i18n gem can be loaded from vendor/plugins like this:
     I18n::Backend.send :remove_const, "Simple"
     $: << Rails.root.join('vendor', 'plugins', 'i18n', 'lib').to_s
   end
+</pre>
 
 Then you can `reload_i18n!` inside an i18n initializer.
 
@@ -64,6 +66,23 @@ You can run tests both with
 * `rake test` or just `rake`
 * run any test file directly, e.g. `ruby test/api/simple_test.rb`
 * run all tests with `ruby test/all.rb`
+
+You can parametrize the test suite for using different sets of dependencies by
+using:
+
+.pre `ruby test/all.rb -w DEPENDENCIES`
+
+... where DEPENDENCIES is a comma-separated list of:
+
+* r23 or rails-2.3.x
+* r3 or rails-3.x
+* no-rails
+* sqlite
+* mysql
+
+So, e.g. this would run the test suite against Rails 2.3.x using mysql:
+
+.pre `ruby test/all.rb -w r23,mysql`
 
 The structure of the test suite is a bit unusual as it uses modules to reuse
 particular tests in different test cases.
