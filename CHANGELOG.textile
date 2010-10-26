@@ -1,6 +1,14 @@
 h1. Changelog
 
-h2. master
+h2. 0.4.2 (2010-10-26)
+
+* "Improve UTF8 handling":http://github.com/svenfuchs/i18n/commit/e8d5820a3b08eeca28de1a2b9c8a6ad2b9e6476c
+* "Expose I18n::VERSION":http://github.com/svenfuchs/i18n/commit/b832037bac94c7144f45f3ff5e3b4e4089781726
+* "Better deprecation output":http://github.com/svenfuchs/i18n/commit/2bee924464b8a9c33d3d7852eb1c8423aa38cc25
+
+h2. 0.4.1 (2010-06-05)
+
+* "Fix interpolation failure on Ruby 1.9":http://github.com/svenfuchs/i18n/commit/8d45bedb11c4136c00e853d104b00a8e67ec4894
 
 h2. 0.4.0 (2010-05-27)
 
