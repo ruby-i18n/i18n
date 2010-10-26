@@ -25,7 +25,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord (~> 3)
-  activesupport (~> 3)
+  activerecord (~> 3.0.0)
+  activesupport (~> 3.0.0)
   mocha
   sqlite3-ruby

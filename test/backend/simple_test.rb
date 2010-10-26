@@ -1,4 +1,5 @@
 # encoding: utf-8
+
 $:.unshift(File.expand_path(File.dirname(__FILE__) + '/../')); $:.uniq!
 require 'test_helper'
 
@@ -77,5 +78,26 @@ class I18nBackendSimpleTest < Test::Unit::TestCase
   test "simple reload_translations: uninitializes the backend" do
     I18n.backend.reload!
     assert_equal I18n.backend.initialized?, false
+  end
+
+  # Encoding
+  if "string".respond_to?(:force_encoding)
+    test "ASCII strings in the backend should be encoded to UTF8 if interpolation options are in UTF8" do
+      I18n.backend.store_translations 'en', 'encoding' => ('%{who} let me go'.force_encoding("ASCII"))
+      result = I18n.t 'encoding', :who => "måmmå miå"
+      assert_equal Encoding::UTF_8, result.encoding
+    end
+
+    test "UTF8 strings in the backend are still returned as UTF8" do
+      I18n.backend.store_translations 'en', 'encoding' => 'måmmå miå %{what}'
+      result = I18n.t 'encoding', :what => 'let me go'.force_encoding("ASCII")
+      assert_equal Encoding::UTF_8, result.encoding
+    end
+
+    test "UTF8 strings in the backend are still returned as UTF8 even with numbers" do
+      I18n.backend.store_translations 'en', 'encoding' => '%{count} times: måmmå miå'
+      result = I18n.t 'encoding', :count => 3
+      assert_equal Encoding::UTF_8, result.encoding
+    end
   end
 end

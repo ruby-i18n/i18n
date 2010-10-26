@@ -150,41 +150,28 @@ module I18n
         def interpolate(locale, string, values = {})
           return string unless string.is_a?(::String) && !values.empty?
 
-          preserve_encoding(string) do
-            string = string.gsub(DEPRECATED_INTERPOLATION_SYNTAX_PATTERN) do
-              escaped, key = $1, $2.to_sym
-              if escaped
-                "{{#{key}}}"
-              else
-                warn_syntax_deprecation!(locale, string)
-                "%{#{key}}"
-              end
+          string = string.gsub(DEPRECATED_INTERPOLATION_SYNTAX_PATTERN) do
+            escaped, key = $1, $2.to_sym
+            if escaped
+              "{{#{key}}}"
+            else
+              warn_syntax_deprecation!(locale, string)
+              "%{#{key}}"
             end
-
-            values.each do |key, value|
-              value = value.call(values) if interpolate_lambda?(value, string, key)
-              value = value.to_s unless value.is_a?(::String)
-              values[key] = value
-            end
-
-            string % values
           end
+
+          values.each do |key, value|
+            value = value.call(values) if interpolate_lambda?(value, string, key)
+            value = value.to_s unless value.is_a?(::String)
+            values[key] = value
+          end
+
+          string % values
         rescue KeyError => e
           if string =~ RESERVED_KEYS_PATTERN
             raise ReservedInterpolationKey.new($1.to_sym, string)
           else
             raise MissingInterpolationArgument.new(values, string)
-          end
-        end
-
-        def preserve_encoding(string)
-          if string.respond_to?(:encoding)
-            encoding = string.encoding
-            result = yield
-            result.force_encoding(encoding) if result.respond_to?(:force_encoding)
-            result
-          else
-            yield
           end
         end
 
