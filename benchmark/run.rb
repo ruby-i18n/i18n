@@ -18,12 +18,13 @@ module Backends
 
   if DATA_STORES
     require 'rubygems'
-    require File.expand_path('../../test/test_setup_requirements', __FILE__)
+    require File.expand_path('../../test/test_setup/active_record', __FILE__)
+    require File.expand_path('../../test/test_setup/rufus_tokyo', __FILE__)
 
-    setup_active_record
+    Test.setup_active_record
     ActiveRecord = I18n::Backend::ActiveRecord.new if defined?(::ActiveRecord)
 
-    setup_rufus_tokyo
+    Test.setup_rufus_tokyo
     TokyoCabinet = I18n::Backend::KeyValue.new(Rufus::Tokyo::Cabinet.new("*"), true) if defined?(::Rufus::Tokyo)
   end
 end
