@@ -19,12 +19,14 @@ module Test
           @options[:adapter] = dep
         when :r23, :'rails-2.3.x'
           ENV['BUNDLE_GEMFILE'] = 'ci/Gemfile.rails-2.3.x'
+        when :r3, :'rails-3.0.x'
+          ENV['BUNDLE_GEMFILE'] = 'ci/Gemfile.rails-3.x'
         when :'no-rails'
           ENV['BUNDLE_GEMFILE'] = 'ci/Gemfile.no-rails'
         end
       end
 
-      ENV['BUNDLE_GEMFILE'] ||= 'ci/Gemfile.rails-3.x'
+      ENV['BUNDLE_GEMFILE'] ||= 'ci/Gemfile.all'
     end
   end
 end

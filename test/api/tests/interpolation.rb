@@ -85,16 +85,29 @@ module Tests
             interpolate(:default => euc_jp('こんにちは、%{name}さん!'), :name => 'ゆきひろ')
           end
         end
-        
-        # define_method "test interpolation: given a utf-8 translation and a euc-jp value it returns a translation in euc-jp" do
-        #   assert_equal euc_jp('Hi ゆきひろ!'), interpolate(:default => 'Hi %{name}!', :name => euc_jp('ゆきひろ'))
-        # end
-        # 
-        # TODO should better explain how this relates to the test above with the simpler utf-8 default string
+
         define_method "test interpolation: given a utf-8 translation and a euc-jp value it raises Encoding::CompatibilityError" do
           assert_raise(Encoding::CompatibilityError) do
             interpolate(:default => 'こんにちは、%{name}さん!', :name => euc_jp('ゆきひろ'))
           end
+        end
+
+        define_method "test interpolation: ASCII strings in the backend should be encoded to UTF8 if interpolation options are in UTF8" do
+          I18n.backend.store_translations 'en', 'encoding' => ('%{who} let me go'.force_encoding("ASCII"))
+          result = I18n.t 'encoding', :who => "måmmå miå"
+          assert_equal Encoding::UTF_8, result.encoding
+        end
+
+        define_method "test interpolation: UTF8 strings in the backend are still returned as UTF8 with ASCII interpolation" do
+          I18n.backend.store_translations 'en', 'encoding' => 'måmmå miå %{what}'
+          result = I18n.t 'encoding', :what => 'let me go'.force_encoding("ASCII")
+          assert_equal Encoding::UTF_8, result.encoding
+        end
+
+        define_method "test interpolation: UTF8 strings in the backend are still returned as UTF8 even with numbers interpolation" do
+          I18n.backend.store_translations 'en', 'encoding' => '%{count} times: måmmå miå'
+          result = I18n.t 'encoding', :count => 3
+          assert_equal Encoding::UTF_8, result.encoding
         end
       end
 
