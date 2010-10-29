@@ -49,19 +49,6 @@ class Test::Unit::TestCase
   def locales_dir
     File.dirname(__FILE__) + '/test_data/locales'
   end
-
-  def can_store_procs?
-    active_record_available? && non_active_record_backend?
-  end
-
-  def active_record_available?
-    defined?(ActiveRecord)
-  end
-
-  def non_active_record_backend?
-    I18n.backend.class != I18n::Backend::ActiveRecord or
-    I18n::Backend::ActiveRecord.included_modules.include?(I18n::Backend::ActiveRecord::StoreProcs)
-  end
 end
 
 Object.class_eval do

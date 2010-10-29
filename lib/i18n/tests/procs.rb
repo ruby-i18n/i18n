@@ -3,15 +3,9 @@
 module I18n
   module Tests
     module Procs
-      def filter_args(*args)
-        args.map {|arg| arg.delete(:fallback) if arg.is_a?(Hash) ; arg }.inspect
-      end
-
       define_method "test lookup: given a translation is a proc it calls the proc with the key and interpolation values" do
-        if can_store_procs?
-          I18n.backend.store_translations(:en, :a_lambda => lambda { |*args| filter_args(*args) })
-          assert_equal '[:a_lambda, {:foo=>"foo"}]', I18n.t(:a_lambda, :foo => 'foo')
-        end
+        I18n.backend.store_translations(:en, :a_lambda => lambda { |*args| filter_args(*args) })
+        assert_equal '[:a_lambda, {:foo=>"foo"}]', I18n.t(:a_lambda, :foo => 'foo')
       end
 
       define_method "test defaults: given a default is a Proc it calls it with the key and interpolation values" do
@@ -20,11 +14,9 @@ module I18n
       end
 
       define_method "test defaults: given a default is a key that resolves to a Proc it calls it with the key and interpolation values" do
-        if can_store_procs?
-          I18n.backend.store_translations(:en, :a_lambda => lambda { |*args| filter_args(*args) })
-          assert_equal '[:a_lambda, {:foo=>"foo"}]', I18n.t(nil, :default => :a_lambda, :foo => 'foo')
-          assert_equal '[:a_lambda, {:foo=>"foo"}]', I18n.t(nil, :default => [nil, :a_lambda], :foo => 'foo')
-        end
+        I18n.backend.store_translations(:en, :a_lambda => lambda { |*args| filter_args(*args) })
+        assert_equal '[:a_lambda, {:foo=>"foo"}]', I18n.t(nil, :default => :a_lambda, :foo => 'foo')
+        assert_equal '[:a_lambda, {:foo=>"foo"}]', I18n.t(nil, :default => [nil, :a_lambda], :foo => 'foo')
       end
 
       define_method "test interpolation: given an interpolation value is a lambda it calls it with key and values before interpolating it" do
@@ -45,14 +37,18 @@ module I18n
       end
 
       define_method "test lookup: given the option :resolve => false was passed it does not resolve proc translations" do
-        if can_store_procs?
-          I18n.backend.store_translations(:en, :a_lambda => lambda { |*args| filter_args(*args) })
-          assert_equal Proc, I18n.t(:a_lambda, :resolve => false).class
-        end
+        I18n.backend.store_translations(:en, :a_lambda => lambda { |*args| filter_args(*args) })
+        assert_equal Proc, I18n.t(:a_lambda, :resolve => false).class
       end
 
       define_method "test lookup: given the option :resolve => false was passed it does not resolve proc default" do
         assert_equal Proc, I18n.t(nil, :default => lambda { |*args| filter_args(*args) }, :resolve => false).class
+      end
+
+      protected
+
+      def filter_args(*args)
+        args.map {|arg| arg.delete(:fallback) if arg.is_a?(Hash) ; arg }.inspect
       end
     end
   end
