@@ -1,7 +1,7 @@
 # encoding: utf-8
 
-module Tests
-  module Api
+module I18n
+  module Tests
     module Localization
       module Time
         def setup
@@ -58,7 +58,7 @@ module Tests
         protected
 
           def setup_time_translations
-            store_translations :de, {
+            I18n.backend.store_translations :de, {
               :time => {
                 :formats => {
                   :default => "%a, %d. %b %Y %H:%M:%S %z",

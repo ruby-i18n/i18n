@@ -1,7 +1,7 @@
 # encoding: utf-8
 
-module Tests
-  module Api
+module I18n
+  module Tests
     module Localization
       module Date
         def setup
@@ -64,7 +64,7 @@ module Tests
         protected
 
           def setup_date_translations
-            store_translations :de, {
+            I18n.backend.store_translations :de, {
               :date => {
                 :formats => {
                   :default => "%d.%m.%Y",

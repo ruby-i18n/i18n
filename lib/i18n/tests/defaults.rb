@@ -1,11 +1,11 @@
 # encoding: utf-8
 
-module Tests
-  module Api
+module I18n
+  module Tests
     module Defaults
       def setup
         super
-        store_translations(:foo => { :bar => 'bar', :baz => 'baz' })
+        I18n.backend.store_translations(:en, :foo => { :bar => 'bar', :baz => 'baz' })
       end
       
       define_method "test defaults: given nil as a key it returns the given default" do

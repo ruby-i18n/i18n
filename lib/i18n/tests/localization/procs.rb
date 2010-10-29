@@ -1,7 +1,7 @@
 # encoding: utf-8
 
-module Tests
-  module Api
+module I18n
+  module Tests
     module Localization
       module Procs
         define_method "test localize: using day names from lambdas" do
@@ -87,7 +87,7 @@ module Tests
           end
 
           def setup_time_proc_translations
-            store_translations :ru, {
+            I18n.backend.store_translations :ru, {
               :time => {
                 :formats => {
                   :proc => lambda { |*args| filter_args(*args) }

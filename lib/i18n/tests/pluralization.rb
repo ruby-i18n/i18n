@@ -1,7 +1,7 @@
 # encoding: utf-8
 
-module Tests
-  module Api
+module I18n
+  module Tests
     module Pluralization
       define_method "test pluralization: given 0 it returns the :zero translation if it is defined" do
         assert_equal 'zero', I18n.t(:default => { :zero => 'zero' }, :count => 0)

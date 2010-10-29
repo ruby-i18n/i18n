@@ -16,6 +16,7 @@ module I18n
   autoload :Config,  'i18n/config'
   autoload :Gettext, 'i18n/gettext'
   autoload :Locale,  'i18n/locale'
+  autoload :Tests,   'i18n/tests'
 
   class << self
     # Gets I18n configuration object.

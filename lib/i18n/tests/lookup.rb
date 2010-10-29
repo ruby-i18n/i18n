@@ -1,11 +1,11 @@
 # encoding: utf-8
 
-module Tests
-  module Api
+module I18n
+  module Tests
     module Lookup
       def setup
         super
-        store_translations(:foo => { :bar => 'bar', :baz => 'baz' }, :falsy => false, :truthy => true,
+        I18n.backend.store_translations(:en, :foo => { :bar => 'bar', :baz => 'baz' }, :falsy => false, :truthy => true,
           :string => "a", :array => %w(a b c), :hash => { "a" => "b" })
       end
 

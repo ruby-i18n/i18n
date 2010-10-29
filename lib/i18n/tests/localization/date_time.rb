@@ -1,7 +1,7 @@
 # encoding: utf-8
 
-module Tests
-  module Api
+module I18n
+  module Tests
     module Localization
       module DateTime
         def setup
@@ -59,7 +59,7 @@ module Tests
 
           def setup_datetime_translations
             # time translations might have been set up in Tests::Api::Localization::Time
-            store_translations :de, {
+            I18n.backend.store_translations :de, {
               :time => {
                 :formats => {
                   :default => "%a, %d. %b %Y %H:%M:%S %z",

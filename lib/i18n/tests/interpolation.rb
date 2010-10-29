@@ -1,14 +1,8 @@
 # encoding: utf-8
 
-module Tests
-  module Api
+module I18n
+  module Tests
     module Interpolation
-      def interpolate(*args)
-        options = args.last.is_a?(Hash) ? args.pop : {}
-        key = args.pop
-        I18n.backend.translate('en', key, options)
-      end
-
       # If no interpolation parameter is not given, I18n should not alter the string.
       # This behavior is due to three reasons:
       #
@@ -115,6 +109,31 @@ module Tests
         assert_raise(I18n::ReservedInterpolationKey) { interpolate(:default => '%{default}',   :foo => :bar) }
         assert_raise(I18n::ReservedInterpolationKey) { interpolate(:default => '%{scope}',     :foo => :bar) }
         assert_raise(I18n::ReservedInterpolationKey) { interpolate(:default => '%{separator}', :foo => :bar) }
+      end
+
+      protected
+
+      def capture(stream)
+        begin
+          stream = stream.to_s
+          eval "$#{stream} = StringIO.new"
+          yield
+          result = eval("$#{stream}").string
+        ensure
+          eval("$#{stream} = #{stream.upcase}")
+        end
+
+        result
+      end
+
+      def euc_jp(string)
+        string.encode!(Encoding::EUC_JP)
+      end
+
+      def interpolate(*args)
+        options = args.last.is_a?(Hash) ? args.pop : {}
+        key = args.pop
+        I18n.backend.translate('en', key, options)
       end
     end
   end

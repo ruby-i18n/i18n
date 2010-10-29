@@ -1,7 +1,7 @@
 # encoding: utf-8
 
-module Tests
-  module Api
+module I18n
+  module Tests
     module Link
       define_method "test linked lookup: if a key resolves to a symbol it looks up the symbol" do
         I18n.backend.store_translations 'en', {

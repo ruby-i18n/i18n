@@ -50,10 +50,6 @@ class Test::Unit::TestCase
     File.dirname(__FILE__) + '/test_data/locales'
   end
 
-  def euc_jp(string)
-    string.encode!(Encoding::EUC_JP)
-  end
-
   def can_store_procs?
     active_record_available? && non_active_record_backend?
   end
@@ -65,19 +61,6 @@ class Test::Unit::TestCase
   def non_active_record_backend?
     I18n.backend.class != I18n::Backend::ActiveRecord or
     I18n::Backend::ActiveRecord.included_modules.include?(I18n::Backend::ActiveRecord::StoreProcs)
-  end
-
-  def capture(stream)
-    begin
-      stream = stream.to_s
-      eval "$#{stream} = StringIO.new"
-      yield
-      result = eval("$#{stream}").string
-    ensure
-      eval("$#{stream} = #{stream.upcase}")
-    end
-
-    result
   end
 end
 
