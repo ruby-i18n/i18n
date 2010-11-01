@@ -38,9 +38,10 @@ module I18n
       def lookup(locale, key, scope = [], options = {})
         return super unless cascade = options[:cascade]
 
+        cascade   = { :step => 1 } unless cascade.is_a?(Hash)
         separator = options[:separator] || I18n.default_separator
         skip_root = cascade.has_key?(:skip_root) ? cascade[:skip_root] : true
-        step      = cascade[:step]
+        step      = cascade[:step] || 1
 
         keys   = I18n.normalize_keys(nil, key, nil, separator)
         offset = options[:cascade][:offset] || keys.length
