@@ -30,10 +30,13 @@ module I18n
     def initialize(locale, key, opts = nil)
       @key, @locale, @options = key, locale, opts.dup || {}
       options.each { |k, v| options[k] = v.inspect if v.is_a?(Proc) }
+      super "translation missing: #{keys.join(', ')}"
+    end
 
+    def keys
       keys = I18n.normalize_keys(locale, key, options[:scope])
       keys << 'no key' if keys.size < 2
-      super "translation missing: #{keys.join(', ')}"
+      keys
     end
   end
 
