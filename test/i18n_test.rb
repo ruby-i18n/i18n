@@ -177,7 +177,7 @@ class I18nTest < Test::Unit::TestCase
   # end
 
   def test_translate_given_a_bogus_key_raises_missing_translation_data
-    assert_equal "translation missing: en, bogus", I18n.t(:bogus)
+    assert_equal "translation missing: en.bogus", I18n.t(:bogus)
   end
 
   def test_translate_empty_string_raises_argument_error

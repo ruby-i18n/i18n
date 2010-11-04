@@ -7,11 +7,11 @@ module I18n
         super
         I18n.backend.store_translations(:en, :foo => { :bar => 'bar', :baz => 'baz' })
       end
-      
+
       define_method "test defaults: given nil as a key it returns the given default" do
         assert_equal 'default', I18n.t(nil, :default => 'default')
       end
-      
+
       define_method "test defaults: given a symbol as a default it translates the symbol" do
         assert_equal 'bar', I18n.t(nil, :default => :'foo.bar')
       end

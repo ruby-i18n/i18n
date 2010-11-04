@@ -30,7 +30,7 @@ module I18n
       end
 
       define_method "test lookup: given a missing key, no default and no raise option it returns an error message" do
-        assert_equal "translation missing: en, missing", I18n.t(:missing)
+        assert_equal "translation missing: en.missing", I18n.t(:missing)
       end
 
       define_method "test lookup: given a missing key, no default and the raise option it raises MissingTranslationData" do

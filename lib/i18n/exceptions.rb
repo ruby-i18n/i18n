@@ -30,7 +30,7 @@ module I18n
     def initialize(locale, key, opts = nil)
       @key, @locale, @options = key, locale, opts.dup || {}
       options.each { |k, v| options[k] = v.inspect if v.is_a?(Proc) }
-      super "translation missing: #{keys.join(', ')}"
+      super "translation missing: #{keys.join('.')}"
     end
 
     def keys

@@ -12,7 +12,7 @@ class I18nBackendExceptionsTest < Test::Unit::TestCase
       I18n.t(:'baz.missing', :scope => :'foo.bar', :raise => true)
     rescue I18n::MissingTranslationData => exception
     end
-    assert_equal "translation missing: en, foo, bar, baz, missing", exception.message
+    assert_equal "translation missing: en.foo.bar.baz.missing", exception.message
   end
 
   test "exceptions: MissingTranslationData message from #localize includes the given scope and full key" do
@@ -20,6 +20,6 @@ class I18nBackendExceptionsTest < Test::Unit::TestCase
       I18n.l(Time.now, :format => :foo)
     rescue I18n::MissingTranslationData => exception
     end
-    assert_equal "translation missing: en, time, formats, foo", exception.message
+    assert_equal "translation missing: en.time.formats.foo", exception.message
   end
 end

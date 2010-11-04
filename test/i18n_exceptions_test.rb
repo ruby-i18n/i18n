@@ -27,7 +27,7 @@ class I18nExceptionsTest < Test::Unit::TestCase
   def test_missing_translation_data_message
     force_missing_translation_data
   rescue I18n::ArgumentError => e
-    assert_equal 'translation missing: de, bar, foo', e.message
+    assert_equal 'translation missing: de.bar.foo', e.message
   end
 
   def test_invalid_pluralization_data_stores_entry_and_count
