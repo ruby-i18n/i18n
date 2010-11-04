@@ -7,6 +7,22 @@ class KeyError < IndexError
 end unless defined?(KeyError)
 
 module I18n
+  # Handles exceptions raised in the backend. All exceptions except for
+  # MissingTranslationData exceptions are re-raised. When a MissingTranslationData
+  # was caught the handler returns an error message string containing the key/scope.
+  # Note that the exception handler is not called when the option :raise was given.
+  class ExceptionHandler
+    include Module.new {
+      def call(exception, locale, key, options)
+        if exception.is_a?(MissingTranslationData)
+          options[:rescue_format] == :html ? exception.html_message : exception.message
+        else
+          raise exception
+        end
+      end
+    }
+  end
+
   class ArgumentError < ::ArgumentError; end
 
   class InvalidLocale < ArgumentError
@@ -27,16 +43,22 @@ module I18n
 
   class MissingTranslationData < ArgumentError
     attr_reader :locale, :key, :options
+
     def initialize(locale, key, opts = nil)
       @key, @locale, @options = key, locale, opts.dup || {}
       options.each { |k, v| options[k] = v.inspect if v.is_a?(Proc) }
       super "translation missing: #{keys.join('.')}"
     end
 
+    def html_message
+      key = keys.last.to_s.gsub('_', ' ').gsub(/\b('?[a-z])/) { $1.capitalize }
+      %(<span class="translation_missing">#{key}</span>)
+    end
+
     def keys
-      keys = I18n.normalize_keys(locale, key, options[:scope])
-      keys << 'no key' if keys.size < 2
-      keys
+      @keys ||= I18n.normalize_keys(locale, key, options[:scope]).tap do |keys|
+        keys << 'no key' if keys.size < 2
+      end
     end
   end
 

@@ -57,7 +57,7 @@ module I18n
 
     # Return the current exception handler. Defaults to :default_exception_handler.
     def exception_handler
-      @@exception_handler ||= :default_exception_handler
+      @@exception_handler ||= ExceptionHandler.new
     end
 
     # Sets the exception handler.

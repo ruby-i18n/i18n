@@ -30,6 +30,17 @@ class I18nExceptionsTest < Test::Unit::TestCase
     assert_equal 'translation missing: de.bar.foo', e.message
   end
 
+  def test_missing_translation_data_html_message
+    force_missing_translation_data
+  rescue I18n::ArgumentError => e
+    assert_equal '<span class="translation_missing">Foo</span>', e.html_message
+  end
+
+  def test_missing_translation_data_html_message
+    message = force_missing_translation_data(:rescue_format => :html)
+    assert_equal '<span class="translation_missing">Foo</span>', message
+  end
+
   def test_invalid_pluralization_data_stores_entry_and_count
     force_invalid_pluralization_data
   rescue I18n::ArgumentError => e
@@ -44,7 +55,7 @@ class I18nExceptionsTest < Test::Unit::TestCase
   end
 
   def test_missing_interpolation_argument_stores_key_and_string
-    assert_raise(I18n::MissingInterpolationArgument) { force_missing_interpolation_argument } 
+    assert_raise(I18n::MissingInterpolationArgument) { force_missing_interpolation_argument }
     force_missing_interpolation_argument
   rescue I18n::ArgumentError => e
     # assert_equal :bar, e.key
@@ -71,27 +82,28 @@ class I18nExceptionsTest < Test::Unit::TestCase
   end
 
   private
+
     def force_invalid_locale
-      I18n.backend.translate nil, :foo
+      I18n.translate(:foo, :locale => nil)
     end
 
-    def force_missing_translation_data
-      I18n.backend.store_translations 'de', :bar => nil
-      I18n.backend.translate 'de', :foo, :scope => :bar
+    def force_missing_translation_data(options = {})
+      I18n.backend.store_translations('de', :bar => nil)
+      I18n.translate(:foo, options.merge(:scope => :bar, :locale => :de))
     end
 
     def force_invalid_pluralization_data
-      I18n.backend.store_translations 'de', :foo => [:bar]
-      I18n.backend.translate 'de', :foo, :count => 1
+      I18n.backend.store_translations('de', :foo => [:bar])
+      I18n.translate(:foo, :count => 1, :locale => :de)
     end
 
     def force_missing_interpolation_argument
-      I18n.backend.store_translations 'de', :foo => "%{bar}"
-      I18n.backend.translate 'de', :foo, :baz => 'baz'
+      I18n.backend.store_translations('de', :foo => "%{bar}")
+      I18n.translate(:foo, :baz => 'baz', :locale => :de)
     end
 
     def force_reserved_interpolation_key
-      I18n.backend.store_translations 'de', :foo => "%{scope}"
-      I18n.backend.translate 'de', :foo, :baz => 'baz'
+      I18n.backend.store_translations('de', :foo => "%{scope}")
+      I18n.translate(:foo, :baz => 'baz', :locale => :de)
     end
 end

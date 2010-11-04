@@ -109,18 +109,25 @@ class I18nTest < Test::Unit::TestCase
   end
 
   def test_can_set_exception_handler
+    previous_exception_handler = I18n.exception_handler
     assert_nothing_raised { I18n.exception_handler = :custom_exception_handler }
   ensure
-    I18n.exception_handler = :default_exception_handler
+    I18n.exception_handler = previous_exception_handler
   end
 
   with_mocha do
-    def test_uses_custom_exception_handler
+    def test_uses_custom_exception_handler_set_to_i18n_exception_handler
+      previous_exception_handler = I18n.exception_handler
       I18n.exception_handler = :custom_exception_handler
       I18n.expects(:custom_exception_handler)
       I18n.translate :bogus
     ensure
-      I18n.exception_handler = :default_exception_handler # revert it
+      I18n.exception_handler = previous_exception_handler
+    end
+
+    def test_uses_custom_exception_handler_passed_as_option
+      I18n.expects(:custom_exception_handler)
+      I18n.translate(:bogus, :exception_handler => :custom_exception_handler)
     end
 
     def test_delegates_translate_to_backend
@@ -193,15 +200,17 @@ class I18nTest < Test::Unit::TestCase
   end
 
   def test_proc_exception_handler
+    previous_exception_handler = I18n.exception_handler
     I18n.exception_handler = Proc.new { |exception, locale, key, options|
       "No exception here! [Proc handler]"
     }
     assert_equal "No exception here! [Proc handler]", I18n.translate(:test_proc_handler)
   ensure
-    I18n.exception_handler = :default_exception_handler
+    I18n.exception_handler = previous_exception_handler
   end
 
   def test_class_exception_handler
+    previous_exception_handler = I18n.exception_handler
     I18n.exception_handler = Class.new do
       def call(exception, locale, key, options)
         "No exception here! [Class handler]"
@@ -209,7 +218,7 @@ class I18nTest < Test::Unit::TestCase
     end.new
     assert_equal "No exception here! [Class handler]", I18n.translate(:test_class_handler)
   ensure
-    I18n.exception_handler = :default_exception_handler
+    I18n.exception_handler = previous_exception_handler
   end
 
   test "I18n.with_locale" do
@@ -231,7 +240,7 @@ class I18nTest < Test::Unit::TestCase
       assert_equal :pl, I18n.locale
       assert_equal 'Foo in :pl', I18n.t(:foo)
     end
-    
+
     I18n.with_locale(:en) do
       assert_equal :en, I18n.locale
       assert_equal 'Foo in :en', I18n.t(:foo)
