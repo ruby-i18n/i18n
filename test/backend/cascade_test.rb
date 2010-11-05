@@ -7,14 +7,12 @@ class I18nBackendCascadeTest < Test::Unit::TestCase
 
   def setup
     I18n.backend = Backend.new
-    store_translations(:en,
-      :foo => 'foo',
-      :bar => { :baz => 'baz' }
-    )
+    store_translations(:en, :foo => 'foo', :bar => { :baz => 'baz' })
+    @cascade_options = { :step => 1, :offset => 1, :skip_root => false }
   end
 
   def lookup(key, options = {})
-    I18n.t(key, options.merge(:cascade => { :step => 1, :offset => 1, :skip_root => false }))
+    I18n.t(key, options.merge(:cascade => @cascade_options))
   end
 
   test "still returns an existing translation as usual" do
@@ -38,33 +36,50 @@ class I18nBackendCascadeTest < Test::Unit::TestCase
   test "cascades before evaluating the default" do
     assert_equal 'foo', lookup(:foo, :scope => :missing, :default => 'default')
   end
-  
+
   test "cascades defaults, too" do
     assert_equal 'foo', lookup(nil, :default => [:'missing.missing', :'missing.foo'])
   end
 
-  test "let's us assemble required fallbacks for ActiveRecord validation messages" do
+  test "works with :offset => 2 and a single key" do
+    @cascade_options[:offset] = 2
+    lookup(:foo)
+  end
+
+  test "assemble required fallbacks for ActiveRecord validation messages" do
     store_translations(:en,
       :errors => {
-        :reply => {
-          :title => {
-            :blank => 'blank on reply title'
-          },
-          :taken => 'taken on reply'
-        },
-        :topic => {
-          :title => {
-            :format => 'format on topic title'
-          },
-          :length => 'length on topic'
-        },
-        :odd => 'odd on errors'
+        :odd => 'errors.odd',
+        :reply => { :title => { :blank => 'errors.reply.title.blank'   }, :taken  => 'errors.reply.taken'  },
+        :topic => { :title => { :format => 'errors.topic.title.format' }, :length => 'errors.topic.length' }
       }
     )
-    assert_equal 'blank on reply title',  lookup(:'errors.reply.title.blank',  :default => :'errors.topic.title.blank')
-    assert_equal 'taken on reply',        lookup(:'errors.reply.title.taken',  :default => :'errors.topic.title.taken')
-    assert_equal 'format on topic title', lookup(:'errors.reply.title.format', :default => :'errors.topic.title.format')
-    assert_equal 'length on topic',       lookup(:'errors.reply.title.length', :default => :'errors.topic.title.length')
-    assert_equal 'odd on errors',         lookup(:'errors.reply.title.odd',    :default => :'errors.topic.title.odd')
+    assert_equal 'errors.reply.title.blank',  lookup(:'errors.reply.title.blank',  :default => :'errors.topic.title.blank')
+    assert_equal 'errors.reply.taken',        lookup(:'errors.reply.title.taken',  :default => :'errors.topic.title.taken')
+    assert_equal 'errors.topic.title.format', lookup(:'errors.reply.title.format', :default => :'errors.topic.title.format')
+    assert_equal 'errors.topic.length',       lookup(:'errors.reply.title.length', :default => :'errors.topic.title.length')
+    assert_equal 'errors.odd',                lookup(:'errors.reply.title.odd',    :default => :'errors.topic.title.odd')
+  end
+
+  test "assemble action view translation helper lookup cascade" do
+    @cascade_options[:offset] = 2
+
+    store_translations(:en,
+      :menu => { :show => 'menu.show' },
+      :namespace => {
+        :menu => { :new => 'namespace.menu.new' },
+        :controller => {
+          :menu => { :edit => 'namespace.controller.menu.edit' },
+          :action => {
+            :menu => { :destroy => 'namespace.controller.action.menu.destroy' }
+          }
+        }
+      }
+    )
+
+    assert_equal 'menu.show',                                lookup(:'namespace.controller.action.menu.show')
+    assert_equal 'namespace.menu.new',                       lookup(:'namespace.controller.action.menu.new')
+    assert_equal 'namespace.controller.menu.edit',           lookup(:'namespace.controller.action.menu.edit')
+    assert_equal 'namespace.controller.action.menu.destroy', lookup(:'namespace.controller.action.menu.destroy')
   end
 end

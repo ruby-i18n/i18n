@@ -39,19 +39,18 @@ module I18n
         return super unless cascade = options[:cascade]
 
         cascade   = { :step => 1 } unless cascade.is_a?(Hash)
+        step      = cascade[:step]   || 1
+        offset    = cascade[:offset] || 1
         separator = options[:separator] || I18n.default_separator
         skip_root = cascade.has_key?(:skip_root) ? cascade[:skip_root] : true
-        step      = cascade[:step] || 1
 
-        keys   = I18n.normalize_keys(nil, key, nil, separator)
-        offset = options[:cascade][:offset] || keys.length
-        scope  = I18n.normalize_keys(nil, nil, scope, separator) + keys
-        key    = scope.slice!(-offset, offset).join(separator)
+        scope = I18n.normalize_keys(nil, key, scope, separator)
+        key   = (scope.slice!(-offset, offset) || []).join(separator)
 
         begin
           result = super
           return result unless result.nil?
-        end while !scope.empty? && scope.slice!(-step, step) && (!scope.empty? || !skip_root)
+        end while (!scope.empty? || !skip_root) && scope.slice!(-step, step)
       end
     end
   end
