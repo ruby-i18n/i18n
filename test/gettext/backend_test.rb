@@ -3,8 +3,7 @@
 # apparently Ruby 1.9.1p129 has encoding problems with the gettext po parser
 unless RUBY_VERSION == '1.9.1' && RUBY_PATCHLEVEL <= 129
 
-  $:.unshift(File.expand_path(File.dirname(__FILE__) + '/../')); $:.uniq!
-  require 'test_helper'
+  require File.expand_path('../../test_helper', __FILE__)
 
   class I18nGettextBackendTest < Test::Unit::TestCase
     include I18n::Gettext::Helpers
@@ -84,12 +83,11 @@ unless RUBY_VERSION == '1.9.1' && RUBY_PATCHLEVEL <= 129
       assert_equal 'Rad',   npgettext('Car', ['wheel', 'wheels'], 1)
       assert_equal 'Räder', npgettext('Car', ['wheel', 'wheels'], 2)
     end
-  
+
     def test_ngettextpluralizes_entry_with_dots
       I18n.locale = :de
       assert_equal 'Auf 1 Achse.', n_("On %{count} wheel.", "On %{count} wheels.", 1)
       assert_equal 'Auf 2 Achsen.', n_("On %{count} wheel.", "On %{count} wheels.", 2)
     end
-  
   end
 end

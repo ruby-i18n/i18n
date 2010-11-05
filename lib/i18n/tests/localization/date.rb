@@ -10,53 +10,53 @@ module I18n
           @date = ::Date.new(2008, 3, 1)
         end
 
-        define_method "test localize Date: given the short format it uses it" do
+        test "localize Date: given the short format it uses it" do
           # TODO should be Mrz, shouldn't it?
           assert_equal '01. Mar', I18n.l(@date, :format => :short, :locale => :de)
         end
 
-        define_method "test localize Date: given the long format it uses it" do
+        test "localize Date: given the long format it uses it" do
           assert_equal '01. März 2008', I18n.l(@date, :format => :long, :locale => :de)
         end
 
-        define_method "test localize Date: given the default format it uses it" do
+        test "localize Date: given the default format it uses it" do
           assert_equal '01.03.2008', I18n.l(@date, :format => :default, :locale => :de)
         end
 
-        define_method "test localize Date: given a day name format it returns the correct day name" do
+        test "localize Date: given a day name format it returns the correct day name" do
           assert_equal 'Samstag', I18n.l(@date, :format => '%A', :locale => :de)
         end
 
-        define_method "test localize Date: given an abbreviated day name format it returns the correct abbreviated day name" do
+        test "localize Date: given an abbreviated day name format it returns the correct abbreviated day name" do
           assert_equal 'Sa', I18n.l(@date, :format => '%a', :locale => :de)
         end
 
-        define_method "test localize Date: given a month name format it returns the correct month name" do
+        test "localize Date: given a month name format it returns the correct month name" do
           assert_equal 'März', I18n.l(@date, :format => '%B', :locale => :de)
         end
 
-        define_method "test localize Date: given an abbreviated month name format it returns the correct abbreviated month name" do
+        test "localize Date: given an abbreviated month name format it returns the correct abbreviated month name" do
           # TODO should be Mrz, shouldn't it?
           assert_equal 'Mar', I18n.l(@date, :format => '%b', :locale => :de)
         end
 
-        define_method "test localize Date: given an unknown format it does not fail" do
+        test "localize Date: given an unknown format it does not fail" do
           assert_nothing_raised { I18n.l(@date, :format => '%x') }
         end
 
-        define_method "test localize Date: given nil it raises I18n::ArgumentError" do
+        test "localize Date: given nil it raises I18n::ArgumentError" do
           assert_raise(I18n::ArgumentError) { I18n.l(nil) }
         end
 
-        define_method "test localize Date: given a plain Object it raises I18n::ArgumentError" do
+        test "localize Date: given a plain Object it raises I18n::ArgumentError" do
           assert_raise(I18n::ArgumentError) { I18n.l(Object.new) }
         end
 
-        define_method "test localize Date: given a format is missing it raises I18n::MissingTranslationData" do
+        test "localize Date: given a format is missing it raises I18n::MissingTranslationData" do
           assert_raise(I18n::MissingTranslationData) { I18n.l(@date, :format => :missing) }
         end
 
-        define_method "test localize Date: it does not alter the format string" do
+        test "localize Date: it does not alter the format string" do
           assert_equal '01. Februar 2009', I18n.l(::Date.parse('2009-02-01'), :format => :long, :locale => :de)
           assert_equal '01. Oktober 2009', I18n.l(::Date.parse('2009-10-01'), :format => :long, :locale => :de)
         end

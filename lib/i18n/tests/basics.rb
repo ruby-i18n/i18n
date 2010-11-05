@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 module I18n
   module Tests
     module Basics
@@ -7,7 +5,7 @@ module I18n
         I18n.available_locales = nil
       end
 
-      def test_available_locales
+      test "available_locales returns the locales stored to the backend by default" do
         I18n.backend.store_translations('de', :foo => 'bar')
         I18n.backend.store_translations('en', :foo => 'foo')
 
@@ -15,8 +13,9 @@ module I18n
         assert I18n.available_locales.include?(:en)
       end
 
-      def test_available_locales_setter
+      test "available_locales can be set to something else independently from the actual locale data" do
         I18n.backend.store_translations('de', :foo => 'bar')
+        I18n.backend.store_translations('en', :foo => 'foo')
 
         I18n.available_locales = :foo
         assert_equal [:foo], I18n.available_locales
@@ -25,10 +24,11 @@ module I18n
         assert_equal [:foo, :bar], I18n.available_locales
 
         I18n.available_locales = nil
-        assert_equal [:de, :en], I18n.available_locales.sort {|a,b| a.to_s <=> b.to_s}
+        assert I18n.available_locales.include?(:de)
+        assert I18n.available_locales.include?(:en)
       end
 
-      def test_available_locales_memoizes_when_explicitely_set
+      test "available_locales memoizes when set explicitely" do
         I18n.backend.expects(:available_locales).never
         I18n.available_locales = [:foo]
         I18n.backend.store_translations('de', :bar => 'baz')
@@ -36,18 +36,18 @@ module I18n
         assert_equal [:foo], I18n.available_locales
       end
 
-      def test_available_locales_delegates_to_backend_when_not_explicitely_set
+      test "available_locales delegates to the backend when not set explicitely" do
         I18n.backend.expects(:available_locales).twice
         assert_equal I18n.available_locales, I18n.available_locales
       end
 
-      def test_delete_value
+      test "storing a nil value as a translation removes it from the available locale data" do
         I18n.backend.store_translations(:en, :to_be_deleted => 'bar')
-        assert_equal 'bar', I18n.t('to_be_deleted', :default => 'baz')
+        assert_equal 'bar', I18n.t(:to_be_deleted, :default => 'baz')
 
         I18n.cache_store.clear if I18n.respond_to?(:cache_store) && I18n.cache_store
         I18n.backend.store_translations(:en, :to_be_deleted => nil)
-        assert_equal 'baz', I18n.t('to_be_deleted', :default => 'baz')
+        assert_equal 'baz', I18n.t(:to_be_deleted, :default => 'baz')
       end
     end
   end

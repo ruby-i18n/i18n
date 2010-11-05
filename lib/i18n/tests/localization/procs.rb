@@ -4,58 +4,58 @@ module I18n
   module Tests
     module Localization
       module Procs
-        define_method "test localize: using day names from lambdas" do
+        test "localize: using day names from lambdas" do
           setup_time_proc_translations
           time = ::Time.parse('2008-03-01 6:00 UTC')
           assert_match /Суббота/, I18n.l(time, :format => "%A, %d %B", :locale => :ru)
           assert_match /суббота/, I18n.l(time, :format => "%d %B (%A)", :locale => :ru)
         end
 
-        define_method "test localize: using month names from lambdas" do
+        test "localize: using month names from lambdas" do
           setup_time_proc_translations
           time = ::Time.parse('2008-03-01 6:00 UTC')
           assert_match /марта/, I18n.l(time, :format => "%d %B %Y", :locale => :ru)
           assert_match /Март /, I18n.l(time, :format => "%B %Y", :locale => :ru)
         end
 
-        define_method "test localize: using abbreviated day names from lambdas" do
+        test "localize: using abbreviated day names from lambdas" do
           setup_time_proc_translations
           time = ::Time.parse('2008-03-01 6:00 UTC')
           assert_match /марта/, I18n.l(time, :format => "%d %b %Y", :locale => :ru)
           assert_match /март /, I18n.l(time, :format => "%b %Y", :locale => :ru)
         end
 
-        define_method "test localize Date: given a format that resolves to a Proc it calls the Proc with the object" do
+        test "localize Date: given a format that resolves to a Proc it calls the Proc with the object" do
           setup_time_proc_translations
           date = ::Date.new(2008, 3, 1, 6)
           assert_equal '[Sat, 01 Mar 2008, {}]', I18n.l(date, :format => :proc, :locale => :ru)
         end
 
-        define_method "test localize Date: given a format that resolves to a Proc it calls the Proc with the object and extra options" do
+        test "localize Date: given a format that resolves to a Proc it calls the Proc with the object and extra options" do
           setup_time_proc_translations
           date = ::Date.new(2008, 3, 1, 6)
           assert_equal '[Sat, 01 Mar 2008, {:foo=>"foo"}]', I18n.l(date, :format => :proc, :foo => 'foo', :locale => :ru)
         end
 
-        define_method "test localize DateTime: given a format that resolves to a Proc it calls the Proc with the object" do
+        test "localize DateTime: given a format that resolves to a Proc it calls the Proc with the object" do
           setup_time_proc_translations
           datetime = ::DateTime.new(2008, 3, 1, 6)
           assert_equal '[Sat, 01 Mar 2008 06:00:00 +0000, {}]', I18n.l(datetime, :format => :proc, :locale => :ru)
         end
 
-        define_method "test localize DateTime: given a format that resolves to a Proc it calls the Proc with the object and extra options" do
+        test "localize DateTime: given a format that resolves to a Proc it calls the Proc with the object and extra options" do
           setup_time_proc_translations
           datetime = ::DateTime.new(2008, 3, 1, 6)
           assert_equal '[Sat, 01 Mar 2008 06:00:00 +0000, {:foo=>"foo"}]', I18n.l(datetime, :format => :proc, :foo => 'foo', :locale => :ru)
         end
 
-        define_method "test localize Time: given a format that resolves to a Proc it calls the Proc with the object" do
+        test "localize Time: given a format that resolves to a Proc it calls the Proc with the object" do
           setup_time_proc_translations
           time = ::Time.parse('2008-03-01 6:00 UTC')
           assert_equal [time, {}].inspect, I18n.l(time, :format => :proc, :locale => :ru)
         end
 
-        define_method "test localize Time: given a format that resolves to a Proc it calls the Proc with the object and extra options" do
+        test "localize Time: given a format that resolves to a Proc it calls the Proc with the object and extra options" do
           setup_time_proc_translations
           time    = ::Time.parse('2008-03-01 6:00 UTC')
           options = { :foo => 'foo' }

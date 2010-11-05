@@ -1,10 +1,4 @@
-# encoding: utf-8
-
-begin
-  require 'cldr'
-rescue LoadError
-  puts "Skipping tests for I18n::Backend::Cldr because the ruby-cldr gem is not installed."
-end
+require File.expand_path('../../test_helper', __FILE__)
 
 if defined?(Cldr)
   $:.unshift(File.expand_path(File.dirname(__FILE__) + '/../')); $:.uniq!

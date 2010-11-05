@@ -1,6 +1,4 @@
-# encoding: utf-8
-$:.unshift(File.expand_path(File.dirname(__FILE__) + '/../../')); $:.uniq!
-require 'test_helper'
+require File.expand_path('../../../test_helper', __FILE__)
 
 # thanks to Masao's String extensions these should work the same in
 # Ruby 1.8 (patched) and Ruby 1.9 (native)

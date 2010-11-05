@@ -1,6 +1,4 @@
-# encoding: utf-8
-$:.unshift(File.expand_path(File.dirname(__FILE__) + '/../')); $:.uniq!
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class I18nMemoizeBackendWithSimpleApiTest < Test::Unit::TestCase
   include I18n::Tests::Basics
@@ -44,7 +42,7 @@ class I18nMemoizeBackendWithKeyValueApiTest < Test::Unit::TestCase
 
   # include I18n::Tests::Procs
   # include I18n::Tests::Localization::Procs
-  
+
   class MemoizeBackend < I18n::Backend::KeyValue
     include I18n::Backend::Memoize
   end
@@ -55,7 +53,7 @@ class I18nMemoizeBackendWithKeyValueApiTest < Test::Unit::TestCase
     I18n.backend = MemoizeBackend.new(STORE)
     super
   end
-  
+
   test "make sure we use the MemoizeBackend backend" do
     assert_equal MemoizeBackend, I18n.backend.class
   end

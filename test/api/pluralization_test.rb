@@ -1,6 +1,4 @@
-# encoding: utf-8
-$:.unshift(File.expand_path(File.dirname(__FILE__) + '/../')); $:.uniq!
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class I18nPluralizationApiTest < Test::Unit::TestCase
   class Backend < I18n::Backend::Simple
@@ -27,6 +25,6 @@ class I18nPluralizationApiTest < Test::Unit::TestCase
   test "make sure we use a backend with Pluralization included" do
     assert_equal Backend, I18n.backend.class
   end
-  
+
   # links: test that keys stored on one backend can link to keys stored on another backend
 end

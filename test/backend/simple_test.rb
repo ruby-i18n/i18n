@@ -1,7 +1,4 @@
-# encoding: utf-8
-
-$:.unshift(File.expand_path(File.dirname(__FILE__) + '/../')); $:.uniq!
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class I18nBackendSimpleTest < Test::Unit::TestCase
   def setup
@@ -13,12 +10,12 @@ class I18nBackendSimpleTest < Test::Unit::TestCase
   test "simple backend translate: given nil as a key it still interpolations the default value" do
     assert_equal "Hi David", I18n.t(nil, :default => "Hi %{name}", :name => "David")
   end
-  
+
   # loading translations
   test "simple load_translations: given an unknown file type it raises I18n::UnknownFileType" do
     assert_raise(I18n::UnknownFileType) { I18n.backend.load_translations("#{locales_dir}/en.xml") }
   end
-  
+
   test "simple load_translations: given a Ruby file name it does not raise anything" do
     assert_nothing_raised { I18n.backend.load_translations("#{locales_dir}/en.rb") }
   end
@@ -27,7 +24,7 @@ class I18nBackendSimpleTest < Test::Unit::TestCase
     I18n.backend.load_translations
     assert_equal({ :en => { :foo => { :bar => 'baz' } } }, I18n.backend.send(:translations))
   end
-  
+
   test "simple load_rb: loads data from a Ruby file" do
     data = I18n.backend.send(:load_rb, "#{locales_dir}/en.rb")
     assert_equal({ :en => { :fuh => { :bah => 'bas' } } }, data)
@@ -44,7 +41,7 @@ class I18nBackendSimpleTest < Test::Unit::TestCase
     expected = { :en => { :fuh => { :bah => "bas" }, :foo => { :bar => "baz" } } }
     assert_equal expected, translations
   end
-  
+
   # storing translations
 
   test "simple store_translations: stores translations, ... no, really :-)" do
@@ -67,7 +64,7 @@ class I18nBackendSimpleTest < Test::Unit::TestCase
     I18n.backend.store_translations 'en', 'foo' => {'bar' => 'bar', 'baz' => 'baz'}
     assert_equal Hash[:'en', {:foo => {:bar => 'bar', :baz => 'baz'}}], translations
   end
-  
+
   # reloading translations
 
   test "simple reload_translations: unloads translations" do

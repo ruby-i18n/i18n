@@ -1,4 +1,5 @@
 source :rubygems
 
 gem 'mocha'
+gem 'test_declarative'
 

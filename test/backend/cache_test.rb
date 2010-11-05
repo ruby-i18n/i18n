@@ -1,6 +1,4 @@
-# encoding: utf-8
-$:.unshift(File.expand_path(File.dirname(__FILE__) + '/../')); $:.uniq!
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 begin
   require 'active_support'
@@ -27,26 +25,24 @@ class I18nBackendCacheTest < Test::Unit::TestCase
     assert I18n.cache_store.is_a?(ActiveSupport::Cache::MemoryStore)
   end
 
-  with_mocha do
-    test "translate hits the backend and caches the response" do
-      I18n.backend.expects(:lookup).returns('Foo')
-      assert_equal 'Foo', I18n.t(:foo)
+  test "translate hits the backend and caches the response" do
+    I18n.backend.expects(:lookup).returns('Foo')
+    assert_equal 'Foo', I18n.t(:foo)
 
-      I18n.backend.expects(:lookup).never
-      assert_equal 'Foo', I18n.t(:foo)
+    I18n.backend.expects(:lookup).never
+    assert_equal 'Foo', I18n.t(:foo)
 
-      I18n.backend.expects(:lookup).returns('Bar')
-      assert_equal 'Bar', I18n.t(:bar)
-    end
+    I18n.backend.expects(:lookup).returns('Bar')
+    assert_equal 'Bar', I18n.t(:bar)
+  end
 
-    test "still raises MissingTranslationData but also caches it" do
-      I18n.backend.expects(:lookup).returns(nil)
-      assert_raise(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
+  test "still raises MissingTranslationData but also caches it" do
+    I18n.backend.expects(:lookup).returns(nil)
+    assert_raise(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
 
-      I18n.cache_store.expects(:write).never
-      I18n.backend.expects(:lookup).never
-      assert_raise(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
-    end
+    I18n.cache_store.expects(:write).never
+    I18n.backend.expects(:lookup).never
+    assert_raise(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
   end
 
   test "uses 'i18n' as a cache key namespace by default" do
@@ -68,10 +64,10 @@ class I18nBackendCacheTest < Test::Unit::TestCase
   test "keys should not be equal" do
     interpolation_values1 = { :foo => 1, :bar => 2 }
     interpolation_values2 = { :foo => 2, :bar => 1 }
-    
+
     key1 = I18n.backend.send(:cache_key, :en, :some_key, interpolation_values1)
     key2 = I18n.backend.send(:cache_key, :en, :some_key, interpolation_values2)
-    
+
     assert key1 != key2
   end
 

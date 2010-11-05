@@ -1,65 +1,62 @@
-# encoding: utf-8
-$:.unshift(File.expand_path(File.dirname(__FILE__))); $:.uniq!
-require 'test_helper'
+require File.expand_path('../test_helper', __FILE__)
 
 class I18nTest < Test::Unit::TestCase
   def setup
-    I18n.backend.store_translations :'en', {
-      :currency => {
-        :format => {
-          :separator => '.',
-          :delimiter => ',',
-        }
-      }
-    }
+    I18n.backend.store_translations(:'en', :currency => { :format => { :separator => '.', :delimiter => ',', } })
   end
 
-  def test_version
+  test "exposes its VERSION constant" do
     assert I18n::VERSION
   end
 
-  def test_uses_simple_backend_set_by_default
+  test "uses the simple backend by default" do
     assert I18n.backend.is_a?(I18n::Backend::Simple)
   end
 
-  def test_can_set_backend
-    assert_nothing_raised { I18n.backend = self }
-    assert_equal self, I18n.backend
-  ensure
-    I18n.backend = I18n::Backend::Simple.new
+  test "can set the backend" do
+    begin
+      assert_nothing_raised { I18n.backend = self }
+      assert_equal self, I18n.backend
+    ensure
+      I18n.backend = I18n::Backend::Simple.new
+    end
   end
 
-  def test_uses_en_us_as_default_locale_by_default
+  test "uses :en as a default_locale by default" do
     assert_equal :en, I18n.default_locale
   end
 
-  def test_can_set_default_locale
-    assert_nothing_raised { I18n.default_locale = 'de' }
-    assert_equal :de, I18n.default_locale
-  ensure
-    I18n.default_locale = :en
+  test "can set the default locale" do
+    begin
+      assert_nothing_raised { I18n.default_locale = 'de' }
+      assert_equal :de, I18n.default_locale
+    ensure
+      I18n.default_locale = :en
+    end
   end
 
-  def test_uses_default_locale_as_locale_by_default
+  test "uses the default locale as a locale by default" do
     assert_equal I18n.default_locale, I18n.locale
   end
 
-  def test_can_set_locale_to_thread_current
+  test "sets the current locale to Thread.current" do
     assert_nothing_raised { I18n.locale = 'de' }
     assert_equal :de, I18n.locale
     assert_equal :de, Thread.current[:i18n_config].locale
     I18n.locale = :en
   end
 
-  def test_can_set_i18n_config
-    I18n.config = self
-    assert_equal self, I18n.config
-    assert_equal self, Thread.current[:i18n_config]
-  ensure
-    I18n.config = ::I18n::Config.new
+  test "can set the configuration object" do
+    begin
+      I18n.config = self
+      assert_equal self, I18n.config
+      assert_equal self, Thread.current[:i18n_config]
+    ensure
+      I18n.config = ::I18n::Config.new
+    end
   end
 
-  def test_locale_is_not_shared_between_configurations
+  test "locale is not shared between configurations" do
     a = I18n::Config.new
     b = I18n::Config.new
     a.locale = :fr
@@ -69,29 +66,33 @@ class I18nTest < Test::Unit::TestCase
     assert_equal :en, I18n.locale
   end
 
-  def test_other_options_are_shared_between_configurations
-    a = I18n::Config.new
-    b = I18n::Config.new
-    a.default_locale = :fr
-    b.default_locale = :es
-    assert_equal :es, a.default_locale
-    assert_equal :es, b.default_locale
-    assert_equal :es, I18n.default_locale
-  ensure
-    I18n.default_locale = :en
+  test "other options are shared between configurations" do
+    begin
+      a = I18n::Config.new
+      b = I18n::Config.new
+      a.default_locale = :fr
+      b.default_locale = :es
+      assert_equal :es, a.default_locale
+      assert_equal :es, b.default_locale
+      assert_equal :es, I18n.default_locale
+    ensure
+      I18n.default_locale = :en
+    end
   end
 
-  def test_defaults_to_dot_as_separator
+  test "uses a dot as a default_separator by default" do
     assert_equal '.', I18n.default_separator
   end
 
-  def test_can_set_default_separator
-    assert_nothing_raised { I18n.default_separator = "\001" }
-  ensure
-    I18n.default_separator = '.' # revert it
+  test "can set the default_separator" do
+    begin
+      assert_nothing_raised { I18n.default_separator = "\001" }
+    ensure
+      I18n.default_separator = '.'
+    end
   end
 
-  def test_normalize_keys
+  test "normalize_keys normalizes given locale, keys and scope to an array of single-key symbols" do
     assert_equal [:en, :foo, :bar], I18n.normalize_keys(:en, :bar, :foo)
     assert_equal [:en, :foo, :bar, :baz, :buz], I18n.normalize_keys(:en, :'baz.buz', :'foo.bar')
     assert_equal [:en, :foo, :bar, :baz, :buz], I18n.normalize_keys(:en, 'baz.buz', 'foo.bar')
@@ -99,24 +100,27 @@ class I18nTest < Test::Unit::TestCase
     assert_equal [:en, :foo, :bar, :baz, :buz], I18n.normalize_keys(:en, [:baz, :buz], [:foo, :bar])
   end
 
-  def test_normalize_keys_should_not_attempt_to_sym_on_empty_string
-    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.normalize_keys(:en, :'baz.buz', :'foo..bar')
-    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.normalize_keys(:en, :'baz.buz', :'foo......bar')
+  test "normalize_keys discards empty keys" do
+    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.normalize_keys(:en, :'baz..buz', :'foo..bar')
+    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.normalize_keys(:en, :'baz......buz', :'foo......bar')
+    assert_equal [:en, :foo, :bar, :baz, :buz], I18n.normalize_keys(:en, ['baz', nil, '', 'buz'], ['foo', nil, '', 'bar'])
   end
 
-  def test_uses_passed_separator_to_normalize_keys
+  test "normalize_keys uses a given separator" do
     assert_equal [:en, :foo, :bar, :baz, :buz], I18n.normalize_keys(:en, :'baz|buz', :'foo|bar', '|')
   end
 
-  def test_can_set_exception_handler
-    previous_exception_handler = I18n.exception_handler
-    assert_nothing_raised { I18n.exception_handler = :custom_exception_handler }
-  ensure
-    I18n.exception_handler = previous_exception_handler
+  test "can set the exception_handler" do
+    begin
+      previous_exception_handler = I18n.exception_handler
+      assert_nothing_raised { I18n.exception_handler = :custom_exception_handler }
+    ensure
+      I18n.exception_handler = previous_exception_handler
+    end
   end
 
-  with_mocha do
-    def test_uses_custom_exception_handler_set_to_i18n_exception_handler
+  test "uses a custom exception handler set to I18n.exception_handler" do
+    begin
       previous_exception_handler = I18n.exception_handler
       I18n.exception_handler = :custom_exception_handler
       I18n.expects(:custom_exception_handler)
@@ -124,138 +128,109 @@ class I18nTest < Test::Unit::TestCase
     ensure
       I18n.exception_handler = previous_exception_handler
     end
-
-    def test_uses_custom_exception_handler_passed_as_option
-      I18n.expects(:custom_exception_handler)
-      I18n.translate(:bogus, :exception_handler => :custom_exception_handler)
-    end
-
-    def test_delegates_translate_to_backend
-      I18n.backend.expects(:translate).with('de', :foo, {})
-      I18n.translate :foo, :locale => 'de'
-    end
-
-    def test_delegates_localize_to_backend
-      I18n.backend.expects(:localize).with('de', :whatever, :default, {})
-      I18n.localize :whatever, :locale => 'de'
-    end
-
-    def test_translate_given_no_locale_uses_i18n_locale
-      I18n.backend.expects(:translate).with(:en, :foo, {})
-      I18n.translate :foo
-    end
   end
 
-  def test_translate_on_nested_symbol_keys_works
+  test "uses a custom exception handler passed as an option" do
+    I18n.expects(:custom_exception_handler)
+    I18n.translate(:bogus, :exception_handler => :custom_exception_handler)
+  end
+
+  test "delegates translate calls to the backend" do
+    I18n.backend.expects(:translate).with('de', :foo, {})
+    I18n.translate :foo, :locale => 'de'
+  end
+
+  test "delegates localize calls to the backend" do
+    I18n.backend.expects(:localize).with('de', :whatever, :default, {})
+    I18n.localize :whatever, :locale => 'de'
+  end
+
+  test "translate given no locale uses the current locale" do
+    I18n.backend.expects(:translate).with(:en, :foo, {})
+    I18n.translate :foo
+  end
+
+  test "translate works with nested symbol keys" do
     assert_equal ".", I18n.t(:'currency.format.separator')
   end
 
-  def test_translate_with_nested_string_keys_works
+  test "translate works with nested string keys" do
     assert_equal ".", I18n.t('currency.format.separator')
   end
 
-  def test_translate_with_array_as_scope_works
+  test "translate with an array as a scope works" do
     assert_equal ".", I18n.t(:separator, :scope => %w(currency format))
   end
 
-  def test_translate_with_array_containing_dot_separated_strings_as_scope_works
+  test "translate with an array containing dot separated strings as a scope works" do
     assert_equal ".", I18n.t(:separator, :scope => ['currency.format'])
   end
 
-  def test_translate_with_key_array_and_dot_separated_scope_works
+  test "translate with an array of keys and a dot separated string as a scope works" do
     assert_equal [".", ","], I18n.t(%w(separator delimiter), :scope => 'currency.format')
   end
 
-  def test_translate_with_dot_separated_key_array_and_scope_works
+  test "translate with an array of dot separated keys and a scope works" do
     assert_equal [".", ","], I18n.t(%w(format.separator format.delimiter), :scope => 'currency')
   end
-
-  # with_mocha do
-  #   def test_translate_with_options_using_scope_works
-  #     I18n.backend.expects(:translate).with('de', :precision, :scope => :"currency.format")
-  #     I18n.with_options :locale => 'de', :scope => :'currency.format' do |locale|
-  #       locale.t :precision
-  #     end
-  #   end
-  # end
 
   # def test_translate_given_no_args_raises_missing_translation_data
   #   assert_equal "translation missing: en, no key", I18n.t
   # end
 
-  def test_translate_given_a_bogus_key_raises_missing_translation_data
+  test "translate given a bogus key returns an error message" do
     assert_equal "translation missing: en.bogus", I18n.t(:bogus)
   end
 
-  def test_translate_empty_string_raises_argument_error
+  test "translate given an empty string as a key raises an I18n::ArgumentError" do
     assert_raise(I18n::ArgumentError) { I18n.t("") }
   end
 
-  def test_localize_nil_raises_argument_error
+  test "localize given nil raises an I18n::ArgumentError" do
     assert_raise(I18n::ArgumentError) { I18n.l nil }
   end
 
-  def test_localize_object_raises_argument_error
+  test "localize givan an Object raises an I18n::ArgumentError" do
     assert_raise(I18n::ArgumentError) { I18n.l Object.new }
   end
 
-  def test_proc_exception_handler
-    previous_exception_handler = I18n.exception_handler
-    I18n.exception_handler = Proc.new { |exception, locale, key, options|
-      "No exception here! [Proc handler]"
-    }
-    assert_equal "No exception here! [Proc handler]", I18n.translate(:test_proc_handler)
-  ensure
-    I18n.exception_handler = previous_exception_handler
+  test "can use a lambda as an exception handler" do
+    begin
+      previous_exception_handler = I18n.exception_handler
+      I18n.exception_handler = Proc.new { |exception, locale, key, options| exception }
+      assert_equal I18n::MissingTranslationData, I18n.translate(:test_proc_handler).class
+    ensure
+      I18n.exception_handler = previous_exception_handler
+    end
   end
 
-  def test_class_exception_handler
-    previous_exception_handler = I18n.exception_handler
-    I18n.exception_handler = Class.new do
-      def call(exception, locale, key, options)
-        "No exception here! [Class handler]"
-      end
-    end.new
-    assert_equal "No exception here! [Class handler]", I18n.translate(:test_class_handler)
-  ensure
-    I18n.exception_handler = previous_exception_handler
+  test "can use an object responding to #call as an exception handler" do
+    begin
+      previous_exception_handler = I18n.exception_handler
+      I18n.exception_handler = Class.new do
+        def call(exception, locale, key, options); exception; end
+      end.new
+      assert_equal I18n::MissingTranslationData, I18n.translate(:test_proc_handler).class
+    ensure
+      I18n.exception_handler = previous_exception_handler
+    end
   end
 
-  test "I18n.with_locale" do
+  test "I18n.with_locale temporarily sets the given locale" do
     store_translations(:en, :foo => 'Foo in :en')
     store_translations(:de, :foo => 'Foo in :de')
     store_translations(:pl, :foo => 'Foo in :pl')
 
-    I18n.with_locale do
-      assert_equal I18n.default_locale, I18n.locale
-      assert_equal 'Foo in :en', I18n.t(:foo)
-    end
-
-    I18n.with_locale(:de) do
-      assert_equal :de, I18n.locale
-      assert_equal 'Foo in :de', I18n.t(:foo)
-    end
-
-    I18n.with_locale(:pl) do
-      assert_equal :pl, I18n.locale
-      assert_equal 'Foo in :pl', I18n.t(:foo)
-    end
-
-    I18n.with_locale(:en) do
-      assert_equal :en, I18n.locale
-      assert_equal 'Foo in :en', I18n.t(:foo)
-    end
+    I18n.with_locale      { assert_equal [:en, 'Foo in :en'], [I18n.locale, I18n.t(:foo)] }
+    I18n.with_locale(:de) { assert_equal [:de, 'Foo in :de'], [I18n.locale, I18n.t(:foo)] }
+    I18n.with_locale(:pl) { assert_equal [:pl, 'Foo in :pl'], [I18n.locale, I18n.t(:foo)] }
+    I18n.with_locale(:en) { assert_equal [:en, 'Foo in :en'], [I18n.locale, I18n.t(:foo)] }
 
     assert_equal I18n.default_locale, I18n.locale
   end
 
-  test "whether I18n.with_locale reset the locale in case of errors" do
-    assert_raise(I18n::ArgumentError) do
-      I18n.with_locale(:pl) do
-        raise I18n::ArgumentError
-      end
-    end
+  test "I18n.with_locale resets the locale in case of errors" do
+    assert_raise(I18n::ArgumentError) { I18n.with_locale(:pl) { raise I18n::ArgumentError } }
     assert_equal I18n.default_locale, I18n.locale
   end
-
 end

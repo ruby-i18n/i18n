@@ -1,9 +1,6 @@
-# encoding: utf-8
-$:.unshift(File.expand_path(File.dirname(__FILE__) + '/../')); $:.uniq!
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 
 class I18nBackendTransliterator < Test::Unit::TestCase
-
   def setup
     I18n.backend = I18n::Backend::Simple.new
     @proc = lambda { |n| n.upcase }
