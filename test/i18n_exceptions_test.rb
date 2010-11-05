@@ -33,12 +33,12 @@ class I18nExceptionsTest < Test::Unit::TestCase
   def test_missing_translation_data_html_message
     force_missing_translation_data
   rescue I18n::ArgumentError => e
-    assert_equal '<span class="translation_missing">Foo</span>', e.html_message
+    assert_equal '<span class="translation_missing" title="translation missing: de.bar.foo">Foo</span>', e.html_message
   end
 
-  def test_missing_translation_data_html_message
+  def test_missing_translation_data_rescue_format_html
     message = force_missing_translation_data(:rescue_format => :html)
-    assert_equal '<span class="translation_missing">Foo</span>', message
+    assert_equal '<span class="translation_missing" title="translation missing: de.bar.foo">Foo</span>', message
   end
 
   def test_invalid_pluralization_data_stores_entry_and_count

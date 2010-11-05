@@ -52,7 +52,7 @@ module I18n
 
     def html_message
       key = keys.last.to_s.gsub('_', ' ').gsub(/\b('?[a-z])/) { $1.capitalize }
-      %(<span class="translation_missing">#{key}</span>)
+      %(<span class="translation_missing" title="translation missing: #{keys.join('.')}">#{key}</span>)
     end
 
     def keys
