@@ -1,6 +1,5 @@
 module I18n
   module Backend
-    autoload :ActiveRecord,          'i18n/backend/active_record'
     autoload :Base,                  'i18n/backend/base'
     autoload :InterpolationCompiler, 'i18n/backend/interpolation_compiler'
     autoload :Cache,                 'i18n/backend/cache'

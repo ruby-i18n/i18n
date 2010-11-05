@@ -29,7 +29,7 @@ class I18nMemoizeBackendWithSimpleApiTest < Test::Unit::TestCase
   end
 end
 
-Test.setup_rufus_tokyo
+I18n::Tests.setup_rufus_tokyo
 
 class I18nMemoizeBackendWithKeyValueApiTest < Test::Unit::TestCase
   include I18n::Tests::Basics

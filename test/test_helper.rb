@@ -1,14 +1,6 @@
-# encoding: utf-8
-$KCODE = 'u' if RUBY_VERSION <= '1.9'
+require 'test_setup'
 
-require 'rubygems'
-require 'test/unit'
-
-require 'test_setup/options'
-require 'test_setup/bundle'
-require 'test_setup/active_record'
-require 'test_setup/rufus_tokyo'
-require 'mocha'
+I18n::Tests.parse_options!
 
 class Test::Unit::TestCase
   def self.test(name, &block)
