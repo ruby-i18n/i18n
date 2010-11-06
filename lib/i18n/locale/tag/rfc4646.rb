@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 # RFC 4646/47 compliant Locale tag implementation that parses locale tags to
 # subtags such as language, script, region, variant etc.
 #

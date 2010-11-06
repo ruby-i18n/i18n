@@ -1,7 +1,3 @@
-# encoding: utf-8
-
-# EXPERIMENTAL
-#
 # The Cascade module adds the ability to do cascading lookups to backends that
 # are compatible to the Simple backend.
 #

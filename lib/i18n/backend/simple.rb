@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 module I18n
   module Backend
     # A simple backend that reads translations from YAML files and stores them in

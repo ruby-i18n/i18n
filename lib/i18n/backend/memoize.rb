@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Memoize module simply memoizes the values returned by lookup using
 # a flat hash and can tremendously speed up the lookup process in a backend.
 #

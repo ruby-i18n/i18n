@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 module I18n
   module Gettext
     PLURAL_SEPARATOR  = "\001"

@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 module I18n
   module Locale
     module Tag

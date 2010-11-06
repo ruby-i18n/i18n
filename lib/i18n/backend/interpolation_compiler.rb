@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 # The InterpolationCompiler module contains optimizations that can tremendously
 # speed up the interpolation process on the Simple backend.
 #

@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'cldr'
 
 module I18n
