@@ -10,7 +10,6 @@ module I18n
 
       RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback]
       RESERVED_KEYS_PATTERN = /%\{(#{RESERVED_KEYS.join("|")})\}/
-      DEPRECATED_INTERPOLATION_SYNTAX_PATTERN = /(\\)?\{\{([^\}]+)\}\}/
 
       # Accepts a list of paths to translation files. Loads translations from
       # plain Ruby (*.rb) or YAML files (*.yml). See #load_rb and #load_yml
@@ -149,16 +148,6 @@ module I18n
         # interpolation).
         def interpolate(locale, string, values = {})
           return string unless string.is_a?(::String) && !values.empty?
-
-          string = string.gsub(DEPRECATED_INTERPOLATION_SYNTAX_PATTERN) do
-            escaped, key = $1, $2.to_sym
-            if escaped
-              "{{#{key}}}"
-            else
-              warn_syntax_deprecation!(locale, string)
-              "%{#{key}}"
-            end
-          end
 
           values.each do |key, value|
             value = value.call(values) if interpolate_lambda?(value, string, key)

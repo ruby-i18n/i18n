@@ -54,13 +54,6 @@ module I18n
         assert_equal 'Hi Yehuda!', interpolate(:interpolate, :name => 'Yehuda')
       end
 
-      test "interpolation: works with the deprecated syntax" do
-        deprecation = capture(:stderr) do
-          assert_equal 'Hi David!', interpolate(:default => 'Hi {{name}}!', :name => 'David')
-        end
-        assert_match "The {{key}} interpolation syntax in I18n messages is deprecated", deprecation
-      end
-
       test "interpolation: given the translation is in utf-8 it still works" do
         assert_equal 'Häi David!', interpolate(:default => 'Häi %{name}!', :name => 'David')
       end
