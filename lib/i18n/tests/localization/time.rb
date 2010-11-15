@@ -7,8 +7,8 @@ module I18n
         def setup
           super
           setup_time_translations
-          @time = ::Time.parse('2008-03-01 6:00 UTC')
-          @other_time = ::Time.parse('2008-03-01 18:00 UTC')
+          @time = ::Time.utc(2008, 3, 1, 6, 0)
+          @other_time = ::Time.utc(2008, 3, 1, 18, 0)
         end
 
         test "localize Time: given the short format it uses it" do
