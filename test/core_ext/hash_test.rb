@@ -1,4 +1,4 @@
-require File.expand_path('../../test_helper', __FILE__)
+require 'test_helper'
 require 'i18n/core_ext/hash'
 
 class I18nCoreExtHashInterpolationTest < Test::Unit::TestCase

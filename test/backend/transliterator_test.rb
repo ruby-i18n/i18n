@@ -1,4 +1,5 @@
-require File.expand_path('../../test_helper', __FILE__)
+# :coding: utf-8
+require 'test_helper'
 
 class I18nBackendTransliterator < Test::Unit::TestCase
   def setup

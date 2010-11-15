@@ -1,4 +1,4 @@
-require File.expand_path('../test_helper', __FILE__)
+require 'test_helper'
 
 class I18nExceptionsTest < Test::Unit::TestCase
   def test_invalid_locale_stores_locale
