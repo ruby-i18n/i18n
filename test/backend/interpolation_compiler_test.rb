@@ -1,4 +1,4 @@
-require File.expand_path('../../test_helper', __FILE__)
+require 'test_helper'
 
 class InterpolationCompilerTest < Test::Unit::TestCase
   Compiler = I18n::Backend::InterpolationCompiler::Compiler

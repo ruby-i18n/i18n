@@ -1,4 +1,4 @@
-require File.expand_path('../../test_helper', __FILE__)
+require 'test_helper'
 
 class I18nSimpleBackendApiTest < Test::Unit::TestCase
   class Backend < I18n::Backend::Simple

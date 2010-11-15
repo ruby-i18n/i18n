@@ -1,4 +1,4 @@
-require File.expand_path('../test_helper', __FILE__)
+require 'test_helper'
 
 class I18nTest < Test::Unit::TestCase
   def setup

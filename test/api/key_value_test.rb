@@ -1,4 +1,4 @@
-require File.expand_path('../../test_helper', __FILE__)
+require 'test_helper'
 
 I18n::Tests.setup_rufus_tokyo
 

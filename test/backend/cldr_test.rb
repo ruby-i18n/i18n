@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
-require File.expand_path('../../test_helper', __FILE__)
+# :coding: utf-8
+require 'test_helper'
 
 if defined?(Cldr)
-  $:.unshift(File.expand_path(File.dirname(__FILE__) + '/../')); $:.uniq!
   require 'test_helper'
   require 'i18n/backend/cldr'
   require 'date'
