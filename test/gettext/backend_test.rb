@@ -1,9 +1,9 @@
 # encoding: utf-8
 
+require 'test_helper'
+
 # apparently Ruby 1.9.1p129 has encoding problems with the gettext po parser
 unless RUBY_VERSION == '1.9.1' && RUBY_PATCHLEVEL <= 129
-
-  require File.expand_path('../../test_helper', __FILE__)
 
   class I18nGettextBackendTest < Test::Unit::TestCase
     include I18n::Gettext::Helpers

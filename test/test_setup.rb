@@ -15,7 +15,6 @@ def gem(gem_name, *version_requirements)
 end
 
 require 'bundler/setup'
-$:.unshift File.expand_path("../lib", File.dirname(__FILE__))
 require 'i18n'
 require 'mocha'
 require 'test_declarative'

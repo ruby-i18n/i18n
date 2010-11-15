@@ -1,4 +1,4 @@
-require File.expand_path('../test_setup', __FILE__)
+require 'test_setup'
 
 I18n::Tests.parse_options!
 
