@@ -61,7 +61,7 @@ class I18nBackendChainTest < Test::Unit::TestCase
 
     def backend(translations)
       backend = I18n::Backend::Simple.new
-      translations.each { |locale, translations| backend.store_translations(locale, translations) }
+      translations.each { |locale, data| backend.store_translations(locale, data) }
       backend
     end
 end

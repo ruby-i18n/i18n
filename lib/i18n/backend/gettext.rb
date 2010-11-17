@@ -43,8 +43,8 @@ module I18n
               key, value = normalize_pluralization(locale, key, value) if key.index("\000")
 
               parts = key.split('|').reverse
-              normalized = parts.inject({}) do |normalized, part|
-                normalized = { part => normalized.empty? ? value : normalized }
+              normalized = parts.inject({}) do |_normalized, part|
+                { part => _normalized.empty? ? value : _normalized }
               end
 
               result.deep_merge!(normalized)
@@ -62,7 +62,7 @@ module I18n
           raise "invalid number of plurals: #{values.size}, keys: #{keys.inspect}" if values.size != keys.size
 
           result = {}
-          values.each_with_index { |value, ix| result[keys[ix]] = value }
+          values.each_with_index { |_value, ix| result[keys[ix]] = _value }
           [key, result]
         end
 
