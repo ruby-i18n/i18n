@@ -9,8 +9,7 @@ require 'test/unit'
 # to load I18n using the gem method. Instead, we want to test the local library of course.
 alias :gem_for_ruby_19 :gem # for 1.9. gives a super ugly seg fault otherwise
 def gem(gem_name, *version_requirements)
-  puts("skipping loading the i18n gem ...") && return if gem_name =='i18n'
-  super(gem_name, *version_requirements)
+  gem_name =='i18n' ? puts("skipping loading the i18n gem ...") : super
 end
 
 require 'bundler/setup'
