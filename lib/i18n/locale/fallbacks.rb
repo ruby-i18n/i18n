@@ -73,9 +73,9 @@ module I18n
       def map(mappings)
         mappings.each do |from, to|
           from, to = from.to_sym, Array(to)
-          to.each do |to|
+          to.each do |_to|
             @map[from] ||= []
-            @map[from] << to.to_sym
+            @map[from] << _to.to_sym
           end
         end
       end
@@ -85,7 +85,7 @@ module I18n
       def compute(tags, include_defaults = true)
         result = Array(tags).collect do |tag|
           tags = I18n::Locale::Tag.tag(tag).self_and_parents.map! { |t| t.to_sym }
-          tags.each { |tag| tags += compute(@map[tag]) if @map[tag] }
+          tags.each { |_tag| tags += compute(@map[_tag]) if @map[_tag] }
           tags
         end.flatten
         result.push(*defaults) if include_defaults

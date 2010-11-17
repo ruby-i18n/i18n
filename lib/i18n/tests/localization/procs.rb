@@ -19,22 +19,22 @@ module I18n
         test "localize: using day names from lambdas" do
           setup_time_proc_translations
           time = ::Time.utc(2008, 3, 1, 6, 0)
-          assert_match /Суббота/, I18n.l(time, :format => "%A, %d %B", :locale => :ru)
-          assert_match /суббота/, I18n.l(time, :format => "%d %B (%A)", :locale => :ru)
+          assert_match(/Суббота/, I18n.l(time, :format => "%A, %d %B", :locale => :ru))
+          assert_match(/суббота/, I18n.l(time, :format => "%d %B (%A)", :locale => :ru))
         end
 
         test "localize: using month names from lambdas" do
           setup_time_proc_translations
           time = ::Time.utc(2008, 3, 1, 6, 0)
-          assert_match /марта/, I18n.l(time, :format => "%d %B %Y", :locale => :ru)
-          assert_match /Март /, I18n.l(time, :format => "%B %Y", :locale => :ru)
+          assert_match(/марта/, I18n.l(time, :format => "%d %B %Y", :locale => :ru))
+          assert_match(/Март /, I18n.l(time, :format => "%B %Y", :locale => :ru))
         end
 
         test "localize: using abbreviated day names from lambdas" do
           setup_time_proc_translations
           time = ::Time.utc(2008, 3, 1, 6, 0)
-          assert_match /марта/, I18n.l(time, :format => "%d %b %Y", :locale => :ru)
-          assert_match /март /, I18n.l(time, :format => "%b %Y", :locale => :ru)
+          assert_match(/марта/, I18n.l(time, :format => "%d %b %Y", :locale => :ru))
+          assert_match(/март /, I18n.l(time, :format => "%b %Y", :locale => :ru))
         end
 
         test "localize Date: given a format that resolves to a Proc it calls the Proc with the object" do
