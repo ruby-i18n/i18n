@@ -41,7 +41,7 @@ module I18n
 
     # Sets the available locales.
     def available_locales=(locales)
-      @@available_locales = Array(locales).map {|locale| locale.to_sym}
+      @@available_locales = Array(locales).map { |locale| locale.to_sym }
       @@available_locales = nil if @@available_locales.empty?
     end
 

@@ -37,3 +37,6 @@ DEPENDENCIES
   rufus-tokyo
   sqlite3-ruby
   test_declarative
+
+METADATA
+  version: 1.0.6

@@ -1,7 +1,7 @@
 GEM
   remote: http://rubygems.org/
   specs:
-    activesupport (3.0.1)
+    activesupport (2.3.10)
     mocha (0.9.9)
       rake
     rake (0.8.7)
@@ -12,7 +12,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activesupport (~> 3.0.0)
+  activesupport (~> 2.3)
   mocha
   sqlite3-ruby
   test_declarative
