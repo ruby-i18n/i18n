@@ -64,8 +64,12 @@ h2. Tests
 You can run tests both with
 
 * `rake test` or just `rake`
-* run any test file directly, e.g. `ruby -Itest test/api/simple_test.rb`
-* run all tests with `ruby -Itest test/all.rb`
+* run any test file directly, e.g. `ruby -Ilib -Itest test/api/simple_test.rb`
+* run all tests with `ruby -Ilib -Itest test/all.rb`
+
+You can run all tests against all Gemfiles with
+
+* `ruby test/run_all.rb`
 
 The structure of the test suite is a bit unusual as it uses modules to reuse
 particular tests in different test cases.
