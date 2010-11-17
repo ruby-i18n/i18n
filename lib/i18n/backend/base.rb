@@ -1,5 +1,7 @@
 require 'yaml'
 require 'i18n/core_ext/hash'
+require 'i18n/core_ext/kernel/surpress_warnings'
+
 
 module I18n
   module Backend
@@ -153,7 +155,9 @@ module I18n
             values[key] = value
           end
 
-          string % values
+          suppress_warnings do
+            string % values
+          end
         rescue KeyError => e
           if string =~ RESERVED_KEYS_PATTERN
             raise ReservedInterpolationKey.new($1.to_sym, string)
