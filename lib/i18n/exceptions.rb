@@ -1,9 +1,3 @@
-class KeyError < IndexError
-  def initialize(message = nil)
-    super(message || "key not found")
-  end
-end unless defined?(KeyError)
-
 module I18n
   # Handles exceptions raised in the backend. All exceptions except for
   # MissingTranslationData exceptions are re-raised. When a MissingTranslationData

@@ -1,13 +1,6 @@
-# Authors::   Sven Fuchs (http://www.artweb-design.de),
-#             Joshua Harvey (http://www.workingwithrails.com/person/759-joshua-harvey),
-#             Stephan Soller (http://www.arkanis-development.de/),
-#             Saimon Moore (http://saimonmoore.net),
-#             Matt Aimonetti (http://railsontherun.com/)
-# Copyright:: Copyright (c) 2008 The Ruby i18n Team
-# License::   MIT
 require 'i18n/version'
 require 'i18n/exceptions'
-require 'i18n/core_ext/string/interpolate'
+require 'i18n/interpolate/ruby.rb'
 
 module I18n
   autoload :Backend, 'i18n/backend'
@@ -15,6 +8,9 @@ module I18n
   autoload :Gettext, 'i18n/gettext'
   autoload :Locale,  'i18n/locale'
   autoload :Tests,   'i18n/tests'
+
+  RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback, :format, :cascade, :raise, :rescue_format]
+  RESERVED_KEYS_PATTERN = /%\{(#{RESERVED_KEYS.join("|")})\}/
 
   class << self
     # Gets I18n configuration object.
