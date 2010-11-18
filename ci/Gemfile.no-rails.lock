@@ -12,6 +12,3 @@ PLATFORMS
 DEPENDENCIES
   mocha
   test_declarative
-
-METADATA
-  version: 1.0.6

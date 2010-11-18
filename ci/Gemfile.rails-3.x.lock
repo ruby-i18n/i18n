@@ -1,7 +1,7 @@
 GEM
   remote: http://rubygems.org/
   specs:
-    activesupport (3.0.1)
+    activesupport (3.0.3)
     ffi (0.6.3)
       rake (>= 0.8.7)
     mocha (0.9.9)
@@ -21,6 +21,3 @@ DEPENDENCIES
   rufus-tokyo
   sqlite3-ruby
   test_declarative
-
-METADATA
-  version: 1.0.6
