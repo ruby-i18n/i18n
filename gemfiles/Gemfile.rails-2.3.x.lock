@@ -7,10 +7,15 @@ GEM
   remote: https://rubygems.org/
   specs:
     activesupport (2.3.18)
+    ffi (1.9.3)
     metaclass (0.0.4)
     mocha (1.0.0)
       metaclass (~> 0.0.1)
     rake (10.3.1)
+    rufus-tokyo (1.0.7)
+    sqlite3 (1.3.9)
+    sqlite3-ruby (1.3.3)
+      sqlite3 (>= 1.3.3)
     test_declarative (0.0.5)
 
 PLATFORMS
@@ -18,7 +23,10 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport (~> 2.3)
+  ffi
   i18n!
   mocha
   rake
+  rufus-tokyo
+  sqlite3-ruby
   test_declarative
