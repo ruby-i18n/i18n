@@ -3,6 +3,7 @@ require 'test_helper'
 class I18nTest < Test::Unit::TestCase
   def setup
     I18n.backend.store_translations(:'en', :currency => { :format => { :separator => '.', :delimiter => ',', } })
+    I18n.backend.store_translations(:'nl', :currency => { :format => { :separator => ',', :delimiter => '.', } })
   end
 
   test "exposes its VERSION constant" do
@@ -184,6 +185,22 @@ class I18nTest < Test::Unit::TestCase
 
   test "translate given an empty string as a key raises an I18n::ArgumentError" do
     assert_raise(I18n::ArgumentError) { I18n.t("") }
+  end
+
+  test "exists? given an existing key will return true" do
+    assert_equal true, I18n.exists?(:currency)
+  end
+
+  test "exists? given a non-existing key  will return false" do
+    assert_equal false, I18n.exists?(:bogus)
+  end
+
+  test "exists? given an existing key and an existing locale will return true" do
+    assert_equal true, I18n.exists?(:currency, :nl)
+  end
+
+  test "exists? given a non-existing key and an existing locale will return false" do
+    assert_equal false, I18n.exists?(:bogus, :nl)
   end
 
   test "localize given nil raises an I18n::ArgumentError" do
