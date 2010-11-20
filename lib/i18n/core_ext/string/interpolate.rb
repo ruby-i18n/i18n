@@ -1,3 +1,12 @@
+# This backports the Ruby 1.9 String interpolation syntax to Ruby 1.8.
+#
+# This backport has been shipped with I18n for a number of versions. Meanwhile
+# Rails has started to rely on it and we are going to move it to ActiveSupport.
+# See https://rails.lighthouseapp.com/projects/8994/tickets/6013-move-19-string-interpolation-syntax-backport-from-i18n-to-activesupport
+#
+# Once the above patch has been applied to Rails the following code will be
+# removed from I18n.
+
 =begin
   heavily based on Masao Mutoh's gettext String interpolation extension
   http://github.com/mutoh/gettext/blob/f6566738b981fe0952548c421042ad1e0cdfb31e/lib/gettext/core_ext/string.rb
