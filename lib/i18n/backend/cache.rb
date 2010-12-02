@@ -11,7 +11,8 @@
 #   I18n.cache_store = ActiveSupport::Cache.lookup_store(:memory_store)
 #
 # You can use any cache implementation you want that provides the same API as
-# ActiveSupport::Cache (only the methods #fetch and #write are being used).
+# ActiveSupport::Cache (only the methods #fetch, #write and #delete are being
+# used).
 #
 # The cache_key implementation assumes that you only pass values to
 # I18n.translate that return a valid key from #hash (see
@@ -32,6 +33,11 @@
 #
 # If the lambda may result in different values for each call then consider
 # also using the Memoize backend.
+#
+# The implementation keeps a list of cached keys, and deletes these keys from
+# the cache store whenever new translations are stored using the
+# #store_translations method. YMMV performance-wise with a large number of
+# cached keys.
 #
 module I18n
   class << self
@@ -60,10 +66,24 @@ module I18n
   end
 
   module Backend
-    # TODO Should the cache be cleared if new translations are stored?
     module Cache
+      @@cached_keys = []
+
+      def store_translations(locale, data, options = {})
+        clear_cache if I18n.perform_caching?
+        super
+      end
+
       def translate(locale, key, options = {})
         I18n.perform_caching? ? fetch(cache_key(locale, key, options)) { super } : super
+      end
+
+      def clear_cache
+        @@cached_keys.each do |key|
+          I18n.cache_store.delete(key)
+        end
+
+        clear_cached_keys
       end
 
       protected
@@ -79,18 +99,34 @@ module I18n
           fetch_ignoring_procs(cache_key, &block)
         rescue MissingTranslationData => exception
           I18n.cache_store.write(cache_key, exception)
+          add_cached_key(cache_key)
           exception
         end
 
         def fetch_ignoring_procs(cache_key, &block)
           I18n.cache_store.read(cache_key) || yield.tap do |result|
-            I18n.cache_store.write(cache_key, result) unless result.is_a?(Proc)
+            unless result.is_a?(Proc)
+              I18n.cache_store.write(cache_key, result)
+              add_cached_key(cache_key)
+            end
           end
         end
 
         def cache_key(locale, key, options)
           # This assumes that only simple, native Ruby values are passed to I18n.translate.
           "i18n/#{I18n.cache_namespace}/#{locale}/#{key.hash}/#{USE_INSPECT_HASH ? options.inspect.hash : options.hash}"
+        end
+
+        def cached_keys
+          @@cached_keys
+        end
+
+        def add_cached_key(cache_key)
+          @@cached_keys << cache_key if !@@cached_keys.include?(cache_key)
+        end
+
+        def clear_cached_keys
+          @@cached_keys = []
         end
 
       private
