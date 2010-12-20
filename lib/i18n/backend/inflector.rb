@@ -202,6 +202,16 @@ module I18n
     # See inflector_unknown_defaults method for examples showing how the
     # translation results are changing when that switch is applied.
     # 
+    # == Mixing inflection and standard interpolation patterns
+    # The Inflector module allows you to include standard <tt>%{}</tt>
+    # patterns inside of inflection patterns. The value of a standard
+    # interpolation variable will be evaluated and interpolated before
+    # processing an inflection pattern. For example:
+    #   I18nstore_translations(:xx, 'hi' => 'Dear @{f:Lady|m:%{test}}!')
+    #   
+    #   I18n.t('hi', :gender => :m, :locale => :xx, :test => "Dude")
+    #   # => Dear Dude!
+    # 
     # == Errors
     # By default the module will silently ignore any interpolation errors.
     # You can turn off this default behavior by passing +:inflector_raises+ option.
