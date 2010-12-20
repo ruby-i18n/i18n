@@ -472,7 +472,7 @@ module I18n
       # that contains a name of a real token. BTW, an alias is always shortened and it will
       # never point to other alias, always to a real token. If the token is a real
       # token then the value contains a String with description.
-      #  
+      # 
       # If locale is not set then I18n.locale is used.
       # It may raise I18n::InvalidLocale if a given +locale+ is invalid.
       # If +kind+ is not given or +nil+ then it returns all available tokens for all kinds.
