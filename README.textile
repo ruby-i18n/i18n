@@ -22,6 +22,7 @@ Pluggable features:
 * Locale fallbacks, RFC4647 compliant (optionally: RFC4646 locale validation)
 * Gettext support
 * Translation metadata
+* Simple inflector (substitutes tokens)
 
 Alternative backends:
 
