@@ -55,11 +55,6 @@ class I18nInterpolateTest < Test::Unit::TestCase
     assert_equal "%{num} %<num>d", I18n.interpolate("%%{num} %%<num>d", :num => 1)
   end
 
-  test "String interpolation with values that respond to call" do
-    assert_equal "You have 1000 billions", I18n.interpolate("You have %{money} billions", :money => 1000, :money_proc => Proc.new{|x| x[:money] / 1000})
-    assert_equal "Tienes 1 billones", I18n.interpolate("Tienes %{money_proc} billones", :money => 1000, :money_proc => Proc.new{|x| (x[:money] / 1000)})
-  end
-
   def test_sprintf_mix_unformatted_and_formatted_named_placeholders
     assert_equal "foo 1.000000", I18n.interpolate("%{name} %<num>f", :name => "foo", :num => 1.0)
   end

@@ -36,6 +36,10 @@ module I18n
         assert_nothing_raised { interpolate(:default => 'Hi!', :name => lambda { |*args| raise 'fail' }) }
       end
 
+      test "interpolation: given a proc as a value it passes the complete hash as the argument" do
+        assert_equal "Tienes 1 billones", I18n.interpolate("Tienes %{money_proc} billones", :money => 1000, :money_proc => Proc.new{|x| (x[:money] / 1000)})
+      end
+
       test "interpolation: given values but missing a key it raises I18n::MissingInterpolationArgument" do
         assert_raise(I18n::MissingInterpolationArgument) do
           interpolate(:default => '%{foo}', :bar => 'bar')
