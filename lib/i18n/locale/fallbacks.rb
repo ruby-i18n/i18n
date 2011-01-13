@@ -89,7 +89,7 @@ module I18n
           tags
         end.flatten
         result.push(*defaults) if include_defaults
-        result.uniq
+        result.uniq.compact
       end
     end
   end
