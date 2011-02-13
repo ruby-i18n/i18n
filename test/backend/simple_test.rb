@@ -42,6 +42,10 @@ class I18nBackendSimpleTest < Test::Unit::TestCase
     assert_equal expected, translations
   end
 
+  test "simple load_translations: given file names as array it does not raise anything" do
+    assert_nothing_raised { I18n.backend.load_translations(["#{locales_dir}/en.rb", "#{locales_dir}/en.yml"]) }
+  end
+
   # storing translations
 
   test "simple store_translations: stores translations, ... no, really :-)" do
