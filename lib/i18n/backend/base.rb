@@ -11,8 +11,8 @@ module I18n
       # plain Ruby (*.rb) or YAML files (*.yml). See #load_rb and #load_yml
       # for details.
       def load_translations(*filenames)
-        filenames = I18n.load_path.flatten if filenames.empty?
-        filenames.each { |filename| load_file(filename) }
+        filenames = I18n.load_path if filenames.empty?
+        filenames.flatten.each { |filename| load_file(filename) }
       end
 
       # This method receives a locale, a data hash and options for storing translations.
