@@ -69,23 +69,17 @@ module I18n
       protected
 
         def fetch(cache_key, &block)
-          result = fetch_storing_missing_translation_exception(cache_key, &block)
-          raise result if result.is_a?(Exception)
+          result = _fetch(cache_key, &block)
+          throw(:missing_translation, result) if result.is_a?(MissingTranslationData)
           result = result.dup if result.frozen? rescue result
           result
         end
 
-        def fetch_storing_missing_translation_exception(cache_key, &block)
-          fetch_ignoring_procs(cache_key, &block)
-        rescue MissingTranslationData => exception
-          I18n.cache_store.write(cache_key, exception)
-          exception
-        end
-
-        def fetch_ignoring_procs(cache_key, &block)
-          I18n.cache_store.read(cache_key) || yield.tap do |result|
-            I18n.cache_store.write(cache_key, result) unless result.is_a?(Proc)
-          end
+        def _fetch(cache_key, &block)
+          result = I18n.cache_store.read(cache_key) and return result
+          result = catch(:missing_translation, &block)
+          I18n.cache_store.write(cache_key, result) unless result.is_a?(Proc)
+          result
         end
 
         def cache_key(locale, key, options)

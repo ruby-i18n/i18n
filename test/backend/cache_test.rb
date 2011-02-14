@@ -37,12 +37,14 @@ class I18nBackendCacheTest < Test::Unit::TestCase
   end
 
   test "still raises MissingTranslationData but also caches it" do
-    I18n.backend.expects(:lookup).returns(nil)
     assert_raise(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
+    assert_raise(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
+    assert_equal 1, I18n.cache_store.instance_variable_get(:@data).size
 
-    I18n.cache_store.expects(:write).never
-    I18n.backend.expects(:lookup).never
-    assert_raise(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
+    # I18n.backend.expects(:lookup).returns(nil)
+    # assert_raise(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
+    # I18n.backend.expects(:lookup).never
+    # assert_raise(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
   end
 
   test "uses 'i18n' as a cache key namespace by default" do

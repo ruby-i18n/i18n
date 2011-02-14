@@ -34,7 +34,7 @@ module I18n
             default(locale, key, default, options) : resolve(locale, key, entry, options)
         end
 
-        raise(I18n::MissingTranslationData.new(locale, key, options)) if entry.nil?
+        throw(:missing_translation, I18n::MissingTranslationData.new(locale, key, options)) if entry.nil?
         entry = entry.dup if entry.is_a?(String)
 
         entry = pluralize(locale, entry, count) if count

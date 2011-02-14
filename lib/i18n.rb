@@ -149,11 +149,15 @@ module I18n
 
       raise I18n::ArgumentError if key.is_a?(String) && key.empty?
 
-      if key.is_a?(Array)
-        key.map { |k| backend.translate(locale, k, options) }
-      else
-        backend.translate(locale, key, options)
+      result = catch(:missing_translation) do
+        if key.is_a?(Array)
+          key.map { |k| backend.translate(locale, k, options) }
+        else
+          backend.translate(locale, key, options)
+        end
       end
+      result.is_a?(Exception) ? raise(result) : result
+
     rescue I18n::ArgumentError => exception
       raise exception if raises
       handle_exception(exception, locale, key, options)

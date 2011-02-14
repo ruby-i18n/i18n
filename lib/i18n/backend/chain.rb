@@ -41,7 +41,7 @@ module I18n
           options = default_options.except(:default)
 
           backends.each do |backend|
-            begin
+            catch(:missing_translation) do
               options = default_options if backend == backends.last
               translation = backend.translate(locale, key, options)
               if namespace_lookup?(translation, options)
@@ -50,22 +50,20 @@ module I18n
               elsif !translation.nil?
                 return translation
               end
-            rescue MissingTranslationData
             end
           end
 
           return namespace if namespace
-          raise(I18n::MissingTranslationData.new(locale, key, options))
+          throw(:missing_translation, I18n::MissingTranslationData.new(locale, key, options))
         end
 
         def localize(locale, object, format = :default, options = {})
           backends.each do |backend|
-            begin
+            catch(:missing_translation) do
               result = backend.localize(locale, object, format, options) and return result
-            rescue MissingTranslationData
             end
           end
-          raise(I18n::MissingTranslationData.new(locale, format, options))
+          throw(:missing_translation, I18n::MissingTranslationData.new(locale, format, options))
         end
 
         protected
