@@ -13,8 +13,10 @@ module I18n
     #   end
     # end
     #
-    # I18n::Backend::Simple.send(:include, I18n::Backend::Pluralization)
+    # I18n::Backend::Simple.include(I18n::Backend::Pluralization)
     class Simple
+      (class << self; self; end).class_eval { public :include }
+
       module Implementation
         include Base
 

@@ -7,7 +7,7 @@
 # Pluralization module to the Simple backend - or whatever other backend you
 # are using.
 #
-#   I18n::Backend::Simple.send(:include, I18n::Backend::Pluralization)
+#   I18n::Backend::Simple.include(I18n::Backend::Pluralization)
 #
 # You also need to make sure to provide pluralization algorithms to the
 # backend, i.e. include them to your I18n.load_path accordingly.

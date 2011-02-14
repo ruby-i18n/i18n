@@ -4,7 +4,7 @@
 # To enable caching you can simply include the Cache module to the Simple
 # backend - or whatever other backend you are using:
 #
-#   I18n::Backend::Simple.send(:include, I18n::Backend::Cache)
+#   I18n::Backend::Simple.include(I18n::Backend::Cache)
 #
 # You will also need to set a cache store implementation that you want to use:
 #

@@ -3,7 +3,7 @@
 #
 # To enable it you can simply include the Memoize module to your backend:
 #
-#   I18n::Backend::Simple.send(:include, I18n::Backend::Memoize)
+#   I18n::Backend::Simple.include(I18n::Backend::Memoize)
 #
 # Notice that it's the responsibility of the backend to define whenever the
 # cache should be cleaned.

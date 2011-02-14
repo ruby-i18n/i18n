@@ -12,7 +12,7 @@
 # To enable translation metadata you can simply include the Metadata module
 # into the Simple backend class - or whatever other backend you are using:
 #
-#   I18n::Backend::Simple.send(:include, I18n::Backend::Metadata)
+#   I18n::Backend::Simple.include(I18n::Backend::Metadata)
 #
 module I18n
   module Backend

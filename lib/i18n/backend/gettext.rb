@@ -6,7 +6,7 @@ require 'i18n/gettext/po_parser'
 # To use this you can simply include the module to the Simple backend - or
 # whatever other backend you are using.
 #
-#   I18n::Backend::Simple.send(:include, I18n::Backend::Gettext)
+#   I18n::Backend::Simple.include(I18n::Backend::Gettext)
 #
 # Now you should be able to include your Gettext translation (*.po) files to
 # the I18n.load_path so they're loaded to the backend and you can use them as

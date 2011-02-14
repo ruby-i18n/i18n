@@ -6,7 +6,7 @@
 # To enable locale fallbacks you can simply include the Fallbacks module to
 # the Simple backend - or whatever other backend you are using:
 #
-#   I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
+#   I18n::Backend::Simple.include(I18n::Backend::Fallbacks)
 module I18n
   @@fallbacks = nil
 
