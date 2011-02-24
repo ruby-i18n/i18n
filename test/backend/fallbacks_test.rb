@@ -65,6 +65,10 @@ class I18nBackendFallbacksTranslateTest < Test::Unit::TestCase
     assert_raise(I18n::MissingTranslationData) { I18n.t(:faa, :locale => :en, :raise => true) }
     assert_raise(I18n::MissingTranslationData) { I18n.t(:faa, :locale => :de, :raise => true) }
   end
+
+  test "should ensure that default is not splitted on new line char" do
+    assert_equal "Default \n Bar", I18n.t(:missing_bar, :default => "Default \n Bar")
+  end
 end
 
 class I18nBackendFallbacksLocalizeTest < Test::Unit::TestCase
