@@ -54,7 +54,7 @@ module I18n
       end
 
       def extract_string_or_lambda_default!(options)
-        defaults = Array(options[:default])
+        defaults = [options[:default]].flatten
         if index = find_first_string_or_lambda_default(defaults)
           options[:default] = defaults[0, index]
           defaults[index]
