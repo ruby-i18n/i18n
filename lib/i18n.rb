@@ -156,7 +156,7 @@ module I18n
           backend.translate(locale, key, options)
         end
       end
-      result.is_a?(MissingTranslationData) ? handle_exception(handling, result, locale, key, options) : result
+      result.is_a?(MissingTranslation) ? handle_exception(handling, result, locale, key, options) : result
     end
     alias :t :translate
 
@@ -266,7 +266,7 @@ module I18n
 
     # Any exceptions thrown in translate will be sent to the @@exception_handler
     # which can be a Symbol, a Proc or any other Object unless they're forced to
-    # be raised or thrown (MissingTranslationData).
+    # be raised or thrown (MissingTranslation).
     #
     # If exception_handler is a Symbol then it will simply be sent to I18n as
     # a method call. A Proc will simply be called. In any other case the
@@ -285,7 +285,7 @@ module I18n
     def handle_exception(handling, exception, locale, key, options)
       case handling
       when :raise
-        raise exception
+        raise(exception.respond_to?(:to_exception) ? exception.to_exception : exception)
       when :throw
         throw :exception, exception
       else
@@ -325,8 +325,7 @@ module I18n
     def default_exception_handler(exception, locale, key, options)
       puts "I18n.default_exception_handler is deprecated. Please use the class I18n::ExceptionHandler instead " +
            "(an instance of which is set to I18n.exception_handler by default)."
-      return exception.message if MissingTranslationData === exception
-      raise exception
+      exception.is_a?(MissingTranslation) ? exception.message : raise(exception)
     end
   end
 end

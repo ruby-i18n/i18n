@@ -34,7 +34,7 @@ module I18n
             default(locale, key, default, options) : resolve(locale, key, entry, options)
         end
 
-        throw(:exception, I18n::MissingTranslationData.new(locale, key, options)) if entry.nil?
+        throw(:exception, I18n::MissingTranslation.new(locale, key, options)) if entry.nil?
         entry = entry.dup if entry.is_a?(String)
 
         entry = pluralize(locale, entry, count) if count
@@ -119,7 +119,7 @@ module I18n
               subject
             end
           end
-          result unless result.is_a?(MissingTranslationData)
+          result unless result.is_a?(MissingTranslation)
         end
 
         # Picks a translation from an array according to English pluralization

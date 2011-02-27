@@ -6,7 +6,7 @@ module I18n
   class ExceptionHandler
     include Module.new {
       def call(exception, locale, key, options)
-        if exception.is_a?(MissingTranslationData)
+        if exception.is_a?(MissingTranslation)
           options[:rescue_format] == :html ? exception.html_message : exception.message
         else
           raise exception
@@ -33,25 +33,41 @@ module I18n
     end
   end
 
-  class MissingTranslationData < ArgumentError
-    attr_reader :locale, :key, :options
+  class MissingTranslation
+    module Base
+      attr_reader :locale, :key, :options
 
-    def initialize(locale, key, opts = nil)
-      @key, @locale, @options = key, locale, opts.dup || {}
-      options.each { |k, v| options[k] = v.inspect if v.is_a?(Proc) }
-      super "translation missing: #{keys.join('.')}"
-    end
+      def initialize(locale, key, options = nil)
+        @key, @locale, @options = key, locale, options.dup || {}
+        options.each { |k, v| self.options[k] = v.inspect if v.is_a?(Proc) }
+      end
 
-    def html_message
-      key = keys.last.to_s.gsub('_', ' ').gsub(/\b('?[a-z])/) { $1.capitalize }
-      %(<span class="translation_missing" title="translation missing: #{keys.join('.')}">#{key}</span>)
-    end
+      def html_message
+        key = keys.last.to_s.gsub('_', ' ').gsub(/\b('?[a-z])/) { $1.capitalize }
+        %(<span class="translation_missing" title="translation missing: #{keys.join('.')}">#{key}</span>)
+      end
 
-    def keys
-      @keys ||= I18n.normalize_keys(locale, key, options[:scope]).tap do |keys|
-        keys << 'no key' if keys.size < 2
+      def keys
+        @keys ||= I18n.normalize_keys(locale, key, options[:scope]).tap do |keys|
+          keys << 'no key' if keys.size < 2
+        end
+      end
+
+      def message
+        "translation missing: #{keys.join('.')}"
+      end
+      alias :to_s :message
+
+      def to_exception
+        MissingTranslationData.new(locale, key, options)
       end
     end
+
+    include Base
+  end
+
+  class MissingTranslationData < ArgumentError
+    include MissingTranslation::Base
   end
 
   class InvalidPluralizationData < ArgumentError

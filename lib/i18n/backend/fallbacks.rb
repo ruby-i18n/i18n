@@ -29,8 +29,7 @@ module I18n
       # locale :"de-DE" it might try the locales :"de-DE", :de and :en
       # (depends on the fallbacks implementation) until it finds a result with
       # the given options. If it does not find any result for any of the
-      # locales it will then raise a MissingTranslationData exception as
-      # usual.
+      # locales it will then throw MissingTranslation as usual.
       #
       # The default option takes precedence over fallback locales
       # only when it's a Symbol. When the default contains a String or a Proc
@@ -49,7 +48,7 @@ module I18n
         options.delete(:fallback)
 
         return super(locale, nil, options.merge(:default => default)) if default
-        throw(:exception, I18n::MissingTranslationData.new(locale, key, options))
+        throw(:exception, I18n::MissingTranslation.new(locale, key, options))
       end
 
       def extract_string_or_lambda_default!(options)

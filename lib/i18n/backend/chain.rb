@@ -54,7 +54,7 @@ module I18n
           end
 
           return namespace if namespace
-          throw(:exception, I18n::MissingTranslationData.new(locale, key, options))
+          throw(:exception, I18n::MissingTranslation.new(locale, key, options))
         end
 
         def localize(locale, object, format = :default, options = {})
@@ -63,7 +63,7 @@ module I18n
               result = backend.localize(locale, object, format, options) and return result
             end
           end
-          throw(:exception, I18n::MissingTranslationData.new(locale, format, options))
+          throw(:exception, I18n::MissingTranslation.new(locale, format, options))
         end
 
         protected

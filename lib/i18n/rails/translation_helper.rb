@@ -9,7 +9,7 @@ module I18n
     # are forced to html_safe
     include Module.new {
       def call(exception, locale, key, options)
-        exception.is_a?(MissingTranslationData) ? super.html_safe : super
+        exception.is_a?(MissingTranslation) ? super.html_safe : super
       end
     }
   end
@@ -22,7 +22,7 @@ module I18n
       # Delegates to I18n#translate but also performs three additional functions.
       #
       # First, it'll pass the :rescue_format => :html option to I18n so that any caught
-      # MissingTranslationData exceptions will be turned into inline spans that
+      # MissingTranslation exceptions will be turned into inline spans that
       #
       #   * have a "translation-missing" class set,
       #   * contain the missing key as a title attribute and

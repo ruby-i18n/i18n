@@ -197,8 +197,8 @@ class I18nTest < Test::Unit::TestCase
   test "can use a lambda as an exception handler" do
     begin
       previous_exception_handler = I18n.exception_handler
-      I18n.exception_handler = Proc.new { |exception, locale, key, options| exception }
-      assert_equal I18n::MissingTranslationData, I18n.translate(:test_proc_handler).class
+      I18n.exception_handler = Proc.new { |exception, locale, key, options| key }
+      assert_equal :test_proc_handler, I18n.translate(:test_proc_handler)
     ensure
       I18n.exception_handler = previous_exception_handler
     end
@@ -208,9 +208,9 @@ class I18nTest < Test::Unit::TestCase
     begin
       previous_exception_handler = I18n.exception_handler
       I18n.exception_handler = Class.new do
-        def call(exception, locale, key, options); exception; end
+        def call(exception, locale, key, options); key; end
       end.new
-      assert_equal I18n::MissingTranslationData, I18n.translate(:test_proc_handler).class
+      assert_equal :test_proc_handler, I18n.translate(:test_proc_handler)
     ensure
       I18n.exception_handler = previous_exception_handler
     end
