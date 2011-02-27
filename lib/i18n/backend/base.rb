@@ -34,7 +34,7 @@ module I18n
             default(locale, key, default, options) : resolve(locale, key, entry, options)
         end
 
-        throw(:missing_translation, I18n::MissingTranslationData.new(locale, key, options)) if entry.nil?
+        throw(:exception, I18n::MissingTranslationData.new(locale, key, options)) if entry.nil?
         entry = entry.dup if entry.is_a?(String)
 
         entry = pluralize(locale, entry, count) if count
@@ -108,17 +108,18 @@ module I18n
         # subjects will be returned directly.
         def resolve(locale, object, subject, options = {})
           return subject if options[:resolve] == false
-          case subject
-          when Symbol
-            I18n.translate(subject, options.merge(:locale => locale, :raise => true))
-          when Proc
-            date_or_time = options.delete(:object) || object
-            resolve(locale, object, subject.call(date_or_time, options))
-          else
-            subject
+          result = catch(:exception) do
+            case subject
+            when Symbol
+              I18n.translate(subject, options.merge(:locale => locale, :throw => true))
+            when Proc
+              date_or_time = options.delete(:object) || object
+              resolve(locale, object, subject.call(date_or_time, options))
+            else
+              subject
+            end
           end
-        rescue MissingTranslationData
-          nil
+          result unless result.is_a?(MissingTranslationData)
         end
 
         # Picks a translation from an array according to English pluralization

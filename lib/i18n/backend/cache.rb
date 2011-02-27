@@ -70,14 +70,14 @@ module I18n
 
         def fetch(cache_key, &block)
           result = _fetch(cache_key, &block)
-          throw(:missing_translation, result) if result.is_a?(MissingTranslationData)
+          throw(:exception, result) if result.is_a?(MissingTranslationData)
           result = result.dup if result.frozen? rescue result
           result
         end
 
         def _fetch(cache_key, &block)
           result = I18n.cache_store.read(cache_key) and return result
-          result = catch(:missing_translation, &block)
+          result = catch(:exception, &block)
           I18n.cache_store.write(cache_key, result) unless result.is_a?(Proc)
           result
         end

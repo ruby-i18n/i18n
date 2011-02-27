@@ -9,7 +9,7 @@ module I18n
   autoload :Locale,  'i18n/locale'
   autoload :Tests,   'i18n/tests'
 
-  RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback, :format, :cascade, :raise, :rescue_format]
+  RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback, :format, :cascade, :throw, :raise, :rescue_format]
   RESERVED_KEYS_PATTERN = /%\{(#{RESERVED_KEYS.join("|")})\}/
 
   class << self
@@ -141,26 +141,22 @@ module I18n
     # always return the same translations/values per unique combination of argument
     # values.
     def translate(*args)
-      options = args.last.is_a?(Hash) ? args.pop : {}
-      key     = args.shift
-      backend = config.backend
-      locale  = options.delete(:locale) || config.locale
-      raises  = options.delete(:raise)
+      options  = args.last.is_a?(Hash) ? args.pop : {}
+      key      = args.shift
+      backend  = config.backend
+      locale   = options.delete(:locale) || config.locale
+      handling = options.delete(:throw) && :throw || options.delete(:raise) && :raise # TODO deprecate :raise
 
       raise I18n::ArgumentError if key.is_a?(String) && key.empty?
 
-      result = catch(:missing_translation) do
+      result = catch(:exception) do
         if key.is_a?(Array)
           key.map { |k| backend.translate(locale, k, options) }
         else
           backend.translate(locale, key, options)
         end
       end
-      result.is_a?(Exception) ? raise(result) : result
-
-    rescue I18n::ArgumentError => exception
-      raise exception if raises
-      handle_exception(exception, locale, key, options)
+      result.is_a?(MissingTranslationData) ? handle_exception(handling, result, locale, key, options) : result
     end
     alias :t :translate
 
@@ -269,7 +265,8 @@ module I18n
   private
 
     # Any exceptions thrown in translate will be sent to the @@exception_handler
-    # which can be a Symbol, a Proc or any other Object.
+    # which can be a Symbol, a Proc or any other Object unless they're forced to
+    # be raised or thrown (MissingTranslationData).
     #
     # If exception_handler is a Symbol then it will simply be sent to I18n as
     # a method call. A Proc will simply be called. In any other case the
@@ -285,12 +282,19 @@ module I18n
     #
     #  I18n.exception_handler = I18nExceptionHandler.new                # an object
     #  I18n.exception_handler.call(exception, locale, key, options)     # will be called like this
-    def handle_exception(exception, locale, key, options)
-      case handler = options[:exception_handler] || config.exception_handler
-      when Symbol
-        send(handler, exception, locale, key, options)
+    def handle_exception(handling, exception, locale, key, options)
+      case handling
+      when :raise
+        raise exception
+      when :throw
+        throw :exception, exception
       else
-        handler.call(exception, locale, key, options)
+        case handler = options[:exception_handler] || config.exception_handler
+        when Symbol
+          send(handler, exception, locale, key, options)
+        else
+          handler.call(exception, locale, key, options)
+        end
       end
     end
 
@@ -302,7 +306,7 @@ module I18n
         else
           keys = key.to_s.split(separator)
           keys.delete('')
-          keys.map!{ |k| k.to_sym }
+          keys.map! { |k| k.to_sym }
           keys
         end
     end

@@ -41,7 +41,7 @@ module I18n
 
         options[:fallback] = true
         I18n.fallbacks[locale].each do |fallback|
-          catch(:missing_translation) do
+          catch(:exception) do
             result = super(fallback, key, options)
             return result unless result.nil?
           end
@@ -49,7 +49,7 @@ module I18n
         options.delete(:fallback)
 
         return super(locale, nil, options.merge(:default => default)) if default
-        throw(:missing_translation, I18n::MissingTranslationData.new(locale, key, options))
+        throw(:exception, I18n::MissingTranslationData.new(locale, key, options))
       end
 
       def extract_string_or_lambda_default!(options)
