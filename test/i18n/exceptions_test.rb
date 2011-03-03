@@ -77,6 +77,10 @@ class I18nExceptionsTest < Test::Unit::TestCase
       assert_equal 'reserved key :scope used in "%{scope}"', exception.message
     end
   end
+  
+  test "MissingTranslationData#new can be initialized with just two arguments" do
+    assert I18n::MissingTranslationData.new('en', 'key')
+  end
 
   private
 
