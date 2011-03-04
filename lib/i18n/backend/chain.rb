@@ -29,7 +29,7 @@ module I18n
         end
 
         def store_translations(locale, data, options = {})
-          backends.first.store_translations(locale, data, options = {})
+          backends.first.store_translations(locale, data, options)
         end
 
         def available_locales
