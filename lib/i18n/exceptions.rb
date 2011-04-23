@@ -1,15 +1,17 @@
 module I18n
   # Handles exceptions raised in the backend. All exceptions except for
-  # MissingTranslationData exceptions are re-raised. When a MissingTranslationData
+  # MissingTranslationData exceptions are re-thrown. When a MissingTranslationData
   # was caught the handler returns an error message string containing the key/scope.
-  # Note that the exception handler is not called when the option :raise was given.
+  # Note that the exception handler is not called when the option :throw was given.
   class ExceptionHandler
     include Module.new {
       def call(exception, locale, key, options)
         if exception.is_a?(MissingTranslation)
           options[:rescue_format] == :html ? exception.html_message : exception.message
-        else
+        elsif exception.is_a?(Exception)
           raise exception
+        else
+          throw :exception, exception
         end
       end
     }
