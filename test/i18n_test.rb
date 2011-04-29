@@ -39,6 +39,12 @@ class I18nTest < Test::Unit::TestCase
     assert_equal I18n.default_locale, I18n.locale
   end
 
+  test "uses the default locale as locale after being set" do
+    I18n.locale
+    I18n.default_locale = :pt
+    assert_equal :pt, I18n.locale
+  end
+
   test "sets the current locale to Thread.current" do
     assert_nothing_raised { I18n.locale = 'de' }
     assert_equal :de, I18n.locale

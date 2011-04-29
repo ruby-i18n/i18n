@@ -3,7 +3,7 @@ module I18n
     # The only configuration value that is not global and scoped to thread is :locale.
     # It defaults to the default_locale.
     def locale
-      @locale ||= default_locale
+      @locale || default_locale
     end
 
     # Sets the current locale pseudo-globally, i.e. in the Thread.current hash.
