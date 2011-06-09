@@ -220,12 +220,11 @@ module I18n
       options      = args.pop if args.last.is_a?(Hash)
       key          = args.shift
       locale       = options && options.delete(:locale) || config.locale
-      raises       = options && options.delete(:raise)
+      handling     = options && (options.delete(:throw) && :throw || options.delete(:raise) && :raise)
       replacement  = options && options.delete(:replacement)
       config.backend.transliterate(locale, key, replacement)
     rescue I18n::ArgumentError => exception
-      raise exception if raises
-      handle_exception(exception, locale, key, options)
+      handle_exception(handling, exception, locale, key, options || {})
     end
 
     # Localizes certain objects, such as dates and numbers to local formatting.

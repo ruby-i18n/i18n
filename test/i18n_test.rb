@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'test_helper'
 
 class I18nTest < Test::Unit::TestCase
@@ -233,4 +234,21 @@ class I18nTest < Test::Unit::TestCase
     assert_raise(I18n::ArgumentError) { I18n.with_locale(:pl) { raise I18n::ArgumentError } }
     assert_equal I18n.default_locale, I18n.locale
   end
+
+  test "I18n.translitarate handles I18n::ArgumentError exception" do
+    I18n::Backend::Transliterator.stubs(:get).raises(I18n::ArgumentError)
+    I18n.exception_handler.expects(:call).raises(I18n::ArgumentError)
+    assert_raise(I18n::ArgumentError) {
+      I18n.transliterate("ąćó")
+    }
+  end
+
+  test "I18n.translitarate raises I18n::ArgumentError exception" do
+    I18n::Backend::Transliterator.stubs(:get).raises(I18n::ArgumentError)
+    I18n.exception_handler.expects(:call).never
+    assert_raise(I18n::ArgumentError) {
+      I18n.transliterate("ąćó", :raise => true)
+    }
+  end
+
 end
