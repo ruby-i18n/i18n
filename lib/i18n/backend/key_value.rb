@@ -73,7 +73,7 @@ module I18n
               raise "Key-value stores cannot handle procs"
             end
 
-            @store[key] = ActiveSupport::JSON.encode(value) unless value.is_a?(Symbol)
+            @store[key] = ActiveSupport::JSON.encode([value]) unless value.is_a?(Symbol)
           end
         end
 
@@ -90,7 +90,7 @@ module I18n
         def lookup(locale, key, scope = [], options = {})
           key   = normalize_flat_keys(locale, key, scope, options[:separator])
           value = @store["#{locale}.#{key}"]
-          value = ActiveSupport::JSON.decode(value) if value
+          value = ActiveSupport::JSON.decode(value)[0] if value
           value.is_a?(Hash) ? value.deep_symbolize_keys : value
         end
       end
