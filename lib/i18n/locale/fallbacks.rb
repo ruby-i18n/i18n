@@ -25,7 +25,7 @@
 #   # using the default locale as default fallback locale
 #
 #   I18n.default_locale = :"en-US"
-#   I18n.fallbacks = I18n::Fallbacks.new(:"de-AT" => :"de-DE")
+#   I18n.fallbacks = I18n::Locale::Fallbacks.new(:"de-AT" => :"de-DE")
 #   I18n.fallbacks[:"de-AT"] # => [:"de-AT", :"de-DE", :de, :"en-US", :en]
 #
 #   # using a custom locale as default fallback locale

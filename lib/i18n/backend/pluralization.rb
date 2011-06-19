@@ -1,7 +1,5 @@
-# I18n locale fallbacks are useful when you want your application to use
-# translations from other locales when translations for the current locale are
-# missing. E.g. you might want to use :en translations when translations in
-# your applications main locale :de are missing.
+# I18n Pluralization are useful when you want your application to
+# customize pluralization rules.
 #
 # To enable locale specific pluralizations you can simply include the
 # Pluralization module to the Simple backend - or whatever other backend you
