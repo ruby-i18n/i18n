@@ -18,12 +18,20 @@ class I18nCoreExtStringInterpolationTest < Test::Unit::TestCase
     assert_equal "Masao Mutoh", "%{first} %{last}" % { :first => 'Masao', :last => 'Mutoh' }
   end
 
+  test "String interpolates a hash argument w/ named placeholders when the names contain special symbols" do
+    assert_equal "Test String", "%{test.test } %{ string|string}" % { :"test.test " => "Test", :" string|string" => "String" }
+  end
+
   test "String interpolates a hash argument w/ named placeholders (reverse order)" do
     assert_equal "Mutoh, Masao", "%{last}, %{first}" % { :first => 'Masao', :last => 'Mutoh' }
   end
 
   test "String interpolates named placeholders with sprintf syntax" do
     assert_equal "10, 43.4", "%<integer>d, %<float>.1f" % {:integer => 10, :float => 43.4}
+  end
+
+  test "String interpolates named placeholders using sprintf syntax when the names contain special symbols" do
+    assert_equal "10, 43.4", "%<in.te.   ger>d, %<flo#at>.1f" % { :"in.te.   ger" => 10, :"flo#at" => 43.4 }
   end
 
   test "String interpolates named placeholders with sprintf syntax, does not recurse" do
