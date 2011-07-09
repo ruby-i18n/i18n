@@ -60,7 +60,7 @@ module I18n
       end
 
       def find_first_string_or_lambda_default(defaults)
-        defaults.each_with_index { |default, ix| return ix if String === default || Proc === default }
+        defaults.each_with_index { |default, ix| return ix if default && !default.is_a?(Symbol) }
         nil
       end
     end
