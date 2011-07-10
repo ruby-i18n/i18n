@@ -31,12 +31,12 @@ module I18n
       # the given options. If it does not find any result for any of the
       # locales it will then throw MissingTranslation as usual.
       #
-      # The default option takes precedence over fallback locales
-      # only when it's a Symbol. When the default contains a String or a Proc
+      # The default option takes precedence over fallback locales only when
+      # it's a Symbol. When the default contains a String, Proc or Hash
       # it is evaluated last after all the fallback locales have been tried.
       def translate(locale, key, options = {})
         return super if options[:fallback]
-        default = extract_string_or_lambda_default!(options) if options[:default]
+        default = extract_non_symbol_default!(options) if options[:default]
 
         options[:fallback] = true
         I18n.fallbacks[locale].each do |fallback|
@@ -51,18 +51,15 @@ module I18n
         throw(:exception, I18n::MissingTranslation.new(locale, key, options))
       end
 
-      def extract_string_or_lambda_default!(options)
+      def extract_non_symbol_default!(options)
         defaults = [options[:default]].flatten
-        if index = find_first_string_or_lambda_default(defaults)
-          options[:default] = defaults[0, index]
-          defaults[index]
+        first_non_symbol_default = defaults.detect{|default| !default.is_a?(Symbol)}
+        if first_non_symbol_default
+          options[:default] = defaults[0, defaults.index(first_non_symbol_default)]
         end
+        return first_non_symbol_default
       end
 
-      def find_first_string_or_lambda_default(defaults)
-        defaults.each_with_index { |default, ix| return ix if default && !default.is_a?(Symbol) }
-        nil
-      end
     end
   end
 end
