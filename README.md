@@ -72,6 +72,7 @@ follow the usual test setup and should be easy to grok.
 * [Stephan Soller](http://www.arkanis-development.de)
 * [Saimon Moore](http://saimonmoore.net)
 * [Matt Aimonetti](https://matt.aimonetti.net/)
+* [Francisco Viramontes](https://twitter.com/kidpollo)
 
 ## Contributors
 

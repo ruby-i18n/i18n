@@ -24,6 +24,15 @@ module I18n
           self.backends = backends
         end
 
+        def initialized?
+          backends.all? do |backend|
+            backend.instance_eval do
+              return false unless initialized?
+            end
+          end
+          true
+        end
+          
         def reload!
           backends.each { |backend| backend.reload! }
         end
@@ -72,6 +81,19 @@ module I18n
         end
 
         protected
+          def init_translations
+            backends.each { |backend| 
+              backend.send(:init_translations) 
+            }
+          end
+
+          def translations
+            backends.first.instance_eval do
+              init_translations unless initialized?
+              translations
+            end
+          end  
+
           def namespace_lookup?(result, options)
             result.is_a?(Hash) && !options.has_key?(:count)
           end

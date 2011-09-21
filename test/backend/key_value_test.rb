@@ -40,4 +40,17 @@ class I18nBackendKeyValueTest < I18n::TestCase
       I18n.t("foo", :raise => true)
     end
   end
+
+  test 'initialized? checks that a store is available' do
+    setup_backend!
+    I18n.backend.reload!
+    assert_equal I18n.backend.initialized?, true
+  end
+
+  test 'translations gets the translations from the store' do
+    setup_backend!
+    I18n.backend.send(:translations)
+    expected = { :en => {:foo => { :bar => 'bar', :baz => 'baz' }} }
+    assert_equal expected, translations
+  end
 end if I18n::TestCase.key_value?

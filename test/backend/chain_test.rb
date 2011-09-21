@@ -81,6 +81,32 @@ class I18nBackendChainTest < I18n::TestCase
     I18n.backend.store_translations :foo, {:bar => :baz}, {:option => 'persists'}
   end
 
+  test 'store should call initialize on all backends and return true if all initialized' do
+    @first.send :init_translations
+    @second.send :init_translations
+    assert_equal(I18n.backend.initialized?, true)
+  end
+
+  test 'store should call initialize on all backends and return false if one not initialized' do
+    @first.reload!
+    @second.send :init_translations
+    assert_equal(I18n.backend.initialized?, false)
+  end
+
+  test 'should reload all backends' do
+    @first.send :init_translations
+    @second.send :init_translations
+    I18n.backend.reload!
+    assert_equal(@first.initialized?, false)
+    assert_equal(@second.initialized?, false)
+  end
+
+  test 'should be able to get all translations of the first backend' do
+    assert_equal I18n.backend.send(:translations),{:en => {
+      :foo=>"Foo", :formats=>{:short=>"short", :subformats=>{:short=>"short"}}, :plural_1=>{:one=>"%{count}"}, :dates=>{:a=>"A"}
+    }}
+  end
+
   protected
 
     def backend(translations)
