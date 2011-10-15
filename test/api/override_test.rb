@@ -13,29 +13,35 @@ class I18nOverrideTest < Test::Unit::TestCase
   module OverrideSignature
 
     def translate(*args)
-      args.first
+      args.first + args[1]
     end
     alias :t :translate
 
   end
 
   def setup
-    I18n.backend = I18n::Backend::Simple.new
-    I18n.extend OverrideInverse
+    @I18n = I18n.dup
+    @I18n.backend = I18n::Backend::Simple.new
     super
   end
 
   test "make sure modules can overwrite I18n methods" do
-    I18n.backend.store_translations('en', :foo => 'bar')
+        @I18n.extend OverrideInverse
+    @I18n.backend.store_translations('en', :foo => 'bar')
 
-    assert_equal 'rab', I18n.translate(:foo, :locale => 'en')
-    assert_equal 'rab', I18n.t(:foo, :locale => 'en')
-    assert_equal 'rab', I18n.translate!(:foo, :locale => 'en')
-    assert_equal 'rab', I18n.t!(:foo, :locale => 'en')
+    assert_equal 'rab', @I18n.translate(:foo, :locale => 'en')
+    assert_equal 'rab', @I18n.t(:foo, :locale => 'en')
+    assert_equal 'rab', @I18n.translate!(:foo, :locale => 'en')
+    assert_equal 'rab', @I18n.t!(:foo, :locale => 'en')
   end
 
   test "make sure modules can overwrite I18n signature" do
-    assert I18n.translate("Hello", "Welcome message on home page", :tokenize => true) # tr8n example
+    exception = catch(:exception) do
+      @I18n.t('Hello', 'Welcome message on home page', :tokenize => true, :throw => true)
+    end
+    assert exception.message
+    @I18n.extend OverrideSignature
+    assert_equal 'HelloWelcome message on home page', @I18n.translate('Hello', 'Welcome message on home page', :tokenize => true) # tr8n example
   end
 
 end
