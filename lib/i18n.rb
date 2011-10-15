@@ -12,7 +12,7 @@ module I18n
   RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback, :format, :cascade, :throw, :raise, :rescue_format]
   RESERVED_KEYS_PATTERN = /%\{(#{RESERVED_KEYS.join("|")})\}/
 
-  class << self
+  module Base
     # Gets I18n configuration object.
     def config
       Thread.current[:i18n_config] ||= I18n::Config.new
@@ -327,4 +327,6 @@ module I18n
       exception.is_a?(MissingTranslation) ? exception.message : raise(exception)
     end
   end
+
+  extend Base
 end
