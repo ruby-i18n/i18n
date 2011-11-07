@@ -43,11 +43,13 @@ unless RUBY_VERSION == '1.9.1' && RUBY_PATCHLEVEL <= 129
       I18n.locale = :de
       assert_equal 'Räderzahl', sgettext('Car|Wheels count')
       assert_equal 'Räderzahl', pgettext('Car', 'Wheels count')
+      assert_equal 'Räderzahl!', pgettext('New car', 'Wheels count')
     end
 
     def test_uses_namespaced_default_translation
       assert_equal 'Wheels count', sgettext('Car|Wheels count')
       assert_equal 'Wheels count', pgettext('Car', 'Wheels count')
+      assert_equal 'Wheels count', pgettext('New car', 'Wheels count')
     end
 
     def test_pluralizes_entry
@@ -67,6 +69,8 @@ unless RUBY_VERSION == '1.9.1' && RUBY_PATCHLEVEL <= 129
       assert_equal 'Räder', nsgettext('Car|wheel', 'wheels', 2)
       assert_equal 'Rad',   npgettext('Car', 'wheel', 'wheels', 1)
       assert_equal 'Räder', npgettext('Car', 'wheel', 'wheels', 2)
+      assert_equal 'Rad!', npgettext('New car', 'wheel', 'wheels', 1)
+      assert_equal 'Räder!', npgettext('New car', 'wheel', 'wheels', 2)
     end
 
     def test_pluralizes_namespaced_default_entry
@@ -74,6 +78,8 @@ unless RUBY_VERSION == '1.9.1' && RUBY_PATCHLEVEL <= 129
       assert_equal 'wheels', nsgettext('Car|wheel', 'wheels', 2)
       assert_equal 'wheel',  npgettext('Car', 'wheel', 'wheels', 1)
       assert_equal 'wheels', npgettext('Car', 'wheel', 'wheels', 2)
+      assert_equal 'wheel', npgettext('New car', 'wheel', 'wheels', 1)
+      assert_equal 'wheels', npgettext('New car', 'wheel', 'wheels', 2)
     end
 
     def test_pluralizes_namespaced_entry_with_alternative_syntax
@@ -82,6 +88,8 @@ unless RUBY_VERSION == '1.9.1' && RUBY_PATCHLEVEL <= 129
       assert_equal 'Räder', nsgettext(['Car|wheel', 'wheels'], 2)
       assert_equal 'Rad',   npgettext('Car', ['wheel', 'wheels'], 1)
       assert_equal 'Räder', npgettext('Car', ['wheel', 'wheels'], 2)
+      assert_equal 'Rad!', npgettext('New car', ['wheel', 'wheels'], 1)
+      assert_equal 'Räder!', npgettext('New car', ['wheel', 'wheels'], 2)
     end
 
     def test_ngettextpluralizes_entry_with_dots
