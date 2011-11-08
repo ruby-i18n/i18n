@@ -60,7 +60,7 @@ module I18n
 
           keys = I18n::Gettext.plural_keys(locale)
           values = value.split("\000")
-          raise "invalid number of plurals: #{values.size}, keys: #{keys.inspect}" if values.size != keys.size
+          raise "invalid number of plurals: #{values.size}, keys: #{keys.inspect} on #{locale} locale for msgid #{key.inspect} with values #{values.inspect}" if values.size != keys.size
 
           result = {}
           values.each_with_index { |_value, ix| result[keys[ix]] = _value }
