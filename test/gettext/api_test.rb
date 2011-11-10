@@ -17,6 +17,13 @@ class I18nGettextApiTest < Test::Unit::TestCase
     }, :separator => '|'
   end
 
+  # N_
+  def test_N_returns_original_msg
+    assert_equal 'foo|bar', N_('foo|bar')
+    I18n.locale = :de
+    assert_equal 'Hi Gettext!', N_('Hi Gettext!')
+  end
+
   # gettext
   def test_gettext_uses_msg_as_default
     assert_equal 'Hi Gettext!', _('Hi Gettext!')
