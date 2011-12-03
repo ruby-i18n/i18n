@@ -91,4 +91,23 @@ class I18nBackendLocalizationTest < Test::Unit::TestCase
                  I18n.l(DateTime.parse('2011-01-05T18:32:41'),
                         :format => '%a, %A %b %B %Y-%m-%d %H:%M:%S %z %p %P')
   end
+
+  test "localize datetime with nested formats in custom format" do
+    store_translations(:en, :time => {:formats => {:time => '%H:%M', :date => '%Y-%m-%d'}},
+                            :date => {:abbr_day_names => %w(Sun Mon Tue Wed Thu Fri Sat)})
+
+    assert_equal '18:32 (Wed, 2011-01-05)',
+                 I18n.l(DateTime.parse('2011-01-05T18:32:41'),
+                        :format => '%{time} (%a, %{date})')
+  end
+
+  test "localize datetime with nested formats in default format" do
+    store_translations(:en, :time => {:formats => {:time => '%H:%M',
+                                                   :date => '%Y-%m-%d',
+                                                   :default => '%{time} (%a, %{date})'}},
+                            :date => {:abbr_day_names => %w(Sun Mon Tue Wed Thu Fri Sat)})
+
+    assert_equal '18:32 (Wed, 2011-01-05)',
+                 I18n.l(DateTime.parse('2011-01-05T18:32:41'))
+  end
 end
