@@ -145,7 +145,7 @@ module I18n
 
         def delete_all_keys_from_cache
           I18n.cache_keys.all.keys.each do |locale, key|
-            delete_from_cache(locale, key, :skip_remove_cache_keys => true)
+            delete_from_cache(locale, key)
           end
 
           I18n.cache_keys.delete_all
@@ -161,9 +161,9 @@ module I18n
           I18n.cache_keys.delete(locale, keys)
         end
 
-        def delete_from_cache(locale, key, options={})
-          I18n.cache_keys[locale, key].each do |opts|
-            I18n.cache_store.delete(cache_key(locale, key, opts))
+        def delete_from_cache(locale, key)
+          I18n.cache_keys[locale, key].each do |options|
+            I18n.cache_store.delete(cache_key(locale, key, options))
           end
         end
 
