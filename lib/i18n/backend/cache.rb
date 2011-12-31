@@ -54,32 +54,117 @@ module I18n
       @@cache_namespace = namespace
     end
 
+    def cache_keys
+      @@cache_keys ||= Backend::Cache::Keys.new
+    end
+
     def perform_caching?
       !cache_store.nil?
     end
   end
 
   module Backend
-    # TODO Should the cache be cleared if new translations are stored?
     module Cache
+      class Keys
+        def add(locale, key, options)
+          keys = cache_keys
+          keys[[locale, key]] ||= Set.new
+          keys[[locale, key]] << options
+          update(keys)
+        end
+
+        def delete(locale, keys)
+          ckeys = cache_keys
+          keys.each {|k| ckeys.delete([locale, k])}
+          update(ckeys)
+        end
+
+        def delete_all
+          update({})
+        end
+
+        def [](locale, key)
+          cache_keys[[locale, key]] || Set.new
+        end
+
+        def all
+          cache_keys
+        end
+
+        protected
+
+          def cache_keys
+            result = I18n.cache_store.read("i18n/#{I18n.cache_namespace}/cache_keys")
+            if result
+              Marshal.load(StringIO.new(result))
+            else
+              {}
+            end
+          end
+
+          def update(cache_keys)
+            I18n.cache_store.write("i18n/#{I18n.cache_namespace}/cache_keys", Marshal.dump(cache_keys))
+          end
+      end
+
+      include Flatten
+
+      def reload!
+        delete_all_keys_from_cache if I18n.perform_caching?
+        super
+      end
+
       def translate(locale, key, options = {})
-        I18n.perform_caching? ? fetch(cache_key(locale, key, options)) { super } : super
+        I18n.perform_caching? ? fetch(locale, key, options) { super } : super
+      end
+
+      def store_translations(locale, data, options = {})
+        delete_keys_from_cache(locale, data, options) if I18n.perform_caching?
+        super
       end
 
       protected
 
-        def fetch(cache_key, &block)
-          result = _fetch(cache_key, &block)
+        def fetch(locale, key, options, &block)
+          result = _fetch(locale, key, options, &block)
           throw(:exception, result) if result.is_a?(MissingTranslation)
           result = result.dup if result.frozen? rescue result
           result
         end
 
-        def _fetch(cache_key, &block)
+        def _fetch(locale, key, options, &block)
+          cache_key = cache_key(locale, key, options)
           result = I18n.cache_store.read(cache_key) and return result
           result = catch(:exception, &block)
-          I18n.cache_store.write(cache_key, result) unless result.is_a?(Proc)
+          unless result.is_a?(Proc) || options.values.any? {|v| v.is_a?(Proc)}
+            I18n.cache_store.write(cache_key, result)
+            I18n.cache_keys.add(locale, key, options)
+          end
           result
+        end
+
+        def delete_all_keys_from_cache
+          I18n.cache_keys.all.keys.each do |locale, key|
+            delete_from_cache(locale, key, :skip_remove_cache_keys => true)
+          end
+
+          I18n.cache_keys.delete_all
+        end
+
+        def delete_keys_from_cache(locale, data, options)
+          escape = options.fetch(:escape, true)
+          keys = flatten_translations(locale, data, escape, false).keys
+          keys.each do |key|
+            delete_from_cache(locale, key)
+          end
+
+          I18n.cache_keys.delete(locale, keys)
+        end
+
+        def delete_from_cache(locale, key, options={})
+          I18n.cache_keys[locale, key].each do |opts|
+            I18n.cache_store.delete(cache_key(locale, key, opts))
+          end
         end
 
         def cache_key(locale, key, options)
