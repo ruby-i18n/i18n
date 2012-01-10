@@ -169,6 +169,9 @@ module I18n
         # toplevel keys.
         def load_yml(filename)
           YAML.load_file(filename)
+        rescue Exception => ex
+          ex.message.insert(0, "Error loading '#{filename}': ")
+          raise ex
         end
     end
   end
