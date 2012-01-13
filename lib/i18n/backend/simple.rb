@@ -63,7 +63,7 @@ module I18n
         end
 
         # Looks up a translation from the translations hash. Returns nil if
-        # eiher key is nil, or locale, scope or key do not exist as a key in the
+        # either key is nil, or locale, scope or key do not exist as a key in the
         # nested translations hash. Splits keys or scopes containing dots
         # into multiple keys, i.e. <tt>currency.format</tt> is regarded the same as
         # <tt>%w(currency format)</tt>.
