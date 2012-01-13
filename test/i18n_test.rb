@@ -102,6 +102,7 @@ class I18nTest < Test::Unit::TestCase
   end
 
   test "normalize_keys discards empty keys" do
+    assert_equal [:en, :foo, :bar, :baz], I18n.normalize_keys(:en, nil, [:foo, :bar, :baz])
     assert_equal [:en, :foo, :bar, :baz, :buz], I18n.normalize_keys(:en, :'baz..buz', :'foo..bar')
     assert_equal [:en, :foo, :bar, :baz, :buz], I18n.normalize_keys(:en, :'baz......buz', :'foo......bar')
     assert_equal [:en, :foo, :bar, :baz, :buz], I18n.normalize_keys(:en, ['baz', nil, '', 'buz'], ['foo', nil, '', 'bar'])
@@ -183,15 +184,19 @@ class I18nTest < Test::Unit::TestCase
     assert_equal "translation missing: en.bogus", I18n.t(:bogus)
   end
 
-  test "translate given an empty string as a key raises an I18n::ArgumentError" do
-    assert_raise(I18n::ArgumentError) { I18n.t("") }
+  test "translate given nil key returns missing translation" do
+    assert_equal "translation missing: en.no key", I18n.t(nil)
+  end
+
+  test "translate given an empty string as a key returns missing translation" do
+    assert_equal "translation missing: en.no key", I18n.t("")
   end
 
   test "localize given nil raises an I18n::ArgumentError" do
     assert_raise(I18n::ArgumentError) { I18n.l nil }
   end
 
-  test "localize givan an Object raises an I18n::ArgumentError" do
+  test "localize given an Object raises an I18n::ArgumentError" do
     assert_raise(I18n::ArgumentError) { I18n.l Object.new }
   end
 

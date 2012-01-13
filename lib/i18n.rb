@@ -147,11 +147,11 @@ module I18n
       locale   = options.delete(:locale) || config.locale
       handling = options.delete(:throw) && :throw || options.delete(:raise) && :raise # TODO deprecate :raise
 
-      raise I18n::ArgumentError if key.is_a?(String) && key.empty?
-
       result = catch(:exception) do
         if key.is_a?(Array)
           key.map { |k| backend.translate(locale, k, options) }
+        elsif key.is_a?(String) && key.empty?
+          backend.translate(locale, nil, options)
         else
           backend.translate(locale, key, options)
         end
