@@ -202,10 +202,6 @@ class I18nTest < I18n::TestCase
     assert_equal "translation missing: en.bogus", I18n.t(:bogus)
   end
 
-  test "translate given an empty string as a key raises an I18n::ArgumentError" do
-    assert_raise(I18n::ArgumentError) { I18n.t("") }
-  end
-
   test "translate given an unavailable locale rases an I18n::InvalidLocale" do
     begin
       I18n.config.enforce_available_locales = true
