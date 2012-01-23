@@ -7,6 +7,11 @@ module I18n
     module Base
       include I18n::Backend::Transliterator
 
+      RESERVED_KEYS_HASH = RESERVED_KEYS.inject({}) do |h, reserved_key|
+        h[reserved_key] = h[reserved_key.to_s.freeze] = true
+        h
+      end
+
       # Accepts a list of paths to translation files. Loads translations from
       # plain Ruby (*.rb) or YAML files (*.yml). See #load_rb and #load_yml
       # for details.
@@ -27,7 +32,6 @@ module I18n
 
         if options
           count, default = options.values_at(:count, :default)
-          values = options.except(*RESERVED_KEYS)
           entry = entry.nil? && default ?
             default(locale, key, default, options) : resolve(locale, key, entry, options)
         else
@@ -38,7 +42,7 @@ module I18n
         entry = entry.dup if entry.is_a?(String)
 
         entry = pluralize(locale, entry, count) if count
-        entry = interpolate(locale, entry, values) if values
+        entry = interpolate(locale, entry, options) if options
         entry
       end
 
@@ -150,11 +154,18 @@ module I18n
         #   interpolate "file %{file} opened by %%{user}", :file => 'test.txt', :user => 'Mr. X'
         #   # => "file test.txt opened by %{user}"
         def interpolate(locale, string, values = {})
-          if string.is_a?(::String) && !values.empty?
+          if string.is_a?(::String) && interpolation_values_any?(values)
             I18n.interpolate(string, values)
           else
             string
           end
+        end
+
+        def interpolation_values_any?(values)
+          values.each_key do |key|
+            return true if !RESERVED_KEYS_HASH[key]
+          end
+          false
         end
 
         # Loads a single translations file by delegating to #load_rb or
