@@ -31,7 +31,8 @@ module I18n
         entry = key && lookup(locale, key, options && options[:scope], options)
 
         if options
-          count, default = options.values_at(:count, :default)
+          count   = options[:count]
+          default = options[:default]
           entry = entry.nil? && default ?
             default(locale, key, default, options) : resolve(locale, key, entry, options)
         else
