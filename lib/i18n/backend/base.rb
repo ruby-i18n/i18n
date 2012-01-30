@@ -23,23 +23,23 @@ module I18n
 
       def translate(locale, key, options = {})
         raise InvalidLocale.new(locale) unless locale
-        entry = key && lookup(locale, key, options[:scope], options)
+
+        tn = I18n::Backend::Translation.new(options.merge(:locale => locale, :key => key))
+        tn.content = tn.key && lookup(tn.locale, tn.key, tn.scope, options)
 
         if options.empty?
-          entry = resolve(locale, key, entry, options)
+          tn.content = resolve(tn.locale, tn.key, tn.content, options)
         else
-          count, default = options.values_at(:count, :default)
           values = options.except(*RESERVED_KEYS)
-          entry = entry.nil? && default ?
-            default(locale, key, default, options) : resolve(locale, key, entry, options)
+          tn.content = tn.content.nil? && tn.default ?
+            default(tn.locale, tn.key, tn.default, options) : resolve(tn.locale, tn.key, tn.content, options)
         end
 
-        throw(:exception, I18n::MissingTranslation.new(locale, key, options)) if entry.nil?
-        entry = entry.dup if entry.is_a?(String)
-
-        entry = pluralize(locale, entry, count) if count
-        entry = interpolate(locale, entry, values) if values
-        entry
+        throw(:exception, I18n::MissingTranslation.new(tn.locale, tn.key, options)) if tn.content.nil?
+        tn.content = tn.content.dup if tn.content.is_a?(String)
+        tn.content = pluralize(tn.locale, tn.content, tn.count) if tn.count
+        tn.content = interpolate(tn.locale, tn.content, values) if values
+        tn.content
       end
 
       # Acts the same as +strftime+, but uses a localized version of the
