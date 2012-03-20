@@ -24,6 +24,10 @@ module I18n
         assert_equal 'bar', I18n.t(:does_not_exist, :default => [:does_not_exist_2, :'foo.bar'])
       end
 
+      test "defaults: given false it returns false" do
+        assert_equal false, I18n.t(:does_not_exist, :default => false)
+      end
+
       test "defaults: given an array of missing keys it raises a MissingTranslationData exception" do
         assert_raise I18n::MissingTranslationData do
           I18n.t(:does_not_exist, :default => [:does_not_exist_2, :does_not_exist_3], :raise => true)
