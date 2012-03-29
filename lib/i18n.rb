@@ -24,7 +24,7 @@ module I18n
     end
 
     # Write methods which delegates to the configuration object
-    %w(locale backend default_locale available_locales default_separator
+    %w(locale interpolations backend default_locale available_locales default_separator
       exception_handler load_path).each do |method|
       module_eval <<-DELEGATORS, __FILE__, __LINE__ + 1
         def #{method}
@@ -146,6 +146,9 @@ module I18n
       backend  = config.backend
       locale   = options.delete(:locale) || config.locale
       handling = options.delete(:throw) && :throw || options.delete(:raise) && :raise # TODO deprecate :raise
+
+      # Merge in default interpolations
+      options  = config.interpolations.merge(options)
 
       raise I18n::ArgumentError if key.is_a?(String) && key.empty?
 

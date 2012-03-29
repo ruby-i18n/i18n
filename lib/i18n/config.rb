@@ -1,6 +1,6 @@
 module I18n
   class Config
-    # The only configuration value that is not global and scoped to thread is :locale.
+    # The only configuration values that is not global and scoped to thread are :locale and :interpolations.
     # It defaults to the default_locale.
     def locale
       @locale ||= default_locale
@@ -9,6 +9,17 @@ module I18n
     # Sets the current locale pseudo-globally, i.e. in the Thread.current hash.
     def locale=(locale)
       @locale = locale.to_sym rescue nil
+    end
+
+    # Returns the current interpolations.
+    # It defaults to an empty hash.
+    def interpolations
+      @interpolations ||= {}
+    end
+
+    # Sets the current interpolations pseudo-globally, i.e. in the Thread.current hash.
+    def interpolations=(interpolations)
+      @interpolations = interpolations rescue nil
     end
 
     # Returns the current backend. Defaults to +Backend::Simple+.
