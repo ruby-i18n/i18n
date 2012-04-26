@@ -62,7 +62,7 @@ module I18n
           when '%A' then I18n.t(:"date.day_names",                       :locale => locale, :format => format)[object.wday]
           when '%b' then I18n.t(:"date.abbr_month_names",                :locale => locale, :format => format)[object.mon]
           when '%B' then I18n.t(:"date.month_names",                     :locale => locale, :format => format)[object.mon]
-          when '%p' then I18n.t(:"time.#{object.hour < 12 ? :am : :pm}", :locale => locale, :format => format) if object.respond_to? :hour
+          when '%p' then I18n.t(:"time.#{object.hour < 12 ? :AM : :PM}", :locale => locale, :format => format) if object.respond_to? :hour
           end
         end
 
