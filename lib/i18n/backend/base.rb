@@ -30,7 +30,6 @@ module I18n
         if options.empty?
           translation.content = resolve(translation.locale, translation.key, translation.content, options)
         else
-          values = options.except(*RESERVED_KEYS)
           translation.content = translation.content.nil? && translation.default ?
             default(translation.locale, translation.key, translation.default, options) : resolve(translation.locale, translation.key, translation.content, options)
         end
@@ -38,7 +37,7 @@ module I18n
         throw(:exception, I18n::MissingTranslation.new(translation.locale, translation.key, options)) if translation.content.nil?
         translation.content = translation.content.dup if translation.content.is_a?(String)
         translation.content = pluralize(translation.locale, translation.content, translation.count) if translation.count
-        translation.content = interpolate(translation.locale, translation.content, values) if values
+        translation.content = interpolate(translation.locale, translation.content, translation.interpolations) if translation.interpolations
         translation.content
       end
 
