@@ -15,5 +15,6 @@ module I18n
     autoload :Simple,                'i18n/backend/simple'
     autoload :Translation,           'i18n/backend/translation'
     autoload :Transliterator,        'i18n/backend/transliterator'
+    autoload :Filter,                'i18n/backend/filter'
   end
 end
