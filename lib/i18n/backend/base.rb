@@ -24,22 +24,22 @@ module I18n
       def translate(locale, key, options = {})
         raise InvalidLocale.new(locale) unless locale
 
-        tn = I18n::Backend::Translation.new(options.merge(:locale => locale, :key => key))
-        tn.content = tn.key && lookup(tn.locale, tn.key, tn.scope, options)
+        translation = I18n::Backend::Translation.new(options.merge(:locale => locale, :key => key))
+        translation.content = translation.key && lookup(translation.locale, translation.key, translation.scope, options)
 
         if options.empty?
-          tn.content = resolve(tn.locale, tn.key, tn.content, options)
+          translation.content = resolve(translation.locale, translation.key, translation.content, options)
         else
           values = options.except(*RESERVED_KEYS)
-          tn.content = tn.content.nil? && tn.default ?
-            default(tn.locale, tn.key, tn.default, options) : resolve(tn.locale, tn.key, tn.content, options)
+          translation.content = translation.content.nil? && translation.default ?
+            default(translation.locale, translation.key, translation.default, options) : resolve(translation.locale, translation.key, translation.content, options)
         end
 
-        throw(:exception, I18n::MissingTranslation.new(tn.locale, tn.key, options)) if tn.content.nil?
-        tn.content = tn.content.dup if tn.content.is_a?(String)
-        tn.content = pluralize(tn.locale, tn.content, tn.count) if tn.count
-        tn.content = interpolate(tn.locale, tn.content, values) if values
-        tn.content
+        throw(:exception, I18n::MissingTranslation.new(translation.locale, translation.key, options)) if translation.content.nil?
+        translation.content = translation.content.dup if translation.content.is_a?(String)
+        translation.content = pluralize(translation.locale, translation.content, translation.count) if translation.count
+        translation.content = interpolate(translation.locale, translation.content, values) if values
+        translation.content
       end
 
       # Acts the same as +strftime+, but uses a localized version of the
