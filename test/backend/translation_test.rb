@@ -5,7 +5,6 @@ class I18nBackendTranslationTest < Test::Unit::TestCase
     { :locale => :en,
       :key => 'foo.bar',
       :scope => 'baz.biz',
-      :count => 2,
       :default => 'default text',
       :custom_1 => 'interpolation 1',
       :custom_2 => 'interpolation 2'
@@ -17,7 +16,6 @@ class I18nBackendTranslationTest < Test::Unit::TestCase
     assert_equal(:en, translation.locale)
     assert_equal('foo.bar', translation.key)
     assert_equal('baz.biz', translation.scope)
-    assert_equal(2, translation.count)
     assert_equal({:custom_1 => 'interpolation 1', :custom_2 => 'interpolation 2'}, translation.interpolations)
     assert_nil(translation.content)
   end
@@ -27,5 +25,10 @@ class I18nBackendTranslationTest < Test::Unit::TestCase
     I18n::RESERVED_KEYS.each {|key| reserved_keys_hash[key] = key }
     translation = I18n::Backend::Translation.new(attributes.merge(reserved_keys_hash))
     assert_equal({:custom_1 => 'interpolation 1', :custom_2 => 'interpolation 2'}, translation.interpolations)
+  end
+
+  test "#count returns the value of interpolations[:count]" do
+    translation = I18n::Backend::Translation.new(attributes.merge(:count => 2))
+    assert_equal(2, translation.count)
   end
 end
