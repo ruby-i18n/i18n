@@ -12,9 +12,9 @@ class I18nFiltersBaseTest < Test::Unit::TestCase
     assert_equal :context, filter.context
   end
 
-  test "#applicable? raises a NotImplementedError" do
+  test "#applies? raises a NotImplementedError" do
     filter = I18n::Filters::Base.new(:translation)
-    assert_raise(NotImplementedError) { filter.applicable? }
+    assert_raise(NotImplementedError) { filter.applies? }
   end
 
   test "#call raises a NotImplementedError" do

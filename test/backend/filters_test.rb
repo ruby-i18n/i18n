@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class FilterOne < I18n::Filters::Base
-  def applicable?
+  def applies?
     true
   end
 
@@ -11,7 +11,7 @@ class FilterOne < I18n::Filters::Base
 end
 
 class FilterTwo < I18n::Filters::Base
-  def applicable?
+  def applies?
     true
   end
 
@@ -21,7 +21,7 @@ class FilterTwo < I18n::Filters::Base
 end
 
 class FilterNotApplicable < I18n::Filters::Base
-  def applicable?
+  def applies?
     false
   end
 

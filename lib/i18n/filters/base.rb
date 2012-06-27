@@ -9,7 +9,7 @@ class I18n::Filters::Base
 
   # This method should determine if the filter is applicable or not
   # Should be implemented and return a boolean
-  def applicable?
+  def applies?
     raise NotImplementedError
   end
 
