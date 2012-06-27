@@ -38,6 +38,7 @@ module I18n
         translation.content = translation.content.dup if translation.content.is_a?(String)
         translation.content = pluralize(translation.locale, translation.content, translation.count) if translation.count
         translation.content = interpolate(translation.locale, translation.content, translation.interpolations) if translation.interpolations
+        translation = apply_filters(translation)
         translation.content
       end
 
@@ -168,6 +169,19 @@ module I18n
         # toplevel keys.
         def load_yml(filename)
           YAML.load_file(filename)
+        end
+
+        # Passes the translation to all defined filters where applicable? returns true
+        # Returns a Translation instance
+        def apply_filters(translation)
+          I18n.filters.each do |filter_class|
+            filter = filter_class.new(translation)
+            if filter.applicable?
+              filter.call
+              translation = filter.translation
+            end
+          end
+          translation
         end
     end
   end

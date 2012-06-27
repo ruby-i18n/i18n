@@ -82,5 +82,16 @@ module I18n
     def load_path=(load_path)
       @@load_path = load_path
     end
+
+    # Returns the filters to be called after the key lookup is performed
+    # Should behave like an Array
+    def filters
+      @@filters ||= []
+    end
+
+    # Sets the filters
+    def filters=(filters)
+      @@filters = filters
+    end
   end
 end
