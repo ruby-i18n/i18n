@@ -25,6 +25,8 @@ module I18n
         raise InvalidLocale.new(locale) unless locale
 
         translation = I18n::Backend::Translation.new(options.merge(:locale => locale, :key => key))
+        translation = I18n.filter_chain.apply(:before_lookup, translation)
+
         translation.content = translation.key && lookup(translation.locale, translation.key, translation.scope, options)
 
         if options.empty?
@@ -38,7 +40,8 @@ module I18n
         translation.content = translation.content.dup if translation.content.is_a?(String)
         translation.content = pluralize(translation.locale, translation.content, translation.count) if translation.count
         translation.content = interpolate(translation.locale, translation.content, translation.interpolations) if translation.interpolations
-        translation = apply_filters(translation)
+
+        translation = I18n.filter_chain.apply(:after_lookup, translation)
         translation.content
       end
 
@@ -171,18 +174,6 @@ module I18n
           YAML.load_file(filename)
         end
 
-        # Passes the translation to all defined filters where applies? returns true
-        # Returns a Translation instance
-        def apply_filters(translation)
-          I18n.filters.each do |filter_class|
-            filter = filter_class.new(translation)
-            if filter.applies?
-              filter.call
-              translation = filter.translation
-            end
-          end
-          translation
-        end
     end
   end
 end
