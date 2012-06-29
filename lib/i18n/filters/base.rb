@@ -1,10 +1,8 @@
 class I18n::Filters::Base
   attr_accessor :translation
-  attr_reader   :context
 
-  def initialize(translation, context=nil)
+  def initialize(translation)
     @translation = translation
-    @context     = context
   end
 
   # This method should determine if the filter is applicable or not

@@ -31,4 +31,10 @@ class I18nBackendTranslationTest < Test::Unit::TestCase
     translation = I18n::Backend::Translation.new(attributes.merge(:count => 2))
     assert_equal(2, translation.count)
   end
+
+  test "#context returns the value of interpolations[:context]" do
+    translation = I18n::Backend::Translation.new(attributes.merge(:context => 'a context'))
+    assert_equal('a context', translation.context)
+    assert_equal('a context', translation.interpolations[:context])
+  end
 end
