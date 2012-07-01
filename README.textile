@@ -1,5 +1,7 @@
 h1. Ruby I18n
 
+!https://secure.travis-ci.org/svenfuchs/i18n.png?branch=master(Build Status)!:http://travis-ci.org/svenfuchs/i18n
+
 Ruby Internationalization and localization solution.
 
 Features:
