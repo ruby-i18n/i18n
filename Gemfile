@@ -1,1 +1,1 @@
-ci/Gemfile.all
+ci/Gemfile.no-rails
