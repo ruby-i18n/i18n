@@ -27,7 +27,7 @@
   :fi => { :i18n => { :plural => { :keys => [:one, :other], :rule => lambda { |n| n == 1 ? :one : :other } } } },
   :fil => { :i18n => { :plural => { :keys => [:one, :other], :rule => lambda { |n| [0, 1].include?(n) ? :one : :other } } } },
   :fo => { :i18n => { :plural => { :keys => [:one, :other], :rule => lambda { |n| n == 1 ? :one : :other } } } },
-  :fr => { :i18n => { :plural => { :keys => [:one, :other], :rule => lambda { |n| n && n != 2 ? :one : :other } } } },
+  :fr => { :i18n => { :plural => { :keys => [:one, :other], :rule => lambda { |n| n.between?(0, 2) && n != 2 ? :one : :other } } } },
   :fur => { :i18n => { :plural => { :keys => [:one, :other], :rule => lambda { |n| n == 1 ? :one : :other } } } },
   :fy => { :i18n => { :plural => { :keys => [:one, :other], :rule => lambda { |n| n == 1 ? :one : :other } } } },
   :ga => { :i18n => { :plural => { :keys => [:one, :two, :other], :rule => lambda { |n| n == 1 ? :one : n == 2 ? :two : :other } } } },
