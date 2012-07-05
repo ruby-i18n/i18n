@@ -82,10 +82,10 @@ module I18n
 
       protected
 
-      def compute(tags, include_defaults = true)
+      def compute(tags, include_defaults = true, exclude = [])
         result = Array(tags).collect do |tag|
-          tags = I18n::Locale::Tag.tag(tag).self_and_parents.map! { |t| t.to_sym }
-          tags.each { |_tag| tags += compute(@map[_tag]) if @map[_tag] }
+          tags = I18n::Locale::Tag.tag(tag).self_and_parents.map! { |t| t.to_sym } - exclude
+          tags.each { |_tag| tags += compute(@map[_tag], false, exclude + tags) if @map[_tag] }
           tags
         end.flatten
         result.push(*defaults) if include_defaults

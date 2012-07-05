@@ -121,4 +121,16 @@ class I18nFallbacksComputationTest < Test::Unit::TestCase
   test "with a mapping :de => :en, :he => :en defined it [:he, :en] for :de" do
     assert_equal [:he, :"en-US", :en], @fallbacks[:he]
   end
+
+  # Test allowing mappings that fallback to each other
+
+  test "with :no => :nb, :nb => :no defined :no returns [:no, :nb, :en-US, :en]" do
+    @fallbacks.map(:no => :nb, :nb => :no)
+    assert_equal [:no, :nb, :"en-US", :en], @fallbacks[:no]
+  end
+
+  test "with :no => :nb, :nb => :no defined :nb returns [:nb, :no, :en-US, :en]" do
+    @fallbacks.map(:no => :nb, :nb => :no)
+    assert_equal [:nb, :no, :"en-US", :en], @fallbacks[:nb]
+  end
 end
