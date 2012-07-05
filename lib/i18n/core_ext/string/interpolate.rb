@@ -37,8 +37,8 @@ rescue ArgumentError
     alias :interpolate_without_ruby_19_syntax :% # :nodoc:
 
     INTERPOLATION_PATTERN = Regexp.union(
-      /%\{(\w+)\}/,                               # matches placeholders like "%{foo}"
-      /%<(\w+)>(.*?\d*\.?\d*[bBdiouxXeEfgGcps])/  # matches placeholders like "%<foo>.d"
+      /%\{([^\{\}\%]+)\}/,                           # matches placeholders like "%{foo}"
+      /%<([^\>]+)>(.*?\d*\.?\d*[bBdiouxXeEfgGcps])/  # matches placeholders like "%<foo>.d"
     )
 
     INTERPOLATION_PATTERN_WITH_ESCAPE = Regexp.union(
