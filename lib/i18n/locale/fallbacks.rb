@@ -30,7 +30,7 @@
 #
 #   # using a custom locale as default fallback locale
 #
-#   I18n.fallbacks = I18n::Fallbacks.new(:"en-GB", :"de-AT" => :de, :"de-CH" => :de)
+#   I18n.fallbacks = I18n::Locale::Fallbacks.new(:"en-GB", :"de-AT" => :de, :"de-CH" => :de)
 #   I18n.fallbacks[:"de-AT"] # => [:"de-AT", :de, :"en-GB", :en]
 #   I18n.fallbacks[:"de-CH"] # => [:"de-CH", :de, :"en-GB", :en]
 #
