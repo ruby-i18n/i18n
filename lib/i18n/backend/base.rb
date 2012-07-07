@@ -168,7 +168,11 @@ module I18n
         # Loads a YAML translations file. The data must have locales as
         # toplevel keys.
         def load_yml(filename)
-          YAML.load_file(filename)
+          begin
+            YAML.load_file(filename)
+          rescue TypeError
+            raise InvalidLocaleData.new(file)
+          end
         end
     end
   end
