@@ -171,7 +171,7 @@ module I18n
           begin
             YAML.load_file(filename)
           rescue TypeError
-            raise InvalidLocaleData.new(file)
+            raise InvalidLocaleData.new(filename)
           end
         end
     end
