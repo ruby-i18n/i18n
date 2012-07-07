@@ -7,10 +7,7 @@ rvm:
   - rbx
   - jruby
 
-matrix:
-  - rvm: 1.8.7
-    gemfile: ci/Gemfile.rails-3.x
-  - rvm: 1.9.2
-    gemfile: ci/Gemfile.rails-3.x
-  - rvm: 1.9.3
-    gemfile: ci/Gemfile.rails-3.x
+gemfile:
+  - ci/Gemfile.no-rails
+  - ci/Gemfile.rails-2.3.x
+  - ci/Gemfile.rails-3.x
