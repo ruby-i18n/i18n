@@ -188,7 +188,7 @@ class I18nTest < Test::Unit::TestCase
   end
 
   test "localize given nil raises an I18n::ArgumentError" do
-    assert_raise(I18n::ArgumentError) { I18n.l nil }
+    assert_nil I18n.l(nil)
   end
 
   test "localize givan an Object raises an I18n::ArgumentError" do
