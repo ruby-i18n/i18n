@@ -44,8 +44,8 @@ module I18n
           assert_nothing_raised { I18n.l(@date, :format => '%x') }
         end
 
-        test "localize Date: given nil it raises I18n::ArgumentError" do
-          assert_raise(I18n::ArgumentError) { I18n.l(nil) }
+        test "localize Date: given nil it returns nil" do
+          assert_nil I18n.l(nil)
         end
 
         test "localize Date: given a plain Object it raises I18n::ArgumentError" do
