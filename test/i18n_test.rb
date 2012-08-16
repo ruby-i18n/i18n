@@ -235,6 +235,13 @@ class I18nTest < Test::Unit::TestCase
     assert_equal I18n.default_locale, I18n.locale
   end
 
+  test "I18n.with_locales temporarily sets the given locales" do
+    output = []
+    I18n.with_locales(:de, :pl, :en) { output << I18n.locale }
+    assert_equal [:de, :pl, :en], output
+    assert_equal I18n.default_locale, I18n.locale
+  end
+
   test "I18n.translitarate handles I18n::ArgumentError exception" do
     I18n::Backend::Transliterator.stubs(:get).raises(I18n::ArgumentError)
     I18n.exception_handler.expects(:call).raises(I18n::ArgumentError)
