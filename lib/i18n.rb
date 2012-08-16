@@ -250,7 +250,7 @@ module I18n
 
     # Executes block with each given I18n.locale.
     def with_locales(*locales)
-      locales.flatten.each do |locale|
+      locales.flatten.map do |locale|
         with_locale(locale) { yield }
       end
     end

@@ -236,9 +236,10 @@ class I18nTest < Test::Unit::TestCase
   end
 
   test "I18n.with_locales temporarily sets the given locales" do
-    output = []
-    I18n.with_locales(:de, :pl, :en) { output << I18n.locale }
-    assert_equal [:de, :pl, :en], output
+    store_translations(:en, :foo => 'Foo in :en')
+    store_translations(:de, :foo => 'Foo in :de')
+    
+    assert_equal [[:en, 'Foo in :en'], [:de, 'Foo in :de']], I18n.with_locales(:en, :de) { [I18n.locale, I18n.t(:foo)]  }
     assert_equal I18n.default_locale, I18n.locale
   end
 
