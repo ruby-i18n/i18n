@@ -122,17 +122,20 @@ module I18n
           result unless result.is_a?(MissingTranslation)
         end
 
-        # Picks a translation from an array according to English pluralization
-        # rules. It will pick the first translation if count is not equal to 1
-        # and the second translation if it is equal to 1. Other backends can
-        # implement more flexible or complex pluralization rules.
+        PLURALIZATION_KEYS = Hash.new(:other)
+                            .merge!(0 => :zero, 1 => :one)
+        # Picks a translation from a hash using the key :zero,
+        # :one or :other, depending on count.
+        # In case +entry+ has no value for :zero or :one
+        # then :other will be used.
         def pluralize(locale, entry, count)
           return entry unless entry.is_a?(Hash) && count
 
-          key = :zero if count == 0 && entry.has_key?(:zero)
-          key ||= count == 1 ? :one : :other
-          raise InvalidPluralizationData.new(entry, count) unless entry.has_key?(key)
-          entry[key]
+          entry.fetch(PLURALIZATION_KEYS[count]) do
+            entry.fetch(:other) do
+              raise InvalidPluralizationData.new(entry, count)
+            end
+          end
         end
 
         # Interpolates values into a given string.
