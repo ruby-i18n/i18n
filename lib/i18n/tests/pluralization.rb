@@ -15,6 +15,10 @@ module I18n
         assert_equal 'bar', I18n.t(:default => { :one => 'bar' }, :count => 1)
       end
 
+      test "pluralization: given 1 it returns the :other translation if :one is not defined" do
+        assert_equal 'other', I18n.t(:default => { :other => 'other' }, :count => 1)
+      end
+
       test "pluralization: given 2 it returns the :other translation" do
         assert_equal 'bars', I18n.t(:default => { :other => 'bars' }, :count => 2)
       end
