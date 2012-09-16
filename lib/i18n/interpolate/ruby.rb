@@ -21,7 +21,7 @@ module I18n
           '%'
         else
           key = ($1 || $2).to_sym
-          value = values.key?(key) ? values[key] : raise(MissingInterpolationArgument.new(values, string))
+          value = values.key?(key) ? values[key] : raise(MissingInterpolationArgument.new(key, values, string))
           value = value.call(values) if value.respond_to?(:call)
           $3 ? sprintf("%#{$3}", value) : value
         end
