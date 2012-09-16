@@ -122,10 +122,14 @@ module I18n
           result unless result.is_a?(MissingTranslation)
         end
 
-        # Picks a translation from an array according to English pluralization
-        # rules. It will pick the first translation if count is not equal to 1
-        # and the second translation if it is equal to 1. Other backends can
-        # implement more flexible or complex pluralization rules.
+        # Picks a translation from a pluralized mnemonic subkey according to English
+        # pluralization rules :
+        # - It will pick the :one subkey if count is equal to 1.
+        # - It will pick the :other subkey otherwise.
+        # - It will pick the :zero subkey in the special case where count is
+        #   equal to 0 and there is a :zero subkey present. This behaviour is
+        #   not stand with regards to the CLDR pluralization rules.
+        # Other backends can implement more flexible or complex pluralization rules.
         def pluralize(locale, entry, count)
           return entry unless entry.is_a?(Hash) && count
 
