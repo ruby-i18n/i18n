@@ -141,7 +141,7 @@ module I18n
     # always return the same translations/values per unique combination of argument
     # values.
     def translate(*args)
-      options = args.last.is_a?(Hash) ? args.pop : {}
+      options = args.last.is_a?(Hash) ? args.pop.dup : {}
       key     = args.shift
       backend = config.backend
       locale  = options.delete(:locale) || config.locale
@@ -217,7 +217,7 @@ module I18n
     #     I18n.transliterate("Jürgen", :locale => :en) # => "Jurgen"
     #     I18n.transliterate("Jürgen", :locale => :de) # => "Juergen"
     def transliterate(*args)
-      options      = args.pop if args.last.is_a?(Hash)
+      options      = args.pop.dup if args.last.is_a?(Hash)
       key          = args.shift
       locale       = options && options.delete(:locale) || config.locale
       raises       = options && options.delete(:raise)
@@ -229,7 +229,8 @@ module I18n
     end
 
     # Localizes certain objects, such as dates and numbers to local formatting.
-    def localize(object, options = {})
+    def localize(object, options = nil)
+      options = options ? options.dup : {}
       locale = options.delete(:locale) || config.locale
       format = options.delete(:format) || :default
       config.backend.localize(locale, object, format, options)
