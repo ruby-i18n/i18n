@@ -41,6 +41,13 @@ module I18n
         assert_nothing_raised { I18n.t(:foo, :locale => :xx) }
       end
 
+      test "lookup: does not modify the options hash" do
+        options = {}
+        assert_equal "a", I18n.t(:string, options)
+        assert_equal({}, options)
+        assert_nothing_raised { I18n.t(:string, options.freeze) }
+      end
+
       test "lookup: given an array of keys it translates all of them" do
         assert_equal %w(bar baz), I18n.t([:bar, :baz], :scope => [:foo])
       end
