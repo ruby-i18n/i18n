@@ -1,5 +1,9 @@
 h1. Changelog
 
+h2. 0.5.1
+
+* "Fix issue #158, don't modify options hash in translate, transliterate, and localize":https://github.com/korny/i18n/commit/ec4e922028c96860ffe6d6c67e54a1810007f262
+
 h2. 0.5.0
 
 * "Extract Backend::ActiveRecord to a separate gem":https://github.com/svenfuchs/i18n/commit/197dacebad356b910d69fa69a719c2ad10cf49e6 (see "i18n-active_record":https://github.com/svenfuchs/i18n-active_record)
