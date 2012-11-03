@@ -7,13 +7,15 @@ include I18n::Gettext::Helpers
 class I18nGettextApiTest < Test::Unit::TestCase
   def setup
     I18n.locale = :en
+    I18n.interpolations = {}
     I18n.backend.store_translations :de, {
       'Hi Gettext!' => 'Hallo Gettext!',
       'Sentence 1. Sentence 2.' => 'Satz 1. Satz 2.',
       "An apple" => { :one => 'Ein Apfel', :other => '%{count} Äpfel' },
       :special => { "A special apple" => { :one => 'Ein spezieller Apfel', :other => '%{count} spezielle Äpfel' } },
       :foo => { :bar => 'bar-de' },
-      'foo.bar' => 'Foo Bar'
+      'foo.bar' => 'Foo Bar',
+      'interpolated: "%{value}"' => 'interpoliert: "%{value}"'
     }, :separator => '|'
   end
 
@@ -37,6 +39,18 @@ class I18nGettextApiTest < Test::Unit::TestCase
     I18n.locale = :de
     assert_equal 'Satz 1. Satz 2.', gettext('Sentence 1. Sentence 2.')
     assert_equal 'Satz 1. Satz 2.', _('Sentence 1. Sentence 2.')
+  end
+
+  def test_gettext_uses_default_interpolations
+    I18n.locale = :de
+    I18n.interpolations = { :value => 'string' }
+    assert_equal 'interpoliert: "string"', gettext('interpolated: "%{value}"')
+  end
+
+  def test_gettext_overrides_default_interpolations
+    I18n.locale = :de
+    I18n.interpolations = { :value => 'string' }
+    assert_equal 'interpoliert: "override"', gettext('interpolated: "%{value}"', :value => 'override')
   end
 
   # sgettext
