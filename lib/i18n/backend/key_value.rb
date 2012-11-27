@@ -66,7 +66,7 @@ module I18n
             case value
             when Hash
               if @subtrees && (old_value = @store[key])
-                old_value = ActiveSupport::JSON.decode(old_value)
+                old_value = ActiveSupport::JSON.decode(old_value)[0]
                 value = old_value.deep_symbolize_keys.deep_merge!(value) if old_value.is_a?(Hash)
               end
             when Proc
