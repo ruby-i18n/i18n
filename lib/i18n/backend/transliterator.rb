@@ -83,15 +83,18 @@ module I18n
 
         private
 
-          def approximations
-            @approximations ||= {}
-          end
+        def approximations
+          @approximations ||= {}
+        end
 
-          # Add transliteration rules to the approximations hash.
-          def add(hash)
-            hash.keys.each {|key| hash[key.to_s] = hash.delete(key).to_s}
-            approximations.merge! hash
+        # Add transliteration rules to the approximations hash.
+        def add(hash)
+          hash.keys.each do |key|
+            utf8_key = key.to_s.dup.force_encoding('UTF-8')
+            hash[utf8_key] = hash.delete(key).to_s
           end
+          approximations.merge! hash
+        end
       end
     end
   end

@@ -1,5 +1,6 @@
-# :coding: utf-8
+# encoding: utf-8
 require 'test_helper'
+require 'i18n/core_ext/string/encoding'
 
 class I18nBackendTransliterator < Test::Unit::TestCase
   def setup
