@@ -45,17 +45,31 @@ module I18n
       # Acts the same as +strftime+, but uses a localized version of the
       # format string. Takes a key from the date/time formats translations as
       # a format argument (<em>e.g.</em>, <tt>:short</tt> in <tt>:'date.formats'</tt>).
+      #
+      # One level <em>nested</em> formats are also supported with the special
+      # <tt>'%{format}}'<tt> syntax. So for example:
+      # <tt>:'time.formats.default'</tt> with a value of <tt>%{short} %b</tt>, and given
+      # <tt>:'time.formats.short'</tt> is <tt>'%d %b %H:%M'</tt>, is exactly the same with
+      # <tt>'%d %b %H:%M %b'</tt>.
       def localize(locale, object, format = :default, options = {})
         raise ArgumentError, "Object must be a Date, DateTime or Time object. #{object.inspect} given." unless object.respond_to?(:strftime)
 
+        type = object.respond_to?(:sec) ? 'time' : 'date'
+        options = options.merge(:raise => true, :object => object, :locale => locale)
+
         if Symbol === format
-          key  = format
-          type = object.respond_to?(:sec) ? 'time' : 'date'
-          options = options.merge(:raise => true, :object => object, :locale => locale)
-          format  = I18n.t(:"#{type}.formats.#{key}", options)
+          format = I18n.t(:"#{type}.formats.#{format}", options)
+        end
+
+        # Replace all %{format} with real values.
+        # For example %{short} for a Date and the current locale :en would return '%d %b'
+        format = format.to_s.gsub(/%\{[^\}]+\}/) do |match|
+          I18n.t(:"#{type}.formats.#{match.gsub(/[%\{\}]/, '')}", options)
         end
 
         # format = resolve(locale, object, format, options)
+        # Replace localizable replacement string with real localized values.
+        # For example a '%a' string will get replace with 'Fri' when the day is Friday and locale is :en
         format = format.to_s.gsub(/%[aAbBp]/) do |match|
           case match
           when '%a' then I18n.t(:"date.abbr_day_names",                  :locale => locale, :format => format)[object.wday]
