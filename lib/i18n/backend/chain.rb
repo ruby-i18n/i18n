@@ -45,8 +45,7 @@ module I18n
               options = default_options if backend == backends.last
               translation = backend.translate(locale, key, options)
               if namespace_lookup?(translation, options)
-                namespace ||= {}
-                namespace.merge!(translation)
+                namespace = translation.merge(namespace || {})
               elsif !translation.nil?
                 return translation
               end
