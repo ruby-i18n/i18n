@@ -167,6 +167,12 @@ module I18n
     end
     alias :t! :translate!
 
+    # Returns true if a translation exists for a given key, otherwise returns false.
+    def exists?(key, locale = config.locale)
+      raise I18n::ArgumentError if key.is_a?(String) && key.empty?
+      config.backend.exists?(locale, key)
+    end
+
     # Transliterates UTF-8 characters to ASCII. By default this method will
     # transliterate only Latin strings to an ASCII approximation:
     #
@@ -227,11 +233,6 @@ module I18n
       config.backend.transliterate(locale, key, replacement)
     rescue I18n::ArgumentError => exception
       handle_exception(handling, exception, locale, key, options || {})
-    end
-
-    # Checks if a certain key exists in the translations
-    def exists?(key, locale = locale)
-      config.backend.send(:lookup, locale, key).present?
     end
 
     # Localizes certain objects, such as dates and numbers to local formatting.

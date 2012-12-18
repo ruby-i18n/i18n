@@ -56,6 +56,12 @@ module I18n
           throw(:exception, I18n::MissingTranslation.new(locale, key, options))
         end
 
+        def exists?(locale, key)
+          backends.any? do |backend|
+            backend.exists?(locale, key)
+          end
+        end
+
         def localize(locale, object, format = :default, options = {})
           backends.each do |backend|
             catch(:exception) do
