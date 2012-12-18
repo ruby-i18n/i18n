@@ -192,8 +192,16 @@ class I18nTest < Test::Unit::TestCase
     assert_equal true, I18n.exists?(:currency)
   end
 
-  test "exists? given a non-existing key  will return false" do
+  test "exists? given a non-existing key will return false" do
     assert_equal false, I18n.exists?(:bogus)
+  end
+
+  test "exists? given an existing dot-separated key will return true" do
+    assert_equal true, I18n.exists?('currency.format.delimiter')
+  end
+
+  test "exists? given a non-existing dot-separated key will return false" do
+    assert_equal false, I18n.exists?('currency.format.bogus')
   end
 
   test "exists? given an existing key and an existing locale will return true" do
