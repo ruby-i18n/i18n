@@ -3,10 +3,10 @@ require 'test_helper'
 class I18nBackendChainTest < Test::Unit::TestCase
   def setup
     @first  = backend(:en => {
-      :foo => 'Foo', :formats => { :short => 'short' }, :plural_1 => { :one => '%{count}' }
+      :foo => 'Foo', :formats => { :short => 'short' }, :plural_1 => { :one => '%{count}' }, :dates => {:a => "A"}
     })
     @second = backend(:en => {
-      :bar => 'Bar', :formats => { :long => 'long' }, :plural_2 => { :one => 'one' }
+      :bar => 'Bar', :formats => { :long => 'long' }, :plural_2 => { :one => 'one' }, :dates => {:a => "B", :b => "B"}
     })
     @chain  = I18n.backend = I18n::Backend::Chain.new(@first, @second)
   end
@@ -40,6 +40,10 @@ class I18nBackendChainTest < Test::Unit::TestCase
 
   test "namespace lookup collects results from all backends" do
     assert_equal({ :short => 'short', :long => 'long' }, I18n.t(:formats))
+  end
+
+  test "namespace lookup collects results from all backends and does not overwrite" do
+    assert_equal({ :a => "A", :b => "B" }, I18n.t(:dates))
   end
 
   test "namespace lookup with only the first backend returning a result" do
