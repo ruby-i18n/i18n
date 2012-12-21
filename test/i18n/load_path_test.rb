@@ -19,6 +19,13 @@ class I18nLoadPathTest < Test::Unit::TestCase
     end
   end
 
+  test "loading an invalid yml file raises an InvalidLocaleData exception" do
+    assert_raise I18n::InvalidLocaleData do
+      I18n.load_path = [[locales_dir + '/invalid/syntax.yml']]
+      I18n.t(:'foo.bar', :default => "baz")
+    end
+  end
+
   test "adding arrays of filenames to the load path does not break locale loading" do
     I18n.load_path << Dir[locales_dir + '/*.{rb,yml}']
     assert_equal "baz", I18n.t(:'foo.bar')

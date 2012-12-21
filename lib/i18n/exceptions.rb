@@ -29,9 +29,9 @@ module I18n
 
   class InvalidLocaleData < ArgumentError
     attr_reader :filename
-    def initialize(filename)
-      @filename = filename
-      super "can not load translations from #{filename}, expected it to return a hash, but does not"
+    def initialize(filename, exception_message)
+      @filename, @exception_message = filename, exception_message
+      super "can not load translations from #{filename}: #{exception_message}"
     end
   end
 

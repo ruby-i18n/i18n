@@ -159,7 +159,9 @@ module I18n
           type = File.extname(filename).tr('.', '').downcase
           raise UnknownFileType.new(type, filename) unless respond_to?(:"load_#{type}", true)
           data = send(:"load_#{type}", filename)
-          raise InvalidLocaleData.new(filename) unless data.is_a?(Hash)
+          unless data.is_a?(Hash)
+            raise InvalidLocaleData.new(filename, 'expects it to return a hash, but does not')
+          end
           data.each { |locale, d| store_translations(locale, d || {}) }
         end
 
@@ -174,10 +176,8 @@ module I18n
         def load_yml(filename)
           begin
             YAML.load_file(filename)
-          rescue TypeError
-            nil
-          rescue SyntaxError
-            nil
+          rescue TypeError, SyntaxError => e
+            raise InvalidLocaleData.new(filename, e.inspect)
           end
         end
     end
