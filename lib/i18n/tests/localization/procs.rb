@@ -27,13 +27,13 @@ module I18n
 
         test "localize Date: given a format that resolves to a Proc it calls the Proc with the object" do
           setup_time_proc_translations
-          date = ::Date.new(2008, 3, 1, 6)
+          date = ::Date.new(2008, 3, 1)
           assert_equal '[Sat, 01 Mar 2008, {}]', I18n.l(date, :format => :proc, :locale => :ru)
         end
 
         test "localize Date: given a format that resolves to a Proc it calls the Proc with the object and extra options" do
           setup_time_proc_translations
-          date = ::Date.new(2008, 3, 1, 6)
+          date = ::Date.new(2008, 3, 1)
           assert_equal '[Sat, 01 Mar 2008, {:foo=>"foo"}]', I18n.l(date, :format => :proc, :foo => 'foo', :locale => :ru)
         end
 
