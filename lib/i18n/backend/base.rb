@@ -176,7 +176,7 @@ module I18n
         def load_yml(filename)
           begin
             YAML.load_file(filename)
-          rescue TypeError, SyntaxError => e
+          rescue TypeError, ScriptError, StandardError => e
             raise InvalidLocaleData.new(filename, e.inspect)
           end
         end
