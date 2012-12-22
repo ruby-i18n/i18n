@@ -79,4 +79,8 @@ class I18nBackendTransliterator < Test::Unit::TestCase
     assert_not_equal "ue", transliterator.transliterate(char)
   end
 
+  test "DEFAULT_APPROXIMATIONS is frozen to prevent concurrency issues" do
+    assert I18n::Backend::Transliterator::HashTransliterator::DEFAULT_APPROXIMATIONS.frozen?
+  end
+
 end
