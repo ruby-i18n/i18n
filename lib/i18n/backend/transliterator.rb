@@ -67,11 +67,11 @@ module I18n
           "ů"=>"u", "Ű"=>"U", "ű"=>"u", "Ų"=>"U", "ų"=>"u", "Ŵ"=>"W", "ŵ"=>"w",
           "Ŷ"=>"Y", "ŷ"=>"y", "Ÿ"=>"Y", "Ź"=>"Z", "ź"=>"z", "Ż"=>"Z", "ż"=>"z",
           "Ž"=>"Z", "ž"=>"z"
-        }
+        }.freeze
 
         def initialize(rule = nil)
           @rule = rule
-          add DEFAULT_APPROXIMATIONS
+          add DEFAULT_APPROXIMATIONS.dup
           add rule if rule
         end
 
