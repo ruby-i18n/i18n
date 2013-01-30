@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.homepage     = "http://github.com/svenfuchs/i18n"
   s.summary      = "New wave Internationalization support for Ruby"
   s.description  = "New wave Internationalization support for Ruby."
+  s.license      = "MIT"
 
   s.files        = Dir.glob("{ci,lib,test}/**/**") + %w(README.textile MIT-LICENSE CHANGELOG.textile)
   s.platform     = Gem::Platform::RUBY
