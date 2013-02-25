@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project = '[none]'
   s.required_rubygems_version = '>= 1.3.5'
 
-  s.add_development_dependency 'activesupport', '~> 3.0.0'
+  s.add_development_dependency 'activesupport', '>= 3.0.0'
   s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'mocha'
   s.add_development_dependency 'test_declarative'
