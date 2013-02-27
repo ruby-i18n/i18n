@@ -92,7 +92,7 @@ module I18n
         # Add transliteration rules to the approximations hash.
         def add(hash)
           hash.keys.each do |key|
-            utf8_key = key.to_s.dup.force_encoding('UTF-8')
+            utf8_key = ::String.force_utf8(key)
             hash[utf8_key] = hash.delete(key).to_s
           end
           approximations.merge! hash

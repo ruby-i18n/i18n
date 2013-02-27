@@ -66,7 +66,7 @@ module I18n
         assert_equal 'こんにちは、ゆきひろさん!', interpolate(:default => 'こんにちは、%{name}さん!', :name => 'ゆきひろ')
       end
 
-      if Kernel.const_defined?(:Encoding)
+      if Object.const_defined?(:Encoding)
         test "interpolation: given a euc-jp translation and a utf-8 value it raises Encoding::CompatibilityError" do
           assert_raise(Encoding::CompatibilityError) do
             interpolate(:default => euc_jp('こんにちは、%{name}さん!'), :name => 'ゆきひろ')

@@ -1,10 +1,13 @@
-# Makes String#force_encoding working with ruby 1.8.7
-unless defined?(Encoding)
-  require 'iconv'
-  
-  class String
-    def force_encoding(encoding)
-      ::Iconv.conv('UTF-8//IGNORE', encoding.upcase, self)
+class String
+  if Object.const_defined?(:Encoding)
+    def self.force_utf8(obj)
+      obj.to_s.dup.force_encoding('UTF-8')
+    end
+  else
+    require 'iconv'
+    
+    def self.force_utf8(obj)
+      ::Iconv.conv('UTF-8//IGNORE', 'UTF-8', obj.to_s.dup)
     end
   end
 end
