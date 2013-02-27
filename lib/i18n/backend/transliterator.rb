@@ -1,6 +1,4 @@
 # encoding: utf-8
-require 'i18n/core_ext/string/encoding'
-
 module I18n
   module Backend
     module Transliterator
@@ -91,11 +89,9 @@ module I18n
 
         # Add transliteration rules to the approximations hash.
         def add(hash)
-          hash.keys.each do |key|
-            utf8_key = ::String.force_utf8(key)
-            hash[utf8_key] = hash.delete(key).to_s
+          hash.each do |key, value|
+            approximations[key.to_s] = value.to_s
           end
-          approximations.merge! hash
         end
       end
     end

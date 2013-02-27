@@ -1,12 +1,11 @@
 # encoding: utf-8
 require 'test_helper'
-require 'i18n/core_ext/string/encoding'
 
 class I18nBackendTransliterator < Test::Unit::TestCase
   def setup
     I18n.backend = I18n::Backend::Simple.new
     @proc = lambda { |n| n.upcase }
-    @hash = { :"ü" => "ue", :"ö" => "oe" }
+    @hash = { "ü" => "ue", "ö" => "oe", "a" => "a" }
     @transliterator = I18n::Backend::Transliterator.get
   end
 
