@@ -77,7 +77,7 @@ module I18n
         end
 
         def missing_key(key)
-          "raise(MissingInterpolationArgument.new(#{key}, {}, self))"
+          "I18n.config.missing_interpolation_argument_handler.call(#{key}, v, self)"
         end
 
         def reserved_key(key)
