@@ -82,5 +82,15 @@ module I18n
     def load_path=(load_path)
       @@load_path = load_path
     end
+
+    # Returns the current filter chain. Defaults to +FilterChain.
+    def filter_chain
+      @@filter_chain ||= I18n::FilterChain.new
+    end
+
+    # Sets the filter chain
+    def filter_chain=(filter_chain)
+      @@filter_chain = filter_chain
+    end
   end
 end

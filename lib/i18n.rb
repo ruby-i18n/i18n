@@ -1,9 +1,11 @@
 require 'i18n/version'
 require 'i18n/exceptions'
+require 'i18n/filter_chain'
 require 'i18n/interpolate/ruby'
 
 module I18n
   autoload :Backend, 'i18n/backend'
+  autoload :Filters, 'i18n/filters'
   autoload :Config,  'i18n/config'
   autoload :Gettext, 'i18n/gettext'
   autoload :Locale,  'i18n/locale'
@@ -25,7 +27,7 @@ module I18n
 
     # Write methods which delegates to the configuration object
     %w(locale backend default_locale available_locales default_separator
-      exception_handler load_path).each do |method|
+      exception_handler load_path filter_chain).each do |method|
       module_eval <<-DELEGATORS, __FILE__, __LINE__ + 1
         def #{method}
           config.#{method}

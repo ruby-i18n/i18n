@@ -23,23 +23,26 @@ module I18n
 
       def translate(locale, key, options = {})
         raise InvalidLocale.new(locale) unless locale
-        entry = key && lookup(locale, key, options[:scope], options)
+
+        translation = I18n::Backend::Translation.new(options.merge(:locale => locale, :key => key))
+        translation = I18n.filter_chain.apply(:before_lookup, translation)
+
+        translation.content = translation.key && lookup(translation.locale, translation.key, translation.scope, options)
 
         if options.empty?
-          entry = resolve(locale, key, entry, options)
+          translation.content = resolve(translation.locale, translation.key, translation.content, options)
         else
-          count, default = options.values_at(:count, :default)
-          values = options.except(*RESERVED_KEYS)
-          entry = entry.nil? && default ?
-            default(locale, key, default, options) : resolve(locale, key, entry, options)
+          translation.content = translation.content.nil? && translation.default ?
+            default(translation.locale, translation.key, translation.default, options) : resolve(translation.locale, translation.key, translation.content, options)
         end
 
-        throw(:exception, I18n::MissingTranslation.new(locale, key, options)) if entry.nil?
-        entry = entry.dup if entry.is_a?(String)
+        throw(:exception, I18n::MissingTranslation.new(translation.locale, translation.key, options)) if translation.content.nil?
+        translation.content = translation.content.dup if translation.content.is_a?(String)
+        translation.content = pluralize(translation.locale, translation.content, translation.count) if translation.count
+        translation.content = interpolate(translation.locale, translation.content, translation.interpolations) if translation.interpolations
 
-        entry = pluralize(locale, entry, count) if count
-        entry = interpolate(locale, entry, values) if values
-        entry
+        translation = I18n.filter_chain.apply(:after_lookup, translation)
+        translation.content
       end
 
       # Acts the same as +strftime+, but uses a localized version of the
@@ -180,6 +183,7 @@ module I18n
             raise InvalidLocaleData.new(filename, e.inspect)
           end
         end
+
     end
   end
 end
