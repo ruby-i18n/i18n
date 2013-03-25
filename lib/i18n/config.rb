@@ -65,6 +65,26 @@ module I18n
       @@exception_handler = exception_handler
     end
 
+    # Return the current handler for situations when interpolation argument
+    # is missing. Defaults to MissingInterpolationArgumentHandler, which
+    # raises an exception.
+    def missing_interpolation_argument_handler
+      @@missing_interpolation_argument_handler ||= MissingInterpolationArgumentHandler.new
+    end
+
+    # Sets the missing interpolation argument handler. It can be any
+    # object that responds to #call.
+    #
+    # == Example:
+    # You can supress raising an exception by reassigning default handler
+    # with options:
+    #
+    #   I18n.config.missing_interpolation_argument_handler =
+    #       MissingInterpolationArgumentHandler.new(raise_exception: false)
+    def missing_interpolation_argument_handler=(exception_handler)
+      @@missing_interpolation_argument_handler = exception_handler
+    end
+
     # Allow clients to register paths providing translation data sources. The
     # backend defines acceptable sources.
     #
