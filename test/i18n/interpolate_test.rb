@@ -59,3 +59,21 @@ class I18nInterpolateTest < Test::Unit::TestCase
     assert_equal "foo 1.000000", I18n.interpolate("%{name} %<num>f", :name => "foo", :num => 1.0)
   end
 end
+
+class I18nMissingInterpolationCustomHandlerTest < Test::Unit::TestCase
+  def setup
+    @old_handler = I18n.config.missing_interpolation_argument_handler
+    I18n.config.missing_interpolation_argument_handler = lambda do |key, values, string|
+      "missing key is #{key}, values are #{values.inspect}, given string is '#{string}'"
+    end
+  end
+
+  def teardown
+    I18n.config.missing_interpolation_argument_handler = @old_handler
+  end
+
+  test "String interpolation can use custom missing interpolation handler" do
+    assert_equal %|Masao missing key is last, values are {:first=>"Masao"}, given string is '%{first} %{last}'|,
+      I18n.interpolate("%{first} %{last}", :first => 'Masao')
+  end
+end

@@ -9,6 +9,8 @@ module I18n
   )
 
   class << self
+    # Return String or raises MissingInterpolationArgument exception.
+    # Missing argument's logic is handled by I18n.config.missing_interpolation_argument_handler.
     def interpolate(string, values)
       raise ReservedInterpolationKey.new($1.to_sym, string) if string =~ RESERVED_KEYS_PATTERN
       raise ArgumentError.new('Interpolation values must be a Hash.') unless values.kind_of?(Hash)
@@ -21,7 +23,11 @@ module I18n
           '%'
         else
           key = ($1 || $2).to_sym
-          value = values.key?(key) ? values[key] : raise(MissingInterpolationArgument.new(key, values, string))
+          value = if values.key?(key)
+                    values[key]
+                  else
+                    config.missing_interpolation_argument_handler.call(key, values, string)
+                  end
           value = value.call(values) if value.respond_to?(:call)
           $3 ? sprintf("%#{$3}", value) : value
         end
