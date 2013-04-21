@@ -6,3 +6,7 @@ rvm:
   - ree
   - rbx
   - jruby
+gemfile:
+  - gemfiles/no_rails.gemfile
+  - gemfiles/rails_2.3.gemfile
+  - gemfiles/rails_3.gemfile
