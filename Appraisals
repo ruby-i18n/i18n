@@ -3,6 +3,8 @@ appraise 'rails-3' do
   gem 'sqlite3-ruby'
   gem 'mocha'
   gem 'test_declarative'
+  gem 'rufus-tokyo'
+  gem 'ffi'
 end
 
 appraise 'rails-2.3' do
@@ -10,6 +12,8 @@ appraise 'rails-2.3' do
   gem 'sqlite3-ruby'
   gem 'mocha'
   gem 'test_declarative'
+  gem 'rufus-tokyo'
+  gem 'ffi'
 end
 
 appraise 'no-rails' do
