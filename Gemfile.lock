@@ -1,6 +1,9 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    appraisal (0.5.2)
+      bundler
+      rake
     mocha (0.9.9)
       rake
     rake (0.8.7)
@@ -11,5 +14,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  appraisal
   mocha
   test_declarative
