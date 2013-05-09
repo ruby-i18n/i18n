@@ -11,14 +11,14 @@
 # removed include GetText etc
 # added stub translation method _(x)
 require 'racc/parser'
+module I18n
+  module GetText
 
-module GetText
+    class PoParser < Racc::Parser
 
-  class PoParser < Racc::Parser
-
-    def _(x)
-      x
-    end
+      def _(x)
+        x
+      end
 
 module_eval <<'..end src/poparser.ry modeval..id7a99570e05', 'src/poparser.ry', 108
   def unescape(orig)
@@ -320,10 +320,12 @@ module_eval <<'.,.,', 'src/poparser.ry', 103
   end
 .,.,
 
- def _reduce_none( val, _values, result )
-  result
- end
+   def _reduce_none( val, _values, result )
+    result
+   end
 
-  end   # class PoParser
+    end   # class PoParser
 
-end   # module GetText
+  end   # module GetText
+end
+
