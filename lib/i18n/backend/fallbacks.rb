@@ -34,8 +34,9 @@ module I18n
       # The default option takes precedence over fallback locales only when
       # it's a Symbol. When the default contains a String, Proc or Hash
       # it is evaluated last after all the fallback locales have been tried.
-      def translate(locale, key, options = {})
-        return super if options[:fallback]
+      def translate(locale, key, orig_options = {})
+        return super if orig_options[:fallback]
+        options = orig_options.dup
         default = extract_non_symbol_default!(options) if options[:default]
 
         options[:fallback] = true
@@ -45,10 +46,9 @@ module I18n
             return result unless result.nil?
           end
         end
-        options.delete(:fallback)
 
-        return super(locale, nil, options.merge(:default => default)) if default
-        throw(:exception, I18n::MissingTranslation.new(locale, key, options))
+        return super(locale, nil, orig_options) if default
+        throw(:exception, I18n::MissingTranslation.new(locale, key, orig_options))
       end
 
       def extract_non_symbol_default!(options)
