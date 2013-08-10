@@ -146,9 +146,10 @@ module I18n
         key     = nil
       end
 
-      options  = options.dup
-      backend  = config.backend
-      locale   = options.delete(:locale) || config.locale
+      options = options.dup
+      conf    = config
+      backend = conf.backend
+      locale  = options.delete(:locale) || conf.locale
 
       enforce_available_locales!(locale)
 
