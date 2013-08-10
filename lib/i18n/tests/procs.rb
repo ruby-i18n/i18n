@@ -48,7 +48,10 @@ module I18n
       protected
 
       def filter_args(*args)
-        args.map {|arg| arg.delete(:fallback) if arg.is_a?(Hash) ; arg }.inspect
+        args.grep(Hash) do |hash_arg|
+          RESERVED_KEYS.each { |key| hash_arg.delete(key) }
+        end
+        args.inspect
       end
     end
   end

@@ -72,7 +72,7 @@ module I18n
               when ::Date
                 arg.strftime('%a, %d %b %Y')
               when Hash
-                arg.delete(:fallback)
+                RESERVED_KEYS.each { |key| arg.delete(key) }
                 arg.inspect
               else
                 arg.inspect

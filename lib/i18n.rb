@@ -149,7 +149,6 @@ module I18n
       options  = options.dup
       backend  = config.backend
       locale   = options.delete(:locale) || config.locale
-      handling = options.delete(:throw) && :throw || options.delete(:raise) && :raise # TODO deprecate :raise
 
       enforce_available_locales!(locale)
 
@@ -160,7 +159,7 @@ module I18n
           backend.translate(locale, key, options)
         end
       end
-      result.is_a?(MissingTranslation) ? handle_exception(handling, result, locale, key, options) : result
+      result.is_a?(MissingTranslation) ? handle_exception(result, locale, key, options) : result
     end
     alias :t :translate
 
@@ -232,12 +231,11 @@ module I18n
       options      = args.pop.dup if args.last.is_a?(Hash)
       key          = args.shift
       locale       = options && options.delete(:locale) || config.locale
-      handling     = options && (options.delete(:throw) && :throw || options.delete(:raise) && :raise)
       replacement  = options && options.delete(:replacement)
       enforce_available_locales!(locale)
       config.backend.transliterate(locale, key, replacement)
     rescue I18n::ArgumentError => exception
-      handle_exception(handling, exception, locale, key, options || {})
+      handle_exception(exception, locale, key, options || {})
     end
 
     # Localizes certain objects, such as dates and numbers to local formatting.
@@ -311,8 +309,8 @@ module I18n
     #
     #  I18n.exception_handler = I18nExceptionHandler.new                # an object
     #  I18n.exception_handler.call(exception, locale, key, options)     # will be called like this
-    def handle_exception(handling, exception, locale, key, options)
-      case handling
+    def handle_exception(exception, locale, key, options)
+      case options.delete(:throw) && :throw || options.delete(:raise) && :raise # TODO deprecate :raise
       when :raise
         raise(exception.respond_to?(:to_exception) ? exception.to_exception : exception)
       when :throw
