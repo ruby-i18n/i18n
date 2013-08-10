@@ -21,17 +21,17 @@ module I18n
         raise NotImplementedError
       end
 
-      def translate(locale, key, options = {})
+      def translate(locale, key, options = nil)
         raise InvalidLocale.new(locale) unless locale
-        entry = key && lookup(locale, key, options[:scope], options)
+        entry = key && lookup(locale, key, options && options[:scope], options)
 
-        if options.empty?
-          entry = resolve(locale, key, entry, options)
-        else
+        if options
           count, default = options.values_at(:count, :default)
           values = options.except(*RESERVED_KEYS)
           entry = entry.nil? && default ?
             default(locale, key, default, options) : resolve(locale, key, entry, options)
+        else
+          entry = resolve(locale, key, entry, options)
         end
 
         throw(:exception, I18n::MissingTranslation.new(locale, key, options)) if entry.nil?
@@ -111,14 +111,15 @@ module I18n
         # If the given subject is a Symbol, it will be translated with the
         # given options. If it is a Proc then it will be evaluated. All other
         # subjects will be returned directly.
-        def resolve(locale, object, subject, options = {})
-          return subject if options[:resolve] == false
+        def resolve(locale, object, subject, options = nil)
+          return subject if options && options[:resolve] == false
           result = catch(:exception) do
             case subject
             when Symbol
-              I18n.translate(subject, options.merge(:locale => locale, :throw => true))
+              overrides = {:locale => locale, :throw => true}
+              I18n.translate(subject, options ? options.merge(overrides) : overrides)
             when Proc
-              date_or_time = options.delete(:object) || object
+              date_or_time = (options && options.delete(:object)) || object
               resolve(locale, object, subject.call(date_or_time, options))
             else
               subject

@@ -36,9 +36,9 @@ module I18n
           backends.map { |backend| backend.available_locales }.flatten.uniq
         end
 
-        def translate(locale, key, default_options = {})
+        def translate(locale, key, default_options = nil)
           namespace = nil
-          options = default_options.except(:default)
+          options = default_options && default_options.except(:default)
 
           backends.each do |backend|
             catch(:exception) do
@@ -72,8 +72,8 @@ module I18n
         end
 
         protected
-          def namespace_lookup?(result, options)
-            result.is_a?(Hash) && !options.has_key?(:count)
+          def namespace_lookup?(result, options = nil)
+            result.is_a?(Hash) && !(options && options.has_key?(:count))
           end
       end
 

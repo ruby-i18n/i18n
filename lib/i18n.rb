@@ -140,16 +140,16 @@ module I18n
     # from the argument values passed to #translate. Therefor your lambdas should
     # always return the same translations/values per unique combination of argument
     # values.
-    def translate(key, options={})
+    def translate(key, options=nil)
       if key.is_a?(Hash)
         options = key
         key     = nil
       end
 
-      options = options.dup
+      options = options.dup if options
       conf    = config
       backend = conf.backend
-      locale  = options.delete(:locale) || conf.locale
+      locale  = (options && options.delete(:locale)) || conf.locale
 
       enforce_available_locales!(locale)
 
@@ -311,6 +311,7 @@ module I18n
     #  I18n.exception_handler = I18nExceptionHandler.new                # an object
     #  I18n.exception_handler.call(exception, locale, key, options)     # will be called like this
     def handle_exception(exception, locale, key, options)
+      options ||= {}
       case options.delete(:throw) && :throw || options.delete(:raise) && :raise # TODO deprecate :raise
       when :raise
         raise(exception.respond_to?(:to_exception) ? exception.to_exception : exception)

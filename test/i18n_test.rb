@@ -166,7 +166,7 @@ class I18nTest < I18n::TestCase
   end
 
   test "translate given no locale uses the current locale" do
-    I18n.backend.expects(:translate).with(:en, :foo, {})
+    I18n.backend.expects(:translate).with(:en, :foo, nil)
     I18n.translate :foo
   end
 

@@ -34,7 +34,8 @@ module I18n
       # The default option takes precedence over fallback locales only when
       # it's a Symbol. When the default contains a String, Proc or Hash
       # it is evaluated last after all the fallback locales have been tried.
-      def translate(locale, key, options = {})
+      def translate(locale, key, options = nil)
+        options ||= {}
         return super if options[:fallback]
         default = extract_non_symbol_default!(options) if options[:default]
 

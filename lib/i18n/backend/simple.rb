@@ -67,15 +67,15 @@ module I18n
         # nested translations hash. Splits keys or scopes containing dots
         # into multiple keys, i.e. <tt>currency.format</tt> is regarded the same as
         # <tt>%w(currency format)</tt>.
-        def lookup(locale, key, scope = [], options = {})
+        def lookup(locale, key, scope = [], options = nil)
           init_translations unless initialized?
-          keys = I18n.normalize_keys(locale, key, scope, options[:separator])
+          keys = I18n.normalize_keys(locale, key, scope, options && options[:separator])
 
           keys.inject(translations) do |result, _key|
             _key = _key.to_sym
             return nil unless result.is_a?(Hash) && result.has_key?(_key)
             result = result[_key]
-            result = resolve(locale, _key, result, options.merge(:scope => nil)) if result.is_a?(Symbol)
+            result = resolve(locale, _key, result, options && options.merge(:scope => nil)) if result.is_a?(Symbol)
             result
           end
         end

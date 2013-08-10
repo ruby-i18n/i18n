@@ -54,7 +54,8 @@ module I18n
       attr_reader :locale, :key, :options
 
       def initialize(locale, key, options = nil)
-        @key, @locale, @options = key, locale, options.dup || {}
+        options = options ? options.dup : {}
+        @key, @locale, @options = key, locale, options
         options.each { |k, v| self.options[k] = v.inspect if v.is_a?(Proc) }
       end
 
