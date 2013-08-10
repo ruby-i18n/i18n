@@ -140,9 +140,13 @@ module I18n
     # from the argument values passed to #translate. Therefor your lambdas should
     # always return the same translations/values per unique combination of argument
     # values.
-    def translate(*args)
-      options  = args.last.is_a?(Hash) ? args.pop.dup : {}
-      key      = args.shift
+    def translate(key, options={})
+      if key.is_a?(Hash)
+        options = key
+        key     = nil
+      end
+
+      options  = options.dup
       backend  = config.backend
       locale   = options.delete(:locale) || config.locale
       handling = options.delete(:throw) && :throw || options.delete(:raise) && :raise # TODO deprecate :raise
