@@ -86,10 +86,6 @@ module I18n
       @key, @values, @string = key, values, string
       super "missing interpolation argument #{key.inspect} in #{string.inspect} (#{values.inspect} given)"
     end
-
-    def html_message
-      %(<span class='interpolation_missing' title='#{message}'>%{#{key}}</span>)
-    end
   end
 
   class ReservedInterpolationKey < ArgumentError

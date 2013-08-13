@@ -1,7 +1,6 @@
 require 'i18n/version'
 require 'i18n/exceptions'
 require 'i18n/interpolate/ruby'
-require 'i18n/interpolate/missing_interpolation_argument_handler'
 
 module I18n
   autoload :Backend, 'i18n/backend'
