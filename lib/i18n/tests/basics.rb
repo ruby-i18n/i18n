@@ -41,6 +41,11 @@ module I18n
         assert_equal I18n.available_locales, I18n.available_locales
       end
 
+      test "exists? is implemented by the backend" do
+        I18n.backend.store_translations(:foo, :bar => 'baz')
+        assert I18n.exists?(:bar, :foo)
+      end
+
       test "storing a nil value as a translation removes it from the available locale data" do
         I18n.backend.store_translations(:en, :to_be_deleted => 'bar')
         assert_equal 'bar', I18n.t(:to_be_deleted, :default => 'baz')
