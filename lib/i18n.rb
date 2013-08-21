@@ -229,6 +229,11 @@ module I18n
       handle_exception(handling, exception, locale, key, options || {})
     end
 
+    # Checks if a certain key exists in the translations
+    def exists?(key, locale = locale)
+      config.backend.send(:lookup, locale, key).present?
+    end
+
     # Localizes certain objects, such as dates and numbers to local formatting.
     def localize(object, options = nil)
       options = options ? options.dup : {}
