@@ -1,6 +1,6 @@
-h1. Ruby I18n
+# Ruby I18n
 
-!https://secure.travis-ci.org/svenfuchs/i18n.png?branch=master(Build Status)!:http://travis-ci.org/svenfuchs/i18n
+![Build Status](https://secure.travis-ci.org/svenfuchs/i18n.png?branch=master)
 
 Ruby Internationalization and localization solution.
 
@@ -31,37 +31,37 @@ Alternative backends:
 * ActiveRecord (optionally: ActiveRecord::Missing and ActiveRecord::StoreProcs)
 * KeyValue (uses active_support/json and cannot store procs)
 
-For more information and lots of resources see: "http://ruby-i18n.org/wiki":http://ruby-i18n.org/wiki
+For more information and lots of resources see: [http://ruby-i18n.org/wiki](http://ruby-i18n.org/wiki)
 
-h2. Installation
+## Installation
 
 gem install i18n
 
-h4. Rails version warning
+#### Rails version warning
 
-On Rails < 2.3.6 the method I18n.localize will fail with MissingInterpolationArgument (issue "20":http://github.com/svenfuchs/i18n/issues/issue/20). Upgrade to Rails 2.3.6 or higher (2.3.8 preferably) is recommended.
+On Rails < 2.3.6 the method I18n.localize will fail with MissingInterpolationArgument (issue [20](http://github.com/svenfuchs/i18n/issues/issue/20). Upgrade to Rails 2.3.6 or higher (2.3.8 preferably) is recommended.
 
-h3. Installation on Rails < 2.3.5 (deprecated)
+### Installation on Rails < 2.3.5 (deprecated)
 
 Up to version 2.3.4 Rails will not accept i18n gems > 0.1.3. There is an unpacked
-gem inside of active_support/lib/vendor which gets loaded unless gem 'i18n', '~> 0.1.3'.
-This requirement is relaxed in "6da03653":http://github.com/rails/rails/commit/6da03653
+gem inside of active_support/lib/vendor which gets loaded unless `gem 'i18n', '~> 0.1.3'`.
+This requirement is relaxed in [6da03653](http://github.com/rails/rails/commit/6da03653)
 
 The new i18n gem can be loaded from vendor/plugins like this:
 
-<pre>
-  def reload_i18n!
-    raise "Move to i18n version 0.2.0 or greater" if Rails.version > "2.3.4"
+```
+def reload_i18n!
+  raise "Move to i18n version 0.2.0 or greater" if Rails.version > "2.3.4"
 
-    $:.grep(/i18n/).each { |path| $:.delete(path) }
-    I18n::Backend.send :remove_const, "Simple"
-    $: << Rails.root.join('vendor', 'plugins', 'i18n', 'lib').to_s
-  end
-</pre>
+  $:.grep(/i18n/).each { |path| $:.delete(path) }
+  I18n::Backend.send :remove_const, "Simple"
+  $: << Rails.root.join('vendor', 'plugins', 'i18n', 'lib').to_s
+end
+```
 
 Then you can `reload_i18n!` inside an i18n initializer.
 
-h2. Tests
+## Tests
 
 You can run tests both with
 
@@ -85,21 +85,21 @@ as test methods) in test cases with different setups.
 You can find the test cases that enforce the API in test/api. And you can find
 the API definition test methods in test/api/tests.
 
-All other test cases (e.g. as defined in test/backend, test/core\_ext) etc.
+All other test cases (e.g. as defined in test/backend, test/core_ext) etc.
 follow the usual test setup and should be easy to grok.
 
-h2. Authors
+## Authors
 
-* "Sven Fuchs":http://www.artweb-design.de
-* "Joshua Harvey":http://www.workingwithrails.com/person/759-joshua-harvey
-* "Stephan Soller":http://www.arkanis-development.de
-* "Saimon Moore":http://saimonmoore.net
-* "Matt Aimonetti":http://railsontherun.com
+* [Sven Fuchs](http://www.artweb-design.de)
+* [Joshua Harvey](http://www.workingwithrails.com/person/759-joshua-harvey)
+* [Stephan Soller](http://www.arkanis-development.de)
+* [Saimon Moore](http://saimonmoore.net)
+* [Matt Aimonetti](http://railsontherun.com)
 
-h2. Contributors
+## Contributors
 
 http://github.com/svenfuchs/i18n/contributors
 
-h2. License
+## License
 
 MIT License. See the included MIT-LICENSE file.
