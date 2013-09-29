@@ -1,6 +1,7 @@
 require 'i18n/version'
 require 'i18n/exceptions'
 require 'i18n/interpolate/ruby'
+require 'thread_safe'
 
 module I18n
   autoload :Backend, 'i18n/backend'
@@ -268,6 +269,10 @@ module I18n
       keys
     end
 
+    def new_double_nested_cache # :nodoc:
+      ThreadSafe::Cache.new { |h,k| h[k] = ThreadSafe::Cache.new }
+    end
+
   # making these private until Ruby 1.9.2 can send to protected methods again
   # see http://redmine.ruby-lang.org/repositories/revision/ruby-19?rev=24280
   private
@@ -320,7 +325,7 @@ module I18n
     end
 
     def normalized_key_cache
-      @normalized_key_cache ||= Hash.new { |h,k| h[k] = {} }
+      @normalized_key_cache ||= new_double_nested_cache
     end
 
     # DEPRECATED. Use I18n.normalize_keys instead.

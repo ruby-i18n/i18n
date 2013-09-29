@@ -34,7 +34,7 @@ module I18n
         end
 
         def memoized_lookup
-          @memoized_lookup ||= Hash.new { |h, k| h[k] = {} }
+          @memoized_lookup ||= I18n.new_double_nested_cache
         end
 
         def reset_memoizations!(locale=nil)

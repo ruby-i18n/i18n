@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'thread_safe', '~> 0.1'
 gem 'mocha'
 gem 'test_declarative'
 

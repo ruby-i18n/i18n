@@ -1,10 +1,13 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    atomic (1.1.14)
     mocha (0.9.9)
       rake
     rake (0.8.7)
     test_declarative (0.0.4)
+    thread_safe (0.1.3)
+      atomic
 
 PLATFORMS
   java
@@ -13,3 +16,4 @@ PLATFORMS
 DEPENDENCIES
   mocha
   test_declarative
+  thread_safe (~> 0.1)
