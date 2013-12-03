@@ -29,7 +29,7 @@ module I18n
 
     # Write methods which delegates to the configuration object
     %w(locale backend default_locale available_locales default_separator
-      exception_handler load_path).each do |method|
+      exception_handler load_path enforce_available_locales).each do |method|
       module_eval <<-DELEGATORS, __FILE__, __LINE__ + 1
         def #{method}
           config.#{method}
@@ -151,7 +151,7 @@ module I18n
       locale  = options.delete(:locale) || config.locale
       raises  = options.delete(:raise)
 
-      enforce_available_locales(locale)
+      enforce_available_locales!(locale)
       raise I18n::ArgumentError if key.is_a?(String) && key.empty?
 
       if key.is_a?(Array)
@@ -227,7 +227,7 @@ module I18n
       locale       = options && options.delete(:locale) || config.locale
       raises       = options && options.delete(:raise)
       replacement  = options && options.delete(:replacement)
-      enforce_available_locales(locale)
+      enforce_available_locales!(locale)
       config.backend.transliterate(locale, key, replacement)
     rescue I18n::ArgumentError => exception
       raise exception if raises
@@ -238,7 +238,7 @@ module I18n
     def localize(object, options = {})
       locale = options.delete(:locale) || config.locale
       format = options.delete(:format) || :default
-      enforce_available_locales(locale)
+      enforce_available_locales!(locale)
       config.backend.localize(locale, object, format, options)
     end
     alias :l :localize
@@ -277,7 +277,7 @@ module I18n
     # Raises an InvalidLocale exception when the passed locale is not
     # included in I18n.available_locales.
     # Returns false otherwise
-    def enforce_available_locales(locale)
+    def enforce_available_locales!(locale)
       handle_enforce_available_locales_deprecation
 
       if config.enforce_available_locales
