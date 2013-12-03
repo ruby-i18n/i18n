@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.description  = "New wave Internationalization support for Ruby."
   s.license      = "MIT"
 
-  s.files        = Dir.glob("{ci,lib,test}/**/**") + %w(README.textile MIT-LICENSE CHANGELOG.textile)
+  s.files        = Dir.glob("{ci,lib,test}/**/**") + %w(README.textile MIT-LICENSE)
   s.platform     = Gem::Platform::RUBY
   s.require_path = 'lib'
   s.rubyforge_project = '[none]'
