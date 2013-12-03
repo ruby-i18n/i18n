@@ -353,4 +353,13 @@ class I18nTest < Test::Unit::TestCase
       I18n.config.enforce_available_locales = false
     end
   end
+
+  test "I18n.enforce_available_locales config can be set to false" do
+    begin
+      I18n.config.enforce_available_locales = false
+      assert_equal false, I18n.config.enforce_available_locales
+    ensure
+      I18n.config.enforce_available_locales = false
+    end
+  end
 end

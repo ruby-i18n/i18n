@@ -111,7 +111,7 @@ module I18n
     # [Deprecated] this will default to true in the future
     # Defaults to nil so that it triggers the deprecation warning
     def enforce_available_locales
-      @@enforce_available_locales ||= nil
+      defined?(@@enforce_available_locales) ? @@enforce_available_locales : nil
     end
 
     def enforce_available_locales=(enforce_available_locales)
