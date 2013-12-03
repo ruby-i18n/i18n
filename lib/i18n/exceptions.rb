@@ -59,8 +59,8 @@ module I18n
       end
 
       def html_message
-        key  = CGI.escape_html titleize(keys.last)
-        path = CGI.escape_html keys.join('.')
+        key  = CGI.escapeHTML titleize(keys.last)
+        path = CGI.escapeHTML keys.join('.')
         %(<span class="translation_missing" title="translation missing: #{path}">#{key}</span>)
       end
 
