@@ -1,3 +1,5 @@
+require 'cgi'
+
 class KeyError < IndexError
   def initialize(message = nil)
     super(message || "key not found")
@@ -13,7 +15,19 @@ module I18n
     include Module.new {
       def call(exception, locale, key, options)
         if exception.is_a?(MissingTranslationData)
-          options[:rescue_format] == :html ? exception.html_message : exception.message
+          #
+          # TODO: this block is to be replaced by `exception.message` when
+          # rescue_format is removed
+          if options[:rescue_format] == :html
+            if @rescue_format_deprecation
+              $stderr.puts "[DEPRECATED] I18n's :recue_format option will be removed from a future release. All exception messages will be plain text. If you need the exception handler to return an html format please set or pass a custom exception handler."
+              @rescue_format_deprecation = true
+            end
+            exception.html_message
+          else
+            exception.message
+          end
+
         else
           raise exception
         end
@@ -49,14 +63,22 @@ module I18n
     end
 
     def html_message
-      key = keys.last.to_s.gsub('_', ' ').gsub(/\b('?[a-z])/) { $1.capitalize }
-      %(<span class="translation_missing" title="translation missing: #{keys.join('.')}">#{key}</span>)
+      key  = CGI.escape_html titleize(keys.last)
+      path = CGI.escape_html keys.join('.')
+      %(<span class="translation_missing" title="translation missing: #{path}">#{key}</span>)
     end
 
     def keys
       @keys ||= I18n.normalize_keys(locale, key, options[:scope]).tap do |keys|
         keys << 'no key' if keys.size < 2
       end
+    end
+
+    protected
+
+    # TODO : remove when #html_message is removed
+    def titleize(key)
+      key.to_s.gsub('_', ' ').gsub(/\b('?[a-z])/) { $1.capitalize }
     end
   end
 
