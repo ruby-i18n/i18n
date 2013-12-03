@@ -335,7 +335,7 @@ class I18nTest < Test::Unit::TestCase
     assert_equal false, I18n.locale_available?(:klingon)
   end
 
-  test "I18n.enforce_available_locales raises an I18n::InvalidLocale when the passed locale is unavailable" do
+  test "I18n.enforce_available_locales! raises an I18n::InvalidLocale when the passed locale is unavailable" do
     begin
       I18n.config.enforce_available_locales = true
       assert_raise(I18n::InvalidLocale) { I18n.enforce_available_locales!(:klingon) }
@@ -344,7 +344,7 @@ class I18nTest < Test::Unit::TestCase
     end
   end
 
-  test "I18n.enforce_available_locales does nothing when the passed locale is available" do
+  test "I18n.enforce_available_locales! does nothing when the passed locale is available" do
     I18n.available_locales = [:en, :de]
     begin
       I18n.config.enforce_available_locales = true
