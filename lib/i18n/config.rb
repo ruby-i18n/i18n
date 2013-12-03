@@ -8,6 +8,7 @@ module I18n
 
     # Sets the current locale pseudo-globally, i.e. in the Thread.current hash.
     def locale=(locale)
+      I18n.enforce_available_locales(locale)
       @locale = locale.to_sym rescue nil
     end
 
@@ -28,6 +29,7 @@ module I18n
 
     # Sets the current default locale. Used to set a custom default locale.
     def default_locale=(locale)
+      I18n.enforce_available_locales(locale)
       @@default_locale = locale.to_sym rescue nil
     end
 
@@ -104,6 +106,16 @@ module I18n
     # behave like a Ruby Array.
     def load_path=(load_path)
       @@load_path = load_path
+    end
+
+    # [Deprecated] this will default to true in the future
+    # Defaults to nil so that it triggers the deprecation warning
+    def enforce_available_locales
+      @@enforce_available_locales ||= nil
+    end
+
+    def enforce_available_locales=(enforce_available_locales)
+      @@enforce_available_locales = enforce_available_locales
     end
   end
 end

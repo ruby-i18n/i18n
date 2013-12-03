@@ -147,6 +147,7 @@ module I18n
       locale   = options.delete(:locale) || config.locale
       handling = options.delete(:throw) && :throw || options.delete(:raise) && :raise # TODO deprecate :raise
 
+      enforce_available_locales(locale)
       raise I18n::ArgumentError if key.is_a?(String) && key.empty?
 
       result = catch(:exception) do
@@ -230,6 +231,7 @@ module I18n
       locale       = options && options.delete(:locale) || config.locale
       handling     = options && (options.delete(:throw) && :throw || options.delete(:raise) && :raise)
       replacement  = options && options.delete(:replacement)
+      enforce_available_locales(locale)
       config.backend.transliterate(locale, key, replacement)
     rescue I18n::ArgumentError => exception
       handle_exception(handling, exception, locale, key, options || {})
@@ -240,6 +242,7 @@ module I18n
       options = options ? options.dup : {}
       locale = options.delete(:locale) || config.locale
       format = options.delete(:format) || :default
+      enforce_available_locales(locale)
       config.backend.localize(locale, object, format, options)
     end
     alias :l :localize
@@ -266,6 +269,24 @@ module I18n
       keys.concat normalize_key(scope, separator)
       keys.concat normalize_key(key, separator)
       keys
+    end
+
+    # Returns true when the passed locale is in I18.available_locales.
+    # Returns false otherwise.
+    # Compare with Strings as `locale` may be coming from user input
+    def locale_available?(locale)
+      I18n.available_locales.map(&:to_s).include?(locale.to_s)
+    end
+
+    # Raises an InvalidLocale exception when the passed locale is not
+    # included in I18n.available_locales.
+    # Returns false otherwise
+    def enforce_available_locales(locale)
+      handle_enforce_available_locales_deprecation
+
+      if config.enforce_available_locales
+        raise I18n::InvalidLocale.new(locale) if !locale_available?(locale)
+      end
     end
 
   # making these private until Ruby 1.9.2 can send to protected methods again
@@ -334,6 +355,13 @@ module I18n
       puts "I18n.default_exception_handler is deprecated. Please use the class I18n::ExceptionHandler instead " +
            "(an instance of which is set to I18n.exception_handler by default)."
       exception.is_a?(MissingTranslation) ? exception.message : raise(exception)
+    end
+
+    def handle_enforce_available_locales_deprecation
+      if config.enforce_available_locales.nil? && !@unenforced_available_locales_deprecation
+        $stderr.puts "[deprecated] I18n.enforce_available_locales will default to true in the future. If you really want to skip validation of your locale you can set I18n.enforce_available_locales = false to avoid this message." 
+        @unenforced_available_locales_deprecation = true
+      end
     end
   })
 end
