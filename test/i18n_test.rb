@@ -282,7 +282,6 @@ class I18nTest < Test::Unit::TestCase
     end
   end
 
-
   test "can use an object responding to #call as an exception handler" do
     begin
       previous_exception_handler = I18n.exception_handler
@@ -311,5 +310,14 @@ class I18nTest < Test::Unit::TestCase
   test "I18n.with_locale resets the locale in case of errors" do
     assert_raise(I18n::ArgumentError) { I18n.with_locale(:pl) { raise I18n::ArgumentError } }
     assert_equal I18n.default_locale, I18n.locale
+  end
+
+  test "I18n.enforce_available_locales config can be set to false" do
+    begin
+      I18n.config.enforce_available_locales = false
+      assert_equal false, I18n.config.enforce_available_locales
+    ensure
+      I18n.config.enforce_available_locales = false
+    end
   end
 end
