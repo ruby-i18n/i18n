@@ -42,6 +42,10 @@ module I18n
         entry
       end
 
+      def exists?(locale, key)
+        lookup(locale, key) != nil
+      end
+
       # Acts the same as +strftime+, but uses a localized version of the
       # format string. Takes a key from the date/time formats translations as
       # a format argument (<em>e.g.</em>, <tt>:short</tt> in <tt>:'date.formats'</tt>).

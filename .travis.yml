@@ -6,3 +6,8 @@ rvm:
   - ree
   - rbx
   - jruby
+
+gemfile:
+  - ci/Gemfile.no-rails
+  - ci/Gemfile.rails-2.3.x
+  - ci/Gemfile.rails-3.x
