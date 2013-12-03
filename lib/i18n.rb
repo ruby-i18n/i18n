@@ -147,7 +147,7 @@ module I18n
       locale   = options.delete(:locale) || config.locale
       handling = options.delete(:throw) && :throw || options.delete(:raise) && :raise # TODO deprecate :raise
 
-      enforce_available_locales(locale)
+      enforce_available_locales!(locale)
       raise I18n::ArgumentError if key.is_a?(String) && key.empty?
 
       result = catch(:exception) do
@@ -231,7 +231,7 @@ module I18n
       locale       = options && options.delete(:locale) || config.locale
       handling     = options && (options.delete(:throw) && :throw || options.delete(:raise) && :raise)
       replacement  = options && options.delete(:replacement)
-      enforce_available_locales(locale)
+      enforce_available_locales!(locale)
       config.backend.transliterate(locale, key, replacement)
     rescue I18n::ArgumentError => exception
       handle_exception(handling, exception, locale, key, options || {})
@@ -242,7 +242,7 @@ module I18n
       options = options ? options.dup : {}
       locale = options.delete(:locale) || config.locale
       format = options.delete(:format) || :default
-      enforce_available_locales(locale)
+      enforce_available_locales!(locale)
       config.backend.localize(locale, object, format, options)
     end
     alias :l :localize
@@ -281,7 +281,7 @@ module I18n
     # Raises an InvalidLocale exception when the passed locale is not
     # included in I18n.available_locales.
     # Returns false otherwise
-    def enforce_available_locales(locale)
+    def enforce_available_locales!(locale)
       handle_enforce_available_locales_deprecation
 
       if config.enforce_available_locales
