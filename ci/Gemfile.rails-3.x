@@ -1,4 +1,4 @@
-source :rubygems
+source 'https://rubygems.org'
 
 gem 'activesupport', '~> 3.0.0'
 gem 'sqlite3-ruby'
