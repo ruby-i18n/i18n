@@ -17,7 +17,7 @@ end
 require 'bundler/setup'
 $:.unshift File.expand_path("../lib", File.dirname(__FILE__))
 require 'i18n'
-require 'mocha'
+require 'mocha/setup'
 require 'test_declarative'
 
 module I18n
