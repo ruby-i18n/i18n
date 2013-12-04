@@ -1,0 +1,13 @@
+rvm:
+  - 1.8.7
+  - 1.9.2
+  - 1.9.3
+  - 2.0.0
+  - ree
+  - rbx
+  - jruby
+
+gemfile:
+  - ci/Gemfile.no-rails
+  - ci/Gemfile.rails-2.3.x
+  - ci/Gemfile.rails-3.x
