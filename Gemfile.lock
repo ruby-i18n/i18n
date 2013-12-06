@@ -1,0 +1,14 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    metaclass (0.0.1)
+    mocha (0.14.0)
+      metaclass (~> 0.0.1)
+    test_declarative (0.0.5)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  mocha
+  test_declarative
