@@ -56,7 +56,7 @@ class I18nTest < Test::Unit::TestCase
     assert_equal :de, Thread.current[:i18n_config].locale
     I18n.locale = :en
   end
-  
+
   test "raises an I18n::InvalidLocale exception when setting an unavailable locale" do
     begin
       I18n.config.enforce_available_locales = true
@@ -206,6 +206,10 @@ class I18nTest < Test::Unit::TestCase
     assert_raise(I18n::ArgumentError) { I18n.t("") }
   end
 
+  test "translate given nil as a key raises an I18n::ArgumentError" do
+    assert_raise(I18n::ArgumentError) { I18n.t(nil) }
+  end
+
   test "translate given an unavailable locale rases an I18n::InvalidLocale" do
     begin
       I18n.config.enforce_available_locales = true
@@ -221,6 +225,14 @@ class I18nTest < Test::Unit::TestCase
 
   test "exists? given a non-existing key will return false" do
     assert_equal false, I18n.exists?(:bogus)
+  end
+
+  test "exists? given an empty string will raise an error" do
+    assert_raise(I18n::ArgumentError) { I18n.exists?("") }
+  end
+
+  test "exists? given nil will raise an error" do
+    assert_raise(I18n::ArgumentError) { I18n.exists?(nil) }
   end
 
   test "exists? given an existing dot-separated key will return true" do
