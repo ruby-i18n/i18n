@@ -40,6 +40,7 @@ module I18n
 
         options[:fallback] = true
         I18n.fallbacks[locale].each do |fallback|
+          next unless translations.keys.include?(fallback)
           catch(:exception) do
             result = super(fallback, key, options)
             return result unless result.nil?
