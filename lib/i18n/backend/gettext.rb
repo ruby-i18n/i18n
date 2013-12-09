@@ -34,7 +34,7 @@ module I18n
         end
 
         def parse(filename)
-          GetText::PoParser.new.parse(::File.read(filename), PoData.new)
+          GetText::PoParser.new.parse_file(filename, PoData.new)
         end
 
         def normalize(locale, data)

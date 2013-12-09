@@ -107,6 +107,41 @@ module_eval <<'..end src/poparser.ry modeval..id7a99570e05', 'src/poparser.ry', 
     @comments << comment
   end 
 
+  def parse_file(po_file, data)
+    args = [ po_file ]
+    # In Ruby 1.9, we must detect proper encoding of a PO file.
+    if String.instance_methods.include?(:encode)
+      encoding = detect_file_encoding(po_file)
+      args << "r:#{encoding}"
+    end
+    @po_file = po_file
+    parse(File.open(*args) {|io| io.read }, data)
+  end
+
+  private
+  def detect_file_encoding(po_file)
+    open(po_file, :encoding => "ASCII-8BIT") do |input|
+      in_header = false
+      input.each_line do |line|
+        case line.chomp
+        when /\Amsgid\s+"(.*)"\z/
+          id = $1
+          break unless id.empty?
+          in_header = true
+        when /\A"Content-Type:.*\scharset=(.*)\\n"\z/
+          charset = $1
+          next unless in_header
+          break if template_charset?(charset)
+          return Encoding.find(charset)
+        end
+      end
+    end
+    Encoding.default_external
+  end
+
+  def template_charset?(charset)
+    charset == "CHARSET"
+  end
 
 ..end src/poparser.ry modeval..id7a99570e05
 
