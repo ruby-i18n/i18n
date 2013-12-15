@@ -358,8 +358,8 @@ module I18n
     end
 
     def handle_enforce_available_locales_deprecation
-      if config.enforce_available_locales.nil? && !@unenforced_available_locales_deprecation
-        $stderr.puts "[deprecated] I18n.enforce_available_locales will default to true in the future. If you really want to skip validation of your locale you can set I18n.enforce_available_locales = false to avoid this message." 
+      if config.enforce_available_locales.nil? && !defined?(@unenforced_available_locales_deprecation)
+        $stderr.puts "[deprecated] I18n.enforce_available_locales will default to true in the future. If you really want to skip validation of your locale you can set I18n.enforce_available_locales = false to avoid this message."
         @unenforced_available_locales_deprecation = true
       end
     end
