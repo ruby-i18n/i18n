@@ -3,7 +3,7 @@ require 'test_helper'
 class I18nExceptionsTest < Test::Unit::TestCase
   def test_invalid_locale_stores_locale
     force_invalid_locale
-  rescue I18n::ArgumentError => e
+  rescue I18n::ArgumentError => exception
     assert_nil exception.locale
   end
 
