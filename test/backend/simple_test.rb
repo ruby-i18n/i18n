@@ -7,8 +7,8 @@ class I18nBackendSimpleTest < Test::Unit::TestCase
   end
 
   # useful because this way we can use the backend with no key for interpolation/pluralization
-  test "simple backend translate: given nil as a key it still interpolations the default value" do
-    assert_equal "Hi David", I18n.t(nil, :default => "Hi %{name}", :name => "David")
+  test "simple backend translate: given an invalid key it still interpolates the default value" do
+    assert_equal "Hi David", I18n.t(:does_not_exist, :default => "Hi %{name}", :name => "David")
   end
 
   # loading translations

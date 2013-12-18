@@ -38,7 +38,7 @@ class I18nBackendCascadeTest < Test::Unit::TestCase
   end
 
   test "cascades defaults, too" do
-    assert_equal 'foo', lookup(nil, :default => [:'missing.missing', :'missing.foo'])
+    assert_equal 'foo', lookup(:does_not_exist, :default => [:'missing.missing', :'missing.foo'])
   end
 
   test "works with :offset => 2 and a single key" do
