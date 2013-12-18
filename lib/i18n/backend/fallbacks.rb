@@ -35,6 +35,7 @@ module I18n
       # it's a Symbol. When the default contains a String, Proc or Hash
       # it is evaluated last after all the fallback locales have been tried.
       def translate(locale, key, options = {})
+
         return super if options[:fallback]
         default = extract_non_symbol_default!(options) if options[:default]
 
@@ -46,8 +47,7 @@ module I18n
           end
         end
         options.delete(:fallback)
-
-        return super(locale, nil, options.merge(:default => default)) if default
+        return super(locale, key, options.merge(:default => default))
         throw(:exception, I18n::MissingTranslation.new(locale, key, options))
       end
 
