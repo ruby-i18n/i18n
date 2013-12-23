@@ -38,7 +38,7 @@ module I18n
 
       test "default: with a % sign and rescue format of html it does not interpolate" do
         string = "20% Off"
-        assert_equal "20% Off", I18n.translate(:"20% Off", :default => "20% Off", :rescue_format => :html)
+        assert_equal string, I18n.translate(string.to_sym, :default => string, :rescue_format => :html)
       end
     end
   end
