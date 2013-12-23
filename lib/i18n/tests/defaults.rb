@@ -35,6 +35,11 @@ module I18n
         I18n.backend.store_translations(:en, { :foo => { :bar => 'bar' } }, { :separator => '|' })
         assert_equal 'bar', I18n.t(nil, :default => :'foo|bar', :separator => '|')
       end
+
+      test "default: with a % sign and rescue format of html it does not interpolate" do
+        string = "20% Off"
+        assert_equal "20% Off", I18n.translate(:"20% Off", :default => "20% Off", :rescue_format => :html)
+      end
     end
   end
 end

@@ -6,7 +6,7 @@ module I18n
     module Base
       include I18n::Backend::Transliterator
 
-      RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback]
+      RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback, :rescue_format]
       RESERVED_KEYS_PATTERN = /%\{(#{RESERVED_KEYS.join("|")})\}/
 
       # Accepts a list of paths to translation files. Loads translations from
@@ -152,7 +152,6 @@ module I18n
             value = value.to_s unless value.is_a?(::String)
             values[key] = value
           end
-
           string % values
         rescue KeyError => e
           if string =~ RESERVED_KEYS_PATTERN
