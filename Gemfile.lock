@@ -1,6 +1,8 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    json (1.8.0)
+    json (1.8.0-java)
     mocha (0.9.9)
       rake
     rake (0.8.7)
@@ -11,5 +13,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  json
   mocha
   test_declarative
