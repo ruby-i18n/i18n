@@ -12,6 +12,7 @@ class I18nCascadeApiTest < Test::Unit::TestCase
 
   include I18n::Tests::Basics
   include I18n::Tests::Defaults
+  include I18n::Tests::Inflector
   include I18n::Tests::Interpolation
   include I18n::Tests::Link
   include I18n::Tests::Lookup
