@@ -37,6 +37,10 @@ class I18nTest < Test::Unit::TestCase
     end
   end
 
+  test "default_locale= doesn't ignore junk" do
+    assert_raise(NoMethodError) { I18n.default_locale = Class }
+  end
+
   test "raises an I18n::InvalidLocale exception when setting an unavailable default locale" do
     begin
       I18n.config.enforce_available_locales = true
@@ -55,6 +59,10 @@ class I18nTest < Test::Unit::TestCase
     assert_equal :de, I18n.locale
     assert_equal :de, Thread.current[:i18n_config].locale
     I18n.locale = :en
+  end
+  
+  test "locale= doesn't ignore junk" do
+    assert_raise(NoMethodError) { I18n.locale = Class }
   end
   
   test "raises an I18n::InvalidLocale exception when setting an unavailable locale" do
