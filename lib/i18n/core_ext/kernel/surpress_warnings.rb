@@ -2,8 +2,8 @@ module Kernel
   def suppress_warnings
     original_verbosity = $VERBOSE
     $VERBOSE = nil
-    result = yield
+    yield
+  ensure
     $VERBOSE = original_verbosity
-    result
   end
 end
