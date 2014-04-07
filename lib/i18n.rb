@@ -275,7 +275,7 @@ module I18n
     # Returns false otherwise.
     # Compare with Strings as `locale` may be coming from user input
     def locale_available?(locale)
-      I18n.available_locales.map(&:to_s).include?(locale.to_s)
+      I18n.config.available_locales_set.include?(locale)
     end
 
     # Raises an InvalidLocale exception when the passed locale is not
