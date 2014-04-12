@@ -14,6 +14,12 @@ class I18nCoreExtHashInterpolationTest < Test::Unit::TestCase
     assert_equal expected, hash.slice(:foo)
   end
 
+  test "#slice maintains subclasses of Hash" do
+    klass = Class.new(Hash)
+    hash = klass[:foo, 'bar', :baz, 'bar']
+    assert_instance_of klass,  hash.slice(:foo)
+  end
+
   test "#except" do
     hash = { :foo => 'bar',  :baz => 'bar' }
     expected = { :foo => 'bar' }
