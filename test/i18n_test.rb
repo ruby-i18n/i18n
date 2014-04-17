@@ -243,6 +243,10 @@ class I18nTest < Test::Unit::TestCase
     assert_raise(I18n::ArgumentError) { I18n.l nil }
   end
 
+  test "localize given nil and default returns default" do
+    assert_equal nil, I18n.l(nil, :default => nil)
+  end
+
   test "localize given an Object raises an I18n::ArgumentError" do
     assert_raise(I18n::ArgumentError) { I18n.l Object.new }
   end
