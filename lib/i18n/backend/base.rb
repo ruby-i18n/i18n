@@ -62,6 +62,9 @@ module I18n
       # format string. Takes a key from the date/time formats translations as
       # a format argument (<em>e.g.</em>, <tt>:short</tt> in <tt>:'date.formats'</tt>).
       def localize(locale, object, format = :default, options = {})
+        if object.nil? && options.include?(:default)
+          return options[:default]
+        end
         raise ArgumentError, "Object must be a Date, DateTime or Time object. #{object.inspect} given." unless object.respond_to?(:strftime)
 
         if Symbol === format
