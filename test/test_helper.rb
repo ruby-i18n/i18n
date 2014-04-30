@@ -40,8 +40,8 @@ class Test::Unit::TestCase
   end
 end
 
-module Kernel
-  def setup_rufus_tokyo
+module I18n::Tests
+  def self.setup_rufus_tokyo
     require 'rufus/tokyo'
   rescue LoadError => e
     puts "can't use KeyValue backend because: #{e.message}"
