@@ -14,7 +14,8 @@ end
 
 require 'bundler/setup'
 require 'i18n'
-require 'mocha'
+require 'mocha/test_unit'
+require 'mocha/setup'
 require 'test_declarative'
 
 class Test::Unit::TestCase
