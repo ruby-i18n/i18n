@@ -3,8 +3,8 @@ require 'test_helper'
 
 class I18nTest < Test::Unit::TestCase
   def setup
-    I18n.backend.store_translations(:'en', :currency => { :format => { :separator => '.', :delimiter => ',', } })
-    I18n.backend.store_translations(:'nl', :currency => { :format => { :separator => ',', :delimiter => '.', } })
+    store_translations(:en, :currency => { :format => { :separator => '.', :delimiter => ',', } })
+    store_translations(:nl, :currency => { :format => { :separator => ',', :delimiter => '.', } })
   end
 
   test "exposes its VERSION constant" do
@@ -56,7 +56,7 @@ class I18nTest < Test::Unit::TestCase
     assert_equal :de, Thread.current[:i18n_config].locale
     I18n.locale = :en
   end
-  
+
   test "raises an I18n::InvalidLocale exception when setting an unavailable locale" do
     begin
       I18n.config.enforce_available_locales = true
