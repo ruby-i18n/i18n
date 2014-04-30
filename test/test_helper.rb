@@ -24,6 +24,7 @@ class Test::Unit::TestCase
     I18n.load_path = []
     I18n.available_locales = nil
     I18n.backend = nil
+    I18n.enforce_available_locales = nil
   end
 
   def translations
