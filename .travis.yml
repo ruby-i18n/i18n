@@ -12,3 +12,12 @@ gemfile:
   - ci/Gemfile.no-rails
   - ci/Gemfile.rails-2.3.x
   - ci/Gemfile.rails-3.x
+
+matrix:
+  allow_failures:
+    - rvm: ree
+    - rvm: rbx
+    - rvm: jruby
+    - gemfile: ci/Gemfile.rails-2.3.x
+    - gemfile: ci/Gemfile.rails-3.x
+  fast_finish: true
