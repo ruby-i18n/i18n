@@ -48,9 +48,3 @@ module Kernel
     puts "can't use KeyValue backend because: #{e.message}"
   end
 end
-
-Object.class_eval do
-  def meta_class
-    class << self; self; end
-  end
-end unless Object.method_defined?(:meta_class)
