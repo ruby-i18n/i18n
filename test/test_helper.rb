@@ -31,9 +31,7 @@ class Test::Unit::TestCase
     I18n.backend.instance_variable_get(:@translations)
   end
 
-  def store_translations(*args)
-    data   = args.pop
-    locale = args.pop || :en
+  def store_translations(locale, data)
     I18n.backend.store_translations(locale, data)
   end
 
