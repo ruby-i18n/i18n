@@ -8,7 +8,6 @@ GEM
       metaclass (~> 0.0.1)
     rake (10.3.1)
     rufus-tokyo (1.0.7)
-    sqlite3 (1.3.9)
     test_declarative (0.0.5)
 
 PLATFORMS
@@ -20,5 +19,4 @@ DEPENDENCIES
   mocha
   rake
   rufus-tokyo
-  sqlite3
   test_declarative
