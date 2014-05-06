@@ -1,3 +1,8 @@
+PATH
+  remote: .
+  specs:
+    i18n (0.6.9)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -12,6 +17,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  i18n!
   mocha
   rake
   test_declarative

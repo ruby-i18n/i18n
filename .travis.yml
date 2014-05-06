@@ -13,7 +13,11 @@ rvm:
 gemfile:
   - ci/Gemfile.no-rails
   - ci/Gemfile.rails-2.3.x
-  - ci/Gemfile.rails-3.x
+  - ci/Gemfile.rails-3.0.x
+  - ci/Gemfile.rails-3.1.x
+  - ci/Gemfile.rails-3.2.x
+  - ci/Gemfile.rails-4.0.x
+  - ci/Gemfile.rails-4.1.x
 
 matrix:
   allow_failures:
@@ -29,4 +33,16 @@ matrix:
       rvm: rbx
     - gemfile: ci/Gemfile.rails-2.3.x
       rvm: jruby
+    - gemfile: ci/Gemfile.rails-4.0.x
+      rvm: 1.8.7
+    - gemfile: ci/Gemfile.rails-4.0.x
+      rvm: 1.9.2
+    - gemfile: ci/Gemfile.rails-4.0.x
+      rvm: ree
+    - gemfile: ci/Gemfile.rails-4.1.x
+      rvm: 1.8.7
+    - gemfile: ci/Gemfile.rails-4.1.x
+      rvm: 1.9.2
+    - gemfile: ci/Gemfile.rails-4.1.x
+      rvm: ree
   fast_finish: true
