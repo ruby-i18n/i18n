@@ -3,7 +3,7 @@ def bundle_check
 end
 
 command  = 'ruby -w -Ilib -Itest test/all.rb'
-gemfiles = %w(ci/Gemfile.rails-3.x ci/Gemfile.rails-2.3.x ci/Gemfile.no-rails)
+gemfiles = %w(gemfiles/Gemfile.rails-3.x gemfiles/Gemfile.rails-2.3.x gemfiles/Gemfile.no-rails)
 
 results = gemfiles.map do |gemfile|
   puts "BUNDLE_GEMFILE=#{gemfile}"
