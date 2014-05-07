@@ -41,7 +41,9 @@ module I18n
       @@available_locales || backend.available_locales
     end
 
-    def available_locales_set
+    # Caches the available locales list as both strings and symbols in a Set, so
+    # that we can have faster lookups to do the available locales enforce check.
+    def available_locales_set #:nodoc:
       @@available_locales_set ||= available_locales.inject(Set.new) do |set, locale|
         set << locale.to_s << locale.to_sym
       end
