@@ -10,7 +10,7 @@ rvm:
   - jruby
 
 gemfile:
-  - ci/Gemfile.no-rails
+  - Gemfile
   - ci/Gemfile.rails-2.3.x
   - ci/Gemfile.rails-3.0.x
   - ci/Gemfile.rails-3.1.x
