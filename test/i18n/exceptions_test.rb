@@ -91,28 +91,28 @@ class I18nExceptionsTest < Test::Unit::TestCase
     end
 
     def force_missing_translation_data(options = {})
-      I18n.backend.store_translations('de', :bar => nil)
+      store_translations('de', :bar => nil)
       I18n.translate(:foo, options.merge(:scope => :bar, :locale => :de))
     rescue I18n::ArgumentError => e
       block_given? ? yield(e) : raise(e)
     end
 
     def force_invalid_pluralization_data
-      I18n.backend.store_translations('de', :foo => [:bar])
+      store_translations('de', :foo => [:bar])
       I18n.translate(:foo, :count => 1, :locale => :de)
     rescue I18n::ArgumentError => e
       block_given? ? yield(e) : raise(e)
     end
 
     def force_missing_interpolation_argument
-      I18n.backend.store_translations('de', :foo => "%{bar}")
+      store_translations('de', :foo => "%{bar}")
       I18n.translate(:foo, :baz => 'baz', :locale => :de)
     rescue I18n::ArgumentError => e
       block_given? ? yield(e) : raise(e)
     end
 
     def force_reserved_interpolation_key
-      I18n.backend.store_translations('de', :foo => "%{scope}")
+      store_translations('de', :foo => "%{scope}")
       I18n.translate(:foo, :baz => 'baz', :locale => :de)
     rescue I18n::ArgumentError => e
       block_given? ? yield(e) : raise(e)

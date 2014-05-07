@@ -14,7 +14,7 @@ end
 
 require 'bundler/setup'
 require 'i18n'
-require 'mocha'
+require 'mocha/setup'
 require 'test_declarative'
 
 class Test::Unit::TestCase
@@ -24,15 +24,14 @@ class Test::Unit::TestCase
     I18n.load_path = []
     I18n.available_locales = nil
     I18n.backend = nil
+    I18n.enforce_available_locales = nil
   end
 
   def translations
     I18n.backend.instance_variable_get(:@translations)
   end
 
-  def store_translations(*args)
-    data   = args.pop
-    locale = args.pop || :en
+  def store_translations(locale, data)
     I18n.backend.store_translations(locale, data)
   end
 
@@ -41,16 +40,10 @@ class Test::Unit::TestCase
   end
 end
 
-module Kernel
-  def setup_rufus_tokyo
+module I18n::Tests
+  def self.setup_rufus_tokyo
     require 'rufus/tokyo'
   rescue LoadError => e
     puts "can't use KeyValue backend because: #{e.message}"
   end
 end
-
-Object.class_eval do
-  def meta_class
-    class << self; self; end
-  end
-end unless Object.method_defined?(:meta_class)
