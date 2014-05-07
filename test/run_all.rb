@@ -1,5 +1,5 @@
 def bundle_check
-  `bundle check` == "The Gemfile's dependencies are satisfied\n"
+  `bundle check` == "Resolving dependencies...\nThe Gemfile's dependencies are satisfied\n"
 end
 
 command  = 'ruby -w -Ilib -Itest test/all.rb'
