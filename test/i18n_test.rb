@@ -215,6 +215,23 @@ class I18nTest < Test::Unit::TestCase
     end
   end
 
+  test "available_locales can be replaced at runtime" do
+    begin
+      I18n.config.enforce_available_locales = true
+      assert_raise(I18n::InvalidLocale) { I18n.t(:foo, :locale => 'klingon') }
+      old_locales, I18n.config.available_locales = I18n.config.available_locales, [:klingon]
+      I18n.t(:foo, :locale => 'klingon')
+    ensure
+      I18n.config.enforce_available_locales = false
+      I18n.config.available_locales = old_locales
+    end
+  end
+
+  test "available_locales_set should return a set" do
+    assert_equal Set, I18n.config.available_locales_set.class
+    assert_equal (I18n.config.available_locales.size * 2), I18n.config.available_locales_set.size
+  end
+
   test "exists? given an existing key will return true" do
     assert_equal true, I18n.exists?(:currency)
   end
