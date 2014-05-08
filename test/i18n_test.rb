@@ -229,7 +229,7 @@ class I18nTest < Test::Unit::TestCase
 
   test "available_locales_set should return a set" do
     assert_equal Set, I18n.config.available_locales_set.class
-    assert_equal (I18n.config.available_locales.size * 2), I18n.config.available_locales_set.size
+    assert_equal I18n.config.available_locales.size * 2, I18n.config.available_locales_set.size
   end
 
   test "exists? given an existing key will return true" do
