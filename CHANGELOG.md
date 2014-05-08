@@ -5,3 +5,4 @@
 * Remove deprecated stuff:
   - Setting `:default_exception_hander` Symbol to `I18n.exception_handler`.
   - `normalize_translation_keys` in favor of `normalize_keys`.
+  - `:rescue_format` option on the exception handler.
