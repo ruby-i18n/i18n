@@ -8,9 +8,10 @@ module I18n
   class ExceptionHandler
     include Module.new {
       def call(exception, locale, key, options)
-        if exception.is_a?(MissingTranslation)
+        case exception
+        when MissingTranslation
           exception.message
-        elsif exception.is_a?(Exception)
+        when Exception
           raise exception
         else
           throw :exception, exception
