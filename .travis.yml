@@ -35,13 +35,9 @@ matrix:
     - gemfile: gemfiles/Gemfile.rails-4.0.x
       rvm: 1.8.7
     - gemfile: gemfiles/Gemfile.rails-4.0.x
-      rvm: 1.9.2
-    - gemfile: gemfiles/Gemfile.rails-4.0.x
       rvm: ree
     - gemfile: gemfiles/Gemfile.rails-4.1.x
       rvm: 1.8.7
-    - gemfile: gemfiles/Gemfile.rails-4.1.x
-      rvm: 1.9.2
     - gemfile: gemfiles/Gemfile.rails-4.1.x
       rvm: ree
   fast_finish: true
