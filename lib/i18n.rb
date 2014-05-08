@@ -339,12 +339,6 @@ module I18n
       @normalized_key_cache ||= Hash.new { |h,k| h[k] = {} }
     end
 
-    # DEPRECATED. Use I18n.normalize_keys instead.
-    def normalize_translation_keys(locale, key, scope, separator = nil)
-      puts "I18n.normalize_translation_keys is deprecated. Please use the class I18n.normalize_keys instead."
-      normalize_keys(locale, key, scope, separator)
-    end
-
     def handle_enforce_available_locales_deprecation
       if config.enforce_available_locales.nil? && !defined?(@unenforced_available_locales_deprecation)
         $stderr.puts "[deprecated] I18n.enforce_available_locales will default to true in the future. If you really want to skip validation of your locale you can set I18n.enforce_available_locales = false to avoid this message."
