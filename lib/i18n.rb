@@ -298,18 +298,18 @@ module I18n
     #
     # Examples:
     #
-    #   I18n.exception_handler = :default_exception_handler             # this is the default
-    #   I18n.default_exception_handler(exception, locale, key, options) # will be called like this
+    #   I18n.exception_handler = :custom_exception_handler              # this is the default
+    #   I18n.custom_exception_handler(exception, locale, key, options)  # will be called like this
     #
     #   I18n.exception_handler = lambda { |*args| ... }                 # a lambda
     #   I18n.exception_handler.call(exception, locale, key, options)    # will be called like this
     #
-    #  I18n.exception_handler = I18nExceptionHandler.new                # an object
-    #  I18n.exception_handler.call(exception, locale, key, options)     # will be called like this
+    #   I18n.exception_handler = I18nExceptionHandler.new               # an object
+    #   I18n.exception_handler.call(exception, locale, key, options)    # will be called like this
     def handle_exception(handling, exception, locale, key, options)
       case handling
       when :raise
-        raise(exception.respond_to?(:to_exception) ? exception.to_exception : exception)
+        raise exception.respond_to?(:to_exception) ? exception.to_exception : exception
       when :throw
         throw :exception, exception
       else
@@ -343,13 +343,6 @@ module I18n
     def normalize_translation_keys(locale, key, scope, separator = nil)
       puts "I18n.normalize_translation_keys is deprecated. Please use the class I18n.normalize_keys instead."
       normalize_keys(locale, key, scope, separator)
-    end
-
-    # DEPRECATED. Please use the I18n::ExceptionHandler class instead.
-    def default_exception_handler(exception, locale, key, options)
-      puts "I18n.default_exception_handler is deprecated. Please use the class I18n::ExceptionHandler instead " +
-           "(an instance of which is set to I18n.exception_handler by default)."
-      exception.is_a?(MissingTranslation) ? exception.message : raise(exception)
     end
 
     def handle_enforce_available_locales_deprecation

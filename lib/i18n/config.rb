@@ -68,7 +68,8 @@ module I18n
       @@default_separator = separator
     end
 
-    # Return the current exception handler. Defaults to :default_exception_handler.
+    # Returns the current exception handler. Defaults to an instance of
+    # I18n::ExceptionHandler.
     def exception_handler
       @@exception_handler ||= ExceptionHandler.new
     end
