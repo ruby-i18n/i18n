@@ -8,6 +8,20 @@ rvm:
   - jruby
 
 gemfile:
-  - ci/Gemfile.no-rails
-  - ci/Gemfile.rails-2.3.x
-  - ci/Gemfile.rails-3.x
+  - Gemfile
+  - gemfiles/Gemfile.rails-2.3.x
+  - gemfiles/Gemfile.rails-3.0.x
+
+matrix:
+  allow_failures:
+    - rvm: ree
+    - rvm: rbx
+    - rvm: jruby
+  exclude:
+    - gemfile: gemfiles/Gemfile.rails-2.3.x
+      rvm: 2.0.0
+    - gemfile: gemfiles/Gemfile.rails-2.3.x
+      rvm: rbx
+    - gemfile: gemfiles/Gemfile.rails-2.3.x
+      rvm: jruby
+  fast_finish: true

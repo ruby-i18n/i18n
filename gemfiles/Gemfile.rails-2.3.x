@@ -1,7 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'activesupport', '~> 3.0.0'
-gem 'sqlite3'
+gemspec :path => '..'
+
+gem 'activesupport', '~> 2.3'
 gem 'mocha'
 gem 'test_declarative'
 gem 'rake'
