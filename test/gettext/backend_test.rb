@@ -13,6 +13,7 @@ unless RUBY_VERSION == '1.9.1' && RUBY_PATCHLEVEL <= 129
     end
 
     def setup
+      super
       I18n.backend = Backend.new
       I18n.locale = :en
       I18n.load_path = ["#{locales_dir}/de.po"]
@@ -23,6 +24,7 @@ unless RUBY_VERSION == '1.9.1' && RUBY_PATCHLEVEL <= 129
       I18n.load_path = nil
       I18n.backend = nil
       I18n.default_separator = @old_separator
+      super
     end
 
     def test_backend_loads_po_file

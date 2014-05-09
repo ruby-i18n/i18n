@@ -16,9 +16,9 @@ class I18nOverrideTest < I18n::TestCase
   end
 
   def setup
+    super
     @I18n = I18n.dup
     @I18n.backend = I18n::Backend::Simple.new
-    super
   end
 
   test "make sure modules can overwrite I18n methods" do

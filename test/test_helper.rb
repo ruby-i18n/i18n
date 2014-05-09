@@ -42,14 +42,19 @@ class I18n::TestCase < TEST_CASE
     puts "can't use KeyValue backend because: #{e.message}"
   end
 
-  def teardown
+  def setup
     super
+    I18n.enforce_available_locales = false
+  end
+
+  def teardown
     I18n.locale = nil
     I18n.default_locale = :en
     I18n.load_path = []
     I18n.available_locales = nil
     I18n.backend = nil
-    I18n.enforce_available_locales = nil
+    I18n.enforce_available_locales = true
+    super
   end
 
   # Ignore Test::Unit::TestCase failing if the test case does not contain any

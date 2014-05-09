@@ -3,6 +3,7 @@ require 'test_helper'
 
 class I18nBackendTransliterator < I18n::TestCase
   def setup
+    super
     I18n.backend = I18n::Backend::Simple.new
     @proc = lambda { |n| n.upcase }
     @hash = { "ü" => "ue", "ö" => "oe", "a" => "a" }

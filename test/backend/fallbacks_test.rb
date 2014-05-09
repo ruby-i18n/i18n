@@ -6,6 +6,7 @@ class I18nBackendFallbacksTranslateTest < I18n::TestCase
   end
 
   def setup
+    super
     I18n.backend = Backend.new
     store_translations(:en, :foo => 'Foo in :en', :bar => 'Bar in :en', :buz => 'Buz in :en')
     store_translations(:de, :bar => 'Bar in :de', :baz => 'Baz in :de')
@@ -92,6 +93,7 @@ class I18nBackendFallbacksLocalizeTest < I18n::TestCase
   end
 
   def setup
+    super
     I18n.backend = Backend.new
     store_translations(:en, :date => { :formats => { :en => 'en' }, :day_names => %w(Sunday) })
     store_translations(:de, :date => { :formats => { :de => 'de' } })
@@ -124,6 +126,7 @@ class I18nBackendFallbacksWithChainTest < I18n::TestCase
   end
 
   def setup
+    super
     backend = Backend.new
     backend.store_translations(:de, :foo => 'FOO')
     backend.store_translations(:'pt-BR', :foo => 'Baz in :pt-BR')

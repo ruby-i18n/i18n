@@ -3,6 +3,7 @@ require 'test_helper'
 
 class I18nTest < I18n::TestCase
   def setup
+    super
     store_translations(:en, :currency => { :format => { :separator => '.', :delimiter => ',', } })
     store_translations(:nl, :currency => { :format => { :separator => ',', :delimiter => '.', } })
   end

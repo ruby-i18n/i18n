@@ -2,6 +2,7 @@ require 'test_helper'
 
 class I18nBackendChainTest < I18n::TestCase
   def setup
+    super
     @first  = backend(:en => {
       :foo => 'Foo', :formats => { :short => 'short' }, :plural_1 => { :one => '%{count}' }, :dates => {:a => "A"}
     })

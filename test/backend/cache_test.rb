@@ -18,6 +18,7 @@ class I18nBackendCacheTest < I18n::TestCase
   end
 
   def teardown
+    super
     I18n.cache_store = nil
   end
 

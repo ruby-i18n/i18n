@@ -62,6 +62,7 @@ end
 
 class I18nMissingInterpolationCustomHandlerTest < I18n::TestCase
   def setup
+    super
     @old_handler = I18n.config.missing_interpolation_argument_handler
     I18n.config.missing_interpolation_argument_handler = lambda do |key, values, string|
       "missing key is #{key}, values are #{values.inspect}, given string is '#{string}'"
@@ -70,6 +71,7 @@ class I18nMissingInterpolationCustomHandlerTest < I18n::TestCase
 
   def teardown
     I18n.config.missing_interpolation_argument_handler = @old_handler
+    super
   end
 
   test "String interpolation can use custom missing interpolation handler" do
