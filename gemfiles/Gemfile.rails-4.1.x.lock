@@ -12,14 +12,12 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
-    ffi (1.9.3)
     json (1.8.1)
     metaclass (0.0.4)
     minitest (5.3.3)
     mocha (1.0.0)
       metaclass (~> 0.0.1)
     rake (10.3.1)
-    rufus-tokyo (1.0.7)
     test_declarative (0.0.5)
     thread_safe (0.3.3)
     tzinfo (1.1.0)
@@ -30,9 +28,7 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport (~> 4.1.0)
-  ffi
   i18n!
   mocha
   rake
-  rufus-tokyo
   test_declarative
