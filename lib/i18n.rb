@@ -279,8 +279,6 @@ module I18n
 
     # Raises an InvalidLocale exception when the passed locale is not available.
     def enforce_available_locales!(locale)
-      handle_enforce_available_locales_deprecation
-
       if config.enforce_available_locales
         raise I18n::InvalidLocale.new(locale) if !locale_available?(locale)
       end
@@ -337,13 +335,6 @@ module I18n
 
     def normalized_key_cache
       @normalized_key_cache ||= Hash.new { |h,k| h[k] = {} }
-    end
-
-    def handle_enforce_available_locales_deprecation
-      if config.enforce_available_locales.nil? && !defined?(@unenforced_available_locales_deprecation)
-        $stderr.puts "[deprecated] I18n.enforce_available_locales will default to true in the future. If you really want to skip validation of your locale you can set I18n.enforce_available_locales = false to avoid this message."
-        @unenforced_available_locales_deprecation = true
-      end
     end
   })
 end
