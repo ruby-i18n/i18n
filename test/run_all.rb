@@ -2,7 +2,7 @@ def bundle_check
   `bundle check` == "Resolving dependencies...\nThe Gemfile's dependencies are satisfied\n"
 end
 
-command  = 'ruby -w -Ilib -Itest test/all.rb'
+command  = 'bundle exec ruby -w -Ilib -Itest test/all.rb'
 gemfiles = %w(Gemfile) + Dir['gemfiles/Gemfile*'].reject { |f| f.end_with?('.lock') }
 
 results = gemfiles.map do |gemfile|
