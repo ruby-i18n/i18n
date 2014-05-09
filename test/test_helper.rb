@@ -1,7 +1,25 @@
 $KCODE = 'u' if RUBY_VERSION <= '1.9'
 
 require 'rubygems'
-require 'test/unit'
+
+# Use minitest if we can, otherwise fallback to test-unit.
+begin
+  require 'minitest/autorun'
+  TEST_CASE = defined?(Minitest::Test) ? Minitest::Test : MiniTest::Unit::TestCase
+
+  # TODO: Remove these aliases and update tests accordingly.
+  class TEST_CASE
+    alias :assert_raise :assert_raises
+    alias :assert_not_equal :refute_equal
+
+    def assert_nothing_raised(*args)
+      yield
+    end
+  end
+rescue LoadError
+  require 'test/unit'
+  TEST_CASE = Test::Unit::TestCase
+end
 
 # Do not load the i18n gem from libraries like active_support.
 #
@@ -17,7 +35,7 @@ require 'i18n'
 require 'mocha/setup'
 require 'test_declarative'
 
-class I18n::TestCase < Test::Unit::TestCase
+class I18n::TestCase < TEST_CASE
   def self.setup_rufus_tokyo
     require 'rufus/tokyo'
   rescue LoadError => e
