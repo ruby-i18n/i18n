@@ -1,7 +1,5 @@
 $KCODE = 'u' if RUBY_VERSION <= '1.9'
 
-require 'rubygems'
-
 # Use minitest if we can, otherwise fallback to test-unit.
 begin
   require 'minitest/autorun'

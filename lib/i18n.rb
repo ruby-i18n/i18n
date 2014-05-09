@@ -286,8 +286,6 @@ module I18n
       end
     end
 
-  # making these private until Ruby 1.9.2 can send to protected methods again
-  # see http://redmine.ruby-lang.org/repositories/revision/ruby-19?rev=24280
   private
 
     # Any exceptions thrown in translate will be sent to the @@exception_handler
