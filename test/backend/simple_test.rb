@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class I18nBackendSimpleTest < Test::Unit::TestCase
+class I18nBackendSimpleTest < I18n::TestCase
   def setup
     I18n.backend = I18n::Backend::Simple.new
     I18n.load_path = [locales_dir + '/en.yml']

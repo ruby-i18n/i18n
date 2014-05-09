@@ -1,8 +1,8 @@
 require 'test_helper'
 
-I18n::Tests.setup_rufus_tokyo
+I18n::TestCase.setup_rufus_tokyo
 
-class I18nBackendKeyValueTest < Test::Unit::TestCase
+class I18nBackendKeyValueTest < I18n::TestCase
   def setup_backend!(subtree=true)
     I18n.backend = I18n::Backend::KeyValue.new(Rufus::Tokyo::Cabinet.new('*'), subtree)
     store_translations(:en, :foo => { :bar => 'bar', :baz => 'baz' })

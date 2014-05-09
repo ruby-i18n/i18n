@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class I18nBackendFallbacksTranslateTest < Test::Unit::TestCase
+class I18nBackendFallbacksTranslateTest < I18n::TestCase
   class Backend < I18n::Backend::Simple
     include I18n::Backend::Fallbacks
   end
@@ -75,7 +75,7 @@ class I18nBackendFallbacksTranslateTest < Test::Unit::TestCase
   test "should ensure that default is not splitted on new line char" do
     assert_equal "Default \n Bar", I18n.t(:missing_bar, :default => "Default \n Bar")
   end
-  
+
   test "should not raise error when enforce_available_locales is true, :'pt' is missing and default is a Symbol" do
     I18n.enforce_available_locales = true
     begin
@@ -86,7 +86,7 @@ class I18nBackendFallbacksTranslateTest < Test::Unit::TestCase
   end
 end
 
-class I18nBackendFallbacksLocalizeTest < Test::Unit::TestCase
+class I18nBackendFallbacksLocalizeTest < I18n::TestCase
   class Backend < I18n::Backend::Simple
     include I18n::Backend::Fallbacks
   end
@@ -118,7 +118,7 @@ class I18nBackendFallbacksLocalizeTest < Test::Unit::TestCase
   end
 end
 
-class I18nBackendFallbacksWithChainTest < Test::Unit::TestCase
+class I18nBackendFallbacksWithChainTest < I18n::TestCase
   class Backend < I18n::Backend::Simple
     include I18n::Backend::Fallbacks
   end

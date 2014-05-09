@@ -4,7 +4,7 @@ require 'i18n/gettext/helpers'
 
 include I18n::Gettext::Helpers
 
-class I18nGettextApiTest < Test::Unit::TestCase
+class I18nGettextApiTest < I18n::TestCase
   def setup
     I18n.locale = :en
     I18n.backend.store_translations :de, {

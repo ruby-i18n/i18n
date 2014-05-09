@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class I18nBackendPluralizationTest < Test::Unit::TestCase
+class I18nBackendPluralizationTest < I18n::TestCase
   class Backend < I18n::Backend::Simple
     include I18n::Backend::Pluralization
     include I18n::Backend::Fallbacks

@@ -17,8 +17,15 @@ require 'i18n'
 require 'mocha/setup'
 require 'test_declarative'
 
-class Test::Unit::TestCase
+class I18n::TestCase < Test::Unit::TestCase
+  def self.setup_rufus_tokyo
+    require 'rufus/tokyo'
+  rescue LoadError => e
+    puts "can't use KeyValue backend because: #{e.message}"
+  end
+
   def teardown
+    super
     I18n.locale = nil
     I18n.default_locale = :en
     I18n.load_path = []
@@ -26,6 +33,16 @@ class Test::Unit::TestCase
     I18n.backend = nil
     I18n.enforce_available_locales = nil
   end
+
+  # Ignore Test::Unit::TestCase failing if the test case does not contain any
+  # test, otherwise it will blow up because of this base class.
+  #
+  # TODO: remove when test-unit is not used anymore.
+  def default_test
+    nil
+  end
+
+  protected
 
   def translations
     I18n.backend.instance_variable_get(:@translations)
@@ -37,13 +54,5 @@ class Test::Unit::TestCase
 
   def locales_dir
     File.dirname(__FILE__) + '/test_data/locales'
-  end
-end
-
-module I18n::Tests
-  def self.setup_rufus_tokyo
-    require 'rufus/tokyo'
-  rescue LoadError => e
-    puts "can't use KeyValue backend because: #{e.message}"
   end
 end

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class I18nExceptionsTest < Test::Unit::TestCase
+class I18nExceptionsTest < I18n::TestCase
   def test_invalid_locale_stores_locale
     force_invalid_locale
   rescue I18n::ArgumentError => exception

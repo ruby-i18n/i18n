@@ -5,7 +5,7 @@ require 'test_helper'
 # apparently Ruby 1.9.1p129 has encoding problems with the gettext po parser
 unless RUBY_VERSION == '1.9.1' && RUBY_PATCHLEVEL <= 129
 
-  class I18nGettextBackendTest < Test::Unit::TestCase
+  class I18nGettextBackendTest < I18n::TestCase
     include I18n::Gettext::Helpers
 
     class Backend < I18n::Backend::Simple

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class I18nFallbacksApiTest < Test::Unit::TestCase
+class I18nFallbacksApiTest < I18n::TestCase
   class Backend < I18n::Backend::Simple
     include I18n::Backend::Fallbacks
   end

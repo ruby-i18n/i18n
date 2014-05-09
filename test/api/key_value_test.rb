@@ -1,8 +1,8 @@
 require 'test_helper'
 
-I18n::Tests.setup_rufus_tokyo
+I18n::TestCase.setup_rufus_tokyo
 
-class I18nKeyValueApiTest < Test::Unit::TestCase
+class I18nKeyValueApiTest < I18n::TestCase
   include I18n::Tests::Basics
   include I18n::Tests::Defaults
   include I18n::Tests::Interpolation

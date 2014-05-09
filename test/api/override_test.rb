@@ -1,22 +1,18 @@
 require 'test_helper'
 
-class I18nOverrideTest < Test::Unit::TestCase
+class I18nOverrideTest < I18n::TestCase
   module OverrideInverse
-
     def translate(*args)
       super(*args).reverse
     end
     alias :t :translate
-
   end
 
   module OverrideSignature
-
     def translate(*args)
       args.first + args[1]
     end
     alias :t :translate
-
   end
 
   def setup
@@ -44,5 +40,4 @@ class I18nOverrideTest < Test::Unit::TestCase
     @I18n.extend OverrideSignature
     assert_equal 'HelloWelcome message on home page', @I18n.translate('Hello', 'Welcome message on home page', :tokenize => true) # tr8n example
   end
-
 end

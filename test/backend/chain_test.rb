@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class I18nBackendChainTest < Test::Unit::TestCase
+class I18nBackendChainTest < I18n::TestCase
   def setup
     @first  = backend(:en => {
       :foo => 'Foo', :formats => { :short => 'short' }, :plural_1 => { :one => '%{count}' }, :dates => {:a => "A"}

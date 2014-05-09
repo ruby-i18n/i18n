@@ -6,7 +6,7 @@ rescue LoadError
   $stderr.puts "Skipping cache tests using ActiveSupport"
 else
 
-class I18nBackendCacheTest < Test::Unit::TestCase
+class I18nBackendCacheTest < I18n::TestCase
   class Backend < I18n::Backend::Simple
     include I18n::Backend::Cache
   end

@@ -1,7 +1,7 @@
 # encoding: utf-8
 require 'test_helper'
 
-class I18nLocaleTagRfc4646ParserTest < Test::Unit::TestCase
+class I18nLocaleTagRfc4646ParserTest < I18n::TestCase
   include I18n::Locale
 
   test "Rfc4646::Parser given a valid tag 'de' returns an array of subtags" do
@@ -31,7 +31,7 @@ end
 
 # Tag for the locale 'de-Latn-DE-Variant-a-ext-x-phonebk-i-klingon'
 
-class I18nLocaleTagSubtagsTest < Test::Unit::TestCase
+class I18nLocaleTagSubtagsTest < I18n::TestCase
   include I18n::Locale
 
   def setup
@@ -78,7 +78,7 @@ end
 
 # Tag inheritance
 
-class I18nLocaleTagSubtagsTest < Test::Unit::TestCase
+class I18nLocaleTagSubtagsTest < I18n::TestCase
   test "#parent returns 'de-Latn-DE-variant-a-ext-x-phonebk' as the parent of 'de-Latn-DE-variant-a-ext-x-phonebk-i-klingon'" do
     tag = Tag::Rfc4646.new(*%w(de Latn DE variant a-ext x-phonebk i-klingon))
     assert_equal 'de-Latn-DE-variant-a-ext-x-phonebk', tag.parent.to_s

@@ -2,7 +2,7 @@ require 'test_helper'
 
 include I18n::Locale
 
-class I18nFallbacksDefaultsTest < Test::Unit::TestCase
+class I18nFallbacksDefaultsTest < I18n::TestCase
   def teardown
     I18n.default_locale = :en
   end
@@ -26,7 +26,7 @@ class I18nFallbacksDefaultsTest < Test::Unit::TestCase
   end
 end
 
-class I18nFallbacksComputationTest < Test::Unit::TestCase
+class I18nFallbacksComputationTest < I18n::TestCase
   def setup
     @fallbacks = Fallbacks.new(:'en-US')
   end

@@ -1,7 +1,7 @@
 # encoding: utf-8
 require 'test_helper'
 
-class I18nBackendTransliterator < Test::Unit::TestCase
+class I18nBackendTransliterator < I18n::TestCase
   def setup
     I18n.backend = I18n::Backend::Simple.new
     @proc = lambda { |n| n.upcase }

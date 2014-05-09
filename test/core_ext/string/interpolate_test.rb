@@ -5,7 +5,7 @@ require 'test_helper'
 # some tests taken from Masao's tests
 # http://github.com/mutoh/gettext/blob/edbbe1fa8238fa12c7f26f2418403015f0270e47/test/test_string.rb
 
-class I18nCoreExtStringInterpolationTest < Test::Unit::TestCase
+class I18nCoreExtStringInterpolationTest < I18n::TestCase
   test "String interpolates a single argument" do
     assert_equal "Masao", "%s" % "Masao"
   end

@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'i18n/core_ext/hash'
 
-class I18nCoreExtHashInterpolationTest < Test::Unit::TestCase
+class I18nCoreExtHashInterpolationTest < I18n::TestCase
   test "#deep_symbolize_keys" do
     hash = { 'foo' => { 'bar' => { 'baz' => 'bar' } } }
     expected = { :foo => { :bar => { :baz => 'bar' } } }

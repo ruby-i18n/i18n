@@ -1,7 +1,7 @@
 # encoding: utf-8
 require 'test_helper'
 
-class I18nTest < Test::Unit::TestCase
+class I18nTest < I18n::TestCase
   def setup
     store_translations(:en, :currency => { :format => { :separator => '.', :delimiter => ',', } })
     store_translations(:nl, :currency => { :format => { :separator => ',', :delimiter => '.', } })

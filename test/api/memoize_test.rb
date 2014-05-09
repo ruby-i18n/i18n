@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class I18nMemoizeBackendWithSimpleApiTest < Test::Unit::TestCase
+class I18nMemoizeBackendWithSimpleApiTest < I18n::TestCase
   include I18n::Tests::Basics
   include I18n::Tests::Defaults
   include I18n::Tests::Interpolation
@@ -27,9 +27,9 @@ class I18nMemoizeBackendWithSimpleApiTest < Test::Unit::TestCase
   end
 end
 
-I18n::Tests.setup_rufus_tokyo
+I18n::TestCase.setup_rufus_tokyo
 
-class I18nMemoizeBackendWithKeyValueApiTest < Test::Unit::TestCase
+class I18nMemoizeBackendWithKeyValueApiTest < I18n::TestCase
   include I18n::Tests::Basics
   include I18n::Tests::Defaults
   include I18n::Tests::Interpolation

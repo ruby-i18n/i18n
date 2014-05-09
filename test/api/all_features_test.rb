@@ -7,7 +7,7 @@ rescue LoadError
   puts "not testing with Cache enabled because active_support can not be found"
 end
 
-class I18nAllFeaturesApiTest < Test::Unit::TestCase
+class I18nAllFeaturesApiTest < I18n::TestCase
   class Backend < I18n::Backend::Simple
     include I18n::Backend::Metadata
     include I18n::Backend::Cache

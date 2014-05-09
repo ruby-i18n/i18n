@@ -4,7 +4,7 @@ require 'i18n/core_ext/string/interpolate'
 # thanks to Masao's String extensions, some tests taken from Masao's tests
 # http://github.com/mutoh/gettext/blob/edbbe1fa8238fa12c7f26f2418403015f0270e47/test/test_string.rb
 
-class I18nInterpolateTest < Test::Unit::TestCase
+class I18nInterpolateTest < I18n::TestCase
   test "String interpolates a hash argument w/ named placeholders" do
     assert_equal "Masao Mutoh", I18n.interpolate("%{first} %{last}", :first => 'Masao', :last => 'Mutoh' )
   end
@@ -60,7 +60,7 @@ class I18nInterpolateTest < Test::Unit::TestCase
   end
 end
 
-class I18nMissingInterpolationCustomHandlerTest < Test::Unit::TestCase
+class I18nMissingInterpolationCustomHandlerTest < I18n::TestCase
   def setup
     @old_handler = I18n.config.missing_interpolation_argument_handler
     I18n.config.missing_interpolation_argument_handler = lambda do |key, values, string|

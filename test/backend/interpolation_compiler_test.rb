@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class InterpolationCompilerTest < Test::Unit::TestCase
+class InterpolationCompilerTest < I18n::TestCase
   Compiler = I18n::Backend::InterpolationCompiler::Compiler
 
   def compile_and_interpolate(str, values = {})
@@ -95,7 +95,7 @@ class InterpolationCompilerTest < Test::Unit::TestCase
   end
 end
 
-class I18nBackendInterpolationCompilerTest < Test::Unit::TestCase
+class I18nBackendInterpolationCompilerTest < I18n::TestCase
   class Backend < I18n::Backend::Simple
     include I18n::Backend::InterpolationCompiler
   end
