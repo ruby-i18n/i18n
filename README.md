@@ -1,6 +1,6 @@
 # Ruby I18n
 
-![Build Status](https://secure.travis-ci.org/svenfuchs/i18n.png?branch=master)
+[![Build Status](https://api.travis-ci.org/svenfuchs/i18n.png?branch=master)](https://travis-ci.org/svenfuchs/i18n)
 
 Ruby Internationalization and localization solution.
 
