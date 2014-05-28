@@ -1,17 +1,5 @@
 # encoding: utf-8
 
-class DateTime
-  def inspect
-    strftime('%a, %d %b %Y %H:%M:%S %Z')
-  end
-end
-
-class Date
-  def inspect
-    strftime('%a, %d %b %Y')
-  end
-end
-
 module I18n
   module Tests
     module Localization
@@ -19,33 +7,33 @@ module I18n
         test "localize: using day names from lambdas" do
           setup_time_proc_translations
           time = ::Time.utc(2008, 3, 1, 6, 0)
-          assert_match /Суббота/, I18n.l(time, :format => "%A, %d %B", :locale => :ru)
-          assert_match /суббота/, I18n.l(time, :format => "%d %B (%A)", :locale => :ru)
+          assert_match(/Суббота/, I18n.l(time, :format => "%A, %d %B", :locale => :ru))
+          assert_match(/суббота/, I18n.l(time, :format => "%d %B (%A)", :locale => :ru))
         end
 
         test "localize: using month names from lambdas" do
           setup_time_proc_translations
           time = ::Time.utc(2008, 3, 1, 6, 0)
-          assert_match /марта/, I18n.l(time, :format => "%d %B %Y", :locale => :ru)
-          assert_match /Март /, I18n.l(time, :format => "%B %Y", :locale => :ru)
+          assert_match(/марта/, I18n.l(time, :format => "%d %B %Y", :locale => :ru))
+          assert_match(/Март /, I18n.l(time, :format => "%B %Y", :locale => :ru))
         end
 
         test "localize: using abbreviated day names from lambdas" do
           setup_time_proc_translations
           time = ::Time.utc(2008, 3, 1, 6, 0)
-          assert_match /марта/, I18n.l(time, :format => "%d %b %Y", :locale => :ru)
-          assert_match /март /, I18n.l(time, :format => "%b %Y", :locale => :ru)
+          assert_match(/марта/, I18n.l(time, :format => "%d %b %Y", :locale => :ru))
+          assert_match(/март /, I18n.l(time, :format => "%b %Y", :locale => :ru))
         end
 
         test "localize Date: given a format that resolves to a Proc it calls the Proc with the object" do
           setup_time_proc_translations
-          date = ::Date.new(2008, 3, 1, 6)
+          date = ::Date.new(2008, 3, 1)
           assert_equal '[Sat, 01 Mar 2008, {}]', I18n.l(date, :format => :proc, :locale => :ru)
         end
 
         test "localize Date: given a format that resolves to a Proc it calls the Proc with the object and extra options" do
           setup_time_proc_translations
-          date = ::Date.new(2008, 3, 1, 6)
+          date = ::Date.new(2008, 3, 1)
           assert_equal '[Sat, 01 Mar 2008, {:foo=>"foo"}]', I18n.l(date, :format => :proc, :foo => 'foo', :locale => :ru)
         end
 
@@ -64,32 +52,45 @@ module I18n
         test "localize Time: given a format that resolves to a Proc it calls the Proc with the object" do
           setup_time_proc_translations
           time = ::Time.utc(2008, 3, 1, 6, 0)
-          assert_equal [time, {}].inspect, I18n.l(time, :format => :proc, :locale => :ru)
+          assert_equal inspect_args([time, {}]), I18n.l(time, :format => :proc, :locale => :ru)
         end
 
         test "localize Time: given a format that resolves to a Proc it calls the Proc with the object and extra options" do
           setup_time_proc_translations
           time = ::Time.utc(2008, 3, 1, 6, 0)
           options = { :foo => 'foo' }
-          assert_equal [time, options].inspect, I18n.l(time, options.merge(:format => :proc, :locale => :ru))
+          assert_equal inspect_args([time, options]), I18n.l(time, options.merge(:format => :proc, :locale => :ru))
         end
 
         protected
 
-          def filter_args(*args)
-            args.map { |arg| arg.delete(:fallback) if arg.is_a?(Hash) ; arg }.inspect
+          def inspect_args(args)
+            args = args.map do |arg|
+              case arg
+              when ::Time, ::DateTime
+                arg.strftime('%a, %d %b %Y %H:%M:%S %Z').sub('+0000', '+00:00')
+              when ::Date
+                arg.strftime('%a, %d %b %Y')
+              when Hash
+                arg.delete(:fallback)
+                arg.inspect
+              else
+                arg.inspect
+              end
+            end
+            "[#{args.join(', ')}]"
           end
 
           def setup_time_proc_translations
             I18n.backend.store_translations :ru, {
               :time => {
                 :formats => {
-                  :proc => lambda { |*args| filter_args(*args) }
+                  :proc => lambda { |*args| inspect_args(args) }
                 }
               },
               :date => {
                 :formats => {
-                  :proc => lambda { |*args| filter_args(*args) }
+                  :proc => lambda { |*args| inspect_args(args) }
                 },
                 :'day_names' => lambda { |key, options|
                   (options[:format] =~ /^%A/) ?

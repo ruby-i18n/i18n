@@ -1,13 +1,11 @@
 require 'yaml'
 require 'i18n/core_ext/hash'
+require 'i18n/core_ext/kernel/surpress_warnings'
 
 module I18n
   module Backend
     module Base
       include I18n::Backend::Transliterator
-
-      RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback]
-      RESERVED_KEYS_PATTERN = /%\{(#{RESERVED_KEYS.join("|")})\}/
 
       # Accepts a list of paths to translation files. Loads translations from
       # plain Ruby (*.rb) or YAML files (*.yml). See #load_rb and #load_yml
@@ -140,32 +138,12 @@ module I18n
         #
         #   interpolate "file %{file} opened by %%{user}", :file => 'test.txt', :user => 'Mr. X'
         #   # => "file test.txt opened by %{user}"
-        #
-        # Note that you have to double escape the <tt>\\</tt> when you want to escape
-        # the <tt>{{...}}</tt> key in a string (once for the string and once for the
-        # interpolation).
         def interpolate(locale, string, values = {})
-          return string unless string.is_a?(::String) && !values.empty?
-
-          values.each do |key, value|
-            value = value.call(values) if interpolate_lambda?(value, string, key)
-            value = value.to_s unless value.is_a?(::String)
-            values[key] = value
-          end
-
-          string % values
-        rescue KeyError => e
-          if string =~ RESERVED_KEYS_PATTERN
-            raise ReservedInterpolationKey.new($1.to_sym, string)
+          if string.is_a?(::String) && !values.empty?
+            I18n.interpolate(string, values)
           else
-            raise MissingInterpolationArgument.new(values, string)
+            string
           end
-        end
-
-        # returns true when the given value responds to :call and the key is
-        # an interpolation placeholder in the given string
-        def interpolate_lambda?(object, string, key)
-          object.respond_to?(:call) && string =~ /%\{#{key}\}|%\<#{key}>.*?\d*\.?\d*[bBdiouxXeEfgGcps]\}/
         end
 
         # Loads a single translations file by delegating to #load_rb or
@@ -190,12 +168,6 @@ module I18n
         # toplevel keys.
         def load_yml(filename)
           YAML.load_file(filename)
-        end
-
-        def warn_syntax_deprecation!(locale, string) #:nodoc:
-          return if @skip_syntax_deprecation
-          warn "The {{key}} interpolation syntax in I18n messages is deprecated. Please use %{key} instead.\n#{locale} - #{string}\n"
-          @skip_syntax_deprecation = true
         end
     end
   end

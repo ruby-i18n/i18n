@@ -1,5 +1,4 @@
 # encoding: utf-8
-$:.unshift(File.expand_path(File.dirname(__FILE__) + '/../../')); $:.uniq!
 require 'test_helper'
 
 class I18nLocaleTagRfc4646ParserTest < Test::Unit::TestCase
@@ -37,7 +36,7 @@ class I18nLocaleTagSubtagsTest < Test::Unit::TestCase
 
   def setup
     subtags = %w(de Latn DE variant a-ext x-phonebk i-klingon)
-    @tag = Tag::Rfc4646.new *subtags
+    @tag = Tag::Rfc4646.new(*subtags)
   end
 
   test "returns 'de' as the language subtag in lowercase" do
@@ -81,32 +80,32 @@ end
 
 class I18nLocaleTagSubtagsTest < Test::Unit::TestCase
   test "#parent returns 'de-Latn-DE-variant-a-ext-x-phonebk' as the parent of 'de-Latn-DE-variant-a-ext-x-phonebk-i-klingon'" do
-    tag = Tag::Rfc4646.new *%w(de Latn DE variant a-ext x-phonebk i-klingon)
+    tag = Tag::Rfc4646.new(*%w(de Latn DE variant a-ext x-phonebk i-klingon))
     assert_equal 'de-Latn-DE-variant-a-ext-x-phonebk', tag.parent.to_s
   end
 
   test "#parent returns 'de-Latn-DE-variant-a-ext' as the parent of 'de-Latn-DE-variant-a-ext-x-phonebk'" do
-    tag = Tag::Rfc4646.new *%w(de Latn DE variant a-ext x-phonebk)
+    tag = Tag::Rfc4646.new(*%w(de Latn DE variant a-ext x-phonebk))
     assert_equal 'de-Latn-DE-variant-a-ext', tag.parent.to_s
   end
 
   test "#parent returns 'de-Latn-DE-variant' as the parent of 'de-Latn-DE-variant-a-ext'" do
-    tag = Tag::Rfc4646.new *%w(de Latn DE variant a-ext)
+    tag = Tag::Rfc4646.new(*%w(de Latn DE variant a-ext))
     assert_equal 'de-Latn-DE-variant', tag.parent.to_s
   end
 
   test "#parent returns 'de-Latn-DE' as the parent of 'de-Latn-DE-variant'" do
-    tag = Tag::Rfc4646.new *%w(de Latn DE variant)
+    tag = Tag::Rfc4646.new(*%w(de Latn DE variant))
     assert_equal 'de-Latn-DE', tag.parent.to_s
   end
 
   test "#parent returns 'de-Latn' as the parent of 'de-Latn-DE'" do
-    tag = Tag::Rfc4646.new *%w(de Latn DE)
+    tag = Tag::Rfc4646.new(*%w(de Latn DE))
     assert_equal 'de-Latn', tag.parent.to_s
   end
 
   test "#parent returns 'de' as the parent of 'de-Latn'" do
-    tag = Tag::Rfc4646.new *%w(de Latn)
+    tag = Tag::Rfc4646.new(*%w(de Latn))
     assert_equal 'de', tag.parent.to_s
   end
 
@@ -125,8 +124,8 @@ class I18nLocaleTagSubtagsTest < Test::Unit::TestCase
                  de-Latn-DE
                  de-Latn
                  de)
-    tag = Tag::Rfc4646.new *%w(de Latn DE variant a-ext x-phonebk i-klingon)
-    assert_equal parents, tag.self_and_parents.map{|tag| tag.to_s}
+    tag = Tag::Rfc4646.new(*%w(de Latn DE variant a-ext x-phonebk i-klingon))
+    assert_equal parents, tag.self_and_parents.map(&:to_s)
   end
 
   test "returns an array of 5 parents for 'de-Latn-DE-variant-a-ext-x-phonebk-i-klingon'" do
@@ -137,7 +136,7 @@ class I18nLocaleTagSubtagsTest < Test::Unit::TestCase
                  de-Latn-DE
                  de-Latn
                  de)
-    tag = Tag::Rfc4646.new *%w(de Latn DE variant a-ext x-phonebk i-klingon)
-    assert_equal parents, tag.self_and_parents.map{|tag| tag.to_s}
+    tag = Tag::Rfc4646.new(*%w(de Latn DE variant a-ext x-phonebk i-klingon))
+    assert_equal parents, tag.self_and_parents.map(&:to_s)
   end
 end

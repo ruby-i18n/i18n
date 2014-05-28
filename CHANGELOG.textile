@@ -1,5 +1,14 @@
 h1. Changelog
 
+h2. 0.5.0
+
+* "Extract Backend::ActiveRecord to a separate gem":https://github.com/svenfuchs/i18n/commit/197dacebad356b910d69fa69a719c2ad10cf49e6 (see "i18n-active_record":https://github.com/svenfuchs/i18n-active_record)
+* "Improve exception handling":https://github.com/svenfuchs/i18n/commit/2913ff9a7544f223f60e7d7b32c2a0e1af89812b (deprectates I18n.default_exception_handler)
+* "Change MissingTranslationData message to 'translation missing: foo.bar'":https://github.com/svenfuchs/i18n/commit/68fdfe47952325411afe5942e971ce10b2bdf900
+* "Expose MissingTranslationsData#keys method":https://github.com/svenfuchs/i18n/commit/3a37a389ecaac9670355b334e23e775549ee9822
+* "Improve Cascade#lookup (add default options)":https://github.com/svenfuchs/i18n/commit/0b9a1f2058a2be9543106cc19d08071c359511e1
+* "Finally remove deprecated interpolation syntax":https://github.com/svenfuchs/i18n/commit/2d43846d2b2a2e596f30fa58ea1c9ddb2243bb64
+
 h2. 0.4.2 (2010-10-26)
 
 * "Improve UTF8 handling":http://github.com/svenfuchs/i18n/commit/e8d5820a3b08eeca28de1a2b9c8a6ad2b9e6476c
@@ -44,7 +53,7 @@ h2. 0.3.6 (2010-03-23)
 
 h2. 0.3.5 (2010-02-26)
 
-* "Delegate I18n.normalize_translation_keys to I18n.normalize_keys and deprecate 
+* "Delegate I18n.normalize_translation_keys to I18n.normalize_keys and deprecate
 the former":http://github.com/svenfuchs/i18n/commit/7284b04d5f5dd9679cb68875515cdd0cdfc96fef
 
 h2. 0.3.4 (2010-02-25)
@@ -93,7 +102,7 @@ h2. 0.3.0 (2009-11-30)
 h2. 0.2.0 (2009-07-12)
 
 * "Allow using Ruby 1.9 syntax for string interpolation (API addition)":http://github.com/svenfuchs/i18n/commit/c6e0b06d512f2af57199a843a1d8a40241b32861
-* "Allow configuring the default scope separator, allow to pass a custom scope separator(API addition)":http://github.com/svenfuchs/i18n/commit/5b75bfbc348061adc11e3790187a187275bfd471 (e.g. I18n.t(:'foo|bar', :separator => '|') 
+* "Allow configuring the default scope separator, allow to pass a custom scope separator(API addition)":http://github.com/svenfuchs/i18n/commit/5b75bfbc348061adc11e3790187a187275bfd471 (e.g. I18n.t(:'foo|bar', :separator => '|')
 * "Pass :format option to #translate for #localize more useful lambda support":http://github.com/svenfuchs/i18n/commit/e277711b3c844fe7589b8d3f9af0f7d1b969a273
 * "Refactor Simple backend #resolve to #default and #resolve for more consistency. Now allows to pass lambdas as defaults and re-resolve Symbols":http://github.com/svenfuchs/i18n/commit/8c4ce3d923ce5fa73e973fe28217e18165549aba
 * "Add lambda support to #translate (API addition)":http://github.com/svenfuchs/i18n/commit/c90e62d8f7d3d5b78f34cfe328d871b58884f115

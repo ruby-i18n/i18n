@@ -1,4 +1,4 @@
-require File.expand_path('../../../test_helper', __FILE__)
+require 'test_helper'
 
 # thanks to Masao's String extensions these should work the same in
 # Ruby 1.8 (patched) and Ruby 1.9 (native)
@@ -96,3 +96,4 @@ class I18nCoreExtStringInterpolationTest < Test::Unit::TestCase
     assert_raise(ArgumentError) { "%{name} %f" % [1.0, 2.0] }
   end
 end
+

@@ -64,25 +64,12 @@ h2. Tests
 You can run tests both with
 
 * `rake test` or just `rake`
-* run any test file directly, e.g. `ruby test/api/simple_test.rb`
-* run all tests with `ruby test/all.rb`
+* run any test file directly, e.g. `ruby -Ilib -Itest test/api/simple_test.rb`
+* run all tests with `ruby -Ilib -Itest test/all.rb`
 
-You can parametrize the test suite for using different sets of dependencies by
-using:
+You can run all tests against all Gemfiles with
 
-.pre `ruby test/all.rb -w DEPENDENCIES`
-
-... where DEPENDENCIES is a comma-separated list of:
-
-* r23 or rails-2.3.x
-* r3 or rails-3.x
-* no-rails
-* sqlite
-* mysql
-
-So, e.g. this would run the test suite against Rails 2.3.x using mysql:
-
-.pre `ruby test/all.rb -w r23,mysql`
+* `ruby test/run_all.rb`
 
 The structure of the test suite is a bit unusual as it uses modules to reuse
 particular tests in different test cases.
