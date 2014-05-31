@@ -126,10 +126,21 @@ class I18nBackendFallbacksWithChainTest < I18n::TestCase
   def setup
     backend = Backend.new
     backend.store_translations(:de, :foo => 'FOO')
+    backend.store_translations(:'pt-BR', :foo => 'Baz in :pt-BR')
     I18n.backend = I18n::Backend::Chain.new(I18n::Backend::Simple.new, backend)
+    I18n.backend.class.send(:include, I18n::Backend::Fallbacks)
   end
 
   test "falls back from de-DE to de when there is no translation for de-DE available" do
     assert_equal 'FOO', I18n.t(:foo, :locale => :'de-DE')
+  end
+
+  test "should not raise error when enforce_available_locales is true, :'pt' is missing and default is a Symbol" do
+    I18n.enforce_available_locales = true
+    begin
+      assert_equal 'Foo', I18n.t(:'model.attrs.foo', :locale => :'pt-BR', :default => [:'attrs.foo', "Foo"])
+    ensure
+      I18n.enforce_available_locales = false
+    end
   end
 end

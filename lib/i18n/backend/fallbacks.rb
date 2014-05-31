@@ -40,10 +40,13 @@ module I18n
 
         options[:fallback] = true
         I18n.fallbacks[locale].each do |fallback|
-          next unless translations.keys.include?(fallback)
-          catch(:exception) do
-            result = super(fallback, key, options)
-            return result unless result.nil?
+          begin
+            catch(:exception) do
+              result = super(fallback, key, options)
+              return result unless result.nil?
+            end
+          rescue I18n::InvalidLocale
+            # we do nothing when the locale is invalid, as this is a fallback anyways.
           end
         end
         options.delete(:fallback)
