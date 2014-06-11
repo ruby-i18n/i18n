@@ -286,6 +286,10 @@ module I18n
       end
     end
 
+    def available_locales_initialized?
+      config.available_locales_initialized?
+    end
+
   # making these private until Ruby 1.9.2 can send to protected methods again
   # see http://redmine.ruby-lang.org/repositories/revision/ruby-19?rev=24280
   private

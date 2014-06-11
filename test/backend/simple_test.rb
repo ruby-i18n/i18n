@@ -69,6 +69,14 @@ class I18nBackendSimpleTest < I18n::TestCase
     assert_equal Hash[:'en', {:foo => {:bar => 'bar', :baz => 'baz'}}], translations
   end
 
+  test "simple store_translations: do not store translations for locales not explicitly marked as available" do
+    I18n.available_locales = [:en, :es]
+    store_translations(:fr, :foo => {:bar => 'barfr', :baz => 'bazfr'})
+    store_translations(:es, :foo => {:bar => 'bares', :baz => 'bazes'})
+    assert_nil translations[:fr]
+    assert_equal Hash[:foo, {:bar => 'bares', :baz => 'bazes'}], translations[:es]
+  end
+
   # reloading translations
 
   test "simple reload_translations: unloads translations" do
