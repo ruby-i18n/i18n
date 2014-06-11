@@ -293,6 +293,10 @@ module I18n
       end
     end
 
+    def available_locales_initialized?
+      config.available_locales_initialized?
+    end
+
   private
 
     # Any exceptions thrown in translate will be sent to the @@exception_handler
