@@ -33,7 +33,7 @@ module I18n
         if options
           count   = options[:count]
           default = options[:default]
-          entry = entry.nil? && default ?
+          entry   = nil == entry && default ?
             default(locale, key, default, options) : resolve(locale, key, entry, options)
         else
           entry = resolve(locale, key, entry, options)

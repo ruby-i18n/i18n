@@ -65,7 +65,7 @@ module I18n
       attr_reader :defaults
 
       def [](locale)
-        raise InvalidLocale.new(locale) if locale.nil?
+        raise InvalidLocale.new(locale) if nil == locale
         locale = locale.to_sym
         super || store(locale, compute(locale))
       end

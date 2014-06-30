@@ -55,7 +55,7 @@ module I18n
     end
 
     def perform_caching?
-      !cache_store.nil?
+      nil != cache_store
     end
   end
 
