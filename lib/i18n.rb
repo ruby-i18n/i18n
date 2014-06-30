@@ -153,14 +153,13 @@ module I18n
 
       enforce_available_locales!(locale)
 
-      result = catch(:exception) do
-        if key.is_a?(Array)
-          key.map { |k| backend.translate(locale, k, options) }
-        else
-          backend.translate(locale, key, options)
-        end
+      result = if key.is_a?(Array)
+        key.map { |k| backend.translate(locale, k, options) }
+      else
+        backend.translate(locale, key, options)
       end
-      result.is_a?(MissingTranslation) ? handle_exception(result, locale, key, options) : result
+
+      nil == result ? handle_exception(I18n::MissingTranslation.new(locale, key, options), locale, key, options) : result
     end
     alias :t :translate
 

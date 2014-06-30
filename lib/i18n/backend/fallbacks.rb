@@ -42,9 +42,8 @@ module I18n
         options[:fallback] = true
         I18n.fallbacks[locale].each do |fallback|
           begin
-            catch(:exception) do
-              result = super(fallback, key, options)
-              return result unless result.nil?
+            unless nil == (result = super(fallback, key, options))
+              return result
             end
           rescue I18n::InvalidLocale
             # we do nothing when the locale is invalid, as this is a fallback anyways.
@@ -53,7 +52,7 @@ module I18n
         options.delete(:fallback)
 
         return super(locale, nil, options.merge(:default => default)) if default
-        throw(:exception, I18n::MissingTranslation.new(locale, key, options))
+        nil
       end
 
       def extract_non_symbol_default!(options)

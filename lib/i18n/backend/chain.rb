@@ -41,19 +41,16 @@ module I18n
           options = default_options && default_options.except(:default)
 
           backends.each do |backend|
-            catch(:exception) do
-              options = default_options if backend == backends.last
-              translation = backend.translate(locale, key, options)
-              if namespace_lookup?(translation, options)
-                namespace = translation.merge(namespace || {})
-              elsif !translation.nil?
-                return translation
-              end
+            options = default_options if backend == backends.last
+            translation = backend.translate(locale, key, options)
+            if namespace_lookup?(translation, options)
+              namespace = translation.merge(namespace || {})
+            elsif !translation.nil?
+              return translation
             end
           end
 
-          return namespace if namespace
-          throw(:exception, I18n::MissingTranslation.new(locale, key, options))
+          namespace
         end
 
         def exists?(locale, key)
@@ -64,11 +61,11 @@ module I18n
 
         def localize(locale, object, format = :default, options = {})
           backends.each do |backend|
-            catch(:exception) do
-              result = backend.localize(locale, object, format, options) and return result
+            unless nil == (result = backend.localize(locale, object, format, options))
+              return result
             end
           end
-          throw(:exception, I18n::MissingTranslation.new(locale, format, options))
+          nil
         end
 
         protected

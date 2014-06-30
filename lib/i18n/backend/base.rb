@@ -39,12 +39,12 @@ module I18n
           entry = resolve(locale, key, entry, options)
         end
 
-        throw(:exception, I18n::MissingTranslation.new(locale, key, options)) if entry.nil?
-        entry = entry.dup if entry.is_a?(String)
-
-        entry = pluralize(locale, entry, count) if count
-        entry = interpolate(locale, entry, options) if options
-        entry
+        unless nil == entry
+          entry = entry.dup if entry.is_a?(String)
+          entry = pluralize(locale, entry, count) if count
+          entry = interpolate(locale, entry, options) if options
+          entry
+        end
       end
 
       def exists?(locale, key)
@@ -105,7 +105,9 @@ module I18n
           case subject
           when Array
             subject.each do |item|
-              result = resolve(locale, object, item, options) and return result
+              unless nil == (result = resolve(locale, object, item, options))
+                return result
+              end
             end and nil
           else
             resolve(locale, object, subject, options)
@@ -118,19 +120,17 @@ module I18n
         # subjects will be returned directly.
         def resolve(locale, object, subject, options = nil)
           return subject if options && options[:resolve] == false
-          result = catch(:exception) do
-            case subject
-            when Symbol
-              overrides = {:locale => locale, :throw => true}
-              I18n.translate(subject, options ? options.merge(overrides) : overrides)
-            when Proc
-              date_or_time = (options && options.delete(:object)) || object
-              resolve(locale, object, subject.call(date_or_time, options))
-            else
-              subject
-            end
+
+          case subject
+          when Symbol
+            overrides = {:locale => locale, :exception_handler => DoNothingExceptionHandler}
+            I18n.translate(subject, options ? options.merge(overrides) : overrides)
+          when Proc
+            date_or_time = (options && options.delete(:object)) || object
+            resolve(locale, object, subject.call(date_or_time, options))
+          else
+            subject
           end
-          result unless result.is_a?(MissingTranslation)
         end
 
         # Picks a translation from a pluralized mnemonic subkey according to English
