@@ -41,6 +41,9 @@ module I18n
 
         options[:fallback] = true
         I18n.fallbacks[locale].each do |fallback|
+          # TODO: Fallbacks should be fixed to not ever return invalid locales.
+          # The same strategy as in Memoize module can be employed to intercept
+          # store_translations to update available fallbacks.
           begin
             unless nil == (result = super(fallback, key, options))
               return result
