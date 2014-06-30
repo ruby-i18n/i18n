@@ -149,9 +149,12 @@ module I18n
       options = options.dup if options
       conf    = config
       backend = conf.backend
-      locale  = (options && options.delete(:locale)) || conf.locale
 
-      enforce_available_locales!(locale)
+      if locale = options && options.delete(:locale)
+        enforce_available_locales!(locale)
+      else
+        locale = conf.locale
+      end
 
       result = if key.is_a?(Array)
         key.map { |k| backend.translate(locale, k, options) }
