@@ -37,9 +37,7 @@ require 'test_declarative'
 
 class I18n::TestCase < TEST_CASE
   def self.setup_rufus_tokyo
-    require 'rufus/tokyo'
-  rescue LoadError => e
-    puts "can't use KeyValue backend because: #{e.message}"
+    raise "Tried to use tokyo cabinet. Use another key value store or just an in memory hash"
   end
 
   def teardown
