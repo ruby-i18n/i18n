@@ -125,14 +125,16 @@ class I18nBackendFallbacksWithChainTest < I18n::TestCase
     include I18n::Backend::Fallbacks
   end
 
+  class Chain < I18n::Backend::Chain
+    include I18n::Backend::Fallbacks
+  end
+
   def setup
     super
     backend = Backend.new
     backend.store_translations(:de, :foo => 'FOO')
     backend.store_translations(:'pt-BR', :foo => 'Baz in :pt-BR')
-    klass = Class.new(I18n::Backend::Chain)
-    klass.send :include, I18n::Backend::Fallbacks
-    I18n.backend = klass.new(I18n::Backend::Simple.new, backend)
+    I18n.backend = Chain.new(I18n::Backend::Simple.new, backend)
   end
 
   test "falls back from de-DE to de when there is no translation for de-DE available" do
