@@ -49,10 +49,11 @@ class I18n::TestCase < TEST_CASE
 
   def teardown
     I18n.locale = nil
-    I18n.default_locale = :en
-    I18n.load_path = []
+    I18n.default_locale = nil
+    I18n.load_path = nil
     I18n.available_locales = nil
     I18n.backend = nil
+    I18n.default_separator = nil
     I18n.enforce_available_locales = true
     super
   end
