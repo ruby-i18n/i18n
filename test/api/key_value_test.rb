@@ -1,7 +1,5 @@
 require 'test_helper'
 
-I18n::TestCase.setup_rufus_tokyo
-
 class I18nKeyValueApiTest < I18n::TestCase
   include I18n::Tests::Basics
   include I18n::Tests::Defaults
@@ -15,7 +13,7 @@ class I18nKeyValueApiTest < I18n::TestCase
   include I18n::Tests::Localization::Time
   # include Tests::Api::Localization::Procs
 
-  STORE = Rufus::Tokyo::Cabinet.new('*')
+  STORE = {}
 
   def setup
     I18n.backend = I18n::Backend::KeyValue.new(STORE)
@@ -25,4 +23,4 @@ class I18nKeyValueApiTest < I18n::TestCase
   test "make sure we use the KeyValue backend" do
     assert_equal I18n::Backend::KeyValue, I18n.backend.class
   end
-end if defined?(Rufus::Tokyo::Cabinet)
+end
