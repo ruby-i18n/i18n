@@ -13,6 +13,7 @@ unless RUBY_VERSION == '1.9.1' && RUBY_PATCHLEVEL <= 129
     end
 
     def setup
+      @old_locale = I18n.locale
       I18n.backend = Backend.new
       I18n.locale = :en
       I18n.load_path = ["#{locales_dir}/de.po"]
@@ -20,6 +21,7 @@ unless RUBY_VERSION == '1.9.1' && RUBY_PATCHLEVEL <= 129
     end
 
     def teardown
+      I18n.locale = @old_locale
       I18n.load_path = nil
       I18n.backend = nil
       I18n.default_separator = @old_separator
