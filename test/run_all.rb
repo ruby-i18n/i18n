@@ -14,7 +14,7 @@ results = gemfiles.map do |gemfile|
   ENV['BUNDLE_GEMFILE'] = File.expand_path("../../#{gemfile}", __FILE__)
 
   execute 'bundle install' unless bundle_check
-  execute 'bundle exec ruby -w -Ilib -Itest test/all.rb'
+  execute 'bundle exec rake test'
 end
 
 exit results.all?

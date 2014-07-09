@@ -67,7 +67,6 @@ You can run tests both with
 
 * `rake test` or just `rake`
 * run any test file directly, e.g. `ruby -Ilib -Itest test/api/simple_test.rb`
-* run all tests with `ruby -Ilib -Itest test/all.rb`
 
 You can run all tests against all Gemfiles with
 
