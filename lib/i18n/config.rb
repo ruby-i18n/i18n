@@ -9,7 +9,7 @@ module I18n
     # Sets the current locale pseudo-globally, i.e. in the Thread.current hash.
     def locale=(locale)
       I18n.enforce_available_locales!(locale)
-      @locale = locale.to_sym rescue nil
+      @locale = locale && locale.to_sym
     end
 
     # Returns the current backend. Defaults to +Backend::Simple+.
@@ -30,7 +30,7 @@ module I18n
     # Sets the current default locale. Used to set a custom default locale.
     def default_locale=(locale)
       I18n.enforce_available_locales!(locale)
-      @@default_locale = locale.to_sym rescue nil
+      @@default_locale = locale && locale.to_sym
     end
 
     # Returns an array of locales for which translations are available.
