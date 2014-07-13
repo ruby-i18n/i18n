@@ -14,7 +14,7 @@ module I18n
           # rescue_format is removed
           if options[:rescue_format] == :html
             if !defined?(@rescue_format_deprecation)
-              $stderr.puts "[DEPRECATED] I18n's :recue_format option will be removed from a future release. All exception messages will be plain text. If you need the exception handler to return an html format please set or pass a custom exception handler."
+              $stderr.puts "[DEPRECATED] I18n's :rescue_format option will be removed from a future release. All exception messages will be plain text. If you need the exception handler to return an html format please set or pass a custom exception handler."
               @rescue_format_deprecation = true
             end
             exception.html_message
