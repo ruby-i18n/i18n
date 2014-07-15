@@ -30,5 +30,12 @@ class I18nLoadPathTest < I18n::TestCase
   test "adding arrays of filenames to the load path does not break locale loading" do
     I18n.load_path << Dir[locales_dir + '/*.{rb,yml}']
     assert_equal "baz", I18n.t(:'foo.bar')
+    # should include other locales
+    assert_equal true, I18n.config.available_locales.include?(:pt)
+  end
+
+  test "available locale set reset after changing load path, should include pt" do
+    I18n.load_path = Dir[locales_dir + '/*.{rb,yml}']
+    assert_equal true,I18n.config.available_locales.include?(:pt)
   end
 end

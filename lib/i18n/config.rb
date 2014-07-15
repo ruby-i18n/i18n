@@ -110,12 +110,14 @@ module I18n
     # register translation files like this:
     #   I18n.load_path << 'path/to/locale/en.yml'
     def load_path
+      @@available_locales_set = nil      
       @@load_path ||= []
     end
 
     # Sets the load path instance. Custom implementations are expected to
     # behave like a Ruby Array.
     def load_path=(load_path)
+      @@available_locales_set = nil
       @@load_path = load_path
     end
 
