@@ -55,7 +55,7 @@ module I18n
     def available_locales=(locales)
       @@available_locales = Array(locales).map { |locale| locale.to_sym }
       @@available_locales = nil if @@available_locales.empty?
-      @@available_locales_set = nil
+      reset_available_locales_set
     end
 
     # Returns the current default scope separator. Defaults to '.'
@@ -110,14 +110,14 @@ module I18n
     # register translation files like this:
     #   I18n.load_path << 'path/to/locale/en.yml'
     def load_path
-      @@available_locales_set = nil      
+      reset_available_locales_set
       @@load_path ||= []
     end
 
     # Sets the load path instance. Custom implementations are expected to
     # behave like a Ruby Array.
     def load_path=(load_path)
-      @@available_locales_set = nil
+      reset_available_locales_set
       @@load_path = load_path
     end
 
@@ -129,6 +129,12 @@ module I18n
 
     def enforce_available_locales=(enforce_available_locales)
       @@enforce_available_locales = enforce_available_locales
+    end
+
+    private
+
+    def reset_available_locales_set
+      @@available_locales_set = nil
     end
   end
 end
