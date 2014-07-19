@@ -27,8 +27,6 @@ class I18nMemoizeBackendWithSimpleApiTest < I18n::TestCase
   end
 end
 
-I18n::TestCase.setup_rufus_tokyo
-
 class I18nMemoizeBackendWithKeyValueApiTest < I18n::TestCase
   include I18n::Tests::Basics
   include I18n::Tests::Defaults
@@ -47,14 +45,12 @@ class I18nMemoizeBackendWithKeyValueApiTest < I18n::TestCase
     include I18n::Backend::Memoize
   end
 
-  STORE = Rufus::Tokyo::Cabinet.new('*')
-
   def setup
-    I18n.backend = MemoizeBackend.new(STORE)
+    I18n.backend = MemoizeBackend.new({})
     super
   end
 
   test "make sure we use the MemoizeBackend backend" do
     assert_equal MemoizeBackend, I18n.backend.class
   end
-end if defined?(Rufus::Tokyo::Cabinet)
+end if I18n::TestCase.key_value?

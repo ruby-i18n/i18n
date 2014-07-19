@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'i18n/core_ext/string/interpolate'
 
 # thanks to Masao's String extensions, some tests taken from Masao's tests
 # http://github.com/mutoh/gettext/blob/edbbe1fa8238fa12c7f26f2418403015f0270e47/test/test_string.rb

@@ -27,21 +27,6 @@ class I18nExceptionsTest < I18n::TestCase
     end
   end
 
-  test "MissingTranslationData html_message is a span with the titlelized last key token" do
-    exception = I18n::MissingTranslationData.new(:de, :foo, :scope => :bar)
-    assert_equal '<span class="translation_missing" title="translation missing: de.bar.foo">Foo</span>', exception.html_message
-  end
-
-  test "MissingTranslationData html_message html escapes key names" do
-    exception = I18n::MissingTranslationData.new(:de, '<script>Evil</script>', :scope => '<iframe src="example.com" />')
-    assert_equal '<span class="translation_missing" title="translation missing: de.&lt;iframe src=&quot;example.com&quot; /&gt;.&lt;script&gt;Evil&lt;/script&gt;">&lt;Script&gt;Evil&lt;/Script&gt;</span>', exception.html_message
-  end
-
-  test "ExceptionHandler returns the html_message if :rescue_format => :html was given" do
-    message = force_missing_translation_data(:rescue_format => :html)
-    assert_equal '<span class="translation_missing" title="translation missing: de.bar.foo">Foo</span>', message
-  end
-
   test "InvalidPluralizationData stores entry and count" do
     force_invalid_pluralization_data do |exception|
       assert_equal [:bar], exception.entry

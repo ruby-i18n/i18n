@@ -68,7 +68,8 @@ module I18n
       @@default_separator = separator
     end
 
-    # Return the current exception handler. Defaults to :default_exception_handler.
+    # Returns the current exception handler. Defaults to an instance of
+    # I18n::ExceptionHandler.
     def exception_handler
       @@exception_handler ||= ExceptionHandler.new
     end
@@ -119,10 +120,11 @@ module I18n
       @@load_path = load_path
     end
 
-    # [Deprecated] this will default to true in the future
-    # Defaults to nil so that it triggers the deprecation warning
+    # Whether or not to verify if locales are in the list of available locales.
+    # Defaults to true.
+    @@enforce_available_locales = true
     def enforce_available_locales
-      defined?(@@enforce_available_locales) ? @@enforce_available_locales : nil
+      @@enforce_available_locales
     end
 
     def enforce_available_locales=(enforce_available_locales)

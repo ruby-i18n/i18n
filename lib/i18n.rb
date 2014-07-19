@@ -9,7 +9,7 @@ module I18n
   autoload :Locale,  'i18n/locale'
   autoload :Tests,   'i18n/tests'
 
-  RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback, :format, :cascade, :throw, :raise, :rescue_format]
+  RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback, :format, :cascade, :throw, :raise]
   RESERVED_KEYS_PATTERN = /%\{(#{RESERVED_KEYS.join("|")})\}/
 
   extend(Module.new {
@@ -279,15 +279,11 @@ module I18n
 
     # Raises an InvalidLocale exception when the passed locale is not available.
     def enforce_available_locales!(locale)
-      handle_enforce_available_locales_deprecation
-
       if config.enforce_available_locales
         raise I18n::InvalidLocale.new(locale) if !locale_available?(locale)
       end
     end
 
-  # making these private until Ruby 1.9.2 can send to protected methods again
-  # see http://redmine.ruby-lang.org/repositories/revision/ruby-19?rev=24280
   private
 
     # Any exceptions thrown in translate will be sent to the @@exception_handler
@@ -300,18 +296,18 @@ module I18n
     #
     # Examples:
     #
-    #   I18n.exception_handler = :default_exception_handler             # this is the default
-    #   I18n.default_exception_handler(exception, locale, key, options) # will be called like this
+    #   I18n.exception_handler = :custom_exception_handler              # this is the default
+    #   I18n.custom_exception_handler(exception, locale, key, options)  # will be called like this
     #
     #   I18n.exception_handler = lambda { |*args| ... }                 # a lambda
     #   I18n.exception_handler.call(exception, locale, key, options)    # will be called like this
     #
-    #  I18n.exception_handler = I18nExceptionHandler.new                # an object
-    #  I18n.exception_handler.call(exception, locale, key, options)     # will be called like this
+    #   I18n.exception_handler = I18nExceptionHandler.new               # an object
+    #   I18n.exception_handler.call(exception, locale, key, options)    # will be called like this
     def handle_exception(handling, exception, locale, key, options)
       case handling
       when :raise
-        raise(exception.respond_to?(:to_exception) ? exception.to_exception : exception)
+        raise exception.respond_to?(:to_exception) ? exception.to_exception : exception
       when :throw
         throw :exception, exception
       else
@@ -339,26 +335,6 @@ module I18n
 
     def normalized_key_cache
       @normalized_key_cache ||= Hash.new { |h,k| h[k] = {} }
-    end
-
-    # DEPRECATED. Use I18n.normalize_keys instead.
-    def normalize_translation_keys(locale, key, scope, separator = nil)
-      puts "I18n.normalize_translation_keys is deprecated. Please use the class I18n.normalize_keys instead."
-      normalize_keys(locale, key, scope, separator)
-    end
-
-    # DEPRECATED. Please use the I18n::ExceptionHandler class instead.
-    def default_exception_handler(exception, locale, key, options)
-      puts "I18n.default_exception_handler is deprecated. Please use the class I18n::ExceptionHandler instead " +
-           "(an instance of which is set to I18n.exception_handler by default)."
-      exception.is_a?(MissingTranslation) ? exception.message : raise(exception)
-    end
-
-    def handle_enforce_available_locales_deprecation
-      if config.enforce_available_locales.nil? && !defined?(@unenforced_available_locales_deprecation)
-        $stderr.puts "[deprecated] I18n.enforce_available_locales will default to true in the future. If you really want to skip validation of your locale you can set I18n.enforce_available_locales = false to avoid this message."
-        @unenforced_available_locales_deprecation = true
-      end
     end
   })
 end

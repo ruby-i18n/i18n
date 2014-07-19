@@ -12,7 +12,7 @@
 #
 # Note that InterpolationCompiler does not yield meaningful results and consequently
 # should not be used with Ruby 1.9 (YARV) but improves performance everywhere else
-# (jRuby, Rubinius and 1.8.7).
+# (jRuby, Rubinius).
 module I18n
   module Backend
     module InterpolationCompiler

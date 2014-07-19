@@ -1,11 +1,11 @@
-#! /usr/bin/ruby
+#!/usr/bin/ruby
 $:.unshift File.expand_path('../../lib', __FILE__)
 
+require 'bundler/setup'
 require 'i18n'
 require 'benchmark'
 require 'yaml'
 
-DATA_STORES = ARGV.delete("-ds")
 N = (ARGV.shift || 1000).to_i
 YAML_HASH = YAML.load_file(File.expand_path("example.yml", File.dirname(__FILE__)))
 
@@ -16,20 +16,16 @@ module Backends
     include I18n::Backend::InterpolationCompiler
   end.new
 
-  if DATA_STORES
-    require 'rubygems'
-    require File.expand_path('../../test/test_setup/active_record', __FILE__)
-    require File.expand_path('../../test/test_setup/rufus_tokyo', __FILE__)
-
-    Test.setup_active_record
-    ActiveRecord = I18n::Backend::ActiveRecord.new if defined?(::ActiveRecord)
-
-    Test.setup_rufus_tokyo
-    TokyoCabinet = I18n::Backend::KeyValue.new(Rufus::Tokyo::Cabinet.new("*"), true) if defined?(::Rufus::Tokyo)
+  begin
+    require 'active_support'
+    KeyValue = I18n::Backend::KeyValue.new({}, true)
+    puts "Running KeyValue with ActiveSupport #{ActiveSupport::VERSION::STRING}"
+  rescue LoadError
+    puts 'Skipping KeyValue since ActiveSupport could not be loaded.'
   end
 end
 
-ORDER = %w(Simple Interpolation ActiveRecord TokyoCabinet)
+ORDER = %w(Simple Interpolation KeyValue)
 ORDER.map!(&:to_sym) if RUBY_VERSION > '1.9'
 
 module Benchmark
@@ -62,7 +58,7 @@ benchmarker = lambda do |backend_name|
   puts "=> #{backend_name}\n\n"
 
   Benchmark.rt "store", 1 do
-    I18n.backend.store_translations *(YAML_HASH.to_a.first)
+    I18n.backend.store_translations(*YAML_HASH.to_a.first)
   end
 
   I18n.backend.translate :en, :first

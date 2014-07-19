@@ -1,7 +1,5 @@
 $KCODE = 'u' if RUBY_VERSION <= '1.9'
 
-require 'rubygems'
-
 # Use minitest if we can, otherwise fallback to test-unit.
 begin
   require 'minitest/autorun'
@@ -36,10 +34,8 @@ require 'mocha/setup'
 require 'test_declarative'
 
 class I18n::TestCase < TEST_CASE
-  def self.setup_rufus_tokyo
-    require 'rufus/tokyo'
-  rescue LoadError => e
-    puts "can't use KeyValue backend because: #{e.message}"
+  def self.key_value?
+    defined?(ActiveSupport)
   end
 
   def setup
