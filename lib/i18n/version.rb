@@ -1,3 +1,3 @@
 module I18n
-  VERSION = "0.6.11"
+  VERSION = "0.7.0.dev"
 end
