@@ -1,22 +1,16 @@
 $KCODE = 'u' if RUBY_VERSION <= '1.9'
 
-# Use minitest if we can, otherwise fallback to test-unit.
-begin
-  require 'minitest/autorun'
-  TEST_CASE = defined?(Minitest::Test) ? Minitest::Test : MiniTest::Unit::TestCase
+require 'minitest/autorun'
+TEST_CASE = defined?(Minitest::Test) ? Minitest::Test : MiniTest::Unit::TestCase
 
-  # TODO: Remove these aliases and update tests accordingly.
-  class TEST_CASE
-    alias :assert_raise :assert_raises
-    alias :assert_not_equal :refute_equal
+# TODO: Remove these aliases and update tests accordingly.
+class TEST_CASE
+  alias :assert_raise :assert_raises
+  alias :assert_not_equal :refute_equal
 
-    def assert_nothing_raised(*args)
-      yield
-    end
+  def assert_nothing_raised(*args)
+    yield
   end
-rescue LoadError
-  require 'test/unit'
-  TEST_CASE = Test::Unit::TestCase
 end
 
 require 'bundler/setup'
@@ -43,14 +37,6 @@ class I18n::TestCase < TEST_CASE
     I18n.default_separator = nil
     I18n.enforce_available_locales = true
     super
-  end
-
-  # Ignore Test::Unit::TestCase failing if the test case does not contain any
-  # test, otherwise it will blow up because of this base class.
-  #
-  # TODO: remove when test-unit is not used anymore.
-  def default_test
-    nil
   end
 
   protected
