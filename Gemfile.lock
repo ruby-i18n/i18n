@@ -8,9 +8,9 @@ GEM
   specs:
     metaclass (0.0.4)
     minitest (5.4.0)
-    mocha (1.0.0)
+    mocha (1.1.0)
       metaclass (~> 0.0.1)
-    rake (10.3.1)
+    rake (10.3.2)
     test_declarative (0.0.5)
 
 PLATFORMS
