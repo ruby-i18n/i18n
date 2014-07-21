@@ -70,6 +70,11 @@ class I18nBackendSimpleTest < I18n::TestCase
     assert_equal Hash[:'en', {:foo => {:bar => 'bar', :baz => 'baz'}}], translations
   end
 
+  test "simple store and lookup: can store and retrieve a translation which key ends with the escope separator character" do
+    store_translations :'en', :"yyy." => "yyy value"
+    assert_equal("yyy value", I18n.t("yyy."))
+  end
+
   # reloading translations
 
   test "simple reload_translations: unloads translations" do

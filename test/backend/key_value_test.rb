@@ -40,4 +40,10 @@ class I18nBackendKeyValueTest < I18n::TestCase
       I18n.t("foo", :raise => true)
     end
   end
+
+  test "key value store: can store and retrieve a translation which key ends with the escope separator character" do
+    setup_backend!
+    store_translations :'en', :"yyy." => "yyy value"
+    assert_equal("yyy value", I18n.t("yyy."))
+  end
 end if I18n::TestCase.key_value?
