@@ -76,4 +76,8 @@ class I18nBackendMemoizeTest < I18nBackendSimpleTest
     # if a plain Hash is used might eventually end up in a weird (inconsistent) state
   end
 
+  test "memoize: can store and retrieve a translation which key ends with the escope separator character" do
+    store_translations :'en', :"yyy." => "yyy value"
+    assert_equal("yyy value", I18n.t("yyy."))
+  end
 end
