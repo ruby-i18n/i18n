@@ -41,6 +41,7 @@ module I18n
     # Rails development environment. Backends can implement whatever strategy
     # is useful.
     def reload!
+      config.clear_available_locales_set
       config.backend.reload!
     end
 

@@ -58,6 +58,12 @@ module I18n
       @@available_locales_set = nil
     end
 
+    # Clears the available locales set so it can be recomputed again after I18n
+    # gets reloaded.
+    def clear_available_locales_set #:nodoc:
+      @@available_locales_set = nil
+    end
+
     # Returns the current default scope separator. Defaults to '.'
     def default_separator
       @@default_separator ||= '.'

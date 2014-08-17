@@ -388,4 +388,30 @@ class I18nTest < I18n::TestCase
       I18n.config.enforce_available_locales = false
     end
   end
+
+  test 'I18n.reload! reloads the set of locales that are enforced' do
+    begin
+      I18n.enforce_available_locales = true
+
+      assert_raise(I18n::InvalidLocale) { I18n.default_locale = :de }
+      assert_raise(I18n::InvalidLocale) { I18n.locale = :de }
+
+      store_translations(:de, :foo => 'Foo in :de')
+
+      assert_raise(I18n::InvalidLocale) { I18n.default_locale = :de }
+      assert_raise(I18n::InvalidLocale) { I18n.locale = :de }
+
+      I18n.reload!
+
+      store_translations(:en, :foo => 'Foo in :en')
+      store_translations(:de, :foo => 'Foo in :de')
+      store_translations(:pl, :foo => 'Foo in :pl')
+
+      assert_nothing_raised { I18n.default_locale = I18n.locale = :en }
+      assert_nothing_raised { I18n.default_locale = I18n.locale = :de }
+      assert_nothing_raised { I18n.default_locale = I18n.locale = :pl }
+    ensure
+      I18n.enforce_available_locales = false
+    end
+  end
 end
