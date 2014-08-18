@@ -1,15 +1,15 @@
 PATH
   remote: ..
   specs:
-    i18n (0.7.0.dev)
+    i18n (0.7.0.beta1)
 
 GIT
   remote: git://github.com/rails/rails.git
-  revision: eb714d4460c39c8fb6d853d84d112aa9aa1ad63d
+  revision: c9cd532ba6be0316d80e93a8ac1b28f532222dcb
   branch: master
   specs:
     activesupport (4.2.0.alpha)
-      i18n (>= 0.7.0.dev, < 0.8)
+      i18n (>= 0.7.0.beta1, < 0.8)
       json (~> 1.7, >= 1.7.7)
       minitest (~> 5.1)
       thread_safe (~> 0.1)

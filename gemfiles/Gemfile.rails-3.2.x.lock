@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    i18n (0.7.0.dev)
+    i18n (0.7.0.beta1)
 
 GEM
   remote: https://rubygems.org/
