@@ -154,6 +154,8 @@ module I18n
         def interpolate(locale, string, values = {})
           if string.is_a?(::String) && !values.empty?
             I18n.interpolate(string, values)
+          elsif string.is_a?(::Array) && !values.empty?
+            string.map { |el| interpolate(locale, el, values) }
           else
             string
           end
