@@ -6,7 +6,7 @@ module I18n
       def setup
         super
         I18n.backend.store_translations(:en, :foo => { :bar => 'bar', :baz => 'baz' }, :falsy => false, :truthy => true,
-          :string => "a", :array => %w(a b c), :hash => { "a" => "b" })
+          :string => "a", :array => %w(a b c), :interpolate_array => %w(foo %{bar}), :hash => { "a" => "b" })
       end
 
       test "lookup: it returns a string" do
@@ -19,6 +19,10 @@ module I18n
 
       test "lookup: it returns an array" do
         assert_equal(%w(a b c), I18n.t(:array))
+      end
+
+      test "lookup: it returns the interpolate_array" do
+        assert_equal ['foo', '%{bar}'], I18n.t(:interpolate_array)
       end
 
       test "lookup: it returns a native true" do
