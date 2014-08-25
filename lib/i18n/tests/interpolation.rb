@@ -59,7 +59,6 @@ module I18n
         assert_equal ['Hi', 'Bartuz'], interpolate(:array_interpolate, :name => 'Bartuz')
       end
 
-
       test "interpolation: given the translation is in utf-8 it still works" do
         assert_equal 'Häi David!', interpolate(:default => 'Häi %{name}!', :name => 'David')
       end
