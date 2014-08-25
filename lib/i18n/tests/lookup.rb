@@ -17,7 +17,7 @@ module I18n
         assert_equal({ :a => "b" }, I18n.t(:hash))
       end
 
-      test "lookup: it returns a array" do
+      test "lookup: it returns an array" do
         assert_equal(%w(a b c), I18n.t(:array))
       end
 
