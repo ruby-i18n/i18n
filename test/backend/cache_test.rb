@@ -15,6 +15,7 @@ class I18nBackendCacheTest < I18n::TestCase
     I18n.backend = Backend.new
     super
     I18n.cache_store = ActiveSupport::Cache.lookup_store(:memory_store)
+    I18n.cache_key_digest = nil
   end
 
   def teardown
@@ -60,8 +61,17 @@ class I18nBackendCacheTest < I18n::TestCase
 
   test "adds locale and hash of key and hash of options" do
     options = { :bar=>1 }
-    options_hash = I18n::Backend::Cache::USE_INSPECT_HASH ? options.inspect.hash : options.hash
+    options_hash = options.inspect.hash
     assert_equal "i18n//en/#{:foo.hash}/#{options_hash}", I18n.backend.send(:cache_key, :en, :foo, options)
+  end
+
+  test "cache_key uses configured digest method" do
+    md5 = Digest::MD5.new
+    options = { :bar=>1 }
+    options_hash = options.inspect
+    with_cache_key_digest(md5) do
+      assert_equal "i18n//en/#{md5.hexdigest(:foo.to_s)}/#{md5.hexdigest(options_hash)}", I18n.backend.send(:cache_key, :en, :foo, options)
+    end
   end
 
   test "keys should not be equal" do
@@ -80,6 +90,12 @@ class I18nBackendCacheTest < I18n::TestCase
       I18n.cache_namespace = namespace
       yield
       I18n.cache_namespace = nil
+    end
+
+    def with_cache_key_digest(digest)
+      I18n.cache_key_digest = digest
+      yield
+      I18n.cache_key_digest = nil
     end
 end
 
