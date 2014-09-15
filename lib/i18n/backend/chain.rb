@@ -46,6 +46,7 @@ module I18n
               translation = backend.translate(locale, key, options)
               if namespace_lookup?(translation, options)
                 namespace = translation.merge(namespace || {})
+                return translation
               elsif !translation.nil?
                 return translation
               end
