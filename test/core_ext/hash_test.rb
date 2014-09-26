@@ -14,6 +14,12 @@ class I18nCoreExtHashInterpolationTest < I18n::TestCase
     assert_equal expected, hash.slice(:foo)
   end
 
+  test "#slice non-existent key" do
+    hash = { :foo => 'bar',  :baz => 'bar' }
+    expected = { :foo => 'bar' }
+    assert_equal expected, hash.slice(:foo, :not_here)
+  end
+
   test "#except" do
     hash = { :foo => 'bar',  :baz => 'bar' }
     expected = { :foo => 'bar' }
