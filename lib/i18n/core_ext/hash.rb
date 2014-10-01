@@ -1,7 +1,7 @@
 class Hash
   def slice(*keep_keys)
     h = {}
-    keep_keys.each { |key| h[key] = fetch(key) }
+    keep_keys.each { |key| h[key] = fetch(key) if has_key?(key) }
     h
   end unless Hash.method_defined?(:slice)
 
