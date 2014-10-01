@@ -13,7 +13,7 @@ class I18nCoreExtHashInterpolationTest < I18n::TestCase
     expected = { :foo => 'bar' }
     assert_equal expected, hash.slice(:foo)
 
-    hash = { :foo => 'bar', :baz => 'bar')
+    hash = { :foo => 'bar', :baz => 'bar' }
     expected = { :foo => 'bar', :baz => 'bar' }
     assert_equal expected, hash.slice(:missing_key)
   end
