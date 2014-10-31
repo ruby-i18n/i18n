@@ -13,6 +13,11 @@ class I18nExceptionsTest < I18n::TestCase
     end
   end
 
+  test "MissingTranslation::Base#initialize can be called without options" do
+    exception = I18n::MissingTranslation.new(:en, 'foo')
+    assert_equal({}, exception.options)
+  end
+
   test "MissingTranslationData exception stores locale, key and options" do
     force_missing_translation_data do |exception|
       assert_equal 'de', exception.locale
