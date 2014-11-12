@@ -388,9 +388,25 @@ class I18nTest < I18n::TestCase
       I18n.config.enforce_available_locales = false
     end
   end
-
+  
+  def inspect_config
+    vars = I18n.config.class.class_variables
+    table = vars.inject({}) do | m, varname |
+      m.merge varname => I18n.config.class.class_variable_get(varname)
+    end
+    puts table.inspect
+  end
+  
   test 'I18n.reload! reloads the set of locales that are enforced' do
     begin
+      # Clear the backend that affects the available locales and somehow can remain
+      # set from the last running test.
+      # For instance, it contains enough translations to cause a false positive with
+      # this test when ran with --seed=50992
+      I18n.backend = I18n::Backend::Simple.new
+      
+      assert !I18n.available_locales.include?(:de), "Available locales should not include :de at this point"
+      
       I18n.enforce_available_locales = true
 
       assert_raise(I18n::InvalidLocale) { I18n.default_locale = :de }
@@ -406,7 +422,11 @@ class I18nTest < I18n::TestCase
       store_translations(:en, :foo => 'Foo in :en')
       store_translations(:de, :foo => 'Foo in :de')
       store_translations(:pl, :foo => 'Foo in :pl')
-
+      
+      assert I18n.available_locales.include?(:de), ":de should now be allowed"
+      assert I18n.available_locales.include?(:en), ":en should now be allowed"
+      assert I18n.available_locales.include?(:pl), ":pl should now be allowed"
+      
       assert_nothing_raised { I18n.default_locale = I18n.locale = :en }
       assert_nothing_raised { I18n.default_locale = I18n.locale = :de }
       assert_nothing_raised { I18n.default_locale = I18n.locale = :pl }
