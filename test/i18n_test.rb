@@ -391,6 +391,8 @@ class I18nTest < I18n::TestCase
 
   test 'I18n.reload! reloads the set of locales that are enforced' do
     begin
+      I18n.available_locales = [:en, :nl] # Because some test clobbers this with --seed=50992
+      
       I18n.enforce_available_locales = true
 
       assert_raise(I18n::InvalidLocale) { I18n.default_locale = :de }
@@ -406,7 +408,11 @@ class I18nTest < I18n::TestCase
       store_translations(:en, :foo => 'Foo in :en')
       store_translations(:de, :foo => 'Foo in :de')
       store_translations(:pl, :foo => 'Foo in :pl')
-
+      
+      assert I18n.available_locales.include?(:de), ":de should now be allowed"
+      assert I18n.available_locales.include?(:en), ":en should now be allowed"
+      assert I18n.available_locales.include?(:pl), ":pl should now be allowed"
+      
       assert_nothing_raised { I18n.default_locale = I18n.locale = :en }
       assert_nothing_raised { I18n.default_locale = I18n.locale = :de }
       assert_nothing_raised { I18n.default_locale = I18n.locale = :pl }
