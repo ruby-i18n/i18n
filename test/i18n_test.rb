@@ -388,10 +388,24 @@ class I18nTest < I18n::TestCase
       I18n.config.enforce_available_locales = false
     end
   end
-
+  
+  def inspect_config
+    vars = I18n.config.class.class_variables
+    table = vars.inject({}) do | m, varname |
+      m.merge varname => I18n.config.class.class_variable_get(varname)
+    end
+    puts table.inspect
+  end
+  
   test 'I18n.reload! reloads the set of locales that are enforced' do
     begin
-      I18n.available_locales = [:en, :nl] # Because some test clobbers this with --seed=50992
+      # Clear the backend that affects the available locales and somehow can remain
+      # set from the last running test.
+      # For instance, it contains enough translations to cause a false positive with
+      # this test when ran with --seed=50992
+      I18n.backend = I18n::Backend::Simple.new
+      
+      assert !I18n.available_locales.include?(:de), "Available locales should not include :de at this point"
       
       I18n.enforce_available_locales = true
 
