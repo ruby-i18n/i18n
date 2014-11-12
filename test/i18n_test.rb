@@ -389,14 +389,6 @@ class I18nTest < I18n::TestCase
     end
   end
   
-  def inspect_config
-    vars = I18n.config.class.class_variables
-    table = vars.inject({}) do | m, varname |
-      m.merge varname => I18n.config.class.class_variable_get(varname)
-    end
-    puts table.inspect
-  end
-  
   test 'I18n.reload! reloads the set of locales that are enforced' do
     begin
       # Clear the backend that affects the available locales and somehow can remain
