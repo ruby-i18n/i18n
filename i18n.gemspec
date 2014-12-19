@@ -18,4 +18,5 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.rubyforge_project = '[none]'
   s.required_rubygems_version = '>= 1.3.5'
+  s.required_ruby_version = '>= 1.9.3'
 end
