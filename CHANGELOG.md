@@ -1,4 +1,4 @@
-# 0.7.beta1
+# 0.7.0
 
 * Drop support to Ruby 1.8.7 / REE
 * Drop support to Rails 2.3 / 3.0 / 3.1
