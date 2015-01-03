@@ -1,6 +1,6 @@
 class Hash
   def slice(*keep_keys)
-    h = {}
+    h = self.class.new
     keep_keys.each { |key| h[key] = fetch(key) }
     h
   end unless Hash.method_defined?(:slice)
