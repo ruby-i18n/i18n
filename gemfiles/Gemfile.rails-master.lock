@@ -1,13 +1,13 @@
 GIT
   remote: git://github.com/rails/rails.git
-  revision: fe46f009be1ece58e45abc51195e2381a71bd023
+  revision: 4591b0fc041454f4ba4a83629b9bbca2a851969c
   branch: master
   specs:
     activesupport (5.0.0.alpha)
-      i18n (>= 0.7.0.beta1, < 0.8)
+      i18n (~> 0.7)
       json (~> 1.7, >= 1.7.7)
       minitest (~> 5.1)
-      thread_safe (~> 0.1)
+      thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
 
 PATH
