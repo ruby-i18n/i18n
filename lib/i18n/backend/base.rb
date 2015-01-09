@@ -1,4 +1,3 @@
-require 'yaml'
 require 'i18n/core_ext/hash'
 require 'i18n/core_ext/kernel/suppress_warnings'
 
@@ -6,14 +5,6 @@ module I18n
   module Backend
     module Base
       include I18n::Backend::Transliterator
-
-      # Accepts a list of paths to translation files. Loads translations from
-      # plain Ruby (*.rb) or YAML files (*.yml). See #load_rb and #load_yml
-      # for details.
-      def load_translations(*filenames)
-        filenames = I18n.load_path if filenames.empty?
-        filenames.flatten.each { |filename| load_file(filename) }
-      end
 
       # This method receives a locale, a data hash and options for storing translations.
       # Should be implemented
