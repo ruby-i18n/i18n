@@ -13,7 +13,7 @@ class I18nExceptionsTest < I18n::TestCase
     end
   end
 
-  test "MissingTranslation::Base#initialize can be called without options" do
+  test "MissingTranslation can be initialized without options" do
     exception = I18n::MissingTranslation.new(:en, 'foo')
     assert_equal({}, exception.options)
   end
