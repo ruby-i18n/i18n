@@ -1,3 +1,7 @@
+# master
+
+* `Hash#slice` ignores non existing keys.
+
 # 0.7.0
 
 * Drop support to Ruby 1.8.7 / REE
