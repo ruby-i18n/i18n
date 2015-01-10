@@ -9,7 +9,7 @@ module I18n
   autoload :Locale,  'i18n/locale'
   autoload :Tests,   'i18n/tests'
 
-  RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback, :format, :cascade, :throw, :raise]
+  RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback, :format, :cascade, :throw, :raise, :exception_handler]
   RESERVED_KEYS_PATTERN = /%\{(#{RESERVED_KEYS.join("|")})\}/
 
   extend(Module.new {
@@ -141,24 +141,29 @@ module I18n
     # from the argument values passed to #translate. Therefor your lambdas should
     # always return the same translations/values per unique combination of argument
     # values.
-    def translate(*args)
-      options  = args.last.is_a?(Hash) ? args.pop.dup : {}
-      key      = args.shift
-      backend  = config.backend
-      locale   = options.delete(:locale) || config.locale
-      handling = options.delete(:throw) && :throw || options.delete(:raise) && :raise # TODO deprecate :raise
-
-      enforce_available_locales!(locale)
-      raise I18n::ArgumentError if key.is_a?(String) && key.empty?
-
-      result = catch(:exception) do
-        if key.is_a?(Array)
-          key.map { |k| backend.translate(locale, k, options) }
-        else
-          backend.translate(locale, key, options)
-        end
+    def translate(key, options=nil)
+      if key.is_a?(Hash)
+        options = key
+        key     = nil
       end
-      result.is_a?(MissingTranslation) ? handle_exception(handling, result, locale, key, options) : result
+
+      options = options.dup if options
+      conf    = config
+      backend = conf.backend
+
+      if locale = options && options.delete(:locale)
+        enforce_available_locales!(locale)
+      else
+        locale = conf.locale
+      end
+
+      result = if key.is_a?(Array)
+        key.map { |k| backend.translate(locale, k, options) }
+      else
+        backend.translate(locale, key, options)
+      end
+
+      nil == result ? handle_exception(I18n::MissingTranslation.new(locale, key, options), locale, key, options) : result
     end
     alias :t :translate
 
@@ -230,12 +235,11 @@ module I18n
       options      = args.pop.dup if args.last.is_a?(Hash)
       key          = args.shift
       locale       = options && options.delete(:locale) || config.locale
-      handling     = options && (options.delete(:throw) && :throw || options.delete(:raise) && :raise)
       replacement  = options && options.delete(:replacement)
       enforce_available_locales!(locale)
       config.backend.transliterate(locale, key, replacement)
     rescue I18n::ArgumentError => exception
-      handle_exception(handling, exception, locale, key, options || {})
+      handle_exception(exception, locale, key, options || {})
     end
 
     # Localizes certain objects, such as dates and numbers to local formatting.
@@ -305,8 +309,9 @@ module I18n
     #
     #   I18n.exception_handler = I18nExceptionHandler.new               # an object
     #   I18n.exception_handler.call(exception, locale, key, options)    # will be called like this
-    def handle_exception(handling, exception, locale, key, options)
-      case handling
+    def handle_exception(exception, locale, key, options)
+      options ||= {}
+      case options.delete(:throw) && :throw || options.delete(:raise) && :raise # TODO deprecate :raise
       when :raise
         raise exception.respond_to?(:to_exception) ? exception.to_exception : exception
       when :throw

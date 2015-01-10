@@ -34,16 +34,19 @@ module I18n
       # The default option takes precedence over fallback locales only when
       # it's a Symbol. When the default contains a String, Proc or Hash
       # it is evaluated last after all the fallback locales have been tried.
-      def translate(locale, key, options = {})
+      def translate(locale, key, options = nil)
+        options ||= {}
         return super if options[:fallback]
         default = extract_non_symbol_default!(options) if options[:default]
 
         options[:fallback] = true
         I18n.fallbacks[locale].each do |fallback|
+          # TODO: Fallbacks should be fixed to not ever return invalid locales.
+          # The same strategy as in Memoize module can be employed to intercept
+          # store_translations to update available fallbacks.
           begin
-            catch(:exception) do
-              result = super(fallback, key, options)
-              return result unless result.nil?
+            unless nil == (result = super(fallback, key, options))
+              return result
             end
           rescue I18n::InvalidLocale
             # we do nothing when the locale is invalid, as this is a fallback anyways.
@@ -52,7 +55,7 @@ module I18n
         options.delete(:fallback)
 
         return super(locale, nil, options.merge(:default => default)) if default
-        throw(:exception, I18n::MissingTranslation.new(locale, key, options))
+        nil
       end
 
       def extract_non_symbol_default!(options)

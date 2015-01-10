@@ -20,6 +20,12 @@ module I18n
     }
   end
 
+  module DoNothingExceptionHandler
+    class << self
+      def call(exception, locale, key, options); end
+    end
+  end
+
   class ArgumentError < ::ArgumentError; end
 
   class InvalidLocale < ArgumentError

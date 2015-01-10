@@ -7,6 +7,11 @@ module I18n
     module Base
       include I18n::Backend::Transliterator
 
+      RESERVED_KEYS_HASH = RESERVED_KEYS.inject({}) do |h, reserved_key|
+        h[reserved_key] = h[reserved_key.to_s.freeze] = true
+        h
+      end
+
       # Accepts a list of paths to translation files. Loads translations from
       # plain Ruby (*.rb) or YAML files (*.yml). See #load_rb and #load_yml
       # for details.
@@ -21,25 +26,25 @@ module I18n
         raise NotImplementedError
       end
 
-      def translate(locale, key, options = {})
+      def translate(locale, key, options = nil)
         raise InvalidLocale.new(locale) unless locale
-        entry = key && lookup(locale, key, options[:scope], options)
+        entry = key && lookup(locale, key, options && options[:scope], options)
 
-        if options.empty?
-          entry = resolve(locale, key, entry, options)
-        else
-          count, default = options.values_at(:count, :default)
-          values = options.except(*RESERVED_KEYS)
-          entry = entry.nil? && default ?
+        if options
+          count   = options[:count]
+          default = options[:default]
+          entry   = nil == entry && default ?
             default(locale, key, default, options) : resolve(locale, key, entry, options)
+        else
+          entry = resolve(locale, key, entry, options)
         end
 
-        throw(:exception, I18n::MissingTranslation.new(locale, key, options)) if entry.nil?
-        entry = entry.dup if entry.is_a?(String)
-
-        entry = pluralize(locale, entry, count) if count
-        entry = interpolate(locale, entry, values) if values
-        entry
+        unless nil == entry
+          entry = entry.dup if entry.is_a?(String)
+          entry = pluralize(locale, entry, count) if count
+          entry = interpolate(locale, entry, options) if options
+          entry
+        end
       end
 
       def exists?(locale, key)
@@ -99,7 +104,9 @@ module I18n
           case subject
           when Array
             subject.each do |item|
-              result = resolve(locale, object, item, options) and return result
+              unless nil == (result = resolve(locale, object, item, options))
+                return result
+              end
             end and nil
           else
             resolve(locale, object, subject, options)
@@ -110,20 +117,19 @@ module I18n
         # If the given subject is a Symbol, it will be translated with the
         # given options. If it is a Proc then it will be evaluated. All other
         # subjects will be returned directly.
-        def resolve(locale, object, subject, options = {})
-          return subject if options[:resolve] == false
-          result = catch(:exception) do
-            case subject
-            when Symbol
-              I18n.translate(subject, options.merge(:locale => locale, :throw => true))
-            when Proc
-              date_or_time = options.delete(:object) || object
-              resolve(locale, object, subject.call(date_or_time, options))
-            else
-              subject
-            end
+        def resolve(locale, object, subject, options = nil)
+          return subject if options && options[:resolve] == false
+
+          case subject
+          when Symbol
+            overrides = {:locale => locale, :exception_handler => DoNothingExceptionHandler}
+            I18n.translate(subject, options ? options.merge(overrides) : overrides)
+          when Proc
+            date_or_time = (options && options.delete(:object)) || object
+            resolve(locale, object, subject.call(date_or_time, options))
+          else
+            subject
           end
-          result unless result.is_a?(MissingTranslation)
         end
 
         # Picks a translation from a pluralized mnemonic subkey according to English
@@ -148,11 +154,18 @@ module I18n
         #   interpolate "file %{file} opened by %%{user}", :file => 'test.txt', :user => 'Mr. X'
         #   # => "file test.txt opened by %{user}"
         def interpolate(locale, string, values = {})
-          if string.is_a?(::String) && !values.empty?
+          if string.is_a?(::String) && interpolation_values_any?(values)
             I18n.interpolate(string, values)
           else
             string
           end
+        end
+
+        def interpolation_values_any?(values)
+          values.each_key do |key|
+            return true if !RESERVED_KEYS_HASH[key]
+          end
+          false
         end
 
         # Loads a single translations file by delegating to #load_rb or

@@ -39,7 +39,7 @@ module I18n
 
         def normalize(locale, data)
           data.inject({}) do |result, (key, value)|
-            unless key.nil? || key.empty?
+            unless nil == key || key.empty?
               key = key.gsub(I18n::Gettext::CONTEXT_SEPARATOR, '|')
               key, value = normalize_pluralization(locale, key, value) if key.index("\000")
 

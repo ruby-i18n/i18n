@@ -175,7 +175,7 @@ class I18nTest < I18n::TestCase
   end
 
   test "translate given no locale uses the current locale" do
-    I18n.backend.expects(:translate).with(:en, :foo, {})
+    I18n.backend.expects(:translate).with(:en, :foo, nil)
     I18n.translate :foo
   end
 
@@ -209,10 +209,6 @@ class I18nTest < I18n::TestCase
 
   test "translate given a bogus key returns an error message" do
     assert_equal "translation missing: en.bogus", I18n.t(:bogus)
-  end
-
-  test "translate given an empty string as a key raises an I18n::ArgumentError" do
-    assert_raise(I18n::ArgumentError) { I18n.t("") }
   end
 
   test "translate given an unavailable locale rases an I18n::InvalidLocale" do
