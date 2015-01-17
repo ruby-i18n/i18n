@@ -141,6 +141,10 @@ class I18nBackendFallbacksWithChainTest < I18n::TestCase
     assert_equal 'FOO', I18n.t(:foo, :locale => :'de-DE')
   end
 
+  test "falls back from de-DE to de when there is no translation for de-DE available when using arrays, too" do
+    assert_equal ['FOO', 'FOO'], I18n.t([:foo, :foo], :locale => :'de-DE')
+  end
+
   test "should not raise error when enforce_available_locales is true, :'pt' is missing and default is a Symbol" do
     I18n.enforce_available_locales = true
     begin
