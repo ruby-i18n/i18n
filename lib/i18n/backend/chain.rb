@@ -17,7 +17,7 @@ module I18n
     class Chain
       module Implementation
         include Base
-        
+
         attr_accessor :backends
 
         def initialize(*backends)
@@ -75,7 +75,7 @@ module I18n
           def namespace_lookup?(result, options)
             result.is_a?(Hash) && !options.has_key?(:count)
           end
-          
+
         private
           # This is approximately what gets used in ActiveSupport.
           # However since we are not guaranteed to run in an ActiveSupport context
