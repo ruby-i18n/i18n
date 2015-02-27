@@ -34,6 +34,11 @@ class I18nBackendCascadeTest < I18n::TestCase
     assert_raise(I18n::MissingTranslationData) { lookup(:'missing.bar.baz', :raise => true) }
   end
 
+  test "skip_root prevents lookup without scope" do
+    @cascade_options[:skip_root] = true
+    assert_raise(I18n::MissingTranslationData) { lookup(:'missing.foo', :raise => true) }
+  end
+
   test "cascades before evaluating the default" do
     assert_equal 'foo', lookup(:foo, :scope => :missing, :default => 'default')
   end

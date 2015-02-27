@@ -47,7 +47,7 @@ module I18n
           result = super
           return result unless result.nil?
           scope = scope.dup
-        end while (!scope.empty? || !skip_root) && scope.slice!(-step, step)
+        end while scope.slice!(-step, step) && !(skip_root && scope.empty?)
       end
     end
   end
