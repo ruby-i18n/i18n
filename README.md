@@ -31,7 +31,7 @@ Alternative backends:
 * ActiveRecord (optionally: ActiveRecord::Missing and ActiveRecord::StoreProcs)
 * KeyValue (uses active_support/json and cannot store procs)
 
-For more information and lots of resources see: [http://ruby-i18n.org/wiki](http://ruby-i18n.org/wiki)
+For more information and lots of resources see [the 'Resources' page on the wiki](https://github.com/svenfuchs/i18n/wiki/Resources).
 
 ## Installation
 
