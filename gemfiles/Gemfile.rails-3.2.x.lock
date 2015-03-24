@@ -12,7 +12,7 @@ GEM
     metaclass (0.0.4)
     mocha (1.1.0)
       metaclass (~> 0.0.1)
-    multi_json (1.10.1)
+    multi_json (1.11.0)
     rake (10.4.2)
     test_declarative (0.0.5)
 
