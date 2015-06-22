@@ -136,5 +136,18 @@ module I18n
     def enforce_available_locales=(enforce_available_locales)
       @@enforce_available_locales = enforce_available_locales
     end
+
+    # Allows clients to provide custom placeholders.
+    #
+    # E.g. using {{}} as a placeholder: "{{hello}}, world!"
+    # I18n.config.interpolation_patterns << /\{\{(\w+)\}\}/
+    def interpolation_patterns
+      @@interpolation_patterns ||= I18n::INTERPOLATION_PATTERNS
+    end
+
+    # Sets interpolation patterns. Expect an array of patterns.
+    def interpolation_patterns=(interpolation_patterns)
+      @@interpolation_patterns = interpolation_patterns
+    end
   end
 end
