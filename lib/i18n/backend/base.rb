@@ -151,13 +151,15 @@ module I18n
         #
         #   interpolate "file %{file} opened by %%{user}", :file => 'test.txt', :user => 'Mr. X'
         #   # => "file test.txt opened by %{user}"
-        def interpolate(locale, string, values = {})
-          if string.is_a?(::String) && !values.empty?
-            I18n.interpolate(string, values)
-          elsif string.is_a?(::Array) && !values.empty?
-            string.map { |el| interpolate(locale, el, values) }
+        
+        def interpolate(locale, subject, values = {}) 
+          return subject if values.empty?
+
+          case subject
+          when ::String then I18n.interpolate(subject, values)
+          when ::Array then subject.map { |element| interpolate(locale, element, values) }
           else
-            string
+            subject
           end
         end
 
