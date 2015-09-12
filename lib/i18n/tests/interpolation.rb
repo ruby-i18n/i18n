@@ -55,8 +55,8 @@ module I18n
       end
 
       test "interpolation: given an array interpolates each element" do
-        I18n.backend.store_translations(:en, :array_interpolate => ['Hi', '%{name}'])
-        assert_equal ['Hi', 'Bartuz'], interpolate(:array_interpolate, :name => 'Bartuz')
+        I18n.backend.store_translations(:en, :array_interpolate => ['Hi', 'Mr. %{name}', 'or sir %{name}'])
+        assert_equal ['Hi', 'Mr. Bartuz', 'or sir Bartuz'], interpolate(:array_interpolate, :name => 'Bartuz')
       end
 
       test "interpolation: given the translation is in utf-8 it still works" do
