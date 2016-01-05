@@ -15,6 +15,13 @@ gemfile:
   - gemfiles/Gemfile.rails-master
 
 matrix:
+  exclude:
+    - rvm: 1.9.3
+      gemfile: gemfiles/Gemfile.rails-master
+    - rvm: 2.0.0
+      gemfile: gemfiles/Gemfile.rails-master
+    - rvm: 2.1
+      gemfile: gemfiles/Gemfile.rails-master
   allow_failures:
     - rvm: 2.2
     - rvm: rbx
