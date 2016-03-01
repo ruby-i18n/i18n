@@ -71,7 +71,7 @@ follow the usual test setup and should be easy to grok.
 * [Joshua Harvey](http://www.workingwithrails.com/person/759-joshua-harvey)
 * [Stephan Soller](http://www.arkanis-development.de)
 * [Saimon Moore](http://saimonmoore.net)
-* [Matt Aimonetti](http://railsontherun.com)
+* [Matt Aimonetti](https://matt.aimonetti.net/)
 
 ## Contributors
 
