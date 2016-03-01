@@ -64,6 +64,14 @@ module I18n
         return first_non_symbol_default
       end
 
+      def lookup(locale, key, scope = [], options = {})
+        I18n.fallbacks[locale].each do |fallback|
+          result = super(locale, key, scope, options)
+          return result if result
+        end
+        nil
+      end
+
     end
   end
 end
