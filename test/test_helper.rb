@@ -17,6 +17,7 @@ require 'bundler/setup'
 require 'i18n'
 require 'mocha/setup'
 require 'test_declarative'
+require 'active_support'
 
 class I18n::TestCase < TEST_CASE
   def self.key_value?
