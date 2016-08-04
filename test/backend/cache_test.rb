@@ -40,7 +40,7 @@ class I18nBackendCacheTest < I18n::TestCase
   test "still raises MissingTranslationData but also caches it" do
     assert_raise(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
     assert_raise(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
-    assert_equal 1, I18n.cache_store.instance_variable_get(:@data).size
+    assert_equal 2, I18n.cache_store.instance_variable_get(:@data).size
 
     # I18n.backend.expects(:lookup).returns(nil)
     # assert_raise(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
@@ -72,6 +72,47 @@ class I18nBackendCacheTest < I18n::TestCase
     key2 = I18n.backend.send(:cache_key, :en, :some_key, interpolation_values2)
 
     assert key1 != key2
+  end
+
+  test "adds cached key to list of cached keys" do
+    I18n.backend.expects(:lookup).returns('Foo')
+    I18n.t(:foo)
+    assert I18n.cache_keys[:en, :foo].include?({})
+  end
+
+  test "adds cached key to list of cached keys with options" do
+    I18n.backend.expects(:lookup).returns('Foo')
+    I18n.t(:foo, :default => "bar")
+    assert I18n.cache_keys[:en, :foo].include?({:default => "bar"})
+  end
+
+  test "store_translations clears cache for keys stored" do
+    I18n.backend.expects(:lookup).returns('Foo').at_least_once
+    I18n.t(:foo)
+    I18n.t(:foo, :default => "bar")
+    I18n.t(:bar)
+    I18n.t(:"cat.dog")
+    assert_equal 3, I18n.cache_keys.all.length
+    assert_equal 2, I18n.cache_keys[:en, :foo].length
+
+    I18n.backend.store_translations(:en, {:foo => 'Bar', :cat => {:dog => 'Bird'}})
+    assert_equal 1, I18n.cache_keys.all.length
+    assert_equal 1, I18n.cache_keys[:en, :bar].length
+
+    I18n.backend.expects(:lookup).returns('Bar')
+    assert_equal 'Bar', I18n.t(:foo)
+  end
+
+  test "all keys are removed when reload! is called" do
+    I18n.backend.expects(:lookup).returns('Foo').at_least_once
+    I18n.t(:foo)
+    I18n.t(:bar)
+
+    I18n.backend.reload!
+    assert_equal 0, I18n.cache_keys.all.length
+
+    I18n.backend.expects(:lookup).returns('Bar')
+    assert_equal 'Bar', I18n.t(:foo)
   end
 
   protected
