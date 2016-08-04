@@ -11,7 +11,6 @@ module I18n
         end
 
         test "localize Date: given the short format it uses it" do
-          # TODO should be Mrz, shouldn't it?
           assert_equal '01. Mar', I18n.l(@date, :format => :short, :locale => :de)
         end
 
@@ -27,17 +26,35 @@ module I18n
           assert_equal 'Samstag', I18n.l(@date, :format => '%A', :locale => :de)
         end
 
+        test "localize Date: given a uppercased day name format it returns the correct uppercased day name" do
+          assert_equal 'SAMSTAG', I18n.l(@date, :format => '%^A', :locale => :de)
+        end
+
         test "localize Date: given an abbreviated day name format it returns the correct abbreviated day name" do
           assert_equal 'Sa', I18n.l(@date, :format => '%a', :locale => :de)
+        end
+
+        test "localize Date: given an uppercased, abbreviated day name format it returns the correct uppercased, abbreviated day name" do
+          assert_equal 'SA', I18n.l(@date, :format => '%^a', :locale => :de)
         end
 
         test "localize Date: given a month name format it returns the correct month name" do
           assert_equal 'März', I18n.l(@date, :format => '%B', :locale => :de)
         end
 
+        # @NOTE
+        # Ruby's #upcase method does not handle characters like umlauts (ä => Ä),
+        # diacritic signs (é => É) or signs with more complex rules (ß => SS) right.
+        test "localize Date: given a uppercased month name format it returns the correct uppercased month name" do
+          assert_equal 'MäRZ', I18n.l(@date, :format => '%^B', :locale => :de)
+        end
+
         test "localize Date: given an abbreviated month name format it returns the correct abbreviated month name" do
-          # TODO should be Mrz, shouldn't it?
           assert_equal 'Mar', I18n.l(@date, :format => '%b', :locale => :de)
+        end
+
+        test "localize Date: given an abbreviated, uppercased month name format it returns the correct abbreviated, uppercased month name" do
+          assert_equal 'MAR', I18n.l(@date, :format => '%^b', :locale => :de)
         end
 
         test "localize Date: given an unknown format it does not fail" do
