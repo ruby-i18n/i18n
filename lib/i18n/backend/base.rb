@@ -184,6 +184,8 @@ module I18n
             raise InvalidLocaleData.new(filename, e.inspect)
           end
         end
+        
+        alias_method :load_yaml, :load_yml
     end
   end
 end
