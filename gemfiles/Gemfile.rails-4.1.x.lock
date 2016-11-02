@@ -29,6 +29,10 @@ PLATFORMS
 DEPENDENCIES
   activesupport (~> 4.1.0)
   i18n!
+  minitest
   mocha
   rake
   test_declarative
+
+BUNDLED WITH
+   1.13.5

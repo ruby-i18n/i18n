@@ -10,6 +10,7 @@ GEM
       i18n (~> 0.6, >= 0.6.4)
       multi_json (~> 1.0)
     metaclass (0.0.4)
+    minitest (5.9.1)
     mocha (1.1.0)
       metaclass (~> 0.0.1)
     multi_json (1.11.0)
@@ -22,6 +23,10 @@ PLATFORMS
 DEPENDENCIES
   activesupport (~> 3.2.0)
   i18n!
+  minitest
   mocha
   rake
   test_declarative
+
+BUNDLED WITH
+   1.13.5
