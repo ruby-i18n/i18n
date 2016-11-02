@@ -25,7 +25,7 @@ matrix:
       gemfile: gemfiles/Gemfile.rails-master
     - rvm: 2.0.0
       gemfile: gemfiles/Gemfile.rails-master
-    - rvm: 2.1
+    - rvm: 2.1.8
       gemfile: gemfiles/Gemfile.rails-master
   allow_failures:
     - rvm: 2.2
