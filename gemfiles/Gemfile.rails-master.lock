@@ -1,13 +1,12 @@
 GIT
   remote: git://github.com/rails/rails.git
-  revision: bfd5bf8313e6ea0bb2eccb68ee5076bb63f0b2db
+  revision: da23e125f8d755917b08f5cca1f7fe1ff38c8b7e
   branch: master
   specs:
-    activesupport (5.0.0.alpha)
+    activesupport (5.1.0.alpha)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (~> 0.7)
-      json (~> 1.7, >= 1.7.7)
       minitest (~> 5.1)
-      thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
 
 PATH
@@ -18,7 +17,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    json (1.8.2)
+    concurrent-ruby (1.0.2)
     metaclass (0.0.4)
     minitest (5.5.1)
     mocha (1.1.0)
@@ -41,4 +40,4 @@ DEPENDENCIES
   test_declarative
 
 BUNDLED WITH
-   1.13.5
+   1.13.6
