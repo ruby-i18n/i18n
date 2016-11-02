@@ -22,12 +22,19 @@ gemfile:
 
 matrix:
   exclude:
+    # Rails 5+ requires Ruby >= 2.2.2
     - rvm: 1.9.3
       gemfile: gemfiles/Gemfile.rails-master
     - rvm: 2.0.0
       gemfile: gemfiles/Gemfile.rails-master
     - rvm: 2.1.8
       gemfile: gemfiles/Gemfile.rails-master
+    - rvm: 1.9.3
+      gemfile: gemfiles/Gemfile.rails-5.0.x
+    - rvm: 2.0.0
+      gemfile: gemfiles/Gemfile.rails-5.0.x
+    - rvm: 2.1.8
+      gemfile: gemfiles/Gemfile.rails-5.0.x
     # activesupport has a dependency on json, which does not build on this version
     - rvm: ruby-head
       gemfile: gemfiles/Gemfile.rails-4.1.x.lock
