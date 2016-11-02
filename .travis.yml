@@ -28,6 +28,12 @@ matrix:
       gemfile: gemfiles/Gemfile.rails-master
     - rvm: 2.1.8
       gemfile: gemfiles/Gemfile.rails-master
+    # activesupport has a dependency on json, which does not build on this version
+    - rvm: ruby-head
+      gemfile: gemfiles/Gemfile.rails-4.1.x.lock
+    # activesupport has a dependency on json, which does not build on this version
+    - rvm: ruby-head
+      gemfile: gemfiles/Gemfile.rails-4.2.x.lock
   allow_failures:
     - rvm: 2.2
     - rvm: rbx
