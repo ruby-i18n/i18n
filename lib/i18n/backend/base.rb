@@ -25,19 +25,19 @@ module I18n
         raise InvalidLocale.new(locale) unless locale
         entry = key && lookup(locale, key, options[:scope], options)
 
-        if options.empty?
-          entry = resolve(locale, key, entry, options)
+        if entry.nil? && options.key?(:default)
+          entry = default(locale, key, options[:default], options)
         else
-          count, default = options.values_at(:count, :default)
-          values = options.except(*RESERVED_KEYS)
-          entry = entry.nil? && default ?
-            default(locale, key, default, options) : resolve(locale, key, entry, options)
+          entry = resolve(locale, key, entry, options)
         end
 
         throw(:exception, I18n::MissingTranslation.new(locale, key, options)) if entry.nil?
         entry = entry.dup if entry.is_a?(String)
 
+        count = options[:count]
         entry = pluralize(locale, entry, count) if count
+
+        values = options.except(*RESERVED_KEYS)
         entry = interpolate(locale, entry, values) if values
         entry
       end
