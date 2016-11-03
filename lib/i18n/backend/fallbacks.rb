@@ -43,7 +43,7 @@ module I18n
           begin
             catch(:exception) do
               result = super(fallback, key, options)
-              return result unless result.nil?
+              return result if (result.nil? && options.key?(:default) && options[:default].nil?) || !result.nil?
             end
           rescue I18n::InvalidLocale
             # we do nothing when the locale is invalid, as this is a fallback anyways.

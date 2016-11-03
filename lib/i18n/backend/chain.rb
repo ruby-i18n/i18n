@@ -46,7 +46,7 @@ module I18n
               translation = backend.translate(locale, key, options)
               if namespace_lookup?(translation, options)
                 namespace = _deep_merge(translation, namespace || {})
-              elsif !translation.nil?
+              elsif !translation.nil? || (options.key?(:default) && options[:default].nil?)
                 return translation
               end
             end
