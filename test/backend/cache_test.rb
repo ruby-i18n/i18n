@@ -61,7 +61,7 @@ class I18nBackendCacheTest < I18n::TestCase
 
   test "adds locale and hash of key and hash of options" do
     options = { :bar=>1 }
-    options_hash = options.inspect.hash
+    options_hash = RUBY_VERSION <= "1.9" ? options.inspect.hash : options.hash
     assert_equal "i18n//en/#{:foo.hash}/#{options_hash}", I18n.backend.send(:cache_key, :en, :foo, options)
   end
 
