@@ -124,6 +124,8 @@ module I18n
     # behave like a Ruby Array.
     def load_path=(load_path)
       @@load_path = load_path
+      @@available_locales_set = nil
+      backend.reload!
     end
 
     # Whether or not to verify if locales are in the list of available locales.
