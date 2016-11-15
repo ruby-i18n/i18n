@@ -68,6 +68,11 @@ class I18nBackendFallbacksTranslateTest < I18n::TestCase
     assert_equal 'Default 6 Bars', I18n.t(:missing_foo, :locale => :'de-DE', :default => [:missing_bar, {:other => "Default %{count} Bars"}, "Default Bar"], :count => 6)
   end
 
+  test "exists? given an existing key will return true for a missing :'de-DE'" do
+    I18n.locale = :'de-DE'
+    assert_equal true, I18n.exists?(:bar)
+  end
+
   test "raises I18n::MissingTranslationData exception when no translation was found" do
     assert_raise(I18n::MissingTranslationData) { I18n.t(:faa, :locale => :en, :raise => true) }
     assert_raise(I18n::MissingTranslationData) { I18n.t(:faa, :locale => :de, :raise => true) }
@@ -87,7 +92,7 @@ class I18nBackendFallbacksTranslateTest < I18n::TestCase
   end
 end
 
-class I18nBackendFallbacksLocalizeTest < I18n::TestCase
+class I18nBackendlFallbacksLocalizeTest < I18n::TestCase
   class Backend < I18n::Backend::Simple
     include I18n::Backend::Fallbacks
   end
