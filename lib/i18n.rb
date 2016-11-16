@@ -12,7 +12,7 @@ module I18n
   RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback, :format, :cascade, :throw, :raise, :deep_interpolation]
   RESERVED_KEYS_PATTERN = /%\{(#{RESERVED_KEYS.join("|")})\}/
 
-  extend(Module.new {
+  module Base
     # Gets I18n configuration object.
     def config
       Thread.current[:i18n_config] ||= I18n::Config.new
@@ -337,5 +337,7 @@ module I18n
     def normalized_key_cache
       @normalized_key_cache ||= Hash.new { |h,k| h[k] = {} }
     end
-  })
+  end
+
+  extend Base
 end
