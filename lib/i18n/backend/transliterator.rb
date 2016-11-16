@@ -71,7 +71,7 @@ module I18n
 
         def initialize(rule = nil)
           @rule = rule
-          add DEFAULT_APPROXIMATIONS.dup
+          add_default_approximations
           add rule if rule
         end
 
@@ -85,6 +85,12 @@ module I18n
 
         def approximations
           @approximations ||= {}
+        end
+
+        def add_default_approximations
+          DEFAULT_APPROXIMATIONS.each do |key, value|
+            approximations[key] = value
+          end
         end
 
         # Add transliteration rules to the approximations hash.
