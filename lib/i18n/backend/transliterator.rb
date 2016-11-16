@@ -75,9 +75,9 @@ module I18n
           add rule if rule
         end
 
-        def transliterate(string, replacement = nil)
+        def transliterate(string, replacement = DEFAULT_REPLACEMENT_CHAR)
           string.gsub(/[^\x00-\x7f]/u) do |char|
-            approximations[char] || replacement || DEFAULT_REPLACEMENT_CHAR
+            approximations[char] || replacement
           end
         end
 
