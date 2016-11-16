@@ -42,8 +42,15 @@ module I18n
         count = options[:count]
         entry = pluralize(locale, entry, count) if count
 
+        deep_interpolation = options[:deep_interpolation]
         values = options.except(*RESERVED_KEYS)
-        entry = interpolate(locale, entry, values) if values
+        if values
+          entry = if deep_interpolation
+            deep_interpolate(locale, entry, values)
+          else
+            interpolate(locale, entry, values)
+          end
+        end
         entry
       end
 
@@ -146,6 +153,30 @@ module I18n
             I18n.interpolate(string, values)
           else
             string
+          end
+        end
+
+        # Deep interpolation
+        #
+        #   deep_interpolate { people: { ann: "Ann is %{ann}", john: "John is %{john}" } },
+        #                    ann: 'good', john: 'big'
+        #   #=> { people: { ann: "Ann is good", john: "John is big" } }
+        def deep_interpolate(locale, data, values = {})
+          return data if values.empty?
+
+          case data
+          when ::String
+            I18n.interpolate(data, values)
+          when ::Hash
+            data.each_with_object({}) do |(k, v), result|
+              result[k] = deep_interpolate(locale, v, values)
+            end
+          when ::Array
+            data.map do |v|
+              deep_interpolate(locale, v, values)
+            end
+          else
+            data
           end
         end
 
