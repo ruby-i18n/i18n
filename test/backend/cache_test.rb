@@ -38,6 +38,12 @@ class I18nBackendCacheTest < I18n::TestCase
     assert_equal 'Bar', I18n.t(:bar)
   end
 
+  test "translate returns a cached false response" do
+    I18n.backend.expects(:lookup).never
+    I18n.cache_store.expects(:read).returns(false)
+    assert_equal false, I18n.t(:foo)
+  end
+
   test "still raises MissingTranslationData but also caches it" do
     assert_raise(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
     assert_raise(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }

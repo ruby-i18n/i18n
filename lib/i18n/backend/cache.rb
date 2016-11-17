@@ -89,7 +89,8 @@ module I18n
         end
 
         def _fetch(cache_key, &block)
-          result = I18n.cache_store.read(cache_key) and return result
+          result = I18n.cache_store.read(cache_key)
+          return result unless result.nil?
           result = catch(:exception, &block)
           I18n.cache_store.write(cache_key, result) unless result.is_a?(Proc)
           result
