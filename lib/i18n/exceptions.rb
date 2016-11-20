@@ -38,7 +38,7 @@ module I18n
     end
   end
 
-  class MissingTranslation
+  class MissingTranslation < ArgumentError
     module Base
       attr_reader :locale, :key, :options
 
