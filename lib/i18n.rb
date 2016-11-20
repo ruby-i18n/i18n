@@ -335,7 +335,7 @@ module I18n
     end
 
     def normalized_key_cache
-      @normalized_key_cache ||= Hash.new { |h,k| h[k] = {} }
+      @normalized_key_cache ||= Concurrent::Hash.new { |h,k| h[k] = Concurrent::Hash.new }
     end
   end
 
