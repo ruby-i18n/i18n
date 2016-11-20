@@ -1,24 +1,33 @@
 require 'i18n/gettext'
 require 'i18n/gettext/po_parser'
 
-# Experimental support for using Gettext po files to store translations.
-#
-# To use this you can simply include the module to the Simple backend - or
-# whatever other backend you are using.
-#
-#   I18n::Backend::Simple.include(I18n::Backend::Gettext)
-#
-# Now you should be able to include your Gettext translation (*.po) files to
-# the I18n.load_path so they're loaded to the backend and you can use them as
-# usual:
-#
-#  I18n.load_path += Dir["path/to/locales/*.po"]
-#
-# Following the Gettext convention this implementation expects that your
-# translation files are named by their locales. E.g. the file en.po would
-# contain the translations for the English locale.
 module I18n
   module Backend
+    # Experimental support for using Gettext po files to store translations.
+    #
+    # To use this you can simply include the module to the Simple backend - or
+    # whatever other backend you are using.
+    #
+    #  I18n::Backend::Simple.include(I18n::Backend::Gettext)
+    #
+    # Now you should be able to include your Gettext translation (*.po) files to
+    # the +I18n.load_path+ so they're loaded to the backend and you can use them as
+    # usual:
+    #
+    #  I18n.load_path += Dir["path/to/locales/*.po"]
+    #
+    # Following the Gettext convention this implementation expects that your
+    # translation files are named by their locales. E.g. the file en.po would
+    # contain the translations for the English locale.
+    #
+    # To translate text <b>you must use</b> one of the translate methods provided by
+    # I18n::Gettext::Helpers.
+    #
+    #  include I18n::Gettext::Helpers
+    #  puts _("some string")
+    #
+    # Without it strings containing periods (".") will not be translated.
+
     module Gettext
       class PoData < Hash
         def set_comment(msgid_or_sym, comment)

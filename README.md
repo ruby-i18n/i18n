@@ -22,7 +22,7 @@ Pluggable features:
 * Cache
 * Pluralization: lambda pluralizers stored as translation data
 * Locale fallbacks, RFC4647 compliant (optionally: RFC4646 locale validation)
-* Gettext support
+* [Gettext support](https://github.com/svenfuchs/i18n/wiki/Gettext)
 * Translation metadata
 
 Alternative backends:
