@@ -57,6 +57,17 @@ class I18nInterpolateTest < I18n::TestCase
   def test_sprintf_mix_unformatted_and_formatted_named_placeholders
     assert_equal "foo 1.000000", I18n.interpolate("%{name} %<num>f", :name => "foo", :num => 1.0)
   end
+
+  class RailsSafeBuffer < String
+
+    def gsub(*args, &block)
+      to_str.gsub(*args, &block)
+    end
+
+  end
+  test "with String subclass that redefined gsub method" do
+    assert_equal "Hello mars world", I18n.interpolate(RailsSafeBuffer.new("Hello %{planet} world"), :planet => 'mars') 
+  end
 end
 
 class I18nMissingInterpolationCustomHandlerTest < I18n::TestCase
