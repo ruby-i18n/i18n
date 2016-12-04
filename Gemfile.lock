@@ -7,7 +7,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     metaclass (0.0.4)
-    minitest (5.9.1)
+    minitest (5.10.1)
     mocha (1.2.1)
       metaclass (~> 0.0.1)
     rake (11.3.0)
