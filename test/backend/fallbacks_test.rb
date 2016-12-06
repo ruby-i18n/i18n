@@ -1,15 +1,17 @@
 require 'test_helper'
 
-class I18nBackendFallbacksTranslateTest < Test::Unit::TestCase
+class I18nBackendFallbacksTranslateTest < I18n::TestCase
   class Backend < I18n::Backend::Simple
     include I18n::Backend::Fallbacks
   end
 
   def setup
+    super
     I18n.backend = Backend.new
     store_translations(:en, :foo => 'Foo in :en', :bar => 'Bar in :en', :buz => 'Buz in :en')
     store_translations(:de, :bar => 'Bar in :de', :baz => 'Baz in :de')
     store_translations(:'de-DE', :baz => 'Baz in :de-DE')
+    store_translations(:'pt-BR', :baz => 'Baz in :pt-BR')
   end
 
   test "still returns an existing translation as usual" do
@@ -74,14 +76,24 @@ class I18nBackendFallbacksTranslateTest < Test::Unit::TestCase
   test "should ensure that default is not splitted on new line char" do
     assert_equal "Default \n Bar", I18n.t(:missing_bar, :default => "Default \n Bar")
   end
+
+  test "should not raise error when enforce_available_locales is true, :'pt' is missing and default is a Symbol" do
+    I18n.enforce_available_locales = true
+    begin
+      assert_equal 'Foo', I18n.t(:'model.attrs.foo', :locale => :'pt-BR', :default => [:'attrs.foo', "Foo"])
+    ensure
+      I18n.enforce_available_locales = false
+    end
+  end
 end
 
-class I18nBackendFallbacksLocalizeTest < Test::Unit::TestCase
+class I18nBackendFallbacksLocalizeTest < I18n::TestCase
   class Backend < I18n::Backend::Simple
     include I18n::Backend::Fallbacks
   end
 
   def setup
+    super
     I18n.backend = Backend.new
     store_translations(:en, :date => { :formats => { :en => 'en' }, :day_names => %w(Sunday) })
     store_translations(:de, :date => { :formats => { :de => 'de' } })
@@ -108,18 +120,79 @@ class I18nBackendFallbacksLocalizeTest < Test::Unit::TestCase
   end
 end
 
-class I18nBackendFallbacksWithChainTest < Test::Unit::TestCase
+class I18nBackendFallbacksWithChainTest < I18n::TestCase
+  class Backend < I18n::Backend::Simple
+    include I18n::Backend::Fallbacks
+  end
+
+  class Chain < I18n::Backend::Chain
+    include I18n::Backend::Fallbacks
+  end
+
+  def setup
+    super
+    backend = Backend.new
+    backend.store_translations(:de, :foo => 'FOO')
+    backend.store_translations(:'pt-BR', :foo => 'Baz in :pt-BR')
+    I18n.backend = Chain.new(I18n::Backend::Simple.new, backend)
+  end
+
+  test "falls back from de-DE to de when there is no translation for de-DE available" do
+    assert_equal 'FOO', I18n.t(:foo, :locale => :'de-DE')
+  end
+
+  test "falls back from de-DE to de when there is no translation for de-DE available when using arrays, too" do
+    assert_equal ['FOO', 'FOO'], I18n.t([:foo, :foo], :locale => :'de-DE')
+  end
+
+  test "should not raise error when enforce_available_locales is true, :'pt' is missing and default is a Symbol" do
+    I18n.enforce_available_locales = true
+    begin
+      assert_equal 'Foo', I18n.t(:'model.attrs.foo', :locale => :'pt-BR', :default => [:'attrs.foo', "Foo"])
+    ensure
+      I18n.enforce_available_locales = false
+    end
+  end
+end
+
+class I18nBackendFallbacksExistsTest < I18n::TestCase
   class Backend < I18n::Backend::Simple
     include I18n::Backend::Fallbacks
   end
 
   def setup
-    backend = Backend.new
-    backend.store_translations(:de, :foo => 'FOO')
-    I18n.backend = I18n::Backend::Chain.new(I18n::Backend::Simple.new, backend)
+    super
+    I18n.backend = Backend.new
+    store_translations(:en, :foo => 'Foo in :en', :bar => 'Bar in :en')
+    store_translations(:de, :bar => 'Bar in :de')
+    store_translations(:'de-DE', :baz => 'Baz in :de-DE')
   end
 
-  test "falls back from de-DE to de when there is no translation for de-DE available" do
-    assert_equal 'FOO', I18n.t(:foo, :locale => :'de-DE')
+  test "exists? given an existing key will return true" do
+    assert_equal true, I18n.exists?(:foo)
+  end
+
+  test "exists? given a non-existing key will return false" do
+    assert_equal false, I18n.exists?(:bogus)
+  end
+
+  test "exists? given an existing key and an existing locale will return true" do
+    assert_equal true, I18n.exists?(:foo, :en)
+    assert_equal true, I18n.exists?(:bar, :de)
+  end
+
+  test "exists? given a non-existing key and an existing locale will return false" do
+    assert_equal false, I18n.exists?(:bogus, :en)
+    assert_equal false, I18n.exists?(:bogus, :de)
+  end
+
+  test "exists? should return true given a key which is missing from the given locale and exists in a fallback locale" do
+    assert_equal true, I18n.exists?(:foo, :de)
+    assert_equal true, I18n.exists?(:foo, :'de-DE')
+  end
+
+  test "exists? should return false given a key which is missing from the given locale and all its fallback locales" do
+    assert_equal false, I18n.exists?(:baz, :de)
+    assert_equal false, I18n.exists?(:bogus, :'de-DE')
   end
 end

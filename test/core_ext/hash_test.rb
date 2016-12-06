@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'i18n/core_ext/hash'
 
-class I18nCoreExtHashInterpolationTest < Test::Unit::TestCase
+class I18nCoreExtHashInterpolationTest < I18n::TestCase
   test "#deep_symbolize_keys" do
     hash = { 'foo' => { 'bar' => { 'baz' => 'bar' } } }
     expected = { :foo => { :bar => { :baz => 'bar' } } }
@@ -12,6 +12,18 @@ class I18nCoreExtHashInterpolationTest < Test::Unit::TestCase
     hash = { :foo => 'bar',  :baz => 'bar' }
     expected = { :foo => 'bar' }
     assert_equal expected, hash.slice(:foo)
+  end
+
+  test "#slice non-existent key" do
+    hash = { :foo => 'bar',  :baz => 'bar' }
+    expected = { :foo => 'bar' }
+    assert_equal expected, hash.slice(:foo, :not_here)
+  end
+
+  test "#slice maintains subclasses of Hash" do
+    klass = Class.new(Hash)
+    hash = klass[:foo, 'bar', :baz, 'bar']
+    assert_instance_of klass,  hash.slice(:foo)
   end
 
   test "#except" do

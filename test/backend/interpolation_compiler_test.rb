@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class InterpolationCompilerTest < Test::Unit::TestCase
+class InterpolationCompilerTest < I18n::TestCase
   Compiler = I18n::Backend::InterpolationCompiler::Compiler
 
   def compile_and_interpolate(str, values = {})
@@ -95,18 +95,18 @@ class InterpolationCompilerTest < Test::Unit::TestCase
   end
 end
 
-class I18nBackendInterpolationCompilerTest < Test::Unit::TestCase
+class I18nBackendInterpolationCompilerTest < I18n::TestCase
   class Backend < I18n::Backend::Simple
     include I18n::Backend::InterpolationCompiler
   end
-  
+
   include I18n::Tests::Interpolation
 
   def setup
     I18n.backend = Backend.new
     super
   end
-  
+
   # pre-compile default strings to make sure we are testing I18n::Backend::InterpolationCompiler
   def interpolate(*args)
     options = args.last.kind_of?(Hash) ? args.last : {}
@@ -115,5 +115,4 @@ class I18nBackendInterpolationCompilerTest < Test::Unit::TestCase
     end
     super
   end
-
 end

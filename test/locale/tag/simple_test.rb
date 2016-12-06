@@ -1,7 +1,7 @@
 # encoding: utf-8
 require 'test_helper'
 
-class I18nLocaleTagSimpleTest < Test::Unit::TestCase
+class I18nLocaleTagSimpleTest < I18n::TestCase
   include I18n::Locale
 
   test "returns 'de' as the language subtag in lowercase" do

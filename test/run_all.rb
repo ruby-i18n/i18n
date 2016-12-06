@@ -1,21 +1,20 @@
 def bundle_check
-  `bundle check` == "The Gemfile's dependencies are satisfied\n"
+  `bundle check` == "Resolving dependencies...\nThe Gemfile's dependencies are satisfied\n"
 end
 
-command  = 'ruby -w -Ilib -Itest test/all.rb'
-gemfiles = %w(ci/Gemfile.rails-3.x ci/Gemfile.rails-2.3.x ci/Gemfile.no-rails)
+def execute(command)
+  puts command
+  system command
+end
+
+gemfiles = %w(Gemfile) + Dir['gemfiles/Gemfile*'].reject { |f| f.end_with?('.lock') }
 
 results = gemfiles.map do |gemfile|
-  puts "BUNDLE_GEMFILE=#{gemfile}"
-  ENV['BUNDLE_GEMFILE'] = gemfile
+  puts "\nBUNDLE_GEMFILE=#{gemfile}"
+  ENV['BUNDLE_GEMFILE'] = File.expand_path("../../#{gemfile}", __FILE__)
 
-  unless bundle_check
-    puts "bundle install"
-    system('bundle install')
-  end
-
-  puts command
-  system('ruby -w -Ilib -Itest test/all.rb')
+  execute 'bundle install' unless bundle_check
+  execute 'bundle exec rake test'
 end
 
-exit(results.inject(true) { |a, b| a && b })
+exit results.all?

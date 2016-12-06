@@ -7,6 +7,15 @@ module I18n
     #
     #   include I18n::Gettext::Helpers
     module Helpers
+      # Makes dynamic translation messages readable for the gettext parser.
+      # <tt>_(fruit)</tt> cannot be understood by the gettext parser. To help the parser find all your translations,
+      # you can add <tt>fruit = N_("Apple")</tt> which does not translate, but tells the parser: "Apple" needs translation.
+      # * msgid: the message id.
+      # * Returns: msgid.
+      def N_(msgsid)
+        msgsid
+      end
+
       def gettext(msgid, options = {})
         I18n.t(msgid, { :default => msgid, :separator => '|' }.merge(options))
       end

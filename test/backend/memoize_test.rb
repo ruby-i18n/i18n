@@ -1,6 +1,6 @@
 require 'test_helper'
-
-require 'backend/simple_test'
+# TODO: change back to "require 'backend/simple'" when dropping support to Ruby 1.8.7.
+require File.expand_path('../simple_test', __FILE__)
 
 class I18nBackendMemoizeTest < I18nBackendSimpleTest
   module MemoizeSpy

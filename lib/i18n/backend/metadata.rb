@@ -21,11 +21,15 @@ module I18n
         def included(base)
           Object.class_eval do
             def translation_metadata
-              @translation_metadata ||= {}
+              unless self.frozen?
+                @translation_metadata ||= {}
+              else
+                {}
+              end
             end
 
             def translation_metadata=(translation_metadata)
-              @translation_metadata = translation_metadata
+              @translation_metadata = translation_metadata unless self.frozen?
             end
           end unless Object.method_defined?(:translation_metadata)
         end

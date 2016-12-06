@@ -22,7 +22,7 @@ module I18n
         if match == '%%'
           '%'
         else
-          key = ($1 || $2).to_sym
+          key = ($1 || $2 || match.tr("%{}", "")).to_sym
           value = if values.key?(key)
                     values[key]
                   else

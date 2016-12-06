@@ -1,15 +1,17 @@
+require 'set'
+
 module I18n
   class Config
     # The only configuration value that is not global and scoped to thread is :locale.
     # It defaults to the default_locale.
     def locale
-      @locale ||= default_locale
+      defined?(@locale) && @locale ? @locale : default_locale
     end
 
     # Sets the current locale pseudo-globally, i.e. in the Thread.current hash.
     def locale=(locale)
       I18n.enforce_available_locales!(locale)
-      @locale = locale.to_sym rescue nil
+      @locale = locale && locale.to_sym
     end
 
     # Returns the current backend. Defaults to +Backend::Simple+.
@@ -30,7 +32,7 @@ module I18n
     # Sets the current default locale. Used to set a custom default locale.
     def default_locale=(locale)
       I18n.enforce_available_locales!(locale)
-      @@default_locale = locale.to_sym rescue nil
+      @@default_locale = locale && locale.to_sym
     end
 
     # Returns an array of locales for which translations are available.
@@ -41,10 +43,25 @@ module I18n
       @@available_locales || backend.available_locales
     end
 
+    # Caches the available locales list as both strings and symbols in a Set, so
+    # that we can have faster lookups to do the available locales enforce check.
+    def available_locales_set #:nodoc:
+      @@available_locales_set ||= available_locales.inject(Set.new) do |set, locale|
+        set << locale.to_s << locale.to_sym
+      end
+    end
+
     # Sets the available locales.
     def available_locales=(locales)
       @@available_locales = Array(locales).map { |locale| locale.to_sym }
       @@available_locales = nil if @@available_locales.empty?
+      @@available_locales_set = nil
+    end
+
+    # Clears the available locales set so it can be recomputed again after I18n
+    # gets reloaded.
+    def clear_available_locales_set #:nodoc:
+      @@available_locales_set = nil
     end
 
     # Returns the current default scope separator. Defaults to '.'
@@ -57,7 +74,8 @@ module I18n
       @@default_separator = separator
     end
 
-    # Return the current exception handler. Defaults to :default_exception_handler.
+    # Returns the current exception handler. Defaults to an instance of
+    # I18n::ExceptionHandler.
     def exception_handler
       @@exception_handler ||= ExceptionHandler.new
     end
@@ -106,12 +124,15 @@ module I18n
     # behave like a Ruby Array.
     def load_path=(load_path)
       @@load_path = load_path
+      @@available_locales_set = nil
+      backend.reload!
     end
 
-    # [Deprecated] this will default to true in the future
-    # Defaults to nil so that it triggers the deprecation warning
+    # Whether or not to verify if locales are in the list of available locales.
+    # Defaults to true.
+    @@enforce_available_locales = true
     def enforce_available_locales
-      defined?(@@enforce_available_locales) ? @@enforce_available_locales : nil
+      @@enforce_available_locales
     end
 
     def enforce_available_locales=(enforce_available_locales)

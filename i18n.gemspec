@@ -13,14 +13,10 @@ Gem::Specification.new do |s|
   s.description  = "New wave Internationalization support for Ruby."
   s.license      = "MIT"
 
-  s.files        = Dir.glob("{ci,lib,test}/**/**") + %w(README.textile MIT-LICENSE)
+  s.files        = Dir.glob("{gemfiles,lib,test}/**/**") + %w(README.md MIT-LICENSE)
   s.platform     = Gem::Platform::RUBY
   s.require_path = 'lib'
   s.rubyforge_project = '[none]'
   s.required_rubygems_version = '>= 1.3.5'
-
-  s.add_development_dependency 'activesupport', '>= 3.0.0'
-  s.add_development_dependency 'sqlite3'
-  s.add_development_dependency 'mocha'
-  s.add_development_dependency 'test_declarative'
+  s.required_ruby_version = '>= 1.9.3'
 end

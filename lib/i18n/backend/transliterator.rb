@@ -71,13 +71,13 @@ module I18n
 
         def initialize(rule = nil)
           @rule = rule
-          add DEFAULT_APPROXIMATIONS.dup
+          add_default_approximations
           add rule if rule
         end
 
-        def transliterate(string, replacement = nil)
+        def transliterate(string, replacement = DEFAULT_REPLACEMENT_CHAR)
           string.gsub(/[^\x00-\x7f]/u) do |char|
-            approximations[char] || replacement || DEFAULT_REPLACEMENT_CHAR
+            approximations[char] || replacement
           end
         end
 
@@ -85,6 +85,12 @@ module I18n
 
         def approximations
           @approximations ||= {}
+        end
+
+        def add_default_approximations
+          DEFAULT_APPROXIMATIONS.each do |key, value|
+            approximations[key] = value
+          end
         end
 
         # Add transliteration rules to the approximations hash.

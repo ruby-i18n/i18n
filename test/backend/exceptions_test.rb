@@ -1,7 +1,8 @@
 require 'test_helper'
 
-class I18nBackendExceptionsTest < Test::Unit::TestCase
+class I18nBackendExceptionsTest < I18n::TestCase
   def setup
+    super
     I18n.backend = I18n::Backend::Simple.new
   end
 

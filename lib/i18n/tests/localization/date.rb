@@ -51,6 +51,10 @@ module I18n
           assert_nothing_raised { I18n.l(@date, options.freeze) }
         end
 
+        test "localize Date: given nil with default value it returns default" do
+          assert_equal 'default', I18n.l(nil, :default => 'default')
+        end
+
         test "localize Date: given nil it raises I18n::ArgumentError" do
           assert_raise(I18n::ArgumentError) { I18n.l(nil) }
         end

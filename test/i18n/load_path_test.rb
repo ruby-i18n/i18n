@@ -1,7 +1,8 @@
 require 'test_helper'
 
-class I18nLoadPathTest < Test::Unit::TestCase
+class I18nLoadPathTest < I18n::TestCase
   def setup
+    super
     I18n.locale = :en
     I18n.backend = I18n::Backend::Simple.new
     store_translations(:en, :foo => {:bar => 'bar', :baz => 'baz'})

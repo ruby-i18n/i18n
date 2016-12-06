@@ -1,12 +1,13 @@
 require 'test_helper'
 
-class I18nBackendPluralizationTest < Test::Unit::TestCase
+class I18nBackendPluralizationTest < I18n::TestCase
   class Backend < I18n::Backend::Simple
     include I18n::Backend::Pluralization
     include I18n::Backend::Fallbacks
   end
 
   def setup
+    super
     I18n.backend = Backend.new
     @rule = lambda { |n| n == 1 ? :one : n == 0 || (2..10).include?(n % 100) ? :few : (11..19).include?(n % 100) ? :many : :other }
     store_translations(:xx, :i18n => { :plural => { :rule => @rule } })

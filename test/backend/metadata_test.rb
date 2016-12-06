@@ -1,11 +1,12 @@
 require 'test_helper'
 
-class I18nBackendMetadataTest < Test::Unit::TestCase
+class I18nBackendMetadataTest < I18n::TestCase
   class Backend < I18n::Backend::Simple
     include I18n::Backend::Metadata
   end
 
   def setup
+    super
     I18n.backend = Backend.new
     store_translations(:en, :foo => 'Hi %{name}')
   end
