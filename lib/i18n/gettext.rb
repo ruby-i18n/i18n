@@ -13,7 +13,7 @@ module I18n
       # integer-index based style
       # TODO move this information to the pluralization module
       def plural_keys(*args)
-        args.length == 0 ? @@plural_keys : @@plural_keys[args.first] || @@plural_keys[:en]
+        args.empty? ? @@plural_keys : @@plural_keys[args.first] || @@plural_keys[:en]
       end
 
       def extract_scope(msgid, separator)
