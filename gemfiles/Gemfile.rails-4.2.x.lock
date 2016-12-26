@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    i18n (0.7.0)
+    i18n (0.8.0.beta1)
 
 GEM
   remote: https://rubygems.org/
@@ -35,4 +35,4 @@ DEPENDENCIES
   test_declarative
 
 BUNDLED WITH
-   1.13.5
+   1.13.7
