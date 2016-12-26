@@ -68,6 +68,14 @@ class I18nBackendFallbacksTranslateTest < I18n::TestCase
     assert_equal 'Default 6 Bars', I18n.t(:missing_foo, :locale => :'de-DE', :default => [:missing_bar, {:other => "Default %{count} Bars"}, "Default Bar"], :count => 6)
   end
 
+  test "returns the default translation for a missing :de translation even when default is a String when fallback is disabled" do
+    assert_equal 'Default String', I18n.t(:foo, :locale => :de, :default => 'Default String', :fallback => false)
+  end
+
+  test "raises I18n::MissingTranslationData exception when fallback is disabled even when fallback translation exists" do
+    assert_raise(I18n::MissingTranslationData) { I18n.t(:foo, :locale => :de, :fallback => false, :raise => true) }
+  end
+
   test "raises I18n::MissingTranslationData exception when no translation was found" do
     assert_raise(I18n::MissingTranslationData) { I18n.t(:faa, :locale => :en, :raise => true) }
     assert_raise(I18n::MissingTranslationData) { I18n.t(:faa, :locale => :de, :raise => true) }
