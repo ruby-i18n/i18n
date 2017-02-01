@@ -36,12 +36,6 @@ matrix:
       gemfile: gemfiles/Gemfile.rails-5.0.x
     - rvm: 2.1.10
       gemfile: gemfiles/Gemfile.rails-5.0.x
-    # activesupport has a dependency on json, which does not build on this version
-    - rvm: ruby-head
-      gemfile: gemfiles/Gemfile.rails-4.1.x
-    # activesupport has a dependency on json, which does not build on this version
-    - rvm: ruby-head
-      gemfile: gemfiles/Gemfile.rails-4.2.x
   allow_failures:
     - rvm: rbx
     - rvm: jruby
