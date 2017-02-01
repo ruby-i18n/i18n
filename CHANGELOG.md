@@ -2,6 +2,10 @@
 
 * `Hash#slice` ignores non existing keys.
 
+# 0.8.0
+
+See https://github.com/svenfuchs/i18n/releases/tag/v0.8.0
+
 # 0.7.0
 
 * Drop support to Ruby 1.8.7 / REE
