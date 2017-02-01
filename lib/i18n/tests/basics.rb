@@ -38,7 +38,7 @@ module I18n
 
       test "available_locales delegates to the backend when not set explicitely" do
         I18n.backend.expects(:available_locales).twice
-        assert_equal I18n.available_locales, I18n.available_locales
+        assert_equal I18n.backend.available_locales, I18n.available_locales
       end
 
       test "exists? is implemented by the backend" do
