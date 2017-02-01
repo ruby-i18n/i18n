@@ -29,7 +29,7 @@ module I18n
       end
 
       test "defaults: given nil it returns nil" do
-        assert_equal nil, I18n.t(:does_not_exist, :default => nil)
+        assert_nil I18n.t(:does_not_exist, :default => nil)
       end
 
       test "defaults: given an array of missing keys it raises a MissingTranslationData exception" do

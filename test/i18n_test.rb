@@ -270,7 +270,7 @@ class I18nTest < I18n::TestCase
   end
 
   test "localize given nil and default returns default" do
-    assert_equal nil, I18n.l(nil, :default => nil)
+    assert_nil I18n.l(nil, :default => nil)
   end
 
   test "localize given an Object raises an I18n::ArgumentError" do
