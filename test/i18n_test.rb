@@ -351,6 +351,10 @@ class I18nTest < I18n::TestCase
     end
   end
 
+  test "transliterate non-ASCII chars not in map with default replacement char" do
+    assert_equal "???", I18n.transliterate("日本語")
+  end
+
   test "I18n.locale_available? returns true when the passed locale is available" do
     I18n.available_locales = [:en, :de]
     assert_equal true, I18n.locale_available?(:de)
