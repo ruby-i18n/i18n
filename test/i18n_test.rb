@@ -215,6 +215,10 @@ class I18nTest < I18n::TestCase
     assert_raise(I18n::ArgumentError) { I18n.t("") }
   end
 
+  test "translate given nil as a key raises an I18n::ArgumentError" do
+    assert_raise(I18n::ArgumentError) { I18n.t(nil) }
+  end
+
   test "translate given an unavailable locale rases an I18n::InvalidLocale" do
     begin
       I18n.config.enforce_available_locales = true
@@ -247,6 +251,14 @@ class I18nTest < I18n::TestCase
 
   test "exists? given a non-existing key will return false" do
     assert_equal false, I18n.exists?(:bogus)
+  end
+
+  test "exists? given an empty string will raise an error" do
+    assert_raise(I18n::ArgumentError) { I18n.exists?("") }
+  end
+
+  test "exists? given nil will raise an error" do
+    assert_raise(I18n::ArgumentError) { I18n.exists?(nil) }
   end
 
   test "exists? given an existing dot-separated key will return true" do
@@ -396,7 +408,7 @@ class I18nTest < I18n::TestCase
       I18n.config.enforce_available_locales = false
     end
   end
-  
+
   test 'I18n.reload! reloads the set of locales that are enforced' do
     begin
       # Clear the backend that affects the available locales and somehow can remain
@@ -404,9 +416,9 @@ class I18nTest < I18n::TestCase
       # For instance, it contains enough translations to cause a false positive with
       # this test when ran with --seed=50992
       I18n.backend = I18n::Backend::Simple.new
-      
+
       assert !I18n.available_locales.include?(:de), "Available locales should not include :de at this point"
-      
+
       I18n.enforce_available_locales = true
 
       assert_raise(I18n::InvalidLocale) { I18n.default_locale = :de }
@@ -422,11 +434,11 @@ class I18nTest < I18n::TestCase
       store_translations(:en, :foo => 'Foo in :en')
       store_translations(:de, :foo => 'Foo in :de')
       store_translations(:pl, :foo => 'Foo in :pl')
-      
+
       assert I18n.available_locales.include?(:de), ":de should now be allowed"
       assert I18n.available_locales.include?(:en), ":en should now be allowed"
       assert I18n.available_locales.include?(:pl), ":pl should now be allowed"
-      
+
       assert_nothing_raised { I18n.default_locale = I18n.locale = :en }
       assert_nothing_raised { I18n.default_locale = I18n.locale = :de }
       assert_nothing_raised { I18n.default_locale = I18n.locale = :pl }

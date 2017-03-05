@@ -55,7 +55,7 @@ module I18n
           @fallback_locked = false
         end
 
-        return super(locale, nil, options.merge(:default => default)) if default
+        return super(locale, key, options.merge(:default => default)) if default
         throw(:exception, I18n::MissingTranslation.new(locale, key, options))
       end
 

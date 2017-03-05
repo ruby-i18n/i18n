@@ -39,10 +39,10 @@ class I18nBackendChainTest < I18n::TestCase
   end
 
   test "default" do
-    assert_equal 'Fuh',  I18n.t(:default => 'Fuh')
-    assert_equal 'Zero', I18n.t(:default => { :zero => 'Zero' }, :count => 0)
-    assert_equal({ :zero => 'Zero' }, I18n.t(:default => { :zero => 'Zero' }))
-    assert_equal 'Foo', I18n.t(:default => :foo)
+    assert_equal 'Fuh',  I18n.t(:does_not_exist, :default => 'Fuh')
+    assert_equal 'Zero', I18n.t(:does_not_exist, :default => { :zero => 'Zero' }, :count => 0)
+    assert_equal({ :zero => 'Zero' }, I18n.t(:does_not_exist, :default => { :zero => 'Zero' }))
+    assert_equal 'Foo', I18n.t(:does_not_exist, :default => :foo)
   end
 
   test 'default is returned if translation is missing' do
