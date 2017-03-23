@@ -323,8 +323,10 @@ module I18n
       end
     end
 
+    @@normalized_key_cache = Concurrent::Hash.new { |h, k| h[k] = Concurrent::Hash.new }
+
     def normalize_key(key, separator)
-      normalized_key_cache[separator][key] ||=
+      @@normalized_key_cache[separator][key] ||=
         case key
         when Array
           key.map { |k| normalize_key(k, separator) }.flatten
@@ -334,10 +336,6 @@ module I18n
           keys.map! { |k| k.to_sym }
           keys
         end
-    end
-
-    def normalized_key_cache
-      @normalized_key_cache ||= Concurrent::Hash.new { |h,k| h[k] = Concurrent::Hash.new }
     end
   end
 
