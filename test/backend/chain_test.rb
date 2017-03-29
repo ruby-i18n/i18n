@@ -81,6 +81,11 @@ class I18nBackendChainTest < I18n::TestCase
     I18n.backend.store_translations :foo, {:bar => :baz}, {:option => 'persists'}
   end
 
+  test "store_translations options are not dropped while transfering to backend" do
+    @first.expects(:store_translations).with(:foo, {:bar => :baz}, {:option => 'persists'})
+    I18n.backend.store_translations :foo, {:bar => :baz}, {:option => 'persists'}
+  end
+
   protected
 
     def backend(translations)
