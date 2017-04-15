@@ -259,6 +259,13 @@ module I18n
       self.locale = current_locale if tmp_locale
     end
 
+    # Executes block with each given I18n.locale.
+    def with_locales(*locales)
+      locales.flatten.map do |locale|
+        with_locale(locale) { yield }
+      end
+    end
+
     # Merges the given locale, key and scope into a single array of keys.
     # Splits keys that contain dots into multiple keys. Makes sure all
     # keys are Symbols.

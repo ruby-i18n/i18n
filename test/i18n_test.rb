@@ -338,6 +338,14 @@ class I18nTest < I18n::TestCase
     assert_equal I18n.default_locale, I18n.locale
   end
 
+  test "I18n.with_locales temporarily sets the given locales" do
+    store_translations(:en, :foo => 'Foo in :en')
+    store_translations(:de, :foo => 'Foo in :de')
+    
+    assert_equal [[:en, 'Foo in :en'], [:de, 'Foo in :de']], I18n.with_locales(:en, :de) { [I18n.locale, I18n.t(:foo)]  }
+    assert_equal I18n.default_locale, I18n.locale
+  end
+
   test "I18n.translitarate handles I18n::ArgumentError exception" do
     I18n::Backend::Transliterator.stubs(:get).raises(I18n::ArgumentError)
     I18n.exception_handler.expects(:call).raises(I18n::ArgumentError)
