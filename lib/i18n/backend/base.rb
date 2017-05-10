@@ -23,7 +23,7 @@ module I18n
 
       def translate(locale, key, options = {})
         raise InvalidLocale.new(locale) unless locale
-        entry = key && lookup(locale, key, options[:scope], options)
+        entry = lookup(locale, key, options[:scope], options) unless key.nil?
 
         if entry.nil? && options.key?(:default)
           entry = default(locale, key, options[:default], options)
