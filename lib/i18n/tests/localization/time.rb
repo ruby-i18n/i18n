@@ -43,8 +43,13 @@ module I18n
         end
 
         test "localize Time: given a meridian indicator format it returns the correct meridian indicator" do
-          assert_equal 'am', I18n.l(@time, :format => '%p', :locale => :de)
-          assert_equal 'pm', I18n.l(@other_time, :format => '%p', :locale => :de)
+          assert_equal 'AM', I18n.l(@time, :format => '%p', :locale => :de)
+          assert_equal 'PM', I18n.l(@other_time, :format => '%p', :locale => :de)
+        end
+
+        test "localize Time: given a meridian indicator format it returns the correct meridian indicator in upcase" do
+          assert_equal 'am', I18n.l(@time, :format => '%P', :locale => :de)
+          assert_equal 'pm', I18n.l(@other_time, :format => '%P', :locale => :de)
         end
 
         test "localize Time: given an unknown format it does not fail" do

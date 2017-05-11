@@ -6,3 +6,4 @@ vendor/**/*
 pkg
 .bundle
 .rvmrc
+Gemfile.lock

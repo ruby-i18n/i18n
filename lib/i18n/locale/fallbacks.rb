@@ -30,7 +30,7 @@
 #
 #   # using a custom locale as default fallback locale
 #
-#   I18n.fallbacks = I18n::Fallbacks.new(:"en-GB", :"de-AT" => :de, :"de-CH" => :de)
+#   I18n.fallbacks = I18n::Locale::Fallbacks.new(:"en-GB", :"de-AT" => :de, :"de-CH" => :de)
 #   I18n.fallbacks[:"de-AT"] # => [:"de-AT", :de, :"en-GB", :en]
 #   I18n.fallbacks[:"de-CH"] # => [:"de-CH", :de, :"en-GB", :en]
 #
@@ -82,10 +82,10 @@ module I18n
 
       protected
 
-      def compute(tags, include_defaults = true)
+      def compute(tags, include_defaults = true, exclude = [])
         result = Array(tags).collect do |tag|
-          tags = I18n::Locale::Tag.tag(tag).self_and_parents.map! { |t| t.to_sym }
-          tags.each { |_tag| tags += compute(@map[_tag]) if @map[_tag] }
+          tags = I18n::Locale::Tag.tag(tag).self_and_parents.map! { |t| t.to_sym } - exclude
+          tags.each { |_tag| tags += compute(@map[_tag], false, exclude + tags) if @map[_tag] }
           tags
         end.flatten
         result.push(*defaults) if include_defaults

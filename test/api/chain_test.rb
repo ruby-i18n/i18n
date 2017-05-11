@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class I18nApiChainTest < Test::Unit::TestCase
+class I18nApiChainTest < I18n::TestCase
   def setup
     super
     I18n.backend = I18n::Backend::Chain.new(I18n::Backend::Simple.new, I18n.backend)

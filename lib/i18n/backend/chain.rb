@@ -45,9 +45,8 @@ module I18n
               options = default_options if backend == backends.last
               translation = backend.translate(locale, key, options)
               if namespace_lookup?(translation, options)
-                namespace ||= {}
-                namespace.merge!(translation)
-              elsif !translation.nil?
+                namespace = _deep_merge(translation, namespace || {})
+              elsif !translation.nil? || (options.key?(:default) && options[:default].nil?)
                 return translation
               end
             end
@@ -55,6 +54,12 @@ module I18n
 
           return namespace if namespace
           throw(:exception, I18n::MissingTranslation.new(locale, key, options))
+        end
+
+        def exists?(locale, key)
+          backends.any? do |backend|
+            backend.exists?(locale, key)
+          end
         end
 
         def localize(locale, object, format = :default, options = {})
@@ -69,6 +74,20 @@ module I18n
         protected
           def namespace_lookup?(result, options)
             result.is_a?(Hash) && !options.has_key?(:count)
+          end
+
+        private
+          # This is approximately what gets used in ActiveSupport.
+          # However since we are not guaranteed to run in an ActiveSupport context
+          # it is wise to have our own copy. We underscore it
+          # to not pollute the namespace of the including class.
+          def _deep_merge(hash, other_hash)
+            copy = hash.dup
+            other_hash.each_pair do |k,v|
+              value_from_other = hash[k]
+              copy[k] = value_from_other.is_a?(Hash) && v.is_a?(Hash) ? _deep_merge(value_from_other, v) : v
+            end
+            copy
           end
       end
 

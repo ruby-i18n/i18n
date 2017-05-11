@@ -1,11 +1,12 @@
 require 'test_helper'
 
-class I18nBackendCascadeTest < Test::Unit::TestCase
+class I18nBackendCascadeTest < I18n::TestCase
   class Backend < I18n::Backend::Simple
     include I18n::Backend::Cascade
   end
 
   def setup
+    super
     I18n.backend = Backend.new
     store_translations(:en, :foo => 'foo', :bar => { :baz => 'baz' })
     @cascade_options = { :step => 1, :offset => 1, :skip_root => false }
@@ -38,7 +39,7 @@ class I18nBackendCascadeTest < Test::Unit::TestCase
   end
 
   test "cascades defaults, too" do
-    assert_equal 'foo', lookup(nil, :default => [:'missing.missing', :'missing.foo'])
+    assert_equal 'foo', lookup(:does_not_exist, :default => [:'missing.missing', :'missing.foo'])
   end
 
   test "works with :offset => 2 and a single key" do

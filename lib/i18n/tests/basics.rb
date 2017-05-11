@@ -37,8 +37,14 @@ module I18n
       end
 
       test "available_locales delegates to the backend when not set explicitely" do
-        I18n.backend.expects(:available_locales).twice
-        assert_equal I18n.available_locales, I18n.available_locales
+        original_available_locales_value = I18n.backend.available_locales
+        I18n.backend.expects(:available_locales).returns(original_available_locales_value).twice
+        assert_equal I18n.backend.available_locales, I18n.available_locales
+      end
+
+      test "exists? is implemented by the backend" do
+        I18n.backend.store_translations(:foo, :bar => 'baz')
+        assert I18n.exists?(:bar, :foo)
       end
 
       test "storing a nil value as a translation removes it from the available locale data" do

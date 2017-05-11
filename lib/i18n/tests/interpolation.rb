@@ -66,7 +66,7 @@ module I18n
         assert_equal 'こんにちは、ゆきひろさん!', interpolate(:default => 'こんにちは、%{name}さん!', :name => 'ゆきひろ')
       end
 
-      if Kernel.const_defined?(:Encoding)
+      if Object.const_defined?(:Encoding)
         test "interpolation: given a euc-jp translation and a utf-8 value it raises Encoding::CompatibilityError" do
           assert_raise(Encoding::CompatibilityError) do
             interpolate(:default => euc_jp('こんにちは、%{name}さん!'), :name => 'ゆきひろ')
@@ -102,6 +102,26 @@ module I18n
         assert_raise(I18n::ReservedInterpolationKey) { interpolate(:default => '%{default}',   :foo => :bar) }
         assert_raise(I18n::ReservedInterpolationKey) { interpolate(:default => '%{scope}',     :foo => :bar) }
         assert_raise(I18n::ReservedInterpolationKey) { interpolate(:default => '%{separator}', :foo => :bar) }
+      end
+
+      test "interpolation: deep interpolation for default string" do
+        assert_equal 'Hi %{name}!', interpolate(:default => 'Hi %{name}!', :deep_interpolation => true)
+      end
+
+      test "interpolation: deep interpolation for interpolated string" do
+        assert_equal 'Hi Ann!', interpolate(:default => 'Hi %{name}!', :name => 'Ann', :deep_interpolation => true)
+      end
+
+      test "interpolation: deep interpolation for Hash" do
+        people = { :people => { :ann => 'Ann is %{ann}', :john => 'John is %{john}' } }
+        interpolated_people = { :people => { :ann => 'Ann is good', :john => 'John is big' } }
+        assert_equal interpolated_people, interpolate(:default => people, :ann => 'good', :john => 'big', :deep_interpolation => true)
+      end
+
+      test "interpolation: deep interpolation for Array" do
+        people = { :people => ['Ann is %{ann}', 'John is %{john}'] }
+        interpolated_people = { :people => ['Ann is good', 'John is big'] }
+        assert_equal interpolated_people, interpolate(:default => people, :ann => 'good', :john => 'big', :deep_interpolation => true)
       end
 
       protected

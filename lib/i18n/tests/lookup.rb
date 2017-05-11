@@ -17,7 +17,7 @@ module I18n
         assert_equal({ :a => "b" }, I18n.t(:hash))
       end
 
-      test "lookup: it returns a array" do
+      test "lookup: it returns an array" do
         assert_equal(%w(a b c), I18n.t(:array))
       end
 
@@ -39,6 +39,13 @@ module I18n
 
       test "lookup: does not raise an exception if no translation data is present for the given locale" do
         assert_nothing_raised { I18n.t(:foo, :locale => :xx) }
+      end
+
+      test "lookup: does not modify the options hash" do
+        options = {}
+        assert_equal "a", I18n.t(:string, options)
+        assert_equal({}, options)
+        assert_nothing_raised { I18n.t(:string, options.freeze) }
       end
 
       test "lookup: given an array of keys it translates all of them" do

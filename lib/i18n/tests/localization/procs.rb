@@ -27,13 +27,13 @@ module I18n
 
         test "localize Date: given a format that resolves to a Proc it calls the Proc with the object" do
           setup_time_proc_translations
-          date = ::Date.new(2008, 3, 1, 6)
+          date = ::Date.new(2008, 3, 1)
           assert_equal '[Sat, 01 Mar 2008, {}]', I18n.l(date, :format => :proc, :locale => :ru)
         end
 
         test "localize Date: given a format that resolves to a Proc it calls the Proc with the object and extra options" do
           setup_time_proc_translations
-          date = ::Date.new(2008, 3, 1, 6)
+          date = ::Date.new(2008, 3, 1)
           assert_equal '[Sat, 01 Mar 2008, {:foo=>"foo"}]', I18n.l(date, :format => :proc, :foo => 'foo', :locale => :ru)
         end
 
@@ -52,19 +52,19 @@ module I18n
         test "localize Time: given a format that resolves to a Proc it calls the Proc with the object" do
           setup_time_proc_translations
           time = ::Time.utc(2008, 3, 1, 6, 0)
-          assert_equal inspect_args([time, {}]), I18n.l(time, :format => :proc, :locale => :ru)
+          assert_equal I18n::Tests::Localization::Procs.inspect_args([time, {}]), I18n.l(time, :format => :proc, :locale => :ru)
         end
 
         test "localize Time: given a format that resolves to a Proc it calls the Proc with the object and extra options" do
           setup_time_proc_translations
           time = ::Time.utc(2008, 3, 1, 6, 0)
           options = { :foo => 'foo' }
-          assert_equal inspect_args([time, options]), I18n.l(time, options.merge(:format => :proc, :locale => :ru))
+          assert_equal I18n::Tests::Localization::Procs.inspect_args([time, options]), I18n.l(time, options.merge(:format => :proc, :locale => :ru))
         end
 
         protected
 
-          def inspect_args(args)
+          def self.inspect_args(args)
             args = args.map do |arg|
               case arg
               when ::Time, ::DateTime
@@ -85,12 +85,12 @@ module I18n
             I18n.backend.store_translations :ru, {
               :time => {
                 :formats => {
-                  :proc => lambda { |*args| inspect_args(args) }
+                  :proc => lambda { |*args| I18n::Tests::Localization::Procs.inspect_args(args) }
                 }
               },
               :date => {
                 :formats => {
-                  :proc => lambda { |*args| inspect_args(args) }
+                  :proc => lambda { |*args| I18n::Tests::Localization::Procs.inspect_args(args) }
                 },
                 :'day_names' => lambda { |key, options|
                   (options[:format] =~ /^%A/) ?

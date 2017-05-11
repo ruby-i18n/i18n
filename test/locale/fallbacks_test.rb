@@ -2,11 +2,7 @@ require 'test_helper'
 
 include I18n::Locale
 
-class I18nFallbacksDefaultsTest < Test::Unit::TestCase
-  def teardown
-    I18n.default_locale = :en
-  end
-
+class I18nFallbacksDefaultsTest < I18n::TestCase
   test "defaults reflect the I18n.default_locale if no default has been set manually" do
     I18n.default_locale = :'en-US'
     fallbacks = Fallbacks.new
@@ -26,8 +22,9 @@ class I18nFallbacksDefaultsTest < Test::Unit::TestCase
   end
 end
 
-class I18nFallbacksComputationTest < Test::Unit::TestCase
+class I18nFallbacksComputationTest < I18n::TestCase
   def setup
+    super
     @fallbacks = Fallbacks.new(:'en-US')
   end
 
@@ -120,5 +117,17 @@ class I18nFallbacksComputationTest < Test::Unit::TestCase
 
   test "with a mapping :de => :en, :he => :en defined it [:he, :en] for :de" do
     assert_equal [:he, :"en-US", :en], @fallbacks[:he]
+  end
+
+  # Test allowing mappings that fallback to each other
+
+  test "with :no => :nb, :nb => :no defined :no returns [:no, :nb, :en-US, :en]" do
+    @fallbacks.map(:no => :nb, :nb => :no)
+    assert_equal [:no, :nb, :"en-US", :en], @fallbacks[:no]
+  end
+
+  test "with :no => :nb, :nb => :no defined :nb returns [:nb, :no, :en-US, :en]" do
+    @fallbacks.map(:no => :nb, :nb => :no)
+    assert_equal [:nb, :no, :"en-US", :en], @fallbacks[:nb]
   end
 end

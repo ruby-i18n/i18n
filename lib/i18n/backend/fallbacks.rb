@@ -35,19 +35,27 @@ module I18n
       # it's a Symbol. When the default contains a String, Proc or Hash
       # it is evaluated last after all the fallback locales have been tried.
       def translate(locale, key, options = {})
-        return super if options[:fallback]
+        return super unless options.fetch(:fallback, true)
+        return super if (@fallback_locked ||= false)
         default = extract_non_symbol_default!(options) if options[:default]
 
-        options[:fallback] = true
-        I18n.fallbacks[locale].each do |fallback|
-          catch(:exception) do
-            result = super(fallback, key, options)
-            return result unless result.nil?
+        begin
+          @fallback_locked = true
+          I18n.fallbacks[locale].each do |fallback|
+            begin
+              catch(:exception) do
+                result = super(fallback, key, options)
+                return result if (result.nil? && options.key?(:default) && options[:default].nil?) || !result.nil?
+              end
+            rescue I18n::InvalidLocale
+              # we do nothing when the locale is invalid, as this is a fallback anyways.
+            end
           end
+        ensure
+          @fallback_locked = false
         end
-        options.delete(:fallback)
 
-        return super(locale, nil, options.merge(:default => default)) if default
+        return super(locale, key, options.merge(:default => default)) if default
         throw(:exception, I18n::MissingTranslation.new(locale, key, options))
       end
 
@@ -60,6 +68,17 @@ module I18n
         return first_non_symbol_default
       end
 
+      def exists?(locale, key)
+        I18n.fallbacks[locale].each do |fallback|
+          begin
+            return true if super(fallback, key)
+          rescue I18n::InvalidLocale
+            # we do nothing when the locale is invalid, as this is a fallback anyways.
+          end
+        end
+
+        false
+      end
     end
   end
 end

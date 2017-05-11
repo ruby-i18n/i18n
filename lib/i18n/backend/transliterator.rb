@@ -67,31 +67,39 @@ module I18n
           "ů"=>"u", "Ű"=>"U", "ű"=>"u", "Ų"=>"U", "ų"=>"u", "Ŵ"=>"W", "ŵ"=>"w",
           "Ŷ"=>"Y", "ŷ"=>"y", "Ÿ"=>"Y", "Ź"=>"Z", "ź"=>"z", "Ż"=>"Z", "ż"=>"z",
           "Ž"=>"Z", "ž"=>"z"
-        }
+        }.freeze
 
         def initialize(rule = nil)
           @rule = rule
-          add DEFAULT_APPROXIMATIONS
+          add_default_approximations
           add rule if rule
         end
 
         def transliterate(string, replacement = nil)
+          replacement ||= DEFAULT_REPLACEMENT_CHAR
           string.gsub(/[^\x00-\x7f]/u) do |char|
-            approximations[char] || replacement || DEFAULT_REPLACEMENT_CHAR
+            approximations[char] || replacement
           end
         end
 
         private
 
-          def approximations
-            @approximations ||= {}
-          end
+        def approximations
+          @approximations ||= {}
+        end
 
-          # Add transliteration rules to the approximations hash.
-          def add(hash)
-            hash.keys.each {|key| hash[key.to_s] = hash.delete(key).to_s}
-            approximations.merge! hash
+        def add_default_approximations
+          DEFAULT_APPROXIMATIONS.each do |key, value|
+            approximations[key] = value
           end
+        end
+
+        # Add transliteration rules to the approximations hash.
+        def add(hash)
+          hash.each do |key, value|
+            approximations[key.to_s] = value.to_s
+          end
+        end
       end
     end
   end

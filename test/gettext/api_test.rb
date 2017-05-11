@@ -4,8 +4,9 @@ require 'i18n/gettext/helpers'
 
 include I18n::Gettext::Helpers
 
-class I18nGettextApiTest < Test::Unit::TestCase
+class I18nGettextApiTest < I18n::TestCase
   def setup
+    super
     I18n.locale = :en
     I18n.backend.store_translations :de, {
       'Hi Gettext!' => 'Hallo Gettext!',
@@ -15,6 +16,13 @@ class I18nGettextApiTest < Test::Unit::TestCase
       :foo => { :bar => 'bar-de' },
       'foo.bar' => 'Foo Bar'
     }, :separator => '|'
+  end
+
+  # N_
+  def test_N_returns_original_msg
+    assert_equal 'foo|bar', N_('foo|bar')
+    I18n.locale = :de
+    assert_equal 'Hi Gettext!', N_('Hi Gettext!')
   end
 
   # gettext

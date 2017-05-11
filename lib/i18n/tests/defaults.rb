@@ -9,11 +9,11 @@ module I18n
       end
 
       test "defaults: given nil as a key it returns the given default" do
-        assert_equal 'default', I18n.t(nil, :default => 'default')
+        assert_equal 'default', I18n.t(:does_not_exist, :default => 'default')
       end
 
       test "defaults: given a symbol as a default it translates the symbol" do
-        assert_equal 'bar', I18n.t(nil, :default => :'foo.bar')
+        assert_equal 'bar', I18n.t(:does_not_exist, :default => :'foo.bar')
       end
 
       test "defaults: given a symbol as a default and a scope it stays inside the scope when looking up the symbol" do
@@ -22,6 +22,14 @@ module I18n
 
       test "defaults: given an array as a default it returns the first match" do
         assert_equal 'bar', I18n.t(:does_not_exist, :default => [:does_not_exist_2, :'foo.bar'])
+      end
+
+      test "defaults: given false it returns false" do
+        assert_equal false, I18n.t(:does_not_exist, :default => false)
+      end
+
+      test "defaults: given nil it returns nil" do
+        assert_nil I18n.t(:does_not_exist, :default => nil)
       end
 
       test "defaults: given an array of missing keys it raises a MissingTranslationData exception" do
@@ -33,7 +41,7 @@ module I18n
       test "defaults: using a custom scope separator" do
         # data must have been stored using the custom separator when using the ActiveRecord backend
         I18n.backend.store_translations(:en, { :foo => { :bar => 'bar' } }, { :separator => '|' })
-        assert_equal 'bar', I18n.t(nil, :default => :'foo|bar', :separator => '|')
+        assert_equal 'bar', I18n.t(:does_not_exist, :default => :'foo|bar', :separator => '|')
       end
     end
   end

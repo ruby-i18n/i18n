@@ -9,10 +9,10 @@ module I18n
   autoload :Locale,  'i18n/locale'
   autoload :Tests,   'i18n/tests'
 
-  RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback, :format, :cascade, :throw, :raise, :rescue_format]
+  RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback, :format, :cascade, :throw, :raise, :deep_interpolation]
   RESERVED_KEYS_PATTERN = /%\{(#{RESERVED_KEYS.join("|")})\}/
 
-  extend Module.new {
+  module Base
     # Gets I18n configuration object.
     def config
       Thread.current[:i18n_config] ||= I18n::Config.new
@@ -25,7 +25,7 @@ module I18n
 
     # Write methods which delegates to the configuration object
     %w(locale backend default_locale available_locales default_separator
-      exception_handler load_path).each do |method|
+      exception_handler load_path enforce_available_locales).each do |method|
       module_eval <<-DELEGATORS, __FILE__, __LINE__ + 1
         def #{method}
           config.#{method}
@@ -41,6 +41,7 @@ module I18n
     # Rails development environment. Backends can implement whatever strategy
     # is useful.
     def reload!
+      config.clear_available_locales_set
       config.backend.reload!
     end
 
@@ -131,7 +132,7 @@ module I18n
     # called and passed the key and options.
     #
     # E.g. assuming the key <tt>:salutation</tt> resolves to:
-    #   lambda { |key, options| options[:gender] == 'm' ? "Mr. %{options[:name]}" : "Mrs. %{options[:name]}" }
+    #   lambda { |key, options| options[:gender] == 'm' ? "Mr. %{options[:name]}" : "Mrs. %{options[:name]}" }
     #
     # Then <tt>I18n.t(:salutation, :gender => 'w', :name => 'Smith') will result in "Mrs. Smith".
     #
@@ -141,13 +142,14 @@ module I18n
     # always return the same translations/values per unique combination of argument
     # values.
     def translate(*args)
-      options  = args.last.is_a?(Hash) ? args.pop : {}
+      options  = args.last.is_a?(Hash) ? args.pop.dup : {}
       key      = args.shift
       backend  = config.backend
       locale   = options.delete(:locale) || config.locale
       handling = options.delete(:throw) && :throw || options.delete(:raise) && :raise # TODO deprecate :raise
 
-      raise I18n::ArgumentError if key.is_a?(String) && key.empty?
+      enforce_available_locales!(locale)
+      raise I18n::ArgumentError if key.nil? || (key.is_a?(String) && key.empty?)
 
       result = catch(:exception) do
         if key.is_a?(Array)
@@ -160,10 +162,18 @@ module I18n
     end
     alias :t :translate
 
+    # Wrapper for <tt>translate</tt> that adds <tt>:raise => true</tt>. With
+    # this option, if no translation is found, it will raise <tt>I18n::MissingTranslationData</tt>
     def translate!(key, options={})
       translate(key, options.merge(:raise => true))
     end
     alias :t! :translate!
+
+    # Returns true if a translation exists for a given key, otherwise returns false.
+    def exists?(key, locale = config.locale)
+      raise I18n::ArgumentError if key.nil? || (key.is_a?(String) && key.empty?)
+      config.backend.exists?(locale, key)
+    end
 
     # Transliterates UTF-8 characters to ASCII. By default this method will
     # transliterate only Latin strings to an ASCII approximation:
@@ -217,20 +227,23 @@ module I18n
     #     I18n.transliterate("Jürgen", :locale => :en) # => "Jurgen"
     #     I18n.transliterate("Jürgen", :locale => :de) # => "Juergen"
     def transliterate(*args)
-      options      = args.pop if args.last.is_a?(Hash)
+      options      = args.pop.dup if args.last.is_a?(Hash)
       key          = args.shift
       locale       = options && options.delete(:locale) || config.locale
       handling     = options && (options.delete(:throw) && :throw || options.delete(:raise) && :raise)
       replacement  = options && options.delete(:replacement)
+      enforce_available_locales!(locale)
       config.backend.transliterate(locale, key, replacement)
     rescue I18n::ArgumentError => exception
       handle_exception(handling, exception, locale, key, options || {})
     end
 
     # Localizes certain objects, such as dates and numbers to local formatting.
-    def localize(object, options = {})
+    def localize(object, options = nil)
+      options = options ? options.dup : {}
       locale = options.delete(:locale) || config.locale
       format = options.delete(:format) || :default
+      enforce_available_locales!(locale)
       config.backend.localize(locale, object, format, options)
     end
     alias :l :localize
@@ -259,8 +272,19 @@ module I18n
       keys
     end
 
-  # making these private until Ruby 1.9.2 can send to protected methods again
-  # see http://redmine.ruby-lang.org/repositories/revision/ruby-19?rev=24280
+    # Returns true when the passed locale, which can be either a String or a
+    # Symbol, is in the list of available locales. Returns false otherwise.
+    def locale_available?(locale)
+      I18n.config.available_locales_set.include?(locale)
+    end
+
+    # Raises an InvalidLocale exception when the passed locale is not available.
+    def enforce_available_locales!(locale)
+      if config.enforce_available_locales
+        raise I18n::InvalidLocale.new(locale) if !locale_available?(locale)
+      end
+    end
+
   private
 
     # Any exceptions thrown in translate will be sent to the @@exception_handler
@@ -273,18 +297,18 @@ module I18n
     #
     # Examples:
     #
-    #   I18n.exception_handler = :default_exception_handler             # this is the default
-    #   I18n.default_exception_handler(exception, locale, key, options) # will be called like this
+    #   I18n.exception_handler = :custom_exception_handler              # this is the default
+    #   I18n.custom_exception_handler(exception, locale, key, options)  # will be called like this
     #
     #   I18n.exception_handler = lambda { |*args| ... }                 # a lambda
     #   I18n.exception_handler.call(exception, locale, key, options)    # will be called like this
     #
-    #  I18n.exception_handler = I18nExceptionHandler.new                # an object
-    #  I18n.exception_handler.call(exception, locale, key, options)     # will be called like this
+    #   I18n.exception_handler = I18nExceptionHandler.new               # an object
+    #   I18n.exception_handler.call(exception, locale, key, options)    # will be called like this
     def handle_exception(handling, exception, locale, key, options)
       case handling
       when :raise
-        raise(exception.respond_to?(:to_exception) ? exception.to_exception : exception)
+        raise exception.respond_to?(:to_exception) ? exception.to_exception : exception
       when :throw
         throw :exception, exception
       else
@@ -313,18 +337,7 @@ module I18n
     def normalized_key_cache
       @normalized_key_cache ||= Hash.new { |h,k| h[k] = {} }
     end
+  end
 
-    # DEPRECATED. Use I18n.normalize_keys instead.
-    def normalize_translation_keys(locale, key, scope, separator = nil)
-      puts "I18n.normalize_translation_keys is deprecated. Please use the class I18n.normalize_keys instead."
-      normalize_keys(locale, key, scope, separator)
-    end
-
-    # DEPRECATED. Please use the I18n::ExceptionHandler class instead.
-    def default_exception_handler(exception, locale, key, options)
-      puts "I18n.default_exception_handler is deprecated. Please use the class I18n::ExceptionHandler instead " +
-           "(an instance of which is set to I18n.exception_handler by default)."
-      exception.is_a?(MissingTranslation) ? exception.message : raise(exception)
-    end
-  }
+  extend Base
 end

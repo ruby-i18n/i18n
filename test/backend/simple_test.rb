@@ -1,14 +1,15 @@
 require 'test_helper'
 
-class I18nBackendSimpleTest < Test::Unit::TestCase
+class I18nBackendSimpleTest < I18n::TestCase
   def setup
+    super
     I18n.backend = I18n::Backend::Simple.new
     I18n.load_path = [locales_dir + '/en.yml']
   end
 
   # useful because this way we can use the backend with no key for interpolation/pluralization
-  test "simple backend translate: given nil as a key it still interpolations the default value" do
-    assert_equal "Hi David", I18n.t(nil, :default => "Hi %{name}", :name => "David")
+  test "simple backend translate: given an invalid key it still interpolates the default value" do
+    assert_equal "Hi David", I18n.t(:does_not_exist, :default => "Hi %{name}", :name => "David")
   end
 
   # loading translations
@@ -49,23 +50,23 @@ class I18nBackendSimpleTest < Test::Unit::TestCase
   # storing translations
 
   test "simple store_translations: stores translations, ... no, really :-)" do
-    I18n.backend.store_translations :'en', :foo => 'bar'
+    store_translations :'en', :foo => 'bar'
     assert_equal Hash[:'en', {:foo => 'bar'}], translations
   end
 
   test "simple store_translations: deep_merges with existing translations" do
-    I18n.backend.store_translations :'en', :foo => {:bar => 'bar'}
-    I18n.backend.store_translations :'en', :foo => {:baz => 'baz'}
+    store_translations :'en', :foo => {:bar => 'bar'}
+    store_translations :'en', :foo => {:baz => 'baz'}
     assert_equal Hash[:'en', {:foo => {:bar => 'bar', :baz => 'baz'}}], translations
   end
 
   test "simple store_translations: converts the given locale to a Symbol" do
-    I18n.backend.store_translations 'en', :foo => 'bar'
+    store_translations 'en', :foo => 'bar'
     assert_equal Hash[:'en', {:foo => 'bar'}], translations
   end
 
   test "simple store_translations: converts keys to Symbols" do
-    I18n.backend.store_translations 'en', 'foo' => {'bar' => 'bar', 'baz' => 'baz'}
+    store_translations 'en', 'foo' => {'bar' => 'bar', 'baz' => 'baz'}
     assert_equal Hash[:'en', {:foo => {:bar => 'bar', :baz => 'baz'}}], translations
   end
 
@@ -78,6 +79,6 @@ class I18nBackendSimpleTest < Test::Unit::TestCase
 
   test "simple reload_translations: uninitializes the backend" do
     I18n.backend.reload!
-    assert_equal I18n.backend.initialized?, false
+    assert_equal false, I18n.backend.initialized?
   end
 end

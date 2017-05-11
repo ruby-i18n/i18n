@@ -1,11 +1,12 @@
 require 'test_helper'
 
-class I18nBackendMetadataTest < Test::Unit::TestCase
+class I18nBackendMetadataTest < I18n::TestCase
   class Backend < I18n::Backend::Simple
     include I18n::Backend::Metadata
   end
 
   def setup
+    super
     I18n.backend = Backend.new
     store_translations(:en, :foo => 'Hi %{name}')
   end
@@ -16,16 +17,6 @@ class I18nBackendMetadataTest < Test::Unit::TestCase
     assert translation.translation_metadata.is_a?(Hash)
   end
 
-  test "translate preserves metadata stored on original Strings" do
-    store_metadata(:foo, :bar, 'bar')
-    assert_equal 'bar', I18n.t(:foo, :name => 'David').translation_metadata[:bar]
-  end
-
-  test "translate preserves metadata stored on original Strings (when interpolated)" do
-    store_metadata(:foo, :bar, 'bar')
-    assert_equal 'bar', I18n.t(:foo, :name => 'David').translation_metadata[:bar]
-  end
-
   test "translate adds the locale to metadata on Strings" do
     assert_equal :en, I18n.t(:foo, :name => 'David', :locale => :en).translation_metadata[:locale]
   end
@@ -33,7 +24,7 @@ class I18nBackendMetadataTest < Test::Unit::TestCase
   test "translate adds the key to metadata on Strings" do
     assert_equal :foo, I18n.t(:foo, :name => 'David').translation_metadata[:key]
   end
-#
+
   test "translate adds the default to metadata on Strings" do
     assert_equal 'bar', I18n.t(:foo, :default => 'bar', :name => '').translation_metadata[:default]
   end
@@ -53,15 +44,5 @@ class I18nBackendMetadataTest < Test::Unit::TestCase
   test "metadata works with frozen values" do
     assert_equal(1, I18n.t(:missing, :count => 1, :default => 'foo'.freeze).translation_metadata[:count])
   end
-  
-  protected
-  
-    def translations
-      I18n.backend.instance_variable_get(:@translations)
-    end
-
-    def store_metadata(key, name, value)
-      translations[:en][key].translation_metadata[name] = value
-    end
 end
 

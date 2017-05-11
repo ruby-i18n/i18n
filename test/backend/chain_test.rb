@@ -1,12 +1,23 @@
 require 'test_helper'
 
-class I18nBackendChainTest < Test::Unit::TestCase
+class I18nBackendChainTest < I18n::TestCase
   def setup
+    super
     @first  = backend(:en => {
-      :foo => 'Foo', :formats => { :short => 'short' }, :plural_1 => { :one => '%{count}' }
+      :foo => 'Foo', :formats => {
+        :short => 'short',
+        :subformats => {:short => 'short'},
+      },
+      :plural_1 => { :one => '%{count}' },
+      :dates => {:a => "A"}
     })
     @second = backend(:en => {
-      :bar => 'Bar', :formats => { :long => 'long' }, :plural_2 => { :one => 'one' }
+      :bar => 'Bar', :formats => {
+        :long => 'long', 
+        :subformats => {:long => 'long'},
+      },
+      :plural_2 => { :one => 'one' },
+      :dates => {:a => "B", :b => "B"}
     })
     @chain  = I18n.backend = I18n::Backend::Chain.new(@first, @second)
   end
@@ -28,18 +39,22 @@ class I18nBackendChainTest < Test::Unit::TestCase
   end
 
   test "default" do
-    assert_equal 'Fuh',  I18n.t(:default => 'Fuh')
-    assert_equal 'Zero', I18n.t(:default => { :zero => 'Zero' }, :count => 0)
-    assert_equal({ :zero => 'Zero' }, I18n.t(:default => { :zero => 'Zero' }))
-    assert_equal 'Foo', I18n.t(:default => :foo)
+    assert_equal 'Fuh',  I18n.t(:does_not_exist, :default => 'Fuh')
+    assert_equal 'Zero', I18n.t(:does_not_exist, :default => { :zero => 'Zero' }, :count => 0)
+    assert_equal({ :zero => 'Zero' }, I18n.t(:does_not_exist, :default => { :zero => 'Zero' }))
+    assert_equal 'Foo', I18n.t(:does_not_exist, :default => :foo)
   end
 
   test 'default is returned if translation is missing' do
     assert_equal({}, I18n.t(:'i18n.transliterate.rule', :locale => 'en', :default => {}))
   end
 
-  test "namespace lookup collects results from all backends" do
-    assert_equal({ :short => 'short', :long => 'long' }, I18n.t(:formats))
+  test "namespace lookup collects results from all backends and merges deep hashes" do
+    assert_equal({:long=>"long", :subformats=>{:long=>"long", :short=>"short"}, :short=>"short"}, I18n.t(:formats))
+  end
+
+  test "namespace lookup collects results from all backends and lets leftmost backend take priority" do
+    assert_equal({ :a => "A", :b => "B" }, I18n.t(:dates))
   end
 
   test "namespace lookup with only the first backend returning a result" do
@@ -54,7 +69,11 @@ class I18nBackendChainTest < Test::Unit::TestCase
   test "bulk lookup collects results from all backends" do
     assert_equal ['Foo', 'Bar'], I18n.t([:foo, :bar])
     assert_equal ['Foo', 'Bar', 'Bah'], I18n.t([:foo, :bar, :bah], :default => 'Bah')
-    assert_equal [{ :short => 'short', :long => 'long' }, { :one => 'one' }, 'Bah'], I18n.t([:formats, :plural_2, :bah], :default => 'Bah')
+    assert_equal [{
+      :long=>"long",
+      :subformats=>{:long=>"long", :short=>"short"},
+      :short=>"short"}, {:one=>"one"},
+      "Bah"], I18n.t([:formats, :plural_2, :bah], :default => 'Bah')
   end
 
   test "store_translations options are not dropped while transfering to backend" do

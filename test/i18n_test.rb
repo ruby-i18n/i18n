@@ -1,9 +1,11 @@
 # encoding: utf-8
 require 'test_helper'
 
-class I18nTest < Test::Unit::TestCase
+class I18nTest < I18n::TestCase
   def setup
-    I18n.backend.store_translations(:'en', :currency => { :format => { :separator => '.', :delimiter => ',', } })
+    super
+    store_translations(:en, :currency => { :format => { :separator => '.', :delimiter => ',', } })
+    store_translations(:nl, :currency => { :format => { :separator => ',', :delimiter => '.', } })
   end
 
   test "exposes its VERSION constant" do
@@ -36,6 +38,19 @@ class I18nTest < Test::Unit::TestCase
     end
   end
 
+  test "default_locale= doesn't ignore junk" do
+    assert_raise(NoMethodError) { I18n.default_locale = Class }
+  end
+
+  test "raises an I18n::InvalidLocale exception when setting an unavailable default locale" do
+    begin
+      I18n.config.enforce_available_locales = true
+      assert_raise(I18n::InvalidLocale) { I18n.default_locale = :klingon }
+    ensure
+      I18n.config.enforce_available_locales = false
+    end
+  end
+
   test "uses the default locale as a locale by default" do
     assert_equal I18n.default_locale, I18n.locale
   end
@@ -45,6 +60,19 @@ class I18nTest < Test::Unit::TestCase
     assert_equal :de, I18n.locale
     assert_equal :de, Thread.current[:i18n_config].locale
     I18n.locale = :en
+  end
+
+  test "locale= doesn't ignore junk" do
+    assert_raise(NoMethodError) { I18n.locale = Class }
+  end
+
+  test "raises an I18n::InvalidLocale exception when setting an unavailable locale" do
+    begin
+      I18n.config.enforce_available_locales = true
+      assert_raise(I18n::InvalidLocale) { I18n.locale = :klingon }
+    ensure
+      I18n.config.enforce_available_locales = false
+    end
   end
 
   test "can set the configuration object" do
@@ -187,12 +215,87 @@ class I18nTest < Test::Unit::TestCase
     assert_raise(I18n::ArgumentError) { I18n.t("") }
   end
 
+  test "translate given nil as a key raises an I18n::ArgumentError" do
+    assert_raise(I18n::ArgumentError) { I18n.t(nil) }
+  end
+
+  test "translate given an unavailable locale rases an I18n::InvalidLocale" do
+    begin
+      I18n.config.enforce_available_locales = true
+      assert_raise(I18n::InvalidLocale) { I18n.t(:foo, :locale => 'klingon') }
+    ensure
+      I18n.config.enforce_available_locales = false
+    end
+  end
+
+  test "available_locales can be replaced at runtime" do
+    begin
+      I18n.config.enforce_available_locales = true
+      assert_raise(I18n::InvalidLocale) { I18n.t(:foo, :locale => 'klingon') }
+      old_locales, I18n.config.available_locales = I18n.config.available_locales, [:klingon]
+      I18n.t(:foo, :locale => 'klingon')
+    ensure
+      I18n.config.enforce_available_locales = false
+      I18n.config.available_locales = old_locales
+    end
+  end
+
+  test "available_locales_set should return a set" do
+    assert_equal Set, I18n.config.available_locales_set.class
+    assert_equal I18n.config.available_locales.size * 2, I18n.config.available_locales_set.size
+  end
+
+  test "exists? given an existing key will return true" do
+    assert_equal true, I18n.exists?(:currency)
+  end
+
+  test "exists? given a non-existing key will return false" do
+    assert_equal false, I18n.exists?(:bogus)
+  end
+
+  test "exists? given an empty string will raise an error" do
+    assert_raise(I18n::ArgumentError) { I18n.exists?("") }
+  end
+
+  test "exists? given nil will raise an error" do
+    assert_raise(I18n::ArgumentError) { I18n.exists?(nil) }
+  end
+
+  test "exists? given an existing dot-separated key will return true" do
+    assert_equal true, I18n.exists?('currency.format.delimiter')
+  end
+
+  test "exists? given a non-existing dot-separated key will return false" do
+    assert_equal false, I18n.exists?('currency.format.bogus')
+  end
+
+  test "exists? given an existing key and an existing locale will return true" do
+    assert_equal true, I18n.exists?(:currency, :nl)
+  end
+
+  test "exists? given a non-existing key and an existing locale will return false" do
+    assert_equal false, I18n.exists?(:bogus, :nl)
+  end
+
   test "localize given nil raises an I18n::ArgumentError" do
     assert_raise(I18n::ArgumentError) { I18n.l nil }
   end
 
-  test "localize givan an Object raises an I18n::ArgumentError" do
+  test "localize given nil and default returns default" do
+    assert_nil I18n.l(nil, :default => nil)
+  end
+
+  test "localize given an Object raises an I18n::ArgumentError" do
     assert_raise(I18n::ArgumentError) { I18n.l Object.new }
+  end
+
+  test "localize given an unavailable locale rases an I18n::InvalidLocale" do
+    begin
+      I18n.config.enforce_available_locales = true
+      assert_raise(I18n::InvalidLocale) { I18n.l(Time.now, :locale => 'klingon') }
+    ensure
+      I18n.config.enforce_available_locales = false
+    end
   end
 
   test "can use a lambda as an exception handler" do
@@ -251,4 +354,96 @@ class I18nTest < Test::Unit::TestCase
     }
   end
 
+  test "transliterate given an unavailable locale rases an I18n::InvalidLocale" do
+    begin
+      I18n.config.enforce_available_locales = true
+      assert_raise(I18n::InvalidLocale) { I18n.transliterate('string', :locale => 'klingon') }
+    ensure
+      I18n.config.enforce_available_locales = false
+    end
+  end
+
+  test "transliterate non-ASCII chars not in map with default replacement char" do
+    assert_equal "???", I18n.transliterate("日本語")
+  end
+
+  test "I18n.locale_available? returns true when the passed locale is available" do
+    I18n.available_locales = [:en, :de]
+    assert_equal true, I18n.locale_available?(:de)
+  end
+
+  test "I18n.locale_available? returns true when the passed locale is a string and is available" do
+    I18n.available_locales = [:en, :de]
+    assert_equal true, I18n.locale_available?('de')
+  end
+
+  test "I18n.locale_available? returns false when the passed locale is unavailable" do
+    assert_equal false, I18n.locale_available?(:klingon)
+  end
+
+  test "I18n.enforce_available_locales! raises an I18n::InvalidLocale when the passed locale is unavailable" do
+    begin
+      I18n.config.enforce_available_locales = true
+      assert_raise(I18n::InvalidLocale) { I18n.enforce_available_locales!(:klingon) }
+    ensure
+      I18n.config.enforce_available_locales = false
+    end
+  end
+
+  test "I18n.enforce_available_locales! does nothing when the passed locale is available" do
+    I18n.available_locales = [:en, :de]
+    begin
+      I18n.config.enforce_available_locales = true
+      assert_nothing_raised { I18n.enforce_available_locales!(:en) }
+    ensure
+      I18n.config.enforce_available_locales = false
+    end
+  end
+
+  test "I18n.enforce_available_locales config can be set to false" do
+    begin
+      I18n.config.enforce_available_locales = false
+      assert_equal false, I18n.config.enforce_available_locales
+    ensure
+      I18n.config.enforce_available_locales = false
+    end
+  end
+
+  test 'I18n.reload! reloads the set of locales that are enforced' do
+    begin
+      # Clear the backend that affects the available locales and somehow can remain
+      # set from the last running test.
+      # For instance, it contains enough translations to cause a false positive with
+      # this test when ran with --seed=50992
+      I18n.backend = I18n::Backend::Simple.new
+
+      assert !I18n.available_locales.include?(:de), "Available locales should not include :de at this point"
+
+      I18n.enforce_available_locales = true
+
+      assert_raise(I18n::InvalidLocale) { I18n.default_locale = :de }
+      assert_raise(I18n::InvalidLocale) { I18n.locale = :de }
+
+      store_translations(:de, :foo => 'Foo in :de')
+
+      assert_raise(I18n::InvalidLocale) { I18n.default_locale = :de }
+      assert_raise(I18n::InvalidLocale) { I18n.locale = :de }
+
+      I18n.reload!
+
+      store_translations(:en, :foo => 'Foo in :en')
+      store_translations(:de, :foo => 'Foo in :de')
+      store_translations(:pl, :foo => 'Foo in :pl')
+
+      assert I18n.available_locales.include?(:de), ":de should now be allowed"
+      assert I18n.available_locales.include?(:en), ":en should now be allowed"
+      assert I18n.available_locales.include?(:pl), ":pl should now be allowed"
+
+      assert_nothing_raised { I18n.default_locale = I18n.locale = :en }
+      assert_nothing_raised { I18n.default_locale = I18n.locale = :de }
+      assert_nothing_raised { I18n.default_locale = I18n.locale = :pl }
+    ensure
+      I18n.enforce_available_locales = false
+    end
+  end
 end

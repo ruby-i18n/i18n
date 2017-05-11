@@ -1,11 +1,12 @@
-# :coding: utf-8
+# encoding: utf-8
 require 'test_helper'
 
-class I18nBackendTransliterator < Test::Unit::TestCase
+class I18nBackendTransliterator < I18n::TestCase
   def setup
+    super
     I18n.backend = I18n::Backend::Simple.new
     @proc = lambda { |n| n.upcase }
-    @hash = { :"ü" => "ue", :"ö" => "oe" }
+    @hash = { "ü" => "ue", "ö" => "oe", "a" => "a" }
     @transliterator = I18n::Backend::Transliterator.get
   end
 
@@ -55,11 +56,9 @@ class I18nBackendTransliterator < Test::Unit::TestCase
     assert_equal "abc#", @transliterator.transliterate("abcſ", "#")
   end
 
-  if RUBY_VERSION >= "1.9"
-    test "default transliterator raises errors for invalid UTF-8" do
-      assert_raise ArgumentError do
-        @transliterator.transliterate("a\x92b")
-      end
+  test "default transliterator raises errors for invalid UTF-8" do
+    assert_raise ArgumentError do
+      @transliterator.transliterate("a\x92b")
     end
   end
 
@@ -76,6 +75,10 @@ class I18nBackendTransliterator < Test::Unit::TestCase
     char = [117, 776].pack("U*") # "ü" as ASCII "u" plus COMBINING DIAERESIS
     transliterator = I18n::Backend::Transliterator.get(@hash)
     assert_not_equal "ue", transliterator.transliterate(char)
+  end
+
+  test "DEFAULT_APPROXIMATIONS is frozen to prevent concurrency issues" do
+    assert I18n::Backend::Transliterator::HashTransliterator::DEFAULT_APPROXIMATIONS.frozen?
   end
 
 end

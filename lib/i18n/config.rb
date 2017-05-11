@@ -1,14 +1,17 @@
+require 'set'
+
 module I18n
   class Config
     # The only configuration value that is not global and scoped to thread is :locale.
     # It defaults to the default_locale.
     def locale
-      @locale ||= default_locale
+      defined?(@locale) && @locale ? @locale : default_locale
     end
 
     # Sets the current locale pseudo-globally, i.e. in the Thread.current hash.
     def locale=(locale)
-      @locale = locale.to_sym rescue nil
+      I18n.enforce_available_locales!(locale)
+      @locale = locale && locale.to_sym
     end
 
     # Returns the current backend. Defaults to +Backend::Simple+.
@@ -28,7 +31,8 @@ module I18n
 
     # Sets the current default locale. Used to set a custom default locale.
     def default_locale=(locale)
-      @@default_locale = locale.to_sym rescue nil
+      I18n.enforce_available_locales!(locale)
+      @@default_locale = locale && locale.to_sym
     end
 
     # Returns an array of locales for which translations are available.
@@ -39,10 +43,25 @@ module I18n
       @@available_locales || backend.available_locales
     end
 
+    # Caches the available locales list as both strings and symbols in a Set, so
+    # that we can have faster lookups to do the available locales enforce check.
+    def available_locales_set #:nodoc:
+      @@available_locales_set ||= available_locales.inject(Set.new) do |set, locale|
+        set << locale.to_s << locale.to_sym
+      end
+    end
+
     # Sets the available locales.
     def available_locales=(locales)
       @@available_locales = Array(locales).map { |locale| locale.to_sym }
       @@available_locales = nil if @@available_locales.empty?
+      @@available_locales_set = nil
+    end
+
+    # Clears the available locales set so it can be recomputed again after I18n
+    # gets reloaded.
+    def clear_available_locales_set #:nodoc:
+      @@available_locales_set = nil
     end
 
     # Returns the current default scope separator. Defaults to '.'
@@ -55,7 +74,8 @@ module I18n
       @@default_separator = separator
     end
 
-    # Return the current exception handler. Defaults to :default_exception_handler.
+    # Returns the current exception handler. Defaults to an instance of
+    # I18n::ExceptionHandler.
     def exception_handler
       @@exception_handler ||= ExceptionHandler.new
     end
@@ -63,6 +83,29 @@ module I18n
     # Sets the exception handler.
     def exception_handler=(exception_handler)
       @@exception_handler = exception_handler
+    end
+
+    # Returns the current handler for situations when interpolation argument
+    # is missing. MissingInterpolationArgument will be raised by default.
+    def missing_interpolation_argument_handler
+      @@missing_interpolation_argument_handler ||= lambda do |missing_key, provided_hash, string|
+        raise MissingInterpolationArgument.new(missing_key, provided_hash, string)
+      end
+    end
+
+    # Sets the missing interpolation argument handler. It can be any
+    # object that responds to #call. The arguments that will be passed to #call
+    # are the same as for MissingInterpolationArgument initializer. Use +Proc.new+
+    # if you don't care about arity.
+    #
+    # == Example:
+    # You can supress raising an exception and return string instead:
+    #
+    #   I18n.config.missing_interpolation_argument_handler = Proc.new do |key|
+    #     "#{key} is missing"
+    #   end
+    def missing_interpolation_argument_handler=(exception_handler)
+      @@missing_interpolation_argument_handler = exception_handler
     end
 
     # Allow clients to register paths providing translation data sources. The
@@ -81,6 +124,19 @@ module I18n
     # behave like a Ruby Array.
     def load_path=(load_path)
       @@load_path = load_path
+      @@available_locales_set = nil
+      backend.reload!
+    end
+
+    # Whether or not to verify if locales are in the list of available locales.
+    # Defaults to true.
+    @@enforce_available_locales = true
+    def enforce_available_locales
+      @@enforce_available_locales
+    end
+
+    def enforce_available_locales=(enforce_available_locales)
+      @@enforce_available_locales = enforce_available_locales
     end
   end
 end

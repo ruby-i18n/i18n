@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class InterpolationCompilerTest < Test::Unit::TestCase
+class InterpolationCompilerTest < I18n::TestCase
   Compiler = I18n::Backend::InterpolationCompiler::Compiler
 
   def compile_and_interpolate(str, values = {})
@@ -76,20 +76,37 @@ class InterpolationCompilerTest < Test::Unit::TestCase
     assert_equal '\";eval("a")',  compile_and_interpolate('\";eval("a")%{a}', :a    => '' )
     assert_equal "\na",           compile_and_interpolate("\n%{a}",           :a    => 'a')
   end
+
+  def test_raises_exception_when_argument_is_missing
+    assert_raise(I18n::MissingInterpolationArgument) do
+      compile_and_interpolate('%{first} %{last}', :first => 'first')
+    end
+  end
+
+  def test_custom_missing_interpolation_argument_handler
+    old_handler = I18n.config.missing_interpolation_argument_handler
+    I18n.config.missing_interpolation_argument_handler = lambda do |key, values, string|
+      "missing key is #{key}, values are #{values.inspect}, given string is '#{string}'"
+    end
+    assert_equal %|first missing key is last, values are {:first=>"first"}, given string is '%{first} %{last}'|,
+        compile_and_interpolate('%{first} %{last}', :first => 'first')
+  ensure
+    I18n.config.missing_interpolation_argument_handler = old_handler
+  end
 end
 
-class I18nBackendInterpolationCompilerTest < Test::Unit::TestCase
+class I18nBackendInterpolationCompilerTest < I18n::TestCase
   class Backend < I18n::Backend::Simple
     include I18n::Backend::InterpolationCompiler
   end
-  
+
   include I18n::Tests::Interpolation
 
   def setup
     I18n.backend = Backend.new
     super
   end
-  
+
   # pre-compile default strings to make sure we are testing I18n::Backend::InterpolationCompiler
   def interpolate(*args)
     options = args.last.kind_of?(Hash) ? args.last : {}
@@ -98,5 +115,4 @@ class I18nBackendInterpolationCompilerTest < Test::Unit::TestCase
     end
     super
   end
-
 end

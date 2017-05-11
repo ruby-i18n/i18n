@@ -1,3 +1,5 @@
+require 'cgi'
+
 module I18n
   # Handles exceptions raised in the backend. All exceptions except for
   # MissingTranslationData exceptions are re-thrown. When a MissingTranslationData
@@ -6,9 +8,10 @@ module I18n
   class ExceptionHandler
     include Module.new {
       def call(exception, locale, key, options)
-        if exception.is_a?(MissingTranslation)
-          options[:rescue_format] == :html ? exception.html_message : exception.message
-        elsif exception.is_a?(Exception)
+        case exception
+        when MissingTranslation
+          exception.message
+        when Exception
           raise exception
         else
           throw :exception, exception
@@ -29,24 +32,19 @@ module I18n
 
   class InvalidLocaleData < ArgumentError
     attr_reader :filename
-    def initialize(filename)
-      @filename = filename
-      super "can not load translations from #{filename}, expected it to return a hash, but does not"
+    def initialize(filename, exception_message)
+      @filename, @exception_message = filename, exception_message
+      super "can not load translations from #{filename}: #{exception_message}"
     end
   end
 
-  class MissingTranslation
+  class MissingTranslation < ArgumentError
     module Base
       attr_reader :locale, :key, :options
 
-      def initialize(locale, key, options = nil)
-        @key, @locale, @options = key, locale, options.dup || {}
+      def initialize(locale, key, options = {})
+        @key, @locale, @options = key, locale, options.dup
         options.each { |k, v| self.options[k] = v.inspect if v.is_a?(Proc) }
-      end
-
-      def html_message
-        key = keys.last.to_s.gsub('_', ' ').gsub(/\b('?[a-z])/) { $1.capitalize }
-        %(<span class="translation_missing" title="translation missing: #{keys.join('.')}">#{key}</span>)
       end
 
       def keys
@@ -81,10 +79,10 @@ module I18n
   end
 
   class MissingInterpolationArgument < ArgumentError
-    attr_reader :values, :string
-    def initialize(values, string)
-      @values, @string = values, string
-      super "missing interpolation argument in #{string.inspect} (#{values.inspect} given)"
+    attr_reader :key, :values, :string
+    def initialize(key, values, string)
+      @key, @values, @string = key, values, string
+      super "missing interpolation argument #{key.inspect} in #{string.inspect} (#{values.inspect} given)"
     end
   end
 
