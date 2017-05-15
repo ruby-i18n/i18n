@@ -240,6 +240,8 @@ module I18n
 
     # Localizes certain objects, such as dates and numbers to local formatting.
     def localize(object, options = nil)
+      # handle nil object
+      return '' unless object
       options = options ? options.dup : {}
       locale = options.delete(:locale) || config.locale
       format = options.delete(:format) || :default
