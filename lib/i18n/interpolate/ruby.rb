@@ -4,7 +4,7 @@
 module I18n
   INTERPOLATION_PATTERN = Regexp.union(
     /%%/,
-    /%\{(\w+)\}/,                               # matches placeholders like "%{foo}"
+    /%\{\s*(\w+)\s*\}/,                         # matches placeholders like "%{foo}"
     /%<(\w+)>(.*?\d*\.?\d*[bBdiouxXeEfgGcps])/  # matches placeholders like "%<foo>.d"
   )
 

@@ -12,6 +12,10 @@ class I18nInterpolateTest < I18n::TestCase
     assert_equal "Mutoh, Masao", I18n.interpolate("%{last}, %{first}", :first => 'Masao', :last => 'Mutoh' )
   end
 
+  test "String interpolates curly brackets when whitespace is present" do
+    assert_equal "Kaoru Betto", I18n.interpolate("%{ first } %{ last }", :first => 'Kaoru', :last => 'Betto')
+  end
+
   test "String interpolates named placeholders with sprintf syntax" do
     assert_equal "10, 43.4", I18n.interpolate("%<integer>d, %<float>.1f", :integer => 10, :float => 43.4)
   end
