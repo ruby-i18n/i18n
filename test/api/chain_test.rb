@@ -3,7 +3,13 @@ require 'test_helper'
 class I18nApiChainTest < I18n::TestCase
   def setup
     super
+    @old_backend = I18n.backend
     I18n.backend = I18n::Backend::Chain.new(I18n::Backend::Simple.new, I18n.backend)
+  end
+
+  def teardown
+    I18n.backend = @old_backend
+    super
   end
 
   include I18n::Tests::Basics
