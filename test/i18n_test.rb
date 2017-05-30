@@ -6,6 +6,7 @@ class I18nTest < I18n::TestCase
     super
     store_translations(:en, :currency => { :format => { :separator => '.', :delimiter => ',', } })
     store_translations(:nl, :currency => { :format => { :separator => ',', :delimiter => '.', } })
+    store_translations(:en, "true" => "Yes", "false" => "No")
   end
 
   test "exposes its VERSION constant" do
@@ -226,6 +227,14 @@ class I18nTest < I18n::TestCase
     ensure
       I18n.config.enforce_available_locales = false
     end
+  end
+
+  test "translate given true as a key works" do
+    assert_equal "Yes", I18n.t(true)
+  end
+
+  test "translate given false as a key works" do
+    assert_equal "No", I18n.t(false)
   end
 
   test "available_locales can be replaced at runtime" do
