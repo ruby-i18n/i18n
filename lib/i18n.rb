@@ -149,7 +149,7 @@ module I18n
       handling = options.delete(:throw) && :throw || options.delete(:raise) && :raise # TODO deprecate :raise
 
       enforce_available_locales!(locale)
-      raise I18n::ArgumentError if key.nil? || (key.is_a?(String) && key.empty?)
+      raise I18n::ArgumentError if key.is_a?(String) && key.empty?
 
       result = catch(:exception) do
         if key.is_a?(Array)
@@ -171,7 +171,7 @@ module I18n
 
     # Returns true if a translation exists for a given key, otherwise returns false.
     def exists?(key, locale = config.locale)
-      raise I18n::ArgumentError if key.nil? || (key.is_a?(String) && key.empty?)
+      raise I18n::ArgumentError if key.is_a?(String) && key.empty?
       config.backend.exists?(locale, key)
     end
 
