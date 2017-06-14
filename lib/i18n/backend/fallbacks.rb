@@ -36,11 +36,11 @@ module I18n
       # it is evaluated last after all the fallback locales have been tried.
       def translate(locale, key, options = {})
         return super unless options.fetch(:fallback, true)
-        return super if (@fallback_locked ||= false)
+        return super if options[:fallback_in_progress]
         default = extract_non_symbol_default!(options) if options[:default]
 
         begin
-          @fallback_locked = true
+          options[:fallback_in_progress] = true
           I18n.fallbacks[locale].each do |fallback|
             begin
               catch(:exception) do
@@ -52,7 +52,7 @@ module I18n
             end
           end
         ensure
-          @fallback_locked = false
+          options.delete(:fallback_in_progress)
         end
 
         return super(locale, nil, options.merge(:default => default)) if default
