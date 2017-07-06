@@ -138,5 +138,14 @@ module I18n
     def enforce_available_locales=(enforce_available_locales)
       @@enforce_available_locales = enforce_available_locales
     end
+
+    @@plural_keys = { :en => [:one, :other] }
+    def plural_keys
+      @@plural_keys
+    end
+
+    def plural_keys=(value)
+      @@plural_keys = value
+    end
   end
 end
