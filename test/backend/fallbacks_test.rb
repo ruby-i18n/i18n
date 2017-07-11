@@ -8,7 +8,7 @@ class I18nBackendFallbacksTranslateTest < I18n::TestCase
   def setup
     super
     I18n.backend = Backend.new
-    store_translations(:en, :foo => 'Foo in :en', :bar => 'Bar in :en', :buz => 'Buz in :en')
+    store_translations(:en, :foo => 'Foo in :en', :bar => 'Bar in :en', :buz => 'Buz in :en', :interpolate => 'Interpolate %{value}')
     store_translations(:de, :bar => 'Bar in :de', :baz => 'Baz in :de')
     store_translations(:'de-DE', :baz => 'Baz in :de-DE')
     store_translations(:'pt-BR', :baz => 'Baz in :pt-BR')
@@ -18,6 +18,10 @@ class I18nBackendFallbacksTranslateTest < I18n::TestCase
     assert_equal 'Foo in :en', I18n.t(:foo, :locale => :en)
     assert_equal 'Bar in :de', I18n.t(:bar, :locale => :de)
     assert_equal 'Baz in :de-DE', I18n.t(:baz, :locale => :'de-DE')
+  end
+
+  test "returns interpolated value if no key provided" do
+    assert_equal 'Interpolate %{value}', I18n.t(:interpolate)
   end
 
   test "returns the :en translation for a missing :de translation" do
