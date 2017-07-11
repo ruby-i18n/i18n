@@ -130,9 +130,22 @@ module I18n
           result unless result.is_a?(MissingTranslation)
         end
 
+        # Allows setting plural keys allowed by the locale.
+        # For example, Chinese doesn't have :one, only :other
+        # In this case, the settings would be:
+        # I18n.config.plural_keys[:zh] = [:other]
+        # By default, [:one, :other] will be used on pluralize
+        def plural_keys(locale)
+          if I18n.config.plural_keys.key? locale.to_sym
+            I18n.config.plural_keys[locale.to_sym]
+          else
+            I18n.config.plural_keys[:en]
+          end
+        end
+
         # Picks a translation from a pluralized mnemonic subkey according to English
         # pluralization rules :
-        # - It will pick the :one subkey if count is equal to 1.
+        # - It will pick the :one subkey if count is equal to 1 and locale allows it
         # - It will pick the :other subkey otherwise.
         # - It will pick the :zero subkey in the special case where count is
         #   equal to 0 and there is a :zero subkey present. This behaviour is
@@ -142,7 +155,7 @@ module I18n
           return entry unless entry.is_a?(Hash) && count
 
           key = :zero if count == 0 && entry.has_key?(:zero)
-          key ||= count == 1 ? :one : :other
+          key ||= count == 1 && plural_keys(locale).include?(:one) ? :one : :other
           raise InvalidPluralizationData.new(entry, count, key) unless entry.has_key?(key)
           entry[key]
         end

@@ -405,7 +405,33 @@ class I18nTest < I18n::TestCase
       I18n.config.enforce_available_locales = false
     end
   end
-  
+
+  test "I18n.config.plural_keys can set plural keys" do
+    begin
+      # Set current locale, translations
+      I18n.locale = :zh
+      store_translations(:en, :test => { :one => "test: one", :other => "test: other (%{count})" })
+      store_translations(:zh, :test => { :other => "test: other (%{count})" })
+
+      # Translate with :one key when the language doesn't allow it
+      assert_raises(I18n::InvalidPluralizationData) do
+        I18n.t("test", :count => 1)
+      end
+
+      # Set locales plural keys
+      I18n.config.plural_keys[:zh] = [:other]
+      assert_equal [:other], I18n.config.plural_keys[:zh]
+      assert_equal [:one, :other], I18n.config.plural_keys[:en]
+
+      # Translate should now work
+      assert_nothing_raised do
+        I18n.t("test", :count => 1)
+      end
+    ensure
+      I18n.config.plural_keys.delete(:zh)
+    end
+  end
+
   test 'I18n.reload! reloads the set of locales that are enforced' do
     begin
       # Clear the backend that affects the available locales and somehow can remain
