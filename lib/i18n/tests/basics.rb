@@ -13,6 +13,11 @@ module I18n
         assert I18n.available_locales.include?(:en)
       end
 
+      test "available_locales does not choke on [nil]" do
+        I18n.available_locales = [nil]
+        assert I18n.available_locales
+      end
+
       test "available_locales can be set to something else independently from the actual locale data" do
         I18n.backend.store_translations('de', :foo => 'bar')
         I18n.backend.store_translations('en', :foo => 'foo')
