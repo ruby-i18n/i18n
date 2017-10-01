@@ -1,4 +1,4 @@
-require 'concurrent/hash'
+require 'concurrent/map'
 
 require 'i18n/version'
 require 'i18n/exceptions'
@@ -13,6 +13,11 @@ module I18n
 
   RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback, :fallback_in_progress, :format, :cascade, :throw, :raise, :deep_interpolation]
   RESERVED_KEYS_PATTERN = /%\{(#{RESERVED_KEYS.join("|")})\}/
+
+
+  def self.new_double_nested_cache # :nodoc:
+    Concurrent::Map.new { |h,k| h[k] = Concurrent::Map.new }
+  end
 
   module Base
     # Gets I18n configuration object.
@@ -323,7 +328,7 @@ module I18n
       end
     end
 
-    @@normalized_key_cache = Concurrent::Hash.new { |h, k| h[k] = Concurrent::Hash.new }
+    @@normalized_key_cache = I18n.new_double_nested_cache
 
     def normalize_key(key, separator)
       @@normalized_key_cache[separator][key] ||=
