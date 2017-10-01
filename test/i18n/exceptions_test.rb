@@ -32,16 +32,19 @@ class I18nExceptionsTest < I18n::TestCase
     end
   end
 
-  test "InvalidPluralizationData stores entry and count" do
+  test "InvalidPluralizationData stores entry, count and key" do
     force_invalid_pluralization_data do |exception|
-      assert_equal [:bar], exception.entry
+      assert_equal({:other => "bar"}, exception.entry)
       assert_equal 1, exception.count
+      assert_equal :one, exception.key
     end
   end
 
-  test "InvalidPluralizationData message contains count and data" do
+  test "InvalidPluralizationData message contains count, data and missing key" do
     force_invalid_pluralization_data do |exception|
-      assert_equal 'translation data [:bar] can not be used with :count => 1', exception.message
+      assert_match '1', exception.message
+      assert_match '{:other=>"bar"}', exception.message
+      assert_match 'one', exception.message
     end
   end
 
@@ -71,7 +74,7 @@ class I18nExceptionsTest < I18n::TestCase
       assert_equal 'reserved key :scope used in "%{scope}"', exception.message
     end
   end
-  
+
   test "MissingTranslationData#new can be initialized with just two arguments" do
     assert I18n::MissingTranslationData.new('en', 'key')
   end
@@ -92,7 +95,7 @@ class I18nExceptionsTest < I18n::TestCase
     end
 
     def force_invalid_pluralization_data
-      store_translations('de', :foo => [:bar])
+      store_translations('de', :foo => { :other => 'bar' })
       I18n.translate(:foo, :count => 1, :locale => :de)
     rescue I18n::ArgumentError => e
       block_given? ? yield(e) : raise(e)

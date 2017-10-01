@@ -6,6 +6,7 @@ class I18nTest < I18n::TestCase
     super
     store_translations(:en, :currency => { :format => { :separator => '.', :delimiter => ',', } })
     store_translations(:nl, :currency => { :format => { :separator => ',', :delimiter => '.', } })
+    store_translations(:en, "true" => "Yes", "false" => "No")
   end
 
   test "exposes its VERSION constant" do
@@ -224,6 +225,14 @@ class I18nTest < I18n::TestCase
     end
   end
 
+  test "translate given true as a key works" do
+    assert_equal "Yes", I18n.t(true)
+  end
+
+  test "translate given false as a key works" do
+    assert_equal "No", I18n.t(false)
+  end
+
   test "available_locales can be replaced at runtime" do
     begin
       I18n.config.enforce_available_locales = true
@@ -270,7 +279,7 @@ class I18nTest < I18n::TestCase
   end
 
   test "localize given nil and default returns default" do
-    assert_equal nil, I18n.l(nil, :default => nil)
+    assert_nil I18n.l(nil, :default => nil)
   end
 
   test "localize given an Object raises an I18n::ArgumentError" do
@@ -349,6 +358,10 @@ class I18nTest < I18n::TestCase
     ensure
       I18n.config.enforce_available_locales = false
     end
+  end
+
+  test "transliterate non-ASCII chars not in map with default replacement char" do
+    assert_equal "???", I18n.transliterate("日本語")
   end
 
   test "I18n.locale_available? returns true when the passed locale is available" do

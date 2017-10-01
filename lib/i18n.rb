@@ -11,7 +11,7 @@ module I18n
   autoload :Locale,  'i18n/locale'
   autoload :Tests,   'i18n/tests'
 
-  RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback, :format, :cascade, :throw, :raise, :deep_interpolation]
+  RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback, :fallback_in_progress, :format, :cascade, :throw, :raise, :deep_interpolation]
   RESERVED_KEYS_PATTERN = /%\{(#{RESERVED_KEYS.join("|")})\}/
 
   module Base

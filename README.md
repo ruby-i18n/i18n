@@ -4,6 +4,8 @@
 
 Ruby Internationalization and localization solution.
 
+[See the Rails Guide](http://guides.rubyonrails.org/i18n.html) for an example of its usage. (Note: This library can be used independently from Rails.)
+
 Features:
 
 * translation and localization

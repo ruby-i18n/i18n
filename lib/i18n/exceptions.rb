@@ -71,10 +71,10 @@ module I18n
   end
 
   class InvalidPluralizationData < ArgumentError
-    attr_reader :entry, :count
-    def initialize(entry, count)
-      @entry, @count = entry, count
-      super "translation data #{entry.inspect} can not be used with :count => #{count}"
+    attr_reader :entry, :count, :key
+    def initialize(entry, count, key)
+      @entry, @count, @key = entry, count, key
+      super "translation data #{entry.inspect} can not be used with :count => #{count}. key '#{key}' is missing."
     end
   end
 

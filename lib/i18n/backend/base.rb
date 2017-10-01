@@ -23,7 +23,7 @@ module I18n
 
       def translate(locale, key, options = {})
         raise InvalidLocale.new(locale) unless locale
-        entry = key && lookup(locale, key, options[:scope], options)
+        entry = lookup(locale, key, options[:scope], options) unless key.nil?
 
         if entry.nil? && options.key?(:default)
           entry = default(locale, key, options[:default], options)
@@ -136,14 +136,14 @@ module I18n
         # - It will pick the :other subkey otherwise.
         # - It will pick the :zero subkey in the special case where count is
         #   equal to 0 and there is a :zero subkey present. This behaviour is
-        #   not stand with regards to the CLDR pluralization rules.
+        #   not standard with regards to the CLDR pluralization rules.
         # Other backends can implement more flexible or complex pluralization rules.
         def pluralize(locale, entry, count)
           return entry unless entry.is_a?(Hash) && count
 
           key = :zero if count == 0 && entry.has_key?(:zero)
           key ||= count == 1 ? :one : :other
-          raise InvalidPluralizationData.new(entry, count) unless entry.has_key?(key)
+          raise InvalidPluralizationData.new(entry, count, key) unless entry.has_key?(key)
           entry[key]
         end
 

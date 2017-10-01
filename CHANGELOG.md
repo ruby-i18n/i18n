@@ -1,6 +1,18 @@
-# master
+# 0.8.3
 
-* `Hash#slice` ignores non existing keys.
+See https://github.com/svenfuchs/i18n/releases/tag/v0.8.3
+
+# 0.8.2
+
+See https://github.com/svenfuchs/i18n/releases/tag/v0.8.2
+
+# 0.8.1
+
+See https://github.com/svenfuchs/i18n/releases/tag/v0.8.1
+
+# 0.8.0
+
+See https://github.com/svenfuchs/i18n/releases/tag/v0.8.0
 
 # 0.7.0
 
