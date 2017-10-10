@@ -59,6 +59,11 @@ class I18nBackendFallbacksTranslateTest < I18n::TestCase
     assert_equal({}, I18n.t(:missing_bar, :locale => :'de-DE', :default => {}))
   end
 
+  test "returns the :de translation for a missing :'de-DE' when :default is nil" do
+    assert_equal 'Bar in :de', I18n.t(:bar, :locale => :'de-DE', :default => nil)
+    assert_nil I18n.t(:missing_bar, :locale => :'de-DE', :default => nil)
+  end
+
   test "returns the :'de-DE' default :baz translation for a missing :'de-DE' when defaults contains Symbol" do
     assert_equal 'Baz in :de-DE', I18n.t(:missing_foo, :locale => :'de-DE', :default => [:baz, "Default Bar"])
   end
