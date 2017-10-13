@@ -60,9 +60,6 @@ class I18nBackendMemoizeTest < I18nBackendSimpleTest
     backend = backend_impl.new
 
     memoized_lookup = backend.send(:memoized_lookup)
-    # make the 'default_proc' execution artificially slower to help reproduce :
-    default_proc = memoized_lookup.default_proc
-    memoized_lookup.default_proc = Proc.new { |h, k| sleep 0.1; default_proc.call(h, k) }
 
     assert_equal "[:foo, :scoped, :sample]", backend.translate('foo', scope = [:scoped, :sample])
 
