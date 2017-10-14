@@ -53,3 +53,9 @@ class I18n::TestCase < TEST_CASE
     File.dirname(__FILE__) + '/test_data/locales'
   end
 end
+
+class DummyRackApp
+  def call(env)
+    I18n.locale = :es
+  end
+end

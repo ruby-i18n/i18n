@@ -10,6 +10,7 @@ module I18n
   autoload :Gettext, 'i18n/gettext'
   autoload :Locale,  'i18n/locale'
   autoload :Tests,   'i18n/tests'
+  autoload :Middleware,   'i18n/middleware'
 
   RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback, :fallback_in_progress, :format, :cascade, :throw, :raise, :deep_interpolation]
   RESERVED_KEYS_PATTERN = /%\{(#{RESERVED_KEYS.join("|")})\}/
