@@ -6,7 +6,7 @@ require 'i18n/version'
 Gem::Specification.new do |s|
   s.name         = "i18n"
   s.version      = I18n::VERSION
-  s.authors      = ["Sven Fuchs", "Joshua Harvey", "Matt Aimonetti", "Stephan Soller", "Saimon Moore"]
+  s.authors      = ["Sven Fuchs", "Joshua Harvey", "Matt Aimonetti", "Stephan Soller", "Saimon Moore", "Ryan Bigg"]
   s.email        = "rails-i18n@googlegroups.com"
   s.homepage     = "http://github.com/svenfuchs/i18n"
   s.summary      = "New wave Internationalization support for Ruby"
