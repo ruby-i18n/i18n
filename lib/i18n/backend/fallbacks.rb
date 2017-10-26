@@ -37,8 +37,7 @@ module I18n
       def translate(locale, key, options = {})
         return super unless options.fetch(:fallback, true)
         return super if options[:fallback_in_progress]
-        original_default = options[:default]
-        extract_non_symbol_default!(options)
+        default = extract_non_symbol_default!(options) if options[:default]
 
         begin
           options[:fallback_in_progress] = true
@@ -56,7 +55,9 @@ module I18n
           options.delete(:fallback_in_progress)
         end
 
-        return super(locale, nil, options.merge(:default => original_default)) if options.key?(:default)
+        return if options.key?(:default) && options[:default].nil?
+
+        return super(locale, nil, options.merge(:default => default)) if default
         throw(:exception, I18n::MissingTranslation.new(locale, key, options))
       end
 
