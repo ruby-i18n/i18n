@@ -22,6 +22,7 @@ class I18nBackendCacheTest < I18n::TestCase
   def teardown
     super
     I18n.cache_store = nil
+    I18n.backend.send(:clear_cached_keys)
   end
 
   test "it uses the cache" do
@@ -89,6 +90,58 @@ class I18nBackendCacheTest < I18n::TestCase
     key2 = I18n.backend.send(:cache_key, :en, :some_key, interpolation_values2)
 
     assert key1 != key2
+  end
+
+  test "adds cached key to list of cached keys" do
+    I18n.backend.expects(:lookup).returns('Foo')
+    I18n.t(:foo)
+    assert I18n.backend.send(:cached_keys).include?(I18n.backend.send(:cache_key, :en, :foo, {}))
+  end
+
+  test "adds cached key only once" do
+    I18n.backend.expects(:lookup).returns('Foo')
+    I18n.t(:foo)
+    I18n.t(:foo)
+
+    assert_equal 1, I18n.backend.send(:cached_keys).length
+  end
+
+  test "adds cached key to list of cached keys with options" do
+    I18n.backend.expects(:lookup).returns('Foo')
+    I18n.t(:foo, :default => "bar")
+    assert I18n.backend.send(:cached_keys).include?(I18n.backend.send(:cache_key, :en, :foo, {:default => "bar"}))
+  end
+
+  test "adds cached key to list of cached keys even if exception" do
+    I18n.backend.expects(:lookup).returns(nil)
+    begin
+      I18n.t(:foo)
+    rescue
+    end
+    assert I18n.backend.send(:cached_keys).include?(I18n.backend.send(:cache_key, :en, :foo, {}))
+  end
+
+  test "does not return cached value after cache is cleared" do
+    I18n.backend.expects(:lookup).returns('Foo')
+    I18n.t(:foo)
+    I18n.backend.clear_cache
+
+    assert_equal 0, I18n.backend.send(:cached_keys).length
+    I18n.backend.expects(:lookup).returns('Bar')
+    assert_equal 'Bar', I18n.t(:foo)
+  end
+
+  test "store_translations clears cache" do
+    I18n.backend.expects(:lookup).returns('Foo')
+    I18n.t(:foo)
+    begin
+      I18n.backend.store_translations(:en, nil)
+    rescue
+    end
+
+    assert_equal 0, I18n.backend.send(:cached_keys).length
+    I18n.backend.expects(:lookup).returns('Bar')
+    assert_equal 'Bar', I18n.t(:foo)
   end
 
   protected

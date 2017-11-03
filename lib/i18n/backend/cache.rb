@@ -11,12 +11,13 @@
 #   I18n.cache_store = ActiveSupport::Cache.lookup_store(:memory_store)
 #
 # You can use any cache implementation you want that provides the same API as
-# ActiveSupport::Cache (only the methods #fetch and #write are being used).
+# ActiveSupport::Cache (only the methods #fetch, #write and #delete are being
+# used).
 #
 # The cache_key implementation by default assumes you pass values that return
-# a valid key from #hash (see 
-# http://www.ruby-doc.org/core/classes/Object.html#M000337). However, you can 
-# configure your own digest method via which responds to #hexdigest (see 
+# a valid key from #hash (see
+# http://www.ruby-doc.org/core/classes/Object.html#M000337). However, you can
+# configure your own digest method via which responds to #hexdigest (see
 # http://ruby-doc.org/stdlib/libdoc/digest/rdoc/index.html):
 #
 #   I18n.cache_key_digest = Digest::MD5.new
@@ -36,6 +37,11 @@
 #
 # If the lambda may result in different values for each call then consider
 # also using the Memoize backend.
+#
+# The implementation keeps a list of cached keys, and deletes these keys from
+# the cache store whenever new translations are stored using the
+# #store_translations method. YMMV performance-wise with a large number of
+# cached keys.
 #
 module I18n
   class << self
@@ -73,10 +79,24 @@ module I18n
   end
 
   module Backend
-    # TODO Should the cache be cleared if new translations are stored?
     module Cache
+      @@cached_keys = []
+
+      def store_translations(locale, data, options = {})
+        clear_cache if I18n.perform_caching?
+        super
+      end
+
       def translate(locale, key, options = {})
         I18n.perform_caching? ? fetch(cache_key(locale, key, options)) { super } : super
+      end
+
+      def clear_cache
+        @@cached_keys.each do |key|
+          I18n.cache_store.delete(key)
+        end
+
+        clear_cached_keys
       end
 
       protected
@@ -84,6 +104,7 @@ module I18n
         def fetch(cache_key, &block)
           result = _fetch(cache_key, &block)
           throw(:exception, result) if result.is_a?(MissingTranslation)
+          add_cached_key(cache_key)
           result = result.dup if result.frozen? rescue result
           result
         end
@@ -92,13 +113,28 @@ module I18n
           result = I18n.cache_store.read(cache_key)
           return result unless result.nil?
           result = catch(:exception, &block)
-          I18n.cache_store.write(cache_key, result) unless result.is_a?(Proc)
+          unless result.is_a?(Proc)
+            I18n.cache_store.write(cache_key, result)
+            add_cached_key(cache_key)
+          end
           result
         end
 
         def cache_key(locale, key, options)
           # This assumes that only simple, native Ruby values are passed to I18n.translate.
           "i18n/#{I18n.cache_namespace}/#{locale}/#{digest_item(key)}/#{USE_INSPECT_HASH ? digest_item(options.inspect) : digest_item(options)}"
+        end
+
+        def cached_keys
+          @@cached_keys
+        end
+
+        def add_cached_key(cache_key)
+          @@cached_keys << cache_key if !@@cached_keys.include?(cache_key)
+        end
+
+        def clear_cached_keys
+          @@cached_keys = []
         end
 
       private
