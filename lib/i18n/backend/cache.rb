@@ -80,7 +80,7 @@ module I18n
 
   module Backend
     module Cache
-      @@cached_keys = []
+      @@cached_keys = Set.new
 
       def store_translations(locale, data, options = {})
         clear_cache if I18n.perform_caching?
@@ -130,11 +130,11 @@ module I18n
         end
 
         def add_cached_key(cache_key)
-          @@cached_keys << cache_key if !@@cached_keys.include?(cache_key)
+          @@cached_keys << cache_key
         end
 
         def clear_cached_keys
-          @@cached_keys = []
+          @@cached_keys.clear
         end
 
       private
