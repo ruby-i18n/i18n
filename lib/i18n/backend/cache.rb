@@ -48,6 +48,7 @@ module I18n
     @@cache_store = nil
     @@cache_namespace = nil
     @@cache_key_digest = nil
+    @@cached_keys = Set.new
 
     def cache_store
       @@cache_store
@@ -76,14 +77,29 @@ module I18n
     def perform_caching?
       !cache_store.nil?
     end
+
+    def cached_keys
+      @@cached_keys
+    end
+
+    def add_cached_key(cache_key)
+      @@cached_keys << cache_key
+    end
+
+    def clear_cache
+      if I18n.perform_caching?
+        @@cached_keys.each do |key|
+          I18n.cache_store.delete(key)
+        end
+      end
+      @@cached_keys.clear
+    end
   end
 
   module Backend
     module Cache
-      @@cached_keys = Set.new
-
       def store_translations(locale, data, options = {})
-        clear_cache if I18n.perform_caching?
+        I18n.clear_cache
         super
       end
 
@@ -91,20 +107,12 @@ module I18n
         I18n.perform_caching? ? fetch(cache_key(locale, key, options)) { super } : super
       end
 
-      def clear_cache
-        @@cached_keys.each do |key|
-          I18n.cache_store.delete(key)
-        end
-
-        clear_cached_keys
-      end
-
       protected
 
         def fetch(cache_key, &block)
           result = _fetch(cache_key, &block)
           throw(:exception, result) if result.is_a?(MissingTranslation)
-          add_cached_key(cache_key)
+          I18n.add_cached_key(cache_key)
           result = result.dup if result.frozen? rescue result
           result
         end
@@ -115,7 +123,7 @@ module I18n
           result = catch(:exception, &block)
           unless result.is_a?(Proc)
             I18n.cache_store.write(cache_key, result)
-            add_cached_key(cache_key)
+            I18n.add_cached_key(cache_key)
           end
           result
         end
@@ -123,18 +131,6 @@ module I18n
         def cache_key(locale, key, options)
           # This assumes that only simple, native Ruby values are passed to I18n.translate.
           "i18n/#{I18n.cache_namespace}/#{locale}/#{digest_item(key)}/#{USE_INSPECT_HASH ? digest_item(options.inspect) : digest_item(options)}"
-        end
-
-        def cached_keys
-          @@cached_keys
-        end
-
-        def add_cached_key(cache_key)
-          @@cached_keys << cache_key
-        end
-
-        def clear_cached_keys
-          @@cached_keys.clear
         end
 
       private
