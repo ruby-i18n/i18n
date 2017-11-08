@@ -30,9 +30,9 @@ module I18n
         # level of the hash.
         def store_translations(locale, data, options = {})
           if I18n.available_locales_initialized? &&
-            I18n.available_locales.include?(locale.to_sym) == false &&
-            I18n.available_locales.include?(locale.to_s) == false
-            return translations
+            !I18n.available_locales.include?(locale.to_sym) &&
+            !I18n.available_locales.include?(locale.to_s)
+            return data
           end
           locale = locale.to_sym
           translations[locale] ||= {}
