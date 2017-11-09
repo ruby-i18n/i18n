@@ -57,6 +57,11 @@ module I18n
       @@available_locales = nil if @@available_locales.empty?
       @@available_locales_set = nil
     end
+    
+    # Returns true if the available_locales have been initialized
+    def available_locales_initialized?
+      ( !!defined?(@@available_locales) && !!@@available_locales )
+    end
 
     # Clears the available locales set so it can be recomputed again after I18n
     # gets reloaded.
