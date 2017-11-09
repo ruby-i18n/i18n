@@ -26,6 +26,7 @@ module I18n
           end
         end
 
+        keys.last << "." if separator == "." && key.to_s.end_with?(".")
         keys.join(".")
       end
 
