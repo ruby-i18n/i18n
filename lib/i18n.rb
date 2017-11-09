@@ -144,6 +144,10 @@ module I18n
     #
     # Then <tt>I18n.t(:salutation, :gender => 'w', :name => 'Smith') will result in "Mrs. Smith".
     #
+    # Note that the string returned by lambda will go through string interpolation too,
+    # so the following lambda would give the same result:
+    #   lambda { |key, options| options[:gender] == 'm' ? "Mr. %{name}" : "Mrs. %{name}" }
+    #
     # It is recommended to use/implement lambdas in an "idempotent" way. E.g. when
     # a cache layer is put in front of I18n.translate it will generate a cache key
     # from the argument values passed to #translate. Therefor your lambdas should
