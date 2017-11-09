@@ -30,7 +30,7 @@ module I18n
           backends.each { |backend| backend.reload! }
         end
 
-        def store_translations(locale, data, options = {})
+        def store_translations(locale, data, options = EMPTY_HASH)
           backends.first.store_translations(locale, data, options)
         end
 
@@ -38,7 +38,7 @@ module I18n
           backends.map { |backend| backend.available_locales }.flatten.uniq
         end
 
-        def translate(locale, key, default_options = {})
+        def translate(locale, key, default_options = EMPTY_HASH)
           namespace = nil
           options = default_options.except(:default)
 
@@ -64,7 +64,7 @@ module I18n
           end
         end
 
-        def localize(locale, object, format = :default, options = {})
+        def localize(locale, object, format = :default, options = EMPTY_HASH)
           backends.each do |backend|
             catch(:exception) do
               result = backend.localize(locale, object, format, options) and return result

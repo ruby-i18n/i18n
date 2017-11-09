@@ -30,7 +30,7 @@ module I18n
         # This uses a deep merge for the translations hash, so existing
         # translations will be overwritten by new ones only at the deepest
         # level of the hash.
-        def store_translations(locale, data, options = {})
+        def store_translations(locale, data, options = EMPTY_HASH)
           if I18n.enforce_available_locales &&
             I18n.available_locales_initialized? &&
             !I18n.available_locales.include?(locale.to_sym) &&
@@ -75,7 +75,7 @@ module I18n
         # nested translations hash. Splits keys or scopes containing dots
         # into multiple keys, i.e. <tt>currency.format</tt> is regarded the same as
         # <tt>%w(currency format)</tt>.
-        def lookup(locale, key, scope = [], options = {})
+        def lookup(locale, key, scope = [], options = EMPTY_HASH)
           init_translations unless initialized?
           keys = I18n.normalize_keys(locale, key, scope, options[:separator])
 

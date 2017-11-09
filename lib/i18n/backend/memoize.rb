@@ -16,7 +16,7 @@ module I18n
         @memoized_locales ||= super
       end
 
-      def store_translations(locale, data, options = {})
+      def store_translations(locale, data, options = EMPTY_HASH)
         reset_memoizations!(locale)
         super
       end
@@ -28,7 +28,7 @@ module I18n
 
       protected
 
-        def lookup(locale, key, scope = nil, options = {})
+        def lookup(locale, key, scope = nil, options = EMPTY_HASH)
           flat_key  = I18n::Backend::Flatten.normalize_flat_keys(locale,
             key, scope, options[:separator]).to_sym
           flat_hash = memoized_lookup[locale.to_sym]

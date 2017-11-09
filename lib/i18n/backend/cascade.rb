@@ -33,7 +33,7 @@
 module I18n
   module Backend
     module Cascade
-      def lookup(locale, key, scope = [], options = {})
+      def lookup(locale, key, scope = [], options = EMPTY_HASH)
         return super unless cascade = options[:cascade]
 
         cascade   = { :step => 1 } unless cascade.is_a?(Hash)

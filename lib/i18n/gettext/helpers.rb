@@ -18,7 +18,7 @@ module I18n
         msgsid
       end
 
-      def gettext(msgid, options = {})
+      def gettext(msgid, options = EMPTY_HASH)
         I18n.t(msgid, { :default => msgid, :separator => '|' }.merge(options))
       end
       alias _ gettext

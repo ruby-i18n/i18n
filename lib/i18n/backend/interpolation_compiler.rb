@@ -106,7 +106,7 @@ module I18n
         end
       end
 
-      def store_translations(locale, data, options = {})
+      def store_translations(locale, data, options = EMPTY_HASH)
         compile_all_strings_in(data)
         super
       end

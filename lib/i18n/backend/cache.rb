@@ -77,7 +77,7 @@ module I18n
   module Backend
     # TODO Should the cache be cleared if new translations are stored?
     module Cache
-      def translate(locale, key, options = {})
+      def translate(locale, key, options = EMPTY_HASH)
         I18n.perform_caching? ? fetch(cache_key(locale, key, options)) { super } : super
       end
 
