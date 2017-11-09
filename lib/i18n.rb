@@ -343,6 +343,7 @@ module I18n
         else
           keys = key.to_s.split(separator)
           keys.delete('')
+          keys.last << '.' if separator == '.' && key.to_s.end_with?('.')
           keys.map! { |k| k.to_sym }
           keys
         end

@@ -89,4 +89,9 @@ class I18nBackendSimpleTest < I18n::TestCase
     I18n.backend.reload!
     assert_equal false, I18n.backend.initialized?
   end
+
+  test "simple store and lookup: can store and retrieve a translation which key ends with the escope separator character" do
+    store_translations :'en', :"yyy." => "yyy value"
+    assert_equal("yyy value", I18n.t("yyy."))
+  end
 end
