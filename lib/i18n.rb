@@ -140,7 +140,7 @@ module I18n
     # called and passed the key and options.
     #
     # E.g. assuming the key <tt>:salutation</tt> resolves to:
-    #   lambda { |key, options| options[:gender] == 'm' ? "Mr. %{options[:name]}" : "Mrs. %{options[:name]}" }
+    #   lambda { |key, options| options[:gender] == 'm' ? "Mr. #{options[:name]}" : "Mrs. #{options[:name]}" }
     #
     # Then <tt>I18n.t(:salutation, :gender => 'w', :name => 'Smith') will result in "Mrs. Smith".
     #
