@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module I18n
   module Backend
     # This module contains several helpers to assist flattening translations.

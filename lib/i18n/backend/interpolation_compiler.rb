@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # The InterpolationCompiler module contains optimizations that can tremendously
 # speed up the interpolation process on the Simple backend.
 #

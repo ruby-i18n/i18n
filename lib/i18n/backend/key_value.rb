@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'i18n/backend/base'
 
 module I18n

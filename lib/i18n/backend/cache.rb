@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This module allows you to easily cache all responses from the backend - thus
 # speeding up the I18n aspects of your application quite a bit.
 #
@@ -14,9 +16,9 @@
 # ActiveSupport::Cache (only the methods #fetch and #write are being used).
 #
 # The cache_key implementation by default assumes you pass values that return
-# a valid key from #hash (see 
-# http://www.ruby-doc.org/core/classes/Object.html#M000337). However, you can 
-# configure your own digest method via which responds to #hexdigest (see 
+# a valid key from #hash (see
+# http://www.ruby-doc.org/core/classes/Object.html#M000337). However, you can
+# configure your own digest method via which responds to #hexdigest (see
 # http://ruby-doc.org/stdlib/libdoc/digest/rdoc/index.html):
 #
 #   I18n.cache_key_digest = Digest::MD5.new

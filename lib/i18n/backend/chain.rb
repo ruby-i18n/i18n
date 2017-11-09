@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module I18n
   module Backend
     # Backend that chains multiple other backends and checks each of them when
