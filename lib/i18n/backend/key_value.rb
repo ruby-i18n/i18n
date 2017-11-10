@@ -1,7 +1,24 @@
 require 'i18n/backend/base'
-require 'active_support/json'
 
 module I18n
+
+  begin
+    require 'oj'
+    class JSON
+      class << self
+        def encode(value)
+          Oj::Rails.encode(value)
+        end
+        def decode(value)
+          Oj.load(value)
+        end
+      end
+    end
+  rescue LoadError
+    require 'active_support/json'
+    JSON = ActiveSupport::JSON
+  end
+
   module Backend
     # This is a basic backend for key value stores. It receives on
     # initialization the store, which should respond to three methods:
@@ -65,14 +82,14 @@ module I18n
             case value
             when Hash
               if @subtrees && (old_value = @store[key])
-                old_value = ActiveSupport::JSON.decode(old_value)
+                old_value = JSON.decode(old_value)
                 value = old_value.deep_symbolize_keys.deep_merge!(value) if old_value.is_a?(Hash)
               end
             when Proc
               raise "Key-value stores cannot handle procs"
             end
 
-            @store[key] = ActiveSupport::JSON.encode(value) unless value.is_a?(Symbol)
+            @store[key] = JSON.encode(value) unless value.is_a?(Symbol)
           end
         end
 
@@ -89,7 +106,7 @@ module I18n
         def lookup(locale, key, scope = [], options = {})
           key   = normalize_flat_keys(locale, key, scope, options[:separator])
           value = @store["#{locale}.#{key}"]
-          value = ActiveSupport::JSON.decode(value) if value
+          value = JSON.decode(value) if value
           value.is_a?(Hash) ? value.deep_symbolize_keys : value
         end
       end
