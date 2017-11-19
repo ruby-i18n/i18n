@@ -7,3 +7,4 @@ pkg
 .bundle
 .rvmrc
 Gemfile.lock
+gemfiles/*.lock
