@@ -147,15 +147,26 @@ module I18n
           entry[key]
         end
 
-        # Interpolates values into a given string.
+        # Interpolates values into a given subject.
         #
-        #   interpolate "file %{file} opened by %%{user}", :file => 'test.txt', :user => 'Mr. X'
+        #   if the given subject is a string then:
+        #   method interpolates "file %{file} opened by %%{user}", :file => 'test.txt', :user => 'Mr. X'
         #   # => "file test.txt opened by %{user}"
-        def interpolate(locale, string, values = {})
-          if string.is_a?(::String) && !values.empty?
-            I18n.interpolate(string, values)
+        #
+        #   if the given subject is an array then:
+        #   each element of the array is recursively interpolated (until it finds a string)
+        #   method interpolates ["yes, %{user}", ["maybe no, %{user}, "no, %{user}"]], :user => "bartuz"
+        #   # => "["yes, bartuz",["maybe no, bartuz", "no, bartuz"]]"
+        
+        
+        def interpolate(locale, subject, values = {}) 
+          return subject if values.empty?
+
+          case subject
+          when ::String then I18n.interpolate(subject, values)
+          when ::Array then subject.map { |element| interpolate(locale, element, values) }
           else
-            string
+            subject
           end
         end
 
