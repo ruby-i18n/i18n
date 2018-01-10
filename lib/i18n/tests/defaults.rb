@@ -24,6 +24,10 @@ module I18n
         assert_equal 'bar', I18n.t(:does_not_exist, :default => [:does_not_exist_2, :'foo.bar'])
       end
 
+      test "defaults: given an array as a default with false it returns false" do
+        assert_equal false, I18n.t(:does_not_exist, :default => [false])
+      end
+
       test "defaults: given false it returns false" do
         assert_equal false, I18n.t(:does_not_exist, :default => false)
       end
