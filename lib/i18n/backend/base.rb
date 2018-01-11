@@ -103,7 +103,8 @@ module I18n
           case subject
           when Array
             subject.each do |item|
-              result = resolve(locale, object, item, options) and return result
+              result = resolve(locale, object, item, options)
+              return result unless result.nil?
             end and nil
           else
             resolve(locale, object, subject, options)
