@@ -216,6 +216,22 @@ class I18nTest < I18n::TestCase
     assert_raise(I18n::ArgumentError) { I18n.t("") }
   end
 
+  test "translate given an empty symbol as a key raises an I18n::ArgumentError" do
+    assert_raise(I18n::ArgumentError) { I18n.t(:"") }
+  end
+
+  test "translate given an array with empty string as a key raises an I18n::ArgumentError" do
+    assert_raise(I18n::ArgumentError) { I18n.t(["", :foo]) }
+  end
+
+  test "translate given an empty array as a key returns empty array" do
+    assert_equal [], I18n.t([])
+  end
+
+  test "translate given nil returns nil" do
+    assert_nil I18n.t(nil)
+  end
+
   test "translate given an unavailable locale rases an I18n::InvalidLocale" do
     begin
       I18n.config.enforce_available_locales = true
@@ -405,7 +421,7 @@ class I18nTest < I18n::TestCase
       I18n.config.enforce_available_locales = false
     end
   end
-  
+
   test 'I18n.reload! reloads the set of locales that are enforced' do
     begin
       # Clear the backend that affects the available locales and somehow can remain
@@ -413,9 +429,9 @@ class I18nTest < I18n::TestCase
       # For instance, it contains enough translations to cause a false positive with
       # this test when ran with --seed=50992
       I18n.backend = I18n::Backend::Simple.new
-      
+
       assert !I18n.available_locales.include?(:de), "Available locales should not include :de at this point"
-      
+
       I18n.enforce_available_locales = true
 
       assert_raise(I18n::InvalidLocale) { I18n.default_locale = :de }
@@ -431,11 +447,11 @@ class I18nTest < I18n::TestCase
       store_translations(:en, :foo => 'Foo in :en')
       store_translations(:de, :foo => 'Foo in :de')
       store_translations(:pl, :foo => 'Foo in :pl')
-      
+
       assert I18n.available_locales.include?(:de), ":de should now be allowed"
       assert I18n.available_locales.include?(:en), ":en should now be allowed"
       assert I18n.available_locales.include?(:pl), ":pl should now be allowed"
-      
+
       assert_nothing_raised { I18n.default_locale = I18n.locale = :en }
       assert_nothing_raised { I18n.default_locale = I18n.locale = :de }
       assert_nothing_raised { I18n.default_locale = I18n.locale = :pl }
