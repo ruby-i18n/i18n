@@ -156,7 +156,7 @@ module I18n
           return entry unless entry.is_a?(Hash) && count
 
           key = pluralization_key(entry, count)
-          raise InvalidPluralizationData.new(entry, count, key) unless entry.has_key?(key)
+          raise InvalidPluralizationData.new(entry, count, key) if !entry.has_key?(key) || entry[key].nil?
           entry[key]
         end
 

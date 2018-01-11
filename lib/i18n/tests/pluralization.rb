@@ -30,6 +30,10 @@ module I18n
       test "pluralization: given incomplete pluralization data it raises I18n::InvalidPluralizationData" do
         assert_raise(I18n::InvalidPluralizationData) { I18n.t(:default => { :one => 'bar' }, :count => 2) }
       end
+
+      test "pluralization: given nil in pluralization data it raises I18n::InvalidPluralizationData" do
+        assert_raise(I18n::InvalidPluralizationData) { I18n.t(:default => { :other => nil }, :count => 2) }
+      end
     end
   end
 end

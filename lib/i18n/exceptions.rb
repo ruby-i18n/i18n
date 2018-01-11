@@ -67,7 +67,7 @@ module I18n
     attr_reader :entry, :count, :key
     def initialize(entry, count, key)
       @entry, @count, @key = entry, count, key
-      super "translation data #{entry.inspect} can not be used with :count => #{count}. key '#{key}' is missing."
+      super "translation data #{entry.inspect} can not be used with :count => #{count}. key '#{key}' is missing or nil."
     end
   end
 
