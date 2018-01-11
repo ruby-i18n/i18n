@@ -161,7 +161,6 @@ module I18n
       handling = options.delete(:throw) && :throw || options.delete(:raise) && :raise # TODO deprecate :raise
 
       enforce_available_locales!(locale)
-      raise I18n::ArgumentError if key.is_a?(String) && key.empty?
 
       result = catch(:exception) do
         if key.is_a?(Array)

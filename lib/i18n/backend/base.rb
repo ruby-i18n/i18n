@@ -22,7 +22,10 @@ module I18n
       end
 
       def translate(locale, key, options = {})
+        raise I18n::ArgumentError if (key.is_a?(String) || key.is_a?(Symbol)) && key.empty?
         raise InvalidLocale.new(locale) unless locale
+        return nil if key.nil? && !options.key?(:default)
+
         entry = lookup(locale, key, options[:scope], options) unless key.nil?
 
         if entry.nil? && options.key?(:default)
