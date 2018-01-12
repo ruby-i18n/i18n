@@ -107,7 +107,51 @@ module I18n
           key   = normalize_flat_keys(locale, key, scope, options[:separator])
           value = @store["#{locale}.#{key}"]
           value = JSON.decode(value) if value
-          value.is_a?(Hash) ? value.deep_symbolize_keys : value
+
+          if value.is_a?(Hash)
+            value.deep_symbolize_keys
+          elsif !value.nil?
+            value
+          elsif !@subtrees
+            SubtreeProxy.new("#{locale}.#{key}", @store)
+          end
+        end
+      end
+
+      class SubtreeProxy
+        def initialize(master_key, store)
+          @master_key = master_key
+          @store = store
+          @subtree = nil
+        end
+
+        def has_key?(key)
+          @subtree && @subtree.has_key?(key) || self[key]
+        end
+
+        def [](key)
+          unless @subtree && value = @subtree[key]
+            value = @store["#{@master_key}.#{key}"]
+            (@subtree ||= {})[key] = JSON.decode(value) if value
+          end
+          value
+        end
+
+        def is_a?(klass)
+          Hash == klass || super
+        end
+        alias :kind_of? :is_a?
+
+        def instance_of?(klass)
+          Hash == klass || super
+        end
+
+        def nil?
+          @subtree.nil?
+        end
+
+        def inspect
+          @subtree.inspect
         end
       end
 

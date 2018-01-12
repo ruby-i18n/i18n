@@ -40,4 +40,10 @@ class I18nBackendKeyValueTest < I18n::TestCase
       I18n.t("foo", :raise => true)
     end
   end
+
+  test "translate handles subtrees for pluralization" do
+    setup_backend!(false)
+    store_translations(:en, :bar => { :one => "One" })
+    assert_equal("One", I18n.t("bar", :count => 1))
+  end
 end if I18n::TestCase.key_value?
