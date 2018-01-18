@@ -34,16 +34,16 @@ module I18n
           entry = resolve(locale, key, entry, options)
         end
 
+        entry = entry.dup if entry.is_a?(String)
+
+        count = options[:count]
+        entry = pluralize(locale, entry, count) if count
+
         if entry.nil?
           if (options.key?(:default) && !options[:default].nil?) || !options.key?(:default)
             throw(:exception, I18n::MissingTranslation.new(locale, key, options))
           end
         end
-
-        entry = entry.dup if entry.is_a?(String)
-
-        count = options[:count]
-        entry = pluralize(locale, entry, count) if count
 
         deep_interpolation = options[:deep_interpolation]
         values = options.except(*RESERVED_KEYS)
