@@ -34,15 +34,19 @@ module I18n
           entry = resolve(locale, key, entry, options)
         end
 
-        entry = entry.dup if entry.is_a?(String)
-
         count = options[:count]
-        entry = pluralize(locale, entry, count) if count
 
-        if entry.nil?
+        if entry.nil? && (subtrees? || !count)
           if (options.key?(:default) && !options[:default].nil?) || !options.key?(:default)
             throw(:exception, I18n::MissingTranslation.new(locale, key, options))
           end
+        end
+
+        entry = entry.dup if entry.is_a?(String)
+        entry = pluralize(locale, entry, count) if count
+
+        if entry.nil? && !subtrees?
+          throw(:exception, I18n::MissingTranslation.new(locale, key, options))
         end
 
         deep_interpolation = options[:deep_interpolation]
@@ -97,6 +101,10 @@ module I18n
           raise NotImplementedError
         end
 
+        def subtrees?
+          true
+        end
+
         # Evaluates defaults.
         # If given subject is an Array, it walks the array and returns the
         # first translation that can be resolved. Otherwise it tries to resolve
@@ -145,8 +153,7 @@ module I18n
         def pluralize(locale, entry, count)
           return entry unless entry.is_a?(Hash) && count
 
-          key = :zero if count == 0 && entry.has_key?(:zero)
-          key ||= count == 1 ? :one : :other
+          key = pluralization_key(entry, count)
           raise InvalidPluralizationData.new(entry, count, key) unless entry.has_key?(key)
           entry[key]
         end
@@ -161,9 +168,7 @@ module I18n
         #   each element of the array is recursively interpolated (until it finds a string)
         #   method interpolates ["yes, %{user}", ["maybe no, %{user}, "no, %{user}"]], :user => "bartuz"
         #   # => "["yes, bartuz",["maybe no, bartuz", "no, bartuz"]]"
-        
-        
-        def interpolate(locale, subject, values = {}) 
+        def interpolate(locale, subject, values = {})
           return subject if values.empty?
 
           case subject
@@ -239,6 +244,11 @@ module I18n
             when '%P' then I18n.t(:"time.#{object.hour < 12 ? :am : :pm}", :locale => locale, :format => format).downcase if object.respond_to? :hour
             end
           end
+        end
+
+        def pluralization_key(entry, count)
+          key = :zero if count == 0 && entry.has_key?(:zero)
+          key ||= count == 1 ? :one : :other
         end
     end
   end

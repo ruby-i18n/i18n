@@ -13,7 +13,7 @@ class I18nBackendChainTest < I18n::TestCase
     })
     @second = backend(:en => {
       :bar => 'Bar', :formats => {
-        :long => 'long', 
+        :long => 'long',
         :subformats => {:long => 'long'},
       },
       :plural_2 => { :one => 'one' },
@@ -89,3 +89,34 @@ class I18nBackendChainTest < I18n::TestCase
       backend
     end
 end
+
+class I18nBackendChainWithKeyValueTest < I18n::TestCase
+  def setup_backend!(subtrees = true)
+    first = I18n::Backend::KeyValue.new({}, subtrees)
+    first.store_translations(:en, :plural_1 => { :one => '%{count}' })
+
+    second = I18n::Backend::Simple.new
+    second.store_translations(:en, :plural_2 => { :one => 'one' })
+    I18n.backend = I18n::Backend::Chain.new(first, second)
+  end
+
+  test "subtrees enabled: looks up pluralization translations from the first chained backend" do
+    setup_backend!
+    assert_equal '1', I18n.t(:plural_1, count: 1)
+  end
+
+  test "subtrees disabled: looks up pluralization translations from the first chained backend" do
+    setup_backend!(false)
+    assert_equal '1', I18n.t(:plural_1, count: 1)
+  end
+
+  test "subtrees enabled: looks up translations from the second chained backend" do
+    setup_backend!
+    assert_equal 'one', I18n.t(:plural_2, count: 1)
+  end
+
+  test "subtrees disabled: looks up translations from the second chained backend" do
+    setup_backend!(false)
+    assert_equal 'one', I18n.t(:plural_2, count: 1)
+  end
+end if I18n::TestCase.key_value?
