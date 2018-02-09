@@ -103,6 +103,10 @@ module I18n
 
       protected
 
+        def subtrees?
+          @subtrees
+        end
+
         def lookup(locale, key, scope = [], options = {})
           key   = normalize_flat_keys(locale, key, scope, options[:separator])
           value = @store["#{locale}.#{key}"]
@@ -114,6 +118,15 @@ module I18n
             value
           elsif !@subtrees
             SubtreeProxy.new("#{locale}.#{key}", @store)
+          end
+        end
+
+        def pluralize(locale, entry, count)
+          if subtrees?
+            super
+          else
+            key = pluralization_key(entry, count)
+            entry[key]
           end
         end
       end
@@ -132,7 +145,10 @@ module I18n
         def [](key)
           unless @subtree && value = @subtree[key]
             value = @store["#{@master_key}.#{key}"]
-            (@subtree ||= {})[key] = JSON.decode(value) if value
+            if value
+              value = JSON.decode(value)
+              (@subtree ||= {})[key] = value
+            end
           end
           value
         end

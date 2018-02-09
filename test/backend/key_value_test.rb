@@ -41,6 +41,18 @@ class I18nBackendKeyValueTest < I18n::TestCase
     end
   end
 
+  test "subtrees enabled: given incomplete pluralization data it raises I18n::InvalidPluralizationData" do
+    setup_backend!
+    store_translations(:en, :bar => { :one => "One" })
+    assert_raise(I18n::InvalidPluralizationData) { I18n.t(:bar, :count => 2) }
+  end
+
+  test "subtrees disabled: given incomplete pluralization data it returns an error message" do
+    setup_backend!(false)
+    store_translations(:en, :bar => { :one => "One" })
+    assert_equal "translation missing: en.bar", I18n.t(:bar, :count => 2)
+  end
+
   test "translate handles subtrees for pluralization" do
     setup_backend!(false)
     store_translations(:en, :bar => { :one => "One" })
