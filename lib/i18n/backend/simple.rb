@@ -29,7 +29,8 @@ module I18n
         # translations will be overwritten by new ones only at the deepest
         # level of the hash.
         def store_translations(locale, data, options = {})
-          if I18n.available_locales_initialized? &&
+          if I18n.enforce_available_locales &&
+            I18n.available_locales_initialized? &&
             !I18n.available_locales.include?(locale.to_sym) &&
             !I18n.available_locales.include?(locale.to_s)
             return data
