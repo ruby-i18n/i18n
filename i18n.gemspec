@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.rubyforge_project = '[none]'
   s.required_rubygems_version = '>= 1.3.5'
-  s.required_ruby_version = '>= 1.9.3'
+  s.required_ruby_version = '>= 2.0.0'
 
   s.add_dependency 'concurrent-ruby', '~> 1.0'
 end
