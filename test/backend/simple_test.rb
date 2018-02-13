@@ -70,12 +70,23 @@ class I18nBackendSimpleTest < I18n::TestCase
     assert_equal Hash[:'en', {:foo => {:bar => 'bar', :baz => 'baz'}}], translations
   end
 
-  test "simple store_translations: do not store translations for locales not explicitly marked as available" do
+  test "simple store_translations: do not store translations unavailable locales if enforce_available_locales is true" do
+    begin
+      I18n.enforce_available_locales = true
+      I18n.available_locales = [:en, :es]
+      store_translations(:fr, :foo => {:bar => 'barfr', :baz => 'bazfr'})
+      store_translations(:es, :foo => {:bar => 'bares', :baz => 'bazes'})
+      assert_nil translations[:fr]
+      assert_equal Hash[:foo, {:bar => 'bares', :baz => 'bazes'}], translations[:es]
+    ensure
+      I18n.config.enforce_available_locales = false
+    end
+  end
+
+  test "simple store_translations: store translations for unavailable locales if enforce_available_locales is false" do
     I18n.available_locales = [:en, :es]
     store_translations(:fr, :foo => {:bar => 'barfr', :baz => 'bazfr'})
-    store_translations(:es, :foo => {:bar => 'bares', :baz => 'bazes'})
-    assert_nil translations[:fr]
-    assert_equal Hash[:foo, {:bar => 'bares', :baz => 'bazes'}], translations[:es]
+    assert_equal Hash[:foo, {:bar => 'barfr', :baz => 'bazfr'}], translations[:fr]
   end
 
   # reloading translations
