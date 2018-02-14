@@ -2,7 +2,6 @@ before_install:
   - gem install bundler
 
 rvm:
-  - 1.9.3
   - 2.0.0
   - 2.1.10
   - 2.2.8
@@ -26,20 +25,14 @@ gemfile:
 matrix:
   exclude:
     # Rails 5+ requires Ruby >= 2.2.2
-    - rvm: 1.9.3
-      gemfile: gemfiles/Gemfile.rails-master
     - rvm: 2.0.0
       gemfile: gemfiles/Gemfile.rails-master
     - rvm: 2.1.10
       gemfile: gemfiles/Gemfile.rails-master
-    - rvm: 1.9.3
-      gemfile: gemfiles/Gemfile.rails-5.0.x
     - rvm: 2.0.0
       gemfile: gemfiles/Gemfile.rails-5.0.x
     - rvm: 2.1.10
       gemfile: gemfiles/Gemfile.rails-5.0.x
-    - rvm: 1.9.3
-      gemfile: gemfiles/Gemfile.rails-5.1.x
     - rvm: 2.0.0
       gemfile: gemfiles/Gemfile.rails-5.1.x
     - rvm: 2.1.10
