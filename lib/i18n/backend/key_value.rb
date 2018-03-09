@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'i18n/backend/base'
 
 module I18n
@@ -74,7 +76,7 @@ module I18n
           @store, @subtrees = store, subtrees
         end
 
-        def store_translations(locale, data, options = {})
+        def store_translations(locale, data, options = EMPTY_HASH)
           escape = options.fetch(:escape, true)
           flatten_translations(locale, data, escape, @subtrees).each do |key, value|
             key = "#{locale}.#{key}"
@@ -107,7 +109,7 @@ module I18n
           @subtrees
         end
 
-        def lookup(locale, key, scope = [], options = {})
+        def lookup(locale, key, scope = [], options = EMPTY_HASH)
           key   = normalize_flat_keys(locale, key, scope, options[:separator])
           value = @store["#{locale}.#{key}"]
           value = JSON.decode(value) if value

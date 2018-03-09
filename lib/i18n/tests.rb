@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module I18n
   module Tests
     autoload :Basics,        'i18n/tests/basics'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'concurrent/map'
 
 require 'i18n/version'
@@ -14,7 +16,7 @@ module I18n
 
   RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback, :fallback_in_progress, :format, :cascade, :throw, :raise, :deep_interpolation]
   RESERVED_KEYS_PATTERN = /%\{(#{RESERVED_KEYS.join("|")})\}/
-
+  EMPTY_HASH = {}.freeze
 
   def self.new_double_nested_cache # :nodoc:
     Concurrent::Map.new { |h,k| h[k] = Concurrent::Map.new }
@@ -175,7 +177,7 @@ module I18n
 
     # Wrapper for <tt>translate</tt> that adds <tt>:raise => true</tt>. With
     # this option, if no translation is found, it will raise <tt>I18n::MissingTranslationData</tt>
-    def translate!(key, options={})
+    def translate!(key, options = EMPTY_HASH)
       translate(key, options.merge(:raise => true))
     end
     alias :t! :translate!

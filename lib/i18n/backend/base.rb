@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'yaml'
 require 'i18n/core_ext/hash'
 require 'i18n/core_ext/kernel/suppress_warnings'
@@ -17,11 +19,11 @@ module I18n
 
       # This method receives a locale, a data hash and options for storing translations.
       # Should be implemented
-      def store_translations(locale, data, options = {})
+      def store_translations(locale, data, options = EMPTY_HASH)
         raise NotImplementedError
       end
 
-      def translate(locale, key, options = {})
+      def translate(locale, key, options = EMPTY_HASH)
         raise I18n::ArgumentError if (key.is_a?(String) || key.is_a?(Symbol)) && key.empty?
         raise InvalidLocale.new(locale) unless locale
         return nil if key.nil? && !options.key?(:default)
@@ -68,7 +70,7 @@ module I18n
       # Acts the same as +strftime+, but uses a localized version of the
       # format string. Takes a key from the date/time formats translations as
       # a format argument (<em>e.g.</em>, <tt>:short</tt> in <tt>:'date.formats'</tt>).
-      def localize(locale, object, format = :default, options = {})
+      def localize(locale, object, format = :default, options = EMPTY_HASH)
         if object.nil? && options.include?(:default)
           return options[:default]
         end
@@ -97,7 +99,7 @@ module I18n
       protected
 
         # The method which actually looks up for the translation in the store.
-        def lookup(locale, key, scope = [], options = {})
+        def lookup(locale, key, scope = [], options = EMPTY_HASH)
           raise NotImplementedError
         end
 
@@ -109,7 +111,7 @@ module I18n
         # If given subject is an Array, it walks the array and returns the
         # first translation that can be resolved. Otherwise it tries to resolve
         # the translation directly.
-        def default(locale, object, subject, options = {})
+        def default(locale, object, subject, options = EMPTY_HASH)
           options = options.dup.reject { |key, value| key == :default }
           case subject
           when Array
@@ -126,7 +128,7 @@ module I18n
         # If the given subject is a Symbol, it will be translated with the
         # given options. If it is a Proc then it will be evaluated. All other
         # subjects will be returned directly.
-        def resolve(locale, object, subject, options = {})
+        def resolve(locale, object, subject, options = EMPTY_HASH)
           return subject if options[:resolve] == false
           result = catch(:exception) do
             case subject
@@ -168,7 +170,7 @@ module I18n
         #   each element of the array is recursively interpolated (until it finds a string)
         #   method interpolates ["yes, %{user}", ["maybe no, %{user}, "no, %{user}"]], :user => "bartuz"
         #   # => "["yes, bartuz",["maybe no, bartuz", "no, bartuz"]]"
-        def interpolate(locale, subject, values = {})
+        def interpolate(locale, subject, values = EMPTY_HASH)
           return subject if values.empty?
 
           case subject
@@ -184,7 +186,7 @@ module I18n
         #   deep_interpolate { people: { ann: "Ann is %{ann}", john: "John is %{john}" } },
         #                    ann: 'good', john: 'big'
         #   #=> { people: { ann: "Ann is good", john: "John is big" } }
-        def deep_interpolate(locale, data, values = {})
+        def deep_interpolate(locale, data, values = EMPTY_HASH)
           return data if values.empty?
 
           case data

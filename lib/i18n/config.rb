@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'set'
 
 module I18n
@@ -57,7 +59,7 @@ module I18n
       @@available_locales = nil if @@available_locales.empty?
       @@available_locales_set = nil
     end
-    
+
     # Returns true if the available_locales have been initialized
     def available_locales_initialized?
       ( !!defined?(@@available_locales) && !!@@available_locales )

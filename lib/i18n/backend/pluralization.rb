@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # I18n Pluralization are useful when you want your application to
 # customize pluralization rules.
 #

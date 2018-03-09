@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cgi'
 
 module I18n
@@ -42,7 +44,7 @@ module I18n
     module Base
       attr_reader :locale, :key, :options
 
-      def initialize(locale, key, options = {})
+      def initialize(locale, key, options = EMPTY_HASH)
         @key, @locale, @options = key, locale, options.dup
         options.each { |k, v| self.options[k] = v.inspect if v.is_a?(Proc) }
       end
