@@ -44,7 +44,7 @@ module I18n
           :scope     => options[:scope],
           :default   => options[:default],
           :separator => options[:separator],
-          :values    => options.reject { |name, value| RESERVED_KEYS.include?(name) }
+          :values    => options.reject { |name, _value| RESERVED_KEYS.include?(name) }
         }
         with_metadata(metadata) { super }
       end

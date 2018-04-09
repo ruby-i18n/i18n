@@ -14,7 +14,21 @@ module I18n
   autoload :Tests,   'i18n/tests'
   autoload :Middleware,   'i18n/middleware'
 
-  RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback, :fallback_in_progress, :format, :cascade, :throw, :raise, :deep_interpolation]
+  RESERVED_KEYS = %i[
+    cascade
+    deep_interpolation
+    default
+    exception_handler
+    fallback
+    fallback_in_progress
+    format
+    object
+    raise
+    resolve
+    scope
+    separator
+    throw
+  ].freeze
   RESERVED_KEYS_PATTERN = /%\{(#{RESERVED_KEYS.join("|")})\}/
   EMPTY_HASH = {}.freeze
 
