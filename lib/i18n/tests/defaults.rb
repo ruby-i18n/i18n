@@ -5,7 +5,8 @@ module I18n
     module Defaults
       def setup
         super
-        I18n.backend.store_translations(:en, :foo => { :bar => 'bar', :baz => 'baz' })
+        I18n.backend.store_translations(:en, :foo => { :bar => 'bar', :baz => 'baz' }, faa: 'i exist')
+        I18n.backend.store_translations(:'en-CH', :foo => { :bar => 'bar', :baz => 'baz' })
       end
 
       test "defaults: given nil as a key it returns the given default" do
