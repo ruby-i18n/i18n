@@ -56,7 +56,7 @@ module I18n
       def initialize(*mappings)
         @map = {}
         map(mappings.pop) if mappings.last.is_a?(Hash)
-        self.defaults = mappings.empty? ? [I18n.default_locale.to_sym] : mappings
+        self.defaults = mappings.empty? ? [] : mappings
       end
 
       def defaults=(defaults)
