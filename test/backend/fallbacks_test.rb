@@ -24,16 +24,8 @@ class I18nBackendFallbacksTranslateTest < I18n::TestCase
     assert_equal 'Interpolate %{value}', I18n.t(:interpolate)
   end
 
-  test "returns the :en translation for a missing :de translation" do
-    assert_equal 'Foo in :en', I18n.t(:foo, :locale => :de)
-  end
-
   test "returns the :de translation for a missing :'de-DE' translation" do
     assert_equal 'Bar in :de', I18n.t(:bar, :locale => :'de-DE')
-  end
-
-  test "returns the :en translation for translation missing in both :de and :'de-De'" do
-    assert_equal 'Buz in :en', I18n.t(:buz, :locale => :'de-DE')
   end
 
   test "returns the :de translation for a missing :'de-DE' when :default is a String" do
@@ -117,18 +109,13 @@ class I18nBackendFallbacksLocalizeTest < I18n::TestCase
     super
     I18n.backend = Backend.new
     store_translations(:en, :date => { :formats => { :en => 'en' }, :day_names => %w(Sunday) })
-    store_translations(:de, :date => { :formats => { :de => 'de' } })
+    store_translations(:de, :date => { :formats => { :de => 'de' }, :day_names => %w(Sunday) })
   end
 
   test "still uses an existing format as usual" do
     assert_equal 'en', I18n.l(Date.today, :format => :en, :locale => :en)
   end
-
-  test "looks up and uses a fallback locale's format for a key missing in the given locale (1)" do
-    assert_equal 'en', I18n.l(Date.today, :format => :en, :locale => :de)
-  end
-
-  test "looks up and uses a fallback locale's format for a key missing in the given locale (2)" do
+  test "looks up and uses a fallback locale's format for a key missing in the given locale" do
     assert_equal 'de', I18n.l(Date.today, :format => :de, :locale => :'de-DE')
   end
 
@@ -137,7 +124,7 @@ class I18nBackendFallbacksLocalizeTest < I18n::TestCase
   end
 
   test "uses a fallback locale's translation for a key missing in the given locale" do
-    assert_equal 'Sunday', I18n.l(Date.new(2010, 1, 3), :format => '%A', :locale => :de)
+    assert_equal 'Sunday', I18n.l(Date.new(2010, 1, 3), :format => '%A', :locale => :'de-DE')
   end
 end
 
@@ -208,8 +195,8 @@ class I18nBackendFallbacksExistsTest < I18n::TestCase
   end
 
   test "exists? should return true given a key which is missing from the given locale and exists in a fallback locale" do
-    assert_equal true, I18n.exists?(:foo, :de)
-    assert_equal true, I18n.exists?(:foo, :'de-DE')
+    assert_equal true, I18n.exists?(:bar, :de)
+    assert_equal true, I18n.exists?(:bar, :'de-DE')
   end
 
   test "exists? should return false given a key which is missing from the given locale and all its fallback locales" do
