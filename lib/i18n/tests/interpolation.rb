@@ -104,9 +104,10 @@ module I18n
       end
 
       test "interpolation: given a translations containing a reserved key it raises I18n::ReservedInterpolationKey" do
-        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:default => '%{default}',   :foo => :bar) }
-        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:default => '%{scope}',     :foo => :bar) }
-        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:default => '%{separator}', :foo => :bar) }
+        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:foo => :bar, :default => '%{exception_handler}') }
+        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:foo => :bar, :default => '%{default}') }
+        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:foo => :bar, :default => '%{separator}') }
+        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:foo => :bar, :default => '%{scope}') }
       end
 
       test "interpolation: deep interpolation for default string" do
