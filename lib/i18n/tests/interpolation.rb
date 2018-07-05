@@ -43,7 +43,7 @@ module I18n
       end
 
       test "interpolation: it does not raise I18n::MissingInterpolationArgument for escaped variables" do
-        assert_nothing_raised(I18n::MissingInterpolationArgument) do
+        assert_nothing_raised do
           assert_equal 'Barr %{foo}', interpolate(:default => '%{bar} %%{foo}', :bar => 'Barr')
         end
       end
