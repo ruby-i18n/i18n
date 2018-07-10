@@ -127,6 +127,7 @@ module I18n
           if subtrees?
             super
           else
+            return entry unless entry.is_a?(Hash)
             key = pluralization_key(entry, count)
             entry[key]
           end
