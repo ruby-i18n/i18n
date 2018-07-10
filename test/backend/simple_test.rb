@@ -100,4 +100,8 @@ class I18nBackendSimpleTest < I18n::TestCase
     I18n.backend.reload!
     assert_equal false, I18n.backend.initialized?
   end
+
+  test "returns localized string given missing pluralization data" do
+    assert_equal 'baz', I18n.t('foo.bar', count: 1)
+  end
 end
