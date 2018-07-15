@@ -58,4 +58,28 @@ class I18nBackendKeyValueTest < I18n::TestCase
     store_translations(:en, :bar => { :one => "One" })
     assert_equal("One", I18n.t("bar", :count => 1))
   end
+  
+  test "subtrees enabled: returns localized string given missing pluralization data" do
+    setup_backend!(true)
+    assert_equal 'bar', I18n.t("foo.bar", count: 1)
+  end
+
+  test "subtrees disabled: returns localized string given missing pluralization data" do
+    setup_backend!(false)
+    assert_equal 'bar', I18n.t("foo.bar", count: 1)
+  end
+  
+  test "subtrees enabled: Returns fallback default given missing pluralization data" do
+    setup_backend!(true)
+    I18n.backend.extend I18n::Backend::Fallbacks
+    assert_equal 'default', I18n.t(:missing_bar, count: 1, default: 'default')
+    assert_equal 'default', I18n.t(:missing_bar, count: 0, default: 'default')
+  end
+
+  test "subtrees disabled: Returns fallback default given missing pluralization data" do
+    setup_backend!(false)
+    I18n.backend.extend I18n::Backend::Fallbacks
+    assert_equal 'default', I18n.t(:missing_bar, count: 1, default: 'default')
+    assert_equal 'default', I18n.t(:missing_bar, count: 0, default: 'default')
+  end
 end if I18n::TestCase.key_value?

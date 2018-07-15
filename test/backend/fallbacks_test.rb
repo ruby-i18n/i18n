@@ -98,6 +98,11 @@ class I18nBackendFallbacksTranslateTest < I18n::TestCase
       I18n.enforce_available_locales = false
     end
   end
+
+  test "returns fallback default given missing pluralization data" do
+    assert_equal 'default', I18n.t(:missing_bar, count: 1, default: 'default')
+    assert_equal 'default', I18n.t(:missing_bar, count: 0, default: 'default')
+  end
 end
 
 class I18nBackendFallbacksLocalizeTest < I18n::TestCase
