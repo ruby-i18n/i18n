@@ -17,6 +17,10 @@ class I18nBackendSimpleTest < I18n::TestCase
     assert_raise(I18n::UnknownFileType) { I18n.backend.load_translations("#{locales_dir}/en.xml") }
   end
 
+  test "simple load_translations: given a YAML file name with yaml extension does not raise anything" do
+    assert_nothing_raised { I18n.backend.load_translations("#{locales_dir}/en.yaml") }
+  end
+
   test "simple load_translations: given a Ruby file name it does not raise anything" do
     assert_nothing_raised { I18n.backend.load_translations("#{locales_dir}/en.rb") }
   end
