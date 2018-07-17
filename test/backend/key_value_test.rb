@@ -21,6 +21,14 @@ class I18nBackendKeyValueTest < I18n::TestCase
     assert_flattens({:"a.b"=>['a', 'b']}, {:a=>{:b =>['a', 'b']}}, true, false)
     assert_flattens({:"a.b" => "c"}, {:"a.b" => "c"}, false)
   end
+  
+  test "store_translations supports numeric keys" do
+    setup_backend!
+    store_translations(:en, 1 => 'foo')
+    assert_equal 'foo', I18n.t('1')
+    assert_equal 'foo', I18n.t(1)
+    assert_equal 'foo', I18n.t(:'1')
+  end
 
   test "store_translations handle subtrees by default" do
     setup_backend!
