@@ -8,6 +8,7 @@ module I18n
     autoload :Cascade,               'i18n/backend/cascade'
     autoload :Chain,                 'i18n/backend/chain'
     autoload :Fallbacks,             'i18n/backend/fallbacks'
+    autoload :FileKeyValue,          'i18n/backend/file_key_value'
     autoload :Flatten,               'i18n/backend/flatten'
     autoload :Gettext,               'i18n/backend/gettext'
     autoload :KeyValue,              'i18n/backend/key_value'
