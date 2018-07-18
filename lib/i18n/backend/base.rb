@@ -234,6 +234,7 @@ module I18n
             raise InvalidLocaleData.new(filename, e.inspect)
           end
         end
+        alias_method :load_yaml, :load_yml
 
         def translate_localization_format(locale, object, format, options)
           format.to_s.gsub(/%[aAbBpP]/) do |match|
