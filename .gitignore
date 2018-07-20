@@ -6,5 +6,6 @@ vendor/**/*
 pkg
 .bundle
 .rvmrc
+.ruby-version
 Gemfile.lock
 gemfiles/*.lock
