@@ -22,6 +22,20 @@ class I18nFallbacksApiTest < I18n::TestCase
   include I18n::Tests::Localization::Time
   include I18n::Tests::Localization::Procs
 
+  test "fallback does not work with defaults when using en-CH locale" do
+    I18n.with_locale(:'en-CH') do
+      assert_equal 'i exist', I18n.t(:faa)
+      assert_equal 'i exist', I18n.t(:faa, :default => [:'foo.bar'])
+    end
+  end
+
+  test "fallback works with defaults when using en locale" do
+    I18n.with_locale(:en) do
+      assert_equal 'i exist', I18n.t(:faa)
+      assert_equal 'i exist', I18n.t(:faa, :default => [:'foo.bar'])
+    end
+  end
+
   test "make sure we use a backend with Fallbacks included" do
     assert_equal Backend, I18n.backend.class
   end
