@@ -21,6 +21,10 @@ class I18nBackendSimpleTest < I18n::TestCase
     assert_nothing_raised { I18n.backend.load_translations("#{locales_dir}/en.yaml") }
   end
 
+  test "simple load_translations: given a JSON file name with yaml extension does not raise anything" do
+    assert_nothing_raised { I18n.backend.load_translations("#{locales_dir}/en.json") }
+  end
+
   test "simple load_translations: given a Ruby file name it does not raise anything" do
     assert_nothing_raised { I18n.backend.load_translations("#{locales_dir}/en.rb") }
   end
@@ -37,6 +41,11 @@ class I18nBackendSimpleTest < I18n::TestCase
 
   test "simple load_yml: loads data from a YAML file" do
     data = I18n.backend.send(:load_yml, "#{locales_dir}/en.yml")
+    assert_equal({ 'en' => { 'foo' => { 'bar' => 'baz' } } }, data)
+  end
+
+  test "simple load_json: loads data from a JSON file" do
+    data = I18n.backend.send(:load_yml, "#{locales_dir}/en.json")
     assert_equal({ 'en' => { 'foo' => { 'bar' => 'baz' } } }, data)
   end
 
