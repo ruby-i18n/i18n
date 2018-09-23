@@ -59,15 +59,19 @@ module I18n
           super
         end
 
+        def translations(do_init: false)
+          # To avoid returning empty translations,
+          # call `init_translations`
+          init_translations if do_init && !initialized?
+
+          @translations ||= {}
+        end
+
       protected
 
         def init_translations
           load_translations
           @initialized = true
-        end
-
-        def translations
-          @translations ||= {}
         end
 
         # Looks up a translation from the translations hash. Returns nil if
