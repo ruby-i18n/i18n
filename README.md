@@ -2,6 +2,8 @@
 
 [![Build Status](https://api.travis-ci.org/svenfuchs/i18n.svg?branch=master)](https://travis-ci.org/svenfuchs/i18n)
 
+Currently maintained by @radar.
+
 Ruby Internationalization and localization solution.
 
 [See the Rails Guide](http://guides.rubyonrails.org/i18n.html) for an example of its usage. (Note: This library can be used independently from Rails.)
