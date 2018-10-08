@@ -13,6 +13,13 @@ Gem::Specification.new do |s|
   s.description  = "New wave Internationalization support for Ruby."
   s.license      = "MIT"
 
+  s.metadata     = {
+                     'bug_tracker_uri'   => 'https://github.com/svenfuchs/i18n/issues',
+                     'changelog_uri'     => 'https://github.com/svenfuchs/i18n/releases',
+                     'documentation_uri' => 'https://guides.rubyonrails.org/i18n.html',
+                     'source_code_uri'   => 'https://github.com/svenfuchs/i18n',
+                   }
+
   s.files        = Dir.glob("{gemfiles,lib,test}/**/**") + %w(README.md MIT-LICENSE)
   s.platform     = Gem::Platform::RUBY
   s.require_path = 'lib'
