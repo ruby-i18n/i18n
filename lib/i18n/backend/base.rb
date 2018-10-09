@@ -2,7 +2,6 @@
 
 require 'yaml'
 require 'i18n/core_ext/hash'
-require 'i18n/core_ext/kernel/suppress_warnings'
 
 module I18n
   module Backend
