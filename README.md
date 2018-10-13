@@ -69,6 +69,13 @@ the API definition test methods in test/api/tests.
 All other test cases (e.g. as defined in test/backend, test/core_ext) etc.
 follow the usual test setup and should be easy to grok.
 
+## More Documentation
+
+There are two additional sources of additional documentation for the library.
+
+https://github.com/svenfuchs/i18n/wiki
+https://web.archive.org/web/20140426174216/http://ruby-i18n.org/wiki
+
 ## Authors
 
 * [Sven Fuchs](http://www.artweb-design.de)
