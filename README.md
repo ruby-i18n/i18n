@@ -2,13 +2,54 @@
 
 [![Build Status](https://api.travis-ci.org/svenfuchs/i18n.svg?branch=master)](https://travis-ci.org/svenfuchs/i18n)
 
-Currently maintained by @radar.
-
 Ruby Internationalization and localization solution.
 
-[See the Rails Guide](http://guides.rubyonrails.org/i18n.html) for an example of its usage. (Note: This library can be used independently from Rails.)
+Currently maintained by @radar.
 
-Features:
+## Usage
+
+### Rails
+
+You will most commonly use this library within a Rails app.
+
+[See the Rails Guide](http://guides.rubyonrails.org/i18n.html) for an example of its usage.
+
+### Ruby (without Rails)
+
+If you want to use this library without Rails, you can simply add `i18n` to your `Gemfile`:
+
+```ruby
+gem 'i18n'
+```
+
+Then configure I18n with some translations, and a default locale:
+
+```ruby
+I18n.load_path << Dir[File.expand_path("config/locales") + "/*.yml"]
+I18n.default_locale = :en # (note that `en` is already the default!)
+```
+
+A simple translation file in your project might live at `config/locales/en.yml` and look like:
+
+```yml
+en:
+  test: "This is a test"
+```
+
+You can then access this translation by doing:
+
+```ruby
+I18n.t(:test)
+```
+
+You can switch locales in your project by setting `I18n.locale` to a different value:
+
+```ruby
+I18n.locale = :de
+I18n.t(:test) # => "Dies ist ein Test"
+```
+
+## Features
 
 * translation and localization
 * interpolation of values to translations (Ruby 1.9 compatible syntax)
@@ -21,7 +62,7 @@ Features:
 * custom exception handlers
 * extensible architecture with a swappable backend
 
-Pluggable features:
+## Pluggable Features
 
 * Cache
 * Pluralization: lambda pluralizers stored as translation data
@@ -29,19 +70,13 @@ Pluggable features:
 * [Gettext support](https://github.com/svenfuchs/i18n/wiki/Gettext)
 * Translation metadata
 
-Alternative backends:
+## Alternative Backend
 
 * Chain
 * ActiveRecord (optionally: ActiveRecord::Missing and ActiveRecord::StoreProcs)
 * KeyValue (uses active_support/json and cannot store procs)
 
 For more information and lots of resources see [the 'Resources' page on the wiki](https://github.com/svenfuchs/i18n/wiki/Resources).
-
-## Installation
-
-```
-gem install i18n
-```
 
 ## Tests
 
