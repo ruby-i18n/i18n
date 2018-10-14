@@ -102,6 +102,13 @@ class I18nBackendSimpleTest < I18n::TestCase
     assert_equal Hash[:foo, {:bar => 'barfr', :baz => 'bazfr'}], translations[:fr]
   end
 
+  test "simple store_translations: supports numeric keys" do
+    store_translations(:en, 1 => 'foo')
+    assert_equal 'foo', I18n.t('1')
+    assert_equal 'foo', I18n.t(1)
+    assert_equal 'foo', I18n.t(:'1')
+  end
+
   # reloading translations
 
   test "simple reload_translations: unloads translations" do
