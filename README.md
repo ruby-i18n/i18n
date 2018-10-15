@@ -104,6 +104,10 @@ the API definition test methods in test/api/tests.
 All other test cases (e.g. as defined in test/backend, test/core_ext) etc.
 follow the usual test setup and should be easy to grok.
 
+## More Documentation
+
+Additional documentation can be found here: https://github.com/svenfuchs/i18n/wiki
+
 ## Authors
 
 * [Sven Fuchs](http://www.artweb-design.de)
