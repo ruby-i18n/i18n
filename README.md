@@ -71,10 +71,7 @@ follow the usual test setup and should be easy to grok.
 
 ## More Documentation
 
-There are two additional sources of additional documentation for the library.
-
-https://github.com/svenfuchs/i18n/wiki
-https://web.archive.org/web/20140426174216/http://ruby-i18n.org/wiki
+Additional documentation can be found here: https://github.com/svenfuchs/i18n/wiki
 
 ## Authors
 
