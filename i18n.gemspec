@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
                      'source_code_uri'   => 'https://github.com/svenfuchs/i18n',
                    }
 
-  s.files        = Dir.glob("{gemfiles,lib,test}/**/**") + %w(README.md MIT-LICENSE)
+  s.files        = Dir.glob("lib/**/*") + %w(README.md MIT-LICENSE)
   s.platform     = Gem::Platform::RUBY
   s.require_path = 'lib'
   s.rubyforge_project = '[none]'
