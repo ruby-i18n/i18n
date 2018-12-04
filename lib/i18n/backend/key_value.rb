@@ -1,8 +1,26 @@
+# frozen_string_literal: true
+
 require 'i18n/backend/base'
-require 'active_support/json'
-require 'active_support/core_ext/hash/deep_merge'
 
 module I18n
+
+  begin
+    require 'oj'
+    class JSON
+      class << self
+        def encode(value)
+          Oj::Rails.encode(value)
+        end
+        def decode(value)
+          Oj.load(value)
+        end
+      end
+    end
+  rescue LoadError
+    require 'active_support/json'
+    JSON = ActiveSupport::JSON
+  end
+
   module Backend
     # This is a basic backend for key value stores. It receives on
     # initialization the store, which should respond to three methods:
@@ -62,7 +80,7 @@ module I18n
           !@store.nil?
         end
 
-        def store_translations(locale, data, options = {})
+        def store_translations(locale, data, options = EMPTY_HASH)
           escape = options.fetch(:escape, true)
           flatten_translations(locale, data, escape, @subtrees).each do |key, value|
             key = "#{locale}.#{key}"
@@ -70,14 +88,14 @@ module I18n
             case value
             when Hash
               if @subtrees && (old_value = @store[key])
-                old_value = ActiveSupport::JSON.decode(old_value)
+                old_value = JSON.decode(old_value)
                 value = old_value.deep_symbolize_keys.deep_merge!(value) if old_value.is_a?(Hash)
               end
             when Proc
               raise "Key-value stores cannot handle procs"
             end
 
-            @store[key] = ActiveSupport::JSON.encode(value) unless value.is_a?(Symbol)
+            @store[key] = JSON.encode(value) unless value.is_a?(Symbol)
           end
         end
 
@@ -111,11 +129,72 @@ module I18n
           # provide a uniform API even for protected methods :S
         end  
 
-        def lookup(locale, key, scope = [], options = {})
+        def subtrees?
+          @subtrees
+        end
+
+        def lookup(locale, key, scope = [], options = EMPTY_HASH)
           key   = normalize_flat_keys(locale, key, scope, options[:separator])
           value = @store["#{locale}.#{key}"]
-          value = ActiveSupport::JSON.decode(value) if value
-          value.is_a?(Hash) ? value.deep_symbolize_keys : value
+          value = JSON.decode(value) if value
+
+          if value.is_a?(Hash)
+            value.deep_symbolize_keys
+          elsif !value.nil?
+            value
+          elsif !@subtrees
+            SubtreeProxy.new("#{locale}.#{key}", @store)
+          end
+        end
+
+        def pluralize(locale, entry, count)
+          if subtrees?
+            super
+          else
+            return entry unless entry.is_a?(Hash)
+            key = pluralization_key(entry, count)
+            entry[key]
+          end
+        end
+      end
+
+      class SubtreeProxy
+        def initialize(master_key, store)
+          @master_key = master_key
+          @store = store
+          @subtree = nil
+        end
+
+        def has_key?(key)
+          @subtree && @subtree.has_key?(key) || self[key]
+        end
+
+        def [](key)
+          unless @subtree && value = @subtree[key]
+            value = @store["#{@master_key}.#{key}"]
+            if value
+              value = JSON.decode(value)
+              (@subtree ||= {})[key] = value
+            end
+          end
+          value
+        end
+
+        def is_a?(klass)
+          Hash == klass || super
+        end
+        alias :kind_of? :is_a?
+
+        def instance_of?(klass)
+          Hash == klass || super
+        end
+
+        def nil?
+          @subtree.nil?
+        end
+
+        def inspect
+          @subtree.inspect
         end
       end
 

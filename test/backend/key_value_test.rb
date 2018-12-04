@@ -21,6 +21,14 @@ class I18nBackendKeyValueTest < I18n::TestCase
     assert_flattens({:"a.b"=>['a', 'b']}, {:a=>{:b =>['a', 'b']}}, true, false)
     assert_flattens({:"a.b" => "c"}, {:"a.b" => "c"}, false)
   end
+  
+  test "store_translations supports numeric keys" do
+    setup_backend!
+    store_translations(:en, 1 => 'foo')
+    assert_equal 'foo', I18n.t('1')
+    assert_equal 'foo', I18n.t(1)
+    assert_equal 'foo', I18n.t(:'1')
+  end
 
   test "store_translations handle subtrees by default" do
     setup_backend!
@@ -52,5 +60,48 @@ class I18nBackendKeyValueTest < I18n::TestCase
     I18n.backend.send(:translations)
     expected = { :en => {:foo => { :bar => 'bar', :baz => 'baz' }} }
     assert_equal expected, translations
+  end 
+  
+  test "subtrees enabled: given incomplete pluralization data it raises I18n::InvalidPluralizationData" do
+    setup_backend!
+    store_translations(:en, :bar => { :one => "One" })
+    assert_raise(I18n::InvalidPluralizationData) { I18n.t(:bar, :count => 2) }
   end
+
+  test "subtrees disabled: given incomplete pluralization data it returns an error message" do
+    setup_backend!(false)
+    store_translations(:en, :bar => { :one => "One" })
+    assert_equal "translation missing: en.bar", I18n.t(:bar, :count => 2)
+  end
+
+  test "translate handles subtrees for pluralization" do
+    setup_backend!(false)
+    store_translations(:en, :bar => { :one => "One" })
+    assert_equal("One", I18n.t("bar", :count => 1))
+  end
+  
+  test "subtrees enabled: returns localized string given missing pluralization data" do
+    setup_backend!(true)
+    assert_equal 'bar', I18n.t("foo.bar", count: 1)
+  end
+
+  test "subtrees disabled: returns localized string given missing pluralization data" do
+    setup_backend!(false)
+    assert_equal 'bar', I18n.t("foo.bar", count: 1)
+  end
+  
+  test "subtrees enabled: Returns fallback default given missing pluralization data" do
+    setup_backend!(true)
+    I18n.backend.extend I18n::Backend::Fallbacks
+    assert_equal 'default', I18n.t(:missing_bar, count: 1, default: 'default')
+    assert_equal 'default', I18n.t(:missing_bar, count: 0, default: 'default')
+  end
+
+  test "subtrees disabled: Returns fallback default given missing pluralization data" do
+    setup_backend!(false)
+    I18n.backend.extend I18n::Backend::Fallbacks
+    assert_equal 'default', I18n.t(:missing_bar, count: 1, default: 'default')
+    assert_equal 'default', I18n.t(:missing_bar, count: 0, default: 'default')
+  end
+  
 end if I18n::TestCase.key_value?

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module I18n
   module Backend
     # A simple backend that reads translations from YAML files and stores them in
@@ -28,10 +30,16 @@ module I18n
         # This uses a deep merge for the translations hash, so existing
         # translations will be overwritten by new ones only at the deepest
         # level of the hash.
-        def store_translations(locale, data, options = {})
+        def store_translations(locale, data, options = EMPTY_HASH)
+          if I18n.enforce_available_locales &&
+            I18n.available_locales_initialized? &&
+            !I18n.available_locales.include?(locale.to_sym) &&
+            !I18n.available_locales.include?(locale.to_s)
+            return data
+          end
           locale = locale.to_sym
           translations[locale] ||= {}
-          data = data.deep_symbolize_keys
+          data = data.deep_stringify_keys.deep_symbolize_keys
           translations[locale].deep_merge!(data)
         end
 
@@ -39,7 +47,7 @@ module I18n
         def available_locales
           init_translations unless initialized?
           translations.inject([]) do |locales, (locale, data)|
-            locales << locale unless (data.keys - [:i18n]).empty?
+            locales << locale unless data.size <= 1 && (data.empty? || data.has_key?(:i18n))
             locales
           end
         end
@@ -51,6 +59,14 @@ module I18n
           super
         end
 
+        def translations(do_init: false)
+          # To avoid returning empty translations,
+          # call `init_translations`
+          init_translations if do_init && !initialized?
+
+          @translations ||= {}
+        end
+
       protected
 
         def init_translations
@@ -58,16 +74,12 @@ module I18n
           @initialized = true
         end
 
-        def translations
-          @translations ||= {}
-        end
-
         # Looks up a translation from the translations hash. Returns nil if
         # either key is nil, or locale, scope or key do not exist as a key in the
         # nested translations hash. Splits keys or scopes containing dots
         # into multiple keys, i.e. <tt>currency.format</tt> is regarded the same as
         # <tt>%w(currency format)</tt>.
-        def lookup(locale, key, scope = [], options = {})
+        def lookup(locale, key, scope = [], options = EMPTY_HASH)
           init_translations unless initialized?
           keys = I18n.normalize_keys(locale, key, scope, options[:separator])
 

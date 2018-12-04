@@ -28,7 +28,7 @@ module_eval <<'..end src/poparser.ry modeval..id7a99570e05', 'src/poparser.ry', 
     ret.gsub!(/\\"/, "\"")
     ret
   end
-  
+
   def parse(str, data, ignore_fuzzy = true)
     @comments = []
     @data = data
@@ -64,7 +64,7 @@ module_eval <<'..end src/poparser.ry modeval..id7a99570e05', 'src/poparser.ry', 
 	str = $'
       when /\A\#(.*)/
 	@q.push [:COMMENT, $&]
-	str = $'      
+	str = $'
       when /\A\"(.*)\"/
 	@q.push [:STRING, $1]
 	str = $'
@@ -73,7 +73,7 @@ module_eval <<'..end src/poparser.ry modeval..id7a99570e05', 'src/poparser.ry', 
 	#@q.push [:STRING, c]
 	str = str[1..-1]
       end
-    end 
+    end
     @q.push [false, '$end']
     if $DEBUG
       @q.each do |a,b|
@@ -88,7 +88,7 @@ module_eval <<'..end src/poparser.ry modeval..id7a99570e05', 'src/poparser.ry', 
     end
     @data
   end
-  
+
   def next_token
     @q.shift
   end
@@ -101,11 +101,11 @@ module_eval <<'..end src/poparser.ry modeval..id7a99570e05', 'src/poparser.ry', 
     @comments.clear
     @msgctxt = ""
   end
-      
+
   def on_comment(comment)
     @fuzzy = true if (/fuzzy/ =~ comment)
     @comments << comment
-  end 
+  end
 
 
 ..end src/poparser.ry modeval..id7a99570e05
@@ -245,7 +245,7 @@ module_eval <<'.,.,', 'src/poparser.ry', 25
 
 module_eval <<'.,.,', 'src/poparser.ry', 48
   def _reduce_8( val, _values, result )
-    if @fuzzy and $ignore_fuzzy 
+    if @fuzzy and $ignore_fuzzy
       if val[1] != ""
         $stderr.print _("Warning: fuzzy message was ignored.\n")
         $stderr.print "         msgid '#{val[1]}'\n"

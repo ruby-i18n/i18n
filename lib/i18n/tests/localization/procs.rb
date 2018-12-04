@@ -72,7 +72,7 @@ module I18n
               when ::Date
                 arg.strftime('%a, %d %b %Y')
               when Hash
-                arg.delete(:fallback)
+                arg.delete(:fallback_in_progress)
                 arg.inspect
               else
                 arg.inspect

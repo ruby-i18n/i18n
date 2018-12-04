@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'yaml'
+require 'json'
 require 'i18n/core_ext/hash'
-require 'i18n/core_ext/kernel/suppress_warnings'
 
 module I18n
   module Backend
@@ -8,7 +10,7 @@ module I18n
       include I18n::Backend::Transliterator
 
       # Accepts a list of paths to translation files. Loads translations from
-      # plain Ruby (*.rb) or YAML files (*.yml). See #load_rb and #load_yml
+      # plain Ruby (*.rb), YAML files (*.yml), or JSON files (*.json). See #load_rb, #load_yml, and #load_json
       # for details.
       def load_translations(*filenames)
         filenames = I18n.load_path if filenames.empty?
@@ -17,13 +19,16 @@ module I18n
 
       # This method receives a locale, a data hash and options for storing translations.
       # Should be implemented
-      def store_translations(locale, data, options = {})
+      def store_translations(locale, data, options = EMPTY_HASH)
         raise NotImplementedError
       end
 
-      def translate(locale, key, options = {})
+      def translate(locale, key, options = EMPTY_HASH)
+        raise I18n::ArgumentError if (key.is_a?(String) || key.is_a?(Symbol)) && key.empty?
         raise InvalidLocale.new(locale) unless locale
-        entry = key && lookup(locale, key, options[:scope], options)
+        return nil if key.nil? && !options.key?(:default)
+
+        entry = lookup(locale, key, options[:scope], options) unless key.nil?
 
         if entry.nil? && options.key?(:default)
           entry = default(locale, key, options[:default], options)
@@ -31,16 +36,20 @@ module I18n
           entry = resolve(locale, key, entry, options)
         end
 
-        if entry.nil?
+        count = options[:count]
+
+        if entry.nil? && (subtrees? || !count)
           if (options.key?(:default) && !options[:default].nil?) || !options.key?(:default)
             throw(:exception, I18n::MissingTranslation.new(locale, key, options))
           end
         end
 
         entry = entry.dup if entry.is_a?(String)
-
-        count = options[:count]
         entry = pluralize(locale, entry, count) if count
+
+        if entry.nil? && !subtrees?
+          throw(:exception, I18n::MissingTranslation.new(locale, key, options))
+        end
 
         deep_interpolation = options[:deep_interpolation]
         values = options.except(*RESERVED_KEYS)
@@ -61,7 +70,7 @@ module I18n
       # Acts the same as +strftime+, but uses a localized version of the
       # format string. Takes a key from the date/time formats translations as
       # a format argument (<em>e.g.</em>, <tt>:short</tt> in <tt>:'date.formats'</tt>).
-      def localize(locale, object, format = :default, options = {})
+      def localize(locale, object, format = :default, options = EMPTY_HASH)
         if object.nil? && options.include?(:default)
           return options[:default]
         end
@@ -90,20 +99,25 @@ module I18n
       protected
 
         # The method which actually looks up for the translation in the store.
-        def lookup(locale, key, scope = [], options = {})
+        def lookup(locale, key, scope = [], options = EMPTY_HASH)
           raise NotImplementedError
+        end
+
+        def subtrees?
+          true
         end
 
         # Evaluates defaults.
         # If given subject is an Array, it walks the array and returns the
         # first translation that can be resolved. Otherwise it tries to resolve
         # the translation directly.
-        def default(locale, object, subject, options = {})
+        def default(locale, object, subject, options = EMPTY_HASH)
           options = options.dup.reject { |key, value| key == :default }
           case subject
           when Array
             subject.each do |item|
-              result = resolve(locale, object, item, options) and return result
+              result = resolve(locale, object, item, options)
+              return result unless result.nil?
             end and nil
           else
             resolve(locale, object, subject, options)
@@ -114,7 +128,7 @@ module I18n
         # If the given subject is a Symbol, it will be translated with the
         # given options. If it is a Proc then it will be evaluated. All other
         # subjects will be returned directly.
-        def resolve(locale, object, subject, options = {})
+        def resolve(locale, object, subject, options = EMPTY_HASH)
           return subject if options[:resolve] == false
           result = catch(:exception) do
             case subject
@@ -136,26 +150,34 @@ module I18n
         # - It will pick the :other subkey otherwise.
         # - It will pick the :zero subkey in the special case where count is
         #   equal to 0 and there is a :zero subkey present. This behaviour is
-        #   not stand with regards to the CLDR pluralization rules.
+        #   not standard with regards to the CLDR pluralization rules.
         # Other backends can implement more flexible or complex pluralization rules.
         def pluralize(locale, entry, count)
           return entry unless entry.is_a?(Hash) && count
 
-          key = :zero if count == 0 && entry.has_key?(:zero)
-          key ||= count == 1 ? :one : :other
-          raise InvalidPluralizationData.new(entry, count) unless entry.has_key?(key)
+          key = pluralization_key(entry, count)
+          raise InvalidPluralizationData.new(entry, count, key) unless entry.has_key?(key)
           entry[key]
         end
 
-        # Interpolates values into a given string.
+        # Interpolates values into a given subject.
         #
-        #   interpolate "file %{file} opened by %%{user}", :file => 'test.txt', :user => 'Mr. X'
+        #   if the given subject is a string then:
+        #   method interpolates "file %{file} opened by %%{user}", :file => 'test.txt', :user => 'Mr. X'
         #   # => "file test.txt opened by %{user}"
-        def interpolate(locale, string, values = {})
-          if string.is_a?(::String) && !values.empty?
-            I18n.interpolate(string, values)
+        #
+        #   if the given subject is an array then:
+        #   each element of the array is recursively interpolated (until it finds a string)
+        #   method interpolates ["yes, %{user}", ["maybe no, %{user}, "no, %{user}"]], :user => "bartuz"
+        #   # => "["yes, bartuz",["maybe no, bartuz", "no, bartuz"]]"
+        def interpolate(locale, subject, values = EMPTY_HASH)
+          return subject if values.empty?
+
+          case subject
+          when ::String then I18n.interpolate(subject, values)
+          when ::Array then subject.map { |element| interpolate(locale, element, values) }
           else
-            string
+            subject
           end
         end
 
@@ -164,7 +186,7 @@ module I18n
         #   deep_interpolate { people: { ann: "Ann is %{ann}", john: "John is %{john}" } },
         #                    ann: 'good', john: 'big'
         #   #=> { people: { ann: "Ann is good", john: "John is big" } }
-        def deep_interpolate(locale, data, values = {})
+        def deep_interpolate(locale, data, values = EMPTY_HASH)
           return data if values.empty?
 
           case data
@@ -212,6 +234,17 @@ module I18n
             raise InvalidLocaleData.new(filename, e.inspect)
           end
         end
+        alias_method :load_yaml, :load_yml
+
+        # Loads a JSON translations file. The data must have locales as
+        # toplevel keys.
+        def load_json(filename)
+          begin
+            ::JSON.parse(File.read(filename))
+          rescue TypeError, StandardError => e
+            raise InvalidLocaleData.new(filename, e.inspect)
+          end
+        end
 
         def translate_localization_format(locale, object, format, options)
           format.to_s.gsub(/%[aAbBpP]/) do |match|
@@ -224,6 +257,11 @@ module I18n
             when '%P' then I18n.t(:"time.#{object.hour < 12 ? :am : :pm}", :locale => locale, :format => format).downcase if object.respond_to? :hour
             end
           end
+        end
+
+        def pluralization_key(entry, count)
+          key = :zero if count == 0 && entry.has_key?(:zero)
+          key ||= count == 1 ? :one : :other
         end
     end
   end

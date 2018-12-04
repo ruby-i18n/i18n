@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module I18n
   module Backend
     # This module contains several helpers to assist flattening translations.
@@ -43,7 +45,7 @@ module I18n
 
       # Store flattened links.
       def links
-        @links ||= Hash.new { |h,k| h[k] = {} }
+        @links ||= I18n.new_double_nested_cache
       end
 
       # Flatten keys for nested Hashes by chaining up keys:
@@ -99,7 +101,7 @@ module I18n
         end
 
         def find_link(locale, key) #:nodoc:
-          links[locale].each do |from, to|
+          links[locale].each_pair do |from, to|
             return [from, to] if key[0, from.length] == from
           end && nil
         end

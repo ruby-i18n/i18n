@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # I18n translation metadata is useful when you want to access information
 # about how a translation was looked up, pluralized or interpolated in
 # your application.
@@ -35,19 +37,19 @@ module I18n
         end
       end
 
-      def translate(locale, key, options = {})
+      def translate(locale, key, options = EMPTY_HASH)
         metadata = {
           :locale    => locale,
           :key       => key,
           :scope     => options[:scope],
           :default   => options[:default],
           :separator => options[:separator],
-          :values    => options.reject { |name, value| RESERVED_KEYS.include?(name) }
+          :values    => options.reject { |name, _value| RESERVED_KEYS.include?(name) }
         }
         with_metadata(metadata) { super }
       end
 
-      def interpolate(locale, entry, values = {})
+      def interpolate(locale, entry, values = EMPTY_HASH)
         metadata = entry.translation_metadata.merge(:original => entry)
         with_metadata(metadata) { super }
       end

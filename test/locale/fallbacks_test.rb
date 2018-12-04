@@ -3,10 +3,10 @@ require 'test_helper'
 include I18n::Locale
 
 class I18nFallbacksDefaultsTest < I18n::TestCase
-  test "defaults reflect the I18n.default_locale if no default has been set manually" do
+  test "defaults to an empty array if no default has been set manually" do
     I18n.default_locale = :'en-US'
     fallbacks = Fallbacks.new
-    assert_equal [:'en-US', :en], fallbacks.defaults
+    assert_equal [], fallbacks.defaults
   end
 
   test "defaults reflect a manually passed default locale if any" do

@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'digest/md5'
 
 begin
   require 'active_support'

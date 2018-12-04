@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # I18n locale fallbacks are useful when you want your application to use
 # translations from other locales when translations for the current locale are
 # missing. E.g. you might want to use :en translations when translations in
@@ -34,25 +36,24 @@ module I18n
       # The default option takes precedence over fallback locales only when
       # it's a Symbol. When the default contains a String, Proc or Hash
       # it is evaluated last after all the fallback locales have been tried.
-      def translate(locale, key, options = {})
-        return super if options[:fallback]
+      def translate(locale, key, options = EMPTY_HASH)
+        return super unless options.fetch(:fallback, true)
+        return super if options[:fallback_in_progress]
         default = extract_non_symbol_default!(options) if options[:default]
 
-        begin
-          options[:fallback] = true
-          I18n.fallbacks[locale].each do |fallback|
-            begin
-              catch(:exception) do
-                result = super(fallback, key, options)
-                return result if (result.nil? && options.key?(:default) && options[:default].nil?) || !result.nil?
-              end
-            rescue I18n::InvalidLocale
-              # we do nothing when the locale is invalid, as this is a fallback anyways.
+        fallback_options = options.merge(:fallback_in_progress => true)
+        I18n.fallbacks[locale].each do |fallback|
+          begin
+            catch(:exception) do
+              result = super(fallback, key, fallback_options)
+              return result unless result.nil?
             end
+          rescue I18n::InvalidLocale
+            # we do nothing when the locale is invalid, as this is a fallback anyways.
           end
-        ensure
-          options.delete(:fallback)
         end
+
+        return if options.key?(:default) && options[:default].nil?
 
         return super(locale, nil, options.merge(:default => default)) if default
         throw(:exception, I18n::MissingTranslation.new(locale, key, options))

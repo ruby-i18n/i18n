@@ -2,11 +2,12 @@ before_install:
   - gem install bundler
 
 rvm:
-  - 1.9.3
   - 2.0.0
-  - 2.1.8
-  - 2.2.4
-  - 2.3.1
+  - 2.1.10
+  - 2.2.8
+  - 2.3.5
+  - 2.4.4
+  - 2.5.1
   - ruby-head
   - rbx
   - jruby
@@ -18,31 +19,40 @@ gemfile:
   - gemfiles/Gemfile.rails-4.1.x
   - gemfiles/Gemfile.rails-4.2.x
   - gemfiles/Gemfile.rails-5.0.x
+  - gemfiles/Gemfile.rails-5.1.x
+  - gemfiles/Gemfile.rails-5.2.x
   - gemfiles/Gemfile.rails-master
 
 matrix:
   exclude:
-    # Rails 5+ requires Ruby >= 2.2.2
-    - rvm: 1.9.3
-      gemfile: gemfiles/Gemfile.rails-master
-    - rvm: 2.0.0
-      gemfile: gemfiles/Gemfile.rails-master
-    - rvm: 2.1.8
-      gemfile: gemfiles/Gemfile.rails-master
-    - rvm: 1.9.3
-      gemfile: gemfiles/Gemfile.rails-5.0.x
+    # Rails 5.0 requires Ruby >= 2.2
     - rvm: 2.0.0
       gemfile: gemfiles/Gemfile.rails-5.0.x
-    - rvm: 2.1.8
+    - rvm: 2.1.10
       gemfile: gemfiles/Gemfile.rails-5.0.x
-    # activesupport has a dependency on json, which does not build on this version
-    - rvm: ruby-head
-      gemfile: gemfiles/Gemfile.rails-4.1.x
-    # activesupport has a dependency on json, which does not build on this version
-    - rvm: ruby-head
-      gemfile: gemfiles/Gemfile.rails-4.2.x
+
+    # Rails 5.1 requires Ruby >= 2.2
+    - rvm: 2.0.0
+      gemfile: gemfiles/Gemfile.rails-5.1.x
+    - rvm: 2.1.10
+      gemfile: gemfiles/Gemfile.rails-5.1.x
+
+    # Rails 5.2 requires Ruby >= 2.2
+    - rvm: 2.0.0
+      gemfile: gemfiles/Gemfile.rails-5.2.x
+    - rvm: 2.1.10
+      gemfile: gemfiles/Gemfile.rails-5.2.x
+
+    # Rails 6+ requires Ruby >= 2.4
+    - rvm: 2.0.0
+      gemfile: gemfiles/Gemfile.rails-master
+    - rvm: 2.1.10
+      gemfile: gemfiles/Gemfile.rails-master
+    - rvm: 2.2.8
+      gemfile: gemfiles/Gemfile.rails-master
+    - rvm: 2.3.5
+      gemfile: gemfiles/Gemfile.rails-master
   allow_failures:
-    - rvm: 2.2
     - rvm: rbx
     - rvm: jruby
   fast_finish: true

@@ -89,3 +89,20 @@ class I18nMissingInterpolationCustomHandlerTest < I18n::TestCase
       I18n.interpolate("%{first} %{last}", :first => 'Masao')
   end
 end
+
+class I18nCustomInterpolationPatternTest < I18n::TestCase
+  def setup
+    super
+    @old_interpolation_patterns = I18n.config.interpolation_patterns
+    I18n.config.interpolation_patterns << /\{\{(\w+)\}\}/
+  end
+
+  def teardown
+    I18n.config.interpolation_patterns = @old_interpolation_patterns
+    super
+  end
+
+  test "String interpolation can use custom interpolation pattern" do
+    assert_equal "Masao Mutoh", I18n.interpolate("{{first}} {{last}}", :first => "Masao", :last => "Mutoh")
+  end
+end

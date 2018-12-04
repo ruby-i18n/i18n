@@ -43,7 +43,7 @@ module I18n
       end
 
       test "interpolation: it does not raise I18n::MissingInterpolationArgument for escaped variables" do
-        assert_nothing_raised(I18n::MissingInterpolationArgument) do
+        assert_nothing_raised do
           assert_equal 'Barr %{foo}', interpolate(:default => '%{bar} %%{foo}', :bar => 'Barr')
         end
       end
@@ -52,6 +52,11 @@ module I18n
         I18n.backend.store_translations(:en, :interpolate => 'Hi %{name}!')
         assert_equal 'Hi David!', interpolate(:interpolate, :name => 'David')
         assert_equal 'Hi Yehuda!', interpolate(:interpolate, :name => 'Yehuda')
+      end
+
+      test "interpolation: given an array interpolates each element" do
+        I18n.backend.store_translations(:en, :array_interpolate => ['Hi', 'Mr. %{name}', 'or sir %{name}'])
+        assert_equal ['Hi', 'Mr. Bartuz', 'or sir Bartuz'], interpolate(:array_interpolate, :name => 'Bartuz')
       end
 
       test "interpolation: given the translation is in utf-8 it still works" do
@@ -99,9 +104,10 @@ module I18n
       end
 
       test "interpolation: given a translations containing a reserved key it raises I18n::ReservedInterpolationKey" do
-        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:default => '%{default}',   :foo => :bar) }
-        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:default => '%{scope}',     :foo => :bar) }
-        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:default => '%{separator}', :foo => :bar) }
+        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:foo => :bar, :default => '%{exception_handler}') }
+        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:foo => :bar, :default => '%{default}') }
+        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:foo => :bar, :default => '%{separator}') }
+        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:foo => :bar, :default => '%{scope}') }
       end
 
       test "interpolation: deep interpolation for default string" do

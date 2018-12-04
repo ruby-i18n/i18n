@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+require 'concurrent/map'
+
 require 'i18n/version'
 require 'i18n/exceptions'
 require 'i18n/interpolate/ruby'
@@ -8,9 +12,29 @@ module I18n
   autoload :Gettext, 'i18n/gettext'
   autoload :Locale,  'i18n/locale'
   autoload :Tests,   'i18n/tests'
+  autoload :Middleware,   'i18n/middleware'
 
-  RESERVED_KEYS = [:scope, :default, :separator, :resolve, :object, :fallback, :format, :cascade, :throw, :raise, :deep_interpolation]
+  RESERVED_KEYS = %i[
+    cascade
+    deep_interpolation
+    default
+    exception_handler
+    fallback
+    fallback_in_progress
+    format
+    object
+    raise
+    resolve
+    scope
+    separator
+    throw
+  ].freeze
   RESERVED_KEYS_PATTERN = /%\{(#{RESERVED_KEYS.join("|")})\}/
+  EMPTY_HASH = {}.freeze
+
+  def self.new_double_nested_cache # :nodoc:
+    Concurrent::Map.new { |h,k| h[k] = Concurrent::Map.new }
+  end
 
   module Base
     # Gets I18n configuration object.
@@ -132,9 +156,13 @@ module I18n
     # called and passed the key and options.
     #
     # E.g. assuming the key <tt>:salutation</tt> resolves to:
-    #   lambda { |key, options| options[:gender] == 'm' ? "Mr. %{options[:name]}" : "Mrs. %{options[:name]}" }
+    #   lambda { |key, options| options[:gender] == 'm' ? "Mr. #{options[:name]}" : "Mrs. #{options[:name]}" }
     #
     # Then <tt>I18n.t(:salutation, :gender => 'w', :name => 'Smith') will result in "Mrs. Smith".
+    #
+    # Note that the string returned by lambda will go through string interpolation too,
+    # so the following lambda would give the same result:
+    #   lambda { |key, options| options[:gender] == 'm' ? "Mr. %{name}" : "Mrs. %{name}" }
     #
     # It is recommended to use/implement lambdas in an "idempotent" way. E.g. when
     # a cache layer is put in front of I18n.translate it will generate a cache key
@@ -149,7 +177,6 @@ module I18n
       handling = options.delete(:throw) && :throw || options.delete(:raise) && :raise # TODO deprecate :raise
 
       enforce_available_locales!(locale)
-      raise I18n::ArgumentError if key.is_a?(String) && key.empty?
 
       result = catch(:exception) do
         if key.is_a?(Array)
@@ -164,7 +191,7 @@ module I18n
 
     # Wrapper for <tt>translate</tt> that adds <tt>:raise => true</tt>. With
     # this option, if no translation is found, it will raise <tt>I18n::MissingTranslationData</tt>
-    def translate!(key, options={})
+    def translate!(key, options = EMPTY_HASH)
       translate(key, options.merge(:raise => true))
     end
     alias :t! :translate!
@@ -285,6 +312,10 @@ module I18n
       end
     end
 
+    def available_locales_initialized?
+      config.available_locales_initialized?
+    end
+
   private
 
     # Any exceptions thrown in translate will be sent to the @@exception_handler
@@ -321,8 +352,10 @@ module I18n
       end
     end
 
+    @@normalized_key_cache = I18n.new_double_nested_cache
+
     def normalize_key(key, separator)
-      normalized_key_cache[separator][key] ||=
+      @@normalized_key_cache[separator][key] ||=
         case key
         when Array
           key.map { |k| normalize_key(k, separator) }.flatten
@@ -332,10 +365,6 @@ module I18n
           keys.map! { |k| k.to_sym }
           keys
         end
-    end
-
-    def normalized_key_cache
-      @normalized_key_cache ||= Hash.new { |h,k| h[k] = {} }
     end
   end
 

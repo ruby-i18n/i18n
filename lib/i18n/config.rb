@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'set'
 
 module I18n
@@ -56,6 +58,11 @@ module I18n
       @@available_locales = Array(locales).map { |locale| locale.to_sym }
       @@available_locales = nil if @@available_locales.empty?
       @@available_locales_set = nil
+    end
+
+    # Returns true if the available_locales have been initialized
+    def available_locales_initialized?
+      ( !!defined?(@@available_locales) && !!@@available_locales )
     end
 
     # Clears the available locales set so it can be recomputed again after I18n
@@ -137,6 +144,22 @@ module I18n
 
     def enforce_available_locales=(enforce_available_locales)
       @@enforce_available_locales = enforce_available_locales
+    end
+
+    # Returns the current interpolation patterns. Defaults to
+    # I18n::DEFAULT_INTERPOLATION_PATTERNS.
+    def interpolation_patterns
+      @@interpolation_patterns ||= I18n::DEFAULT_INTERPOLATION_PATTERNS.dup
+    end
+
+    # Sets the current interpolation patterns. Used to set a interpolation
+    # patterns.
+    #
+    # E.g. using {{}} as a placeholder like "{{hello}}, world!":
+    #
+    #   I18n.config.interpolation_patterns << /\{\{(\w+)\}\}/
+    def interpolation_patterns=(interpolation_patterns)
+      @@interpolation_patterns = interpolation_patterns
     end
   end
 end

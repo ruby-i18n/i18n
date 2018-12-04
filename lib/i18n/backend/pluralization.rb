@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # I18n Pluralization are useful when you want your application to
 # customize pluralization rules.
 #
@@ -32,7 +34,7 @@ module I18n
         pluralizer = pluralizer(locale)
         if pluralizer.respond_to?(:call)
           key = count == 0 && entry.has_key?(:zero) ? :zero : pluralizer.call(count)
-          raise InvalidPluralizationData.new(entry, count) unless entry.has_key?(key)
+          raise InvalidPluralizationData.new(entry, count, key) unless entry.has_key?(key)
           entry[key]
         else
           super

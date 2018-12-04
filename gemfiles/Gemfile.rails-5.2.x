@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gemspec :path => '..'
 
-gem 'activesupport', '~> 3.2.0'
+gem 'activesupport', '~> 5.2.0'
 gem 'mocha'
 gem 'test_declarative'
 gem 'rake'

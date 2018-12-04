@@ -4,5 +4,6 @@ gemspec
 
 gem 'mocha'
 gem 'test_declarative'
-gem 'rake'
+gem 'rake', '~> 12.2.1'
 gem 'minitest'
+gem 'json'

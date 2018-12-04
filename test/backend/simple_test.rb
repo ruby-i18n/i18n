@@ -17,6 +17,14 @@ class I18nBackendSimpleTest < I18n::TestCase
     assert_raise(I18n::UnknownFileType) { I18n.backend.load_translations("#{locales_dir}/en.xml") }
   end
 
+  test "simple load_translations: given a YAML file name with yaml extension does not raise anything" do
+    assert_nothing_raised { I18n.backend.load_translations("#{locales_dir}/en.yaml") }
+  end
+
+  test "simple load_translations: given a JSON file name with yaml extension does not raise anything" do
+    assert_nothing_raised { I18n.backend.load_translations("#{locales_dir}/en.json") }
+  end
+
   test "simple load_translations: given a Ruby file name it does not raise anything" do
     assert_nothing_raised { I18n.backend.load_translations("#{locales_dir}/en.rb") }
   end
@@ -33,6 +41,11 @@ class I18nBackendSimpleTest < I18n::TestCase
 
   test "simple load_yml: loads data from a YAML file" do
     data = I18n.backend.send(:load_yml, "#{locales_dir}/en.yml")
+    assert_equal({ 'en' => { 'foo' => { 'bar' => 'baz' } } }, data)
+  end
+
+  test "simple load_json: loads data from a JSON file" do
+    data = I18n.backend.send(:load_yml, "#{locales_dir}/en.json")
     assert_equal({ 'en' => { 'foo' => { 'bar' => 'baz' } } }, data)
   end
 
@@ -70,6 +83,32 @@ class I18nBackendSimpleTest < I18n::TestCase
     assert_equal Hash[:'en', {:foo => {:bar => 'bar', :baz => 'baz'}}], translations
   end
 
+  test "simple store_translations: do not store translations unavailable locales if enforce_available_locales is true" do
+    begin
+      I18n.enforce_available_locales = true
+      I18n.available_locales = [:en, :es]
+      store_translations(:fr, :foo => {:bar => 'barfr', :baz => 'bazfr'})
+      store_translations(:es, :foo => {:bar => 'bares', :baz => 'bazes'})
+      assert_nil translations[:fr]
+      assert_equal Hash[:foo, {:bar => 'bares', :baz => 'bazes'}], translations[:es]
+    ensure
+      I18n.config.enforce_available_locales = false
+    end
+  end
+
+  test "simple store_translations: store translations for unavailable locales if enforce_available_locales is false" do
+    I18n.available_locales = [:en, :es]
+    store_translations(:fr, :foo => {:bar => 'barfr', :baz => 'bazfr'})
+    assert_equal Hash[:foo, {:bar => 'barfr', :baz => 'bazfr'}], translations[:fr]
+  end
+
+  test "simple store_translations: supports numeric keys" do
+    store_translations(:en, 1 => 'foo')
+    assert_equal 'foo', I18n.t('1')
+    assert_equal 'foo', I18n.t(1)
+    assert_equal 'foo', I18n.t(:'1')
+  end
+
   # reloading translations
 
   test "simple reload_translations: unloads translations" do
@@ -80,5 +119,9 @@ class I18nBackendSimpleTest < I18n::TestCase
   test "simple reload_translations: uninitializes the backend" do
     I18n.backend.reload!
     assert_equal false, I18n.backend.initialized?
+  end
+
+  test "returns localized string given missing pluralization data" do
+    assert_equal 'baz', I18n.t('foo.bar', count: 1)
   end
 end

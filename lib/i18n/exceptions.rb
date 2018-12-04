@@ -1,23 +1,16 @@
+# frozen_string_literal: true
+
 require 'cgi'
 
 module I18n
-  # Handles exceptions raised in the backend. All exceptions except for
-  # MissingTranslationData exceptions are re-thrown. When a MissingTranslationData
-  # was caught the handler returns an error message string containing the key/scope.
-  # Note that the exception handler is not called when the option :throw was given.
   class ExceptionHandler
-    include Module.new {
-      def call(exception, locale, key, options)
-        case exception
-        when MissingTranslation
-          exception.message
-        when Exception
-          raise exception
-        else
-          throw :exception, exception
-        end
+    def call(exception, _locale, _key, _options)
+      if exception.is_a?(MissingTranslation)
+        exception.message
+      else
+        raise exception
       end
-    }
+    end
   end
 
   class ArgumentError < ::ArgumentError; end
@@ -42,7 +35,7 @@ module I18n
     module Base
       attr_reader :locale, :key, :options
 
-      def initialize(locale, key, options = {})
+      def initialize(locale, key, options = EMPTY_HASH)
         @key, @locale, @options = key, locale, options.dup
         options.each { |k, v| self.options[k] = v.inspect if v.is_a?(Proc) }
       end
@@ -71,10 +64,10 @@ module I18n
   end
 
   class InvalidPluralizationData < ArgumentError
-    attr_reader :entry, :count
-    def initialize(entry, count)
-      @entry, @count = entry, count
-      super "translation data #{entry.inspect} can not be used with :count => #{count}"
+    attr_reader :entry, :count, :key
+    def initialize(entry, count, key)
+      @entry, @count, @key = entry, count, key
+      super "translation data #{entry.inspect} can not be used with :count => #{count}. key '#{key}' is missing."
     end
   end
 
