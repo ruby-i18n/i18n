@@ -115,7 +115,6 @@ Additional documentation can be found here: https://github.com/svenfuchs/i18n/wi
 * [Stephan Soller](http://www.arkanis-development.de)
 * [Saimon Moore](http://saimonmoore.net)
 * [Matt Aimonetti](https://matt.aimonetti.net/)
-* [Francisco Viramontes](https://twitter.com/kidpollo)
 
 ## Contributors
 
