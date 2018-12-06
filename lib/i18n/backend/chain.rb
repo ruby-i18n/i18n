@@ -84,9 +84,9 @@ module I18n
 
         protected
           def init_translations
-            backends.each { |backend| 
-              backend.send(:init_translations) 
-            }
+            backends.each do |backend|
+              backend.send(:init_translations)
+            end
           end
 
           def translations

@@ -103,5 +103,4 @@ class I18nBackendKeyValueTest < I18n::TestCase
     assert_equal 'default', I18n.t(:missing_bar, count: 1, default: 'default')
     assert_equal 'default', I18n.t(:missing_bar, count: 0, default: 'default')
   end
-  
 end if I18n::TestCase.key_value?
