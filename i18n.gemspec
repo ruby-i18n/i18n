@@ -40,7 +40,7 @@ If you're using I18n 1.1.x and Rails (< 6.0), this should be
 If not, fallbacks will be broken in your app by I18n 1.1.x.
 
 For more info see:
-https://github.com/svenfuchs/i18n/releases
+https://github.com/svenfuchs/i18n/releases/tag/v1.1.0
 
 END
 
