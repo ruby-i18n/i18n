@@ -49,6 +49,19 @@ class I18nBackendKeyValueTest < I18n::TestCase
     end
   end
 
+  test 'initialized? checks that a store is available' do
+    setup_backend!
+    I18n.backend.reload!
+    assert_equal I18n.backend.initialized?, true
+  end
+
+  test 'translations gets the translations from the store' do
+    setup_backend!
+    I18n.backend.send(:translations)
+    expected = { :en => {:foo => { :bar => 'bar', :baz => 'baz' }} }
+    assert_equal expected, translations
+  end 
+  
   test "subtrees enabled: given incomplete pluralization data it raises I18n::InvalidPluralizationData" do
     setup_backend!
     store_translations(:en, :bar => { :one => "One" })
