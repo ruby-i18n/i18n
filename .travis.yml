@@ -5,9 +5,9 @@ rvm:
   - 2.0.0
   - 2.1.10
   - 2.2.8
-  - 2.3.5
-  - 2.4.4
-  - 2.5.1
+  - 2.3.7
+  - 2.4.5
+  - 2.5.3
   - ruby-head
   - rbx
   - jruby
@@ -50,7 +50,7 @@ matrix:
       gemfile: gemfiles/Gemfile.rails-master
     - rvm: 2.2.8
       gemfile: gemfiles/Gemfile.rails-master
-    - rvm: 2.3.5
+    - rvm: 2.3.7
       gemfile: gemfiles/Gemfile.rails-master
   allow_failures:
     - rvm: rbx
