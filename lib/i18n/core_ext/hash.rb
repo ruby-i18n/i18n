@@ -12,7 +12,7 @@ class Hash
   def deep_symbolize_keys
     inject({}) { |result, (key, value)|
       value = value.deep_symbolize_keys if value.is_a?(Hash)
-      result[(key.to_sym rescue key) || key] = value
+      result[(key.to_s.to_sym rescue key) || key] = value
       result
     }
   end unless Hash.method_defined?(:deep_symbolize_keys)
@@ -29,9 +29,8 @@ class Hash
   MERGER = proc do |key, v1, v2|
     Hash === v1 && Hash === v2 ? v1.merge(v2, &MERGER) : v2
   end
-  
+
   def deep_merge!(data)
     merge!(data, &MERGER)
   end unless Hash.method_defined?(:deep_merge!)
 end
-

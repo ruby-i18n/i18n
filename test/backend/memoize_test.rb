@@ -63,7 +63,6 @@ class I18nBackendMemoizeTest < I18nBackendSimpleTest
 
     assert_equal "[:foo, :scoped, :sample]", backend.translate('foo', scope = [:scoped, :sample])
 
-    results = []
     30.times.inject([]) do |memo, i|
       memo << Thread.new do
         backend.translate('bar', scope); backend.translate(:baz, scope)
