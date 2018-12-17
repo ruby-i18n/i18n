@@ -2,16 +2,18 @@ require 'test_helper'
 require 'i18n/core_ext/hash'
 
 class I18nCoreExtHashInterpolationTest < I18n::TestCase
+  using I18n::HashRefinements
+
   test "#deep_symbolize_keys" do
     hash = { 'foo' => { 'bar' => { 'baz' => 'bar' } } }
     expected = { :foo => { :bar => { :baz => 'bar' } } }
     assert_equal expected, hash.deep_symbolize_keys
   end
 
-  test "#deep_stringify_keys" do
-    hash = { :foo => { :bar => { :baz => 'bar' } } }
-    expected = { 'foo' => { 'bar' => { 'baz' => 'bar' } } }
-    assert_equal expected, hash.deep_stringify_keys
+  test "#deep_symbolize_keys with numeric keys" do
+    hash = { 1 => { 2 => { 3 => 'bar' } } }
+    expected = { :"1" => { :"2" => { :"3" => 'bar' } } }
+    assert_equal expected, hash.deep_symbolize_keys
   end
 
   test "#slice" do

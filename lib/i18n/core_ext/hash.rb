@@ -1,36 +1,44 @@
-class Hash
-  def slice(*keep_keys)
-    h = {}
-    keep_keys.each { |key| h[key] = fetch(key) if has_key?(key) }
-    h
-  end unless Hash.method_defined?(:slice)
+module I18n
+  module HashRefinements
+    refine Hash do
+      def slice(*keep_keys)
+        h = {}
+        keep_keys.each { |key| h[key] = fetch(key) if has_key?(key) }
+        h
+      end
 
-  def except(*less_keys)
-    slice(*keys - less_keys)
-  end unless Hash.method_defined?(:except)
+      def except(*less_keys)
+        slice(*keys - less_keys)
+      end
 
-  def deep_symbolize_keys
-    inject({}) { |result, (key, value)|
-      value = value.deep_symbolize_keys if value.is_a?(Hash)
-      result[(key.to_s.to_sym rescue key) || key] = value
-      result
-    }
-  end unless Hash.method_defined?(:deep_symbolize_keys)
+      def deep_symbolize_keys
+        each_with_object({}) do |(key, value), result|
+          value = value.deep_symbolize_keys if value.is_a?(Hash)
+          result[symbolize_key(key)] = value
+          result
+        end
+      end
 
-  def deep_stringify_keys
-    inject({}) { |result, (key, value)|
-      value = value.deep_stringify_keys if value.is_a?(Hash)
-      result[key.to_s] = value
-      result
-    }
-  end unless Hash.method_defined?(:deep_stringify_keys)
+      # deep_merge_hash! by Stefan Rusterholz, see http://www.ruby-forum.com/topic/142809
+      def deep_merge!(data)
+        merger = lambda do |_key, v1, v2|
+          Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2
+        end
+        merge!(data, &merger)
+      end
 
-  # deep_merge_hash! by Stefan Rusterholz, see http://www.ruby-forum.com/topic/142809
-  MERGER = proc do |key, v1, v2|
-    Hash === v1 && Hash === v2 ? v1.merge(v2, &MERGER) : v2
+      private
+
+      def symbolize_key(key)
+        case key
+        when String
+          key.to_sym
+        when Numeric
+          key.to_s.to_sym
+        else
+          key
+        end
+      end
+    end
   end
-
-  def deep_merge!(data)
-    merge!(data, &MERGER)
-  end unless Hash.method_defined?(:deep_merge!)
 end
