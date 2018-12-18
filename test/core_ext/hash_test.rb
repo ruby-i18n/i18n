@@ -12,7 +12,7 @@ class I18nCoreExtHashInterpolationTest < I18n::TestCase
 
   test "#deep_symbolize_keys with numeric keys" do
     hash = { 1 => { 2 => { 3 => 'bar' } } }
-    expected = { :"1" => { :"2" => { :"3" => 'bar' } } }
+    expected = { 1 => { 2 => { 3 => 'bar' } } }
     assert_equal expected, hash.deep_symbolize_keys
   end
 
