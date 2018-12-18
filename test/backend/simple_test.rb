@@ -18,6 +18,12 @@ class I18nBackendSimpleTest < I18n::TestCase
     assert_equal "No", I18n.t(:available)[false]
   end
 
+  test "simple backend translate: given integer as a key" do
+    store_translations :en, available: { 1 => "Yes", 2 => "No" }
+    assert_equal "Yes", I18n.t(:available)[1]
+    assert_equal "Yes", I18n.t('available.1')
+  end
+
   # loading translations
   test "simple load_translations: given an unknown file type it raises I18n::UnknownFileType" do
     assert_raise(I18n::UnknownFileType) { I18n.backend.load_translations("#{locales_dir}/en.xml") }
