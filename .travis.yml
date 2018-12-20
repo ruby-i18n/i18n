@@ -32,12 +32,14 @@ matrix:
     - rvm: 2.1.10
       gemfile: gemfiles/Gemfile.rails-5.2.x
 
-    # Rails 6+ requires Ruby >= 2.4
+    # Rails 6+ requires Ruby >= 2.5
     - rvm: 2.1.10
       gemfile: gemfiles/Gemfile.rails-master
     - rvm: 2.2.8
       gemfile: gemfiles/Gemfile.rails-master
     - rvm: 2.3.7
+      gemfile: gemfiles/Gemfile.rails-master
+    - rvm: 2.4.5
       gemfile: gemfiles/Gemfile.rails-master
   allow_failures:
     - rvm: rbx
