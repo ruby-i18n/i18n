@@ -30,14 +30,7 @@ module I18n
       private
 
       def symbolize_key(key)
-        case key
-        when String
-          key.to_sym
-        when Numeric
-          key.to_s.to_sym
-        else
-          key
-        end
+        key.respond_to?(:to_sym) ? key.to_sym : key
       end
     end
   end

@@ -88,8 +88,11 @@ module I18n
           keys = I18n.normalize_keys(locale, key, scope, options[:separator])
 
           keys.inject(translations) do |result, _key|
-            _key = _key.to_sym
-            return nil unless result.is_a?(Hash) && result.has_key?(_key)
+            return nil unless result.is_a?(Hash)
+            unless result.has_key?(_key)
+              _key = _key.to_s.to_sym
+              return nil unless result.has_key?(_key)
+            end
             result = result[_key]
             result = resolve(locale, _key, result, options.merge(:scope => nil)) if result.is_a?(Symbol)
             result
