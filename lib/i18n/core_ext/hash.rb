@@ -27,8 +27,6 @@ module I18n
         merge!(data, &merger)
       end
 
-      private
-
       def symbolize_key(key)
         key.respond_to?(:to_sym) ? key.to_sym : key
       end
