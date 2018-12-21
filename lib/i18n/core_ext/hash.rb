@@ -13,8 +13,7 @@ module I18n
 
       def deep_symbolize_keys
         each_with_object({}) do |(key, value), result|
-          value = value.deep_symbolize_keys if value.is_a?(Hash)
-          result[symbolize_key(key)] = value
+          result[symbolize_key(key)] = deep_symbolize_keys_in_object(value)
           result
         end
       end
@@ -29,6 +28,19 @@ module I18n
 
       def symbolize_key(key)
         key.respond_to?(:to_sym) ? key.to_sym : key
+      end
+
+      private
+
+      def deep_symbolize_keys_in_object(value)
+        case value
+        when Hash
+          value.deep_symbolize_keys
+        when Array
+          value.map { |e| deep_symbolize_keys_in_object(e) }
+        else
+          value
+        end
       end
     end
   end

@@ -24,6 +24,19 @@ class I18nBackendSimpleTest < I18n::TestCase
     assert_equal "Yes", I18n.t('available.1')
   end
 
+  test "simple backend translate: symbolize keys in hash" do
+    store_translations :en, nested_hashes_in_array: { hello: "world" }
+    assert_equal "world", I18n.t('nested_hashes_in_array.hello')
+    assert_equal "world", I18n.t('nested_hashes_in_array')[:hello]
+  end
+
+  test "simple backend translate: symbolize keys in array" do
+    store_translations :en, nested_hashes_in_array: [ { hello: "world" } ]
+    I18n.t('nested_hashes_in_array').each do |val|
+      assert_equal "world", val[:hello]
+    end
+  end
+
   # loading translations
   test "simple load_translations: given an unknown file type it raises I18n::UnknownFileType" do
     assert_raise(I18n::UnknownFileType) { I18n.backend.load_translations("#{locales_dir}/en.xml") }
