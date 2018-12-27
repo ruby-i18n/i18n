@@ -1,14 +1,13 @@
 module I18n
   module HashRefinements
     refine Hash do
-      def slice(*keep_keys)
-        h = {}
-        keep_keys.each { |key| h[key] = fetch(key) if has_key?(key) }
-        h
+      def except(*keys)
+        dup.except!(*keys)
       end
 
-      def except(*less_keys)
-        slice(*keys - less_keys)
+      def except!(*keys)
+        keys.each { |key| delete(key) }
+        self
       end
 
       def deep_symbolize_keys
