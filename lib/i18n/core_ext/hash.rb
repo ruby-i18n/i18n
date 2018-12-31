@@ -1,6 +1,8 @@
 module I18n
   module HashRefinements
     refine Hash do
+      using I18n::HashRefinements
+
       def slice(*keep_keys)
         h = {}
         keep_keys.each { |key| h[key] = fetch(key) if has_key?(key) }
