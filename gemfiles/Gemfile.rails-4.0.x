@@ -7,4 +7,7 @@ gem 'mocha'
 gem 'test_declarative'
 gem 'rake'
 gem 'minitest'
-gem 'oj'
+
+platforms :mri do
+  gem 'oj'
+end
