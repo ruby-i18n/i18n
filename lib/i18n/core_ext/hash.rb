@@ -1,6 +1,7 @@
 module I18n
   module HashRefinements
     refine Hash do
+      using I18n::HashRefinements
       def except(*keys)
         dup.except!(*keys)
       end
