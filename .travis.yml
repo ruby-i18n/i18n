@@ -43,5 +43,4 @@ matrix:
       gemfile: gemfiles/Gemfile.rails-master
   allow_failures:
     - rvm: rbx
-    - rvm: jruby
   fast_finish: true
