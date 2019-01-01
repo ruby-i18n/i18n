@@ -10,7 +10,7 @@
 
 * Fill this out!
 
-## Versions of i18n, rails, and anything else you think is neccessary
+## Versions of i18n, rails, and anything else you think is necessary
 
 * Fill this out!
 
