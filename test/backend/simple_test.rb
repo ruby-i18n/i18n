@@ -24,6 +24,12 @@ class I18nBackendSimpleTest < I18n::TestCase
     assert_equal "Yes", I18n.t('available.1')
   end
 
+  test 'simple backend translate: given integer with a lead zero as a key' do
+    store_translations :en, available: { '01' => 'foo' }
+    assert_equal 'foo', I18n.t(:available)[:'01']
+    assert_equal 'foo', I18n.t('available.01')
+  end
+
   test "simple backend translate: symbolize keys in hash" do
     store_translations :en, nested_hashes_in_array: { hello: "world" }
     assert_equal "world", I18n.t('nested_hashes_in_array.hello')
