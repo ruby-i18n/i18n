@@ -1,5 +1,3 @@
-$KCODE = 'u' if RUBY_VERSION <= '1.9'
-
 require 'minitest/autorun'
 TEST_CASE = defined?(Minitest::Test) ? Minitest::Test : MiniTest::Unit::TestCase
 

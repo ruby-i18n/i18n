@@ -37,7 +37,7 @@ class I18nInterpolateTest < I18n::TestCase
   end
 
   test "String interpolation raises an I18n::MissingInterpolationArgument when the string has extra placeholders" do
-    assert_raise(I18n::MissingInterpolationArgument) do # Ruby 1.9 msg: "key not found"
+    assert_raise(I18n::MissingInterpolationArgument, "key not found") do
       I18n.interpolate("%{first} %{last}", :first => 'Masao')
     end
   end
