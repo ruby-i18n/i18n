@@ -102,6 +102,12 @@ module I18n
           # This assumes that only simple, native Ruby values are passed to I18n.translate.
           "i18n/#{I18n.cache_namespace}/#{locale}/#{digest_item(key)}/#{digest_item(options)}"
         end
+
+      private
+
+        def digest_item(key)
+          I18n.cache_key_digest ? I18n.cache_key_digest.hexdigest(key.to_s) : key.hash
+        end
     end
   end
 end
