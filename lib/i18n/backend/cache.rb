@@ -106,7 +106,7 @@ module I18n
       private
 
         def digest_item(key)
-          I18n.cache_key_digest ? I18n.cache_key_digest.hexdigest(key.to_s) : key.hash
+          I18n.cache_key_digest ? I18n.cache_key_digest.hexdigest(key.to_s) : key.to_s.hash
         end
     end
   end
