@@ -23,6 +23,8 @@ matrix:
       gemfile: gemfiles/Gemfile.rails-master
     - rvm: 2.4.5
       gemfile: gemfiles/Gemfile.rails-master
+    - rvm: jruby
+      gemfile: gemfiles/Gemfile.rails-master
   allow_failures:
     - rvm: rbx
   fast_finish: true
