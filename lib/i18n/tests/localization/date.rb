@@ -40,6 +40,10 @@ module I18n
           assert_equal 'Mar', I18n.l(@date, :format => '%b', :locale => :de)
         end
 
+        test "localize Date: given missing translations it returns the correct error message" do
+          assert_equal 'translation missing: fr.date.abbr_month_names', I18n.l(@date, :format => '%b', :locale => :fr)
+        end
+
         test "localize Date: given an unknown format it does not fail" do
           assert_nothing_raised { I18n.l(@date, :format => '%x') }
         end
