@@ -42,6 +42,10 @@ module I18n
           assert_equal 'Mar', I18n.l(@time, :format => '%b', :locale => :de)
         end
 
+        test "localize Time: given missing translations it returns the correct error message" do
+          assert_equal 'translation missing: fr.date.abbr_month_names', I18n.l(@time, :format => '%b', :locale => :fr)
+        end
+
         test "localize Time: given a meridian indicator format it returns the correct meridian indicator" do
           assert_equal 'AM', I18n.l(@time, :format => '%p', :locale => :de)
           assert_equal 'PM', I18n.l(@other_time, :format => '%p', :locale => :de)
