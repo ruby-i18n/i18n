@@ -29,17 +29,38 @@ module I18n
           assert_equal 'Samstag', I18n.l(@datetime, :format => '%A', :locale => :de)
         end
 
+        test "localize DateTime: given a uppercased day name format it returns the correct day name in upcase" do
+          assert_equal 'SAMSTAG', I18n.l(@datetime, :format => '%^A', :locale => :de)
+        end
+
         test "localize DateTime: given an abbreviated day name format it returns the correct abbreviated day name" do
           assert_equal 'Sa', I18n.l(@datetime, :format => '%a', :locale => :de)
+        end
+
+        test "localize DateTime: given an abbreviated and uppercased day name format it returns the correct abbreviated day name in upcase" do
+          assert_equal 'SA', I18n.l(@datetime, :format => '%^a', :locale => :de)
         end
 
         test "localize DateTime: given a month name format it returns the correct month name" do
           assert_equal 'März', I18n.l(@datetime, :format => '%B', :locale => :de)
         end
 
+        test "localize DateTime: given a uppercased month name format it returns the correct month name in upcase" do
+          assert_equal 'MÄRZ', I18n.l(@datetime, :format => '%^B', :locale => :de)
+        end
+
         test "localize DateTime: given an abbreviated month name format it returns the correct abbreviated month name" do
           # TODO should be Mrz, shouldn't it?
           assert_equal 'Mar', I18n.l(@datetime, :format => '%b', :locale => :de)
+        end
+
+        test "localize DateTime: given an abbreviated and uppercased month name format it returns the correct abbreviated month name in upcase" do
+          # TODO should be Mrz, shouldn't it?
+          assert_equal 'MAR', I18n.l(@datetime, :format => '%^b', :locale => :de)
+        end
+
+        test "localize DateTime: given a date format with the month name upcased it returns the correct value" do
+          assert_equal '1. MÄRZ 2008', I18n.l(@datetime, :format => "%-d. %^B %Y", :locale => :de)
         end
 
         test "localize DateTime: given missing translations it returns the correct error message" do
