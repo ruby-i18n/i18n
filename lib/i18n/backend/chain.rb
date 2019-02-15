@@ -92,9 +92,13 @@ module I18n
           end
 
           def translations
-            backends.first.instance_eval do
-              init_translations unless initialized?
-              translations
+            backends.reverse.inject({}) do |h, b|
+              to_merge = b.instance_eval do
+                init_translations unless initialized?
+                translations
+              end
+
+              h.deep_merge(to_merge)
             end
           end
 
