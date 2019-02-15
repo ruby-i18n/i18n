@@ -69,6 +69,13 @@ module I18n
       config.backend.reload!
     end
 
+    # Tells the backend to load translations now. Used in situations like the
+    # Rails production environment. Backends can implement whatever strategy
+    # is useful.
+    def eager_load!
+      config.backend.eager_load!
+    end
+
     # Translates, pluralizes and interpolates a given key using a given locale,
     # scope, and default, as well as interpolation values.
     #
