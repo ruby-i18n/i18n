@@ -15,6 +15,20 @@ module I18n
 
   class ArgumentError < ::ArgumentError; end
 
+  class Disabled < ArgumentError
+    def initialize(method)
+      super(<<~MESSAGE)
+        I18n.#{method} is currently disabled, likely because your application is still in its loading phase.
+
+        This method is meant to display text in the user locale, so calling it before the user locale has
+        been set is likely to display text from the wrong locale to some users.
+
+        If you have a legitimate reason to access i18n data outside of the user flow, you can do so by passing
+        the desired locale explictly with the `locale` argument, e.g. `I18n.#{method}(..., locale: :en)`
+      MESSAGE
+    end
+  end
+
   class InvalidLocale < ArgumentError
     attr_reader :locale
     def initialize(locale)
