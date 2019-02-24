@@ -101,6 +101,12 @@ class I18nBackendChainTest < I18n::TestCase
     assert !@second.initialized?
   end
 
+  test 'should eager load all backends' do
+    I18n.backend.eager_load!
+    assert @first.initialized?
+    assert @second.initialized?
+  end
+
   test 'should be able to get all translations of the first backend' do
     assert_equal I18n.backend.send(:translations),
                  en: {

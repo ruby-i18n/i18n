@@ -95,9 +95,18 @@ module I18n
       end
 
       def reload!
+        eager_load! if eager_loaded?
+      end
+
+      def eager_load!
+        @eager_loaded = true
       end
 
       protected
+
+        def eager_loaded?
+          @eager_loaded ||= false
+        end
 
         # The method which actually looks up for the translation in the store.
         def lookup(locale, key, scope = [], options = EMPTY_HASH)
