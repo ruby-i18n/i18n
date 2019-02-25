@@ -12,8 +12,7 @@ module I18n
         end
 
         test "localize Time: given the short format it uses it" do
-          # TODO should be Mrz, shouldn't it?
-          assert_equal '01. Mar 06:00', I18n.l(@time, :format => :short, :locale => :de)
+          assert_equal '01. Mär 06:00', I18n.l(@time, :format => :short, :locale => :de)
         end
 
         test "localize Time: given the long format it uses it" do
@@ -50,13 +49,11 @@ module I18n
         end
 
         test "localize Time: given an abbreviated month name format it returns the correct abbreviated month name" do
-          # TODO should be Mrz, shouldn't it?
-          assert_equal 'Mar', I18n.l(@time, :format => '%b', :locale => :de)
+          assert_equal 'Mär', I18n.l(@time, :format => '%b', :locale => :de)
         end
 
         test "localize Time: given an abbreviated and uppercased month name format it returns the correct abbreviated month name in upcase" do
-          # TODO should be Mrz, shouldn't it?
-          assert_equal 'mar'.upcase, I18n.l(@time, :format => '%^b', :locale => :de)
+          assert_equal 'mär'.upcase, I18n.l(@time, :format => '%^b', :locale => :de)
         end
 
         test "localize Time: given a date format with the month name upcased it returns the correct value" do

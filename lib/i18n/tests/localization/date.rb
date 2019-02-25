@@ -11,8 +11,7 @@ module I18n
         end
 
         test "localize Date: given the short format it uses it" do
-          # TODO should be Mrz, shouldn't it?
-          assert_equal '01. Mar', I18n.l(@date, :format => :short, :locale => :de)
+          assert_equal '01. Mär', I18n.l(@date, :format => :short, :locale => :de)
         end
 
         test "localize Date: given the long format it uses it" do
@@ -48,13 +47,11 @@ module I18n
         end
 
         test "localize Date: given an abbreviated month name format it returns the correct abbreviated month name" do
-          # TODO should be Mrz, shouldn't it?
-          assert_equal 'Mar', I18n.l(@date, :format => '%b', :locale => :de)
+          assert_equal 'Mär', I18n.l(@date, :format => '%b', :locale => :de)
         end
 
         test "localize Date: given an abbreviated and uppercased month name format it returns the correct abbreviated month name in upcase" do
-          # TODO should be Mrz, shouldn't it?
-          assert_equal 'mar'.upcase, I18n.l(@date, :format => '%^b', :locale => :de)
+          assert_equal 'mär'.upcase, I18n.l(@date, :format => '%^b', :locale => :de)
         end
 
         test "localize Date: given a date format with the month name upcased it returns the correct value" do
@@ -71,7 +68,7 @@ module I18n
 
         test "localize Date: does not modify the options hash" do
           options = { :format => '%b', :locale => :de }
-          assert_equal 'Mar', I18n.l(@date, options)
+          assert_equal 'Mär', I18n.l(@date, options)
           assert_equal({ :format => '%b', :locale => :de }, options)
           assert_nothing_raised { I18n.l(@date, options.freeze) }
         end
@@ -110,7 +107,7 @@ module I18n
                 :day_names => %w(Sonntag Montag Dienstag Mittwoch Donnerstag Freitag Samstag),
                 :abbr_day_names => %w(So Mo Di Mi Do Fr  Sa),
                 :month_names => %w(Januar Februar März April Mai Juni Juli August September Oktober November Dezember).unshift(nil),
-                :abbr_month_names => %w(Jan Feb Mar Apr Mai Jun Jul Aug Sep Okt Nov Dez).unshift(nil)
+                :abbr_month_names => %w(Jan Feb Mär Apr Mai Jun Jul Aug Sep Okt Nov Dez).unshift(nil)
               }
             }
           end
