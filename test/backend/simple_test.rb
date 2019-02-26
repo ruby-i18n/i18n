@@ -19,9 +19,13 @@ class I18nBackendSimpleTest < I18n::TestCase
   end
 
   test "simple backend translate: given integer as a key" do
-    store_translations :en, available: { 1 => "Yes", 2 => "No" }
+    store_translations :en, available: { 0 => "Dunno", 1 => "Yes", 2 => "No" }
+    assert_equal "Dunno", I18n.t(:available)[0]
+    assert_equal "Dunno", I18n.t('available.0')
     assert_equal "Yes", I18n.t(:available)[1]
     assert_equal "Yes", I18n.t('available.1')
+    assert_equal "No", I18n.t(:available)[2]
+    assert_equal "No", I18n.t('available.2')
   end
 
   test 'simple backend translate: given integer with a lead zero as a key' do
