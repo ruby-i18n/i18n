@@ -67,7 +67,7 @@ I18n.t(:test) # => "Dies ist ein Test"
 * Cache
 * Pluralization: lambda pluralizers stored as translation data
 * Locale fallbacks, RFC4647 compliant (optionally: RFC4646 locale validation)
-* [Gettext support](https://github.com/svenfuchs/i18n/wiki/Gettext)
+* [Gettext support](https://github.com/ruby-i18n/i18n/wiki/Gettext)
 * Translation metadata
 
 ## Alternative Backend
@@ -76,7 +76,7 @@ I18n.t(:test) # => "Dies ist ein Test"
 * ActiveRecord (optionally: ActiveRecord::Missing and ActiveRecord::StoreProcs)
 * KeyValue (uses active_support/json and cannot store procs)
 
-For more information and lots of resources see [the 'Resources' page on the wiki](https://github.com/svenfuchs/i18n/wiki/Resources).
+For more information and lots of resources see [the 'Resources' page on the wiki](https://github.com/ruby-i18n/i18n/wiki/Resources).
 
 ## Tests
 
