@@ -101,16 +101,19 @@ class I18nBackendChainTest < I18n::TestCase
     assert !@second.initialized?
   end
 
-  test 'should be able to get all translations of the first backend' do
+  test 'should be able to get all translations of all backends merged together' do
     assert_equal I18n.backend.send(:translations),
                  en: {
                    foo: 'Foo',
+                   bar: 'Bar',
                    formats: {
                      short: 'short',
-                     subformats: { short: 'short' }
+                     long: 'long',
+                     subformats: { short: 'short', long: 'long' }
                    },
                    plural_1: { one: "%{count}" },
-                   dates: { a: 'A' }
+                   plural_2: { one: 'one' },
+                   dates: { a: 'A', b: 'B' }
                  }
   end
 
