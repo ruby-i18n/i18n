@@ -92,13 +92,13 @@ module I18n
           end
 
           def translations
-            backends.reverse.inject({}) do |h, b|
-              to_merge = b.instance_eval do
+            backends.reverse.each_with_object({}) do |backend, memo|
+              partial_translations = backend.instance_eval do
                 init_translations unless initialized?
                 translations
               end
 
-              h.deep_merge(to_merge)
+              memo.deep_merge!(partial_translations)
             end
           end
 
