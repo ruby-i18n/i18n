@@ -63,6 +63,11 @@ module I18n
           super
         end
 
+        def eager_load!
+          init_translations unless initialized?
+          super
+        end
+
         def translations(do_init: false)
           # To avoid returning empty translations,
           # call `init_translations`

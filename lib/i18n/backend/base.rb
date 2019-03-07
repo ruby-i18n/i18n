@@ -95,9 +95,18 @@ module I18n
       end
 
       def reload!
+        eager_load! if eager_loaded?
+      end
+
+      def eager_load!
+        @eager_loaded = true
       end
 
       protected
+
+        def eager_loaded?
+          @eager_loaded ||= false
+        end
 
         # The method which actually looks up for the translation in the store.
         def lookup(locale, key, scope = [], options = EMPTY_HASH)
@@ -248,12 +257,16 @@ module I18n
         end
 
         def translate_localization_format(locale, object, format, options)
-          format.to_s.gsub(/%[aAbBpP]/) do |match|
+          format.to_s.gsub(/%(|\^)[aAbBpP]/) do |match|
             case match
             when '%a' then I18n.t!(:"date.abbr_day_names",                  :locale => locale, :format => format)[object.wday]
+            when '%^a' then I18n.t!(:"date.abbr_day_names",                 :locale => locale, :format => format)[object.wday].upcase
             when '%A' then I18n.t!(:"date.day_names",                       :locale => locale, :format => format)[object.wday]
+            when '%^A' then I18n.t!(:"date.day_names",                      :locale => locale, :format => format)[object.wday].upcase
             when '%b' then I18n.t!(:"date.abbr_month_names",                :locale => locale, :format => format)[object.mon]
+            when '%^b' then I18n.t!(:"date.abbr_month_names",               :locale => locale, :format => format)[object.mon].upcase
             when '%B' then I18n.t!(:"date.month_names",                     :locale => locale, :format => format)[object.mon]
+            when '%^B' then I18n.t!(:"date.month_names",                    :locale => locale, :format => format)[object.mon].upcase
             when '%p' then I18n.t!(:"time.#{object.hour < 12 ? :am : :pm}", :locale => locale, :format => format).upcase if object.respond_to? :hour
             when '%P' then I18n.t!(:"time.#{object.hour < 12 ? :am : :pm}", :locale => locale, :format => format).downcase if object.respond_to? :hour
             end

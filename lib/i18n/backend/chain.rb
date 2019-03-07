@@ -41,6 +41,10 @@ module I18n
           backends.each { |backend| backend.reload! }
         end
 
+        def eager_load!
+          backends.each { |backend| backend.eager_load! }
+        end
+
         def store_translations(locale, data, options = EMPTY_HASH)
           backends.first.store_translations(locale, data, options)
         end

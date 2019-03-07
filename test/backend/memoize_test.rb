@@ -45,6 +45,13 @@ class I18nBackendMemoizeTest < I18nBackendSimpleTest
     assert_equal 1, I18n.backend.spy_calls
   end
 
+  def test_eager_load
+    I18n.eager_load!
+    I18n.backend.spy_calls = 0
+    assert_equal I18n.available_locales, I18n.available_locales
+    assert_equal 0, I18n.backend.spy_calls
+  end
+
   module TestLookup
     def lookup(locale, key, scope = [], options = {})
       keys = I18n.normalize_keys(locale, key, scope, options[:separator])

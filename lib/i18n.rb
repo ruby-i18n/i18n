@@ -69,6 +69,13 @@ module I18n
       config.backend.reload!
     end
 
+    # Tells the backend to load translations now. Used in situations like the
+    # Rails production environment. Backends can implement whatever strategy
+    # is useful.
+    def eager_load!
+      config.backend.eager_load!
+    end
+
     # Translates, pluralizes and interpolates a given key using a given locale,
     # scope, and default, as well as interpolation values.
     #
@@ -169,14 +176,12 @@ module I18n
     # from the argument values passed to #translate. Therefor your lambdas should
     # always return the same translations/values per unique combination of argument
     # values.
-    def translate(*args)
-      options  = args.last.is_a?(Hash) ? args.pop.dup : {}
-      key      = args.shift
-      backend  = config.backend
-      locale   = options.delete(:locale) || config.locale
-      handling = options.delete(:throw) && :throw || options.delete(:raise) && :raise # TODO deprecate :raise
-
+    def translate(key = nil, *, throw: false, raise: false, locale: nil, **options) # TODO deprecate :raise
+      locale ||= config.locale
+      raise Disabled.new('t') if locale == false
       enforce_available_locales!(locale)
+
+      backend = config.backend
 
       result = catch(:exception) do
         if key.is_a?(Array)
@@ -185,7 +190,12 @@ module I18n
           backend.translate(locale, key, options)
         end
       end
-      result.is_a?(MissingTranslation) ? handle_exception(handling, result, locale, key, options) : result
+
+      if result.is_a?(MissingTranslation)
+        handle_exception((throw && :throw || raise && :raise), result, locale, key, options)
+      else
+        result
+      end
     end
     alias :t :translate
 
@@ -197,7 +207,9 @@ module I18n
     alias :t! :translate!
 
     # Returns true if a translation exists for a given key, otherwise returns false.
-    def exists?(key, locale = config.locale)
+    def exists?(key, _locale = nil, locale: _locale)
+      locale ||= config.locale
+      raise Disabled.new('exists?') if locale == false
       raise I18n::ArgumentError if key.is_a?(String) && key.empty?
       config.backend.exists?(locale, key)
     end
@@ -253,37 +265,40 @@ module I18n
     #     I18n.transliterate("Jürgen") # => "Juergen"
     #     I18n.transliterate("Jürgen", :locale => :en) # => "Jurgen"
     #     I18n.transliterate("Jürgen", :locale => :de) # => "Juergen"
-    def transliterate(*args)
-      options      = args.pop.dup if args.last.is_a?(Hash)
-      key          = args.shift
-      locale       = options && options.delete(:locale) || config.locale
-      handling     = options && (options.delete(:throw) && :throw || options.delete(:raise) && :raise)
-      replacement  = options && options.delete(:replacement)
+    def transliterate(key, *, throw: false, raise: false, locale: nil, replacement: nil, **options)
+      locale ||= config.locale
+      raise Disabled.new('transliterate') if locale == false
       enforce_available_locales!(locale)
+
       config.backend.transliterate(locale, key, replacement)
     rescue I18n::ArgumentError => exception
-      handle_exception(handling, exception, locale, key, options || {})
+      handle_exception((throw && :throw || raise && :raise), exception, locale, key, options)
     end
 
     # Localizes certain objects, such as dates and numbers to local formatting.
-    def localize(object, options = nil)
-      options = options ? options.dup : {}
-      locale = options.delete(:locale) || config.locale
-      format = options.delete(:format) || :default
+    def localize(object, locale: nil, format: nil, **options)
+      locale ||= config.locale
+      raise Disabled.new('l') if locale == false
       enforce_available_locales!(locale)
+
+      format ||= :default
       config.backend.localize(locale, object, format, options)
     end
     alias :l :localize
 
     # Executes block with given I18n.locale set.
     def with_locale(tmp_locale = nil)
-      if tmp_locale
+      if tmp_locale == nil
+        yield
+      else
         current_locale = self.locale
-        self.locale    = tmp_locale
+        self.locale = tmp_locale
+        begin
+          yield
+        ensure
+          self.locale = current_locale
+        end
       end
-      yield
-    ensure
-      self.locale = current_locale if tmp_locale
     end
 
     # Merges the given locale, key and scope into a single array of keys.
@@ -307,7 +322,7 @@ module I18n
 
     # Raises an InvalidLocale exception when the passed locale is not available.
     def enforce_available_locales!(locale)
-      if config.enforce_available_locales
+      if locale != false && config.enforce_available_locales
         raise I18n::InvalidLocale.new(locale) if !locale_available?(locale)
       end
     end

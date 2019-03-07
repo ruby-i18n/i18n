@@ -249,6 +249,16 @@ class I18nTest < I18n::TestCase
     assert_equal "No", I18n.t(false)
   end
 
+  test "translate raises Disabled if locale is false" do
+    I18n.with_locale(false) do
+      assert_raise I18n::Disabled do
+        I18n.t('foo')
+      end
+
+      assert_equal 'translation missing: en.foo', I18n.t('foo', locale: :en)
+    end
+  end
+
   test "available_locales can be replaced at runtime" do
     begin
       I18n.config.enforce_available_locales = true
@@ -290,6 +300,16 @@ class I18nTest < I18n::TestCase
     assert_equal false, I18n.exists?(:bogus, :nl)
   end
 
+  test "exists? raises Disabled if locale is false" do
+    I18n.with_locale(false) do
+      assert_raise I18n::Disabled do
+        I18n.exists?(:bogus)
+      end
+
+      assert_equal false, I18n.exists?(:bogus, :nl)
+    end
+  end
+
   test "localize given nil raises an I18n::ArgumentError" do
     assert_raise(I18n::ArgumentError) { I18n.l nil }
   end
@@ -308,6 +328,14 @@ class I18nTest < I18n::TestCase
       assert_raise(I18n::InvalidLocale) { I18n.l(Time.now, :locale => 'klingon') }
     ensure
       I18n.config.enforce_available_locales = false
+    end
+  end
+
+  test "localize raises Disabled if locale is false" do
+    I18n.with_locale(false) do
+      assert_raise I18n::Disabled do
+        I18n.l(Time.now)
+      end
     end
   end
 
