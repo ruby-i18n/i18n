@@ -96,9 +96,13 @@ module I18n
           end
 
           def translations
-            backends.first.instance_eval do
-              init_translations unless initialized?
-              translations
+            backends.reverse.each_with_object({}) do |backend, memo|
+              partial_translations = backend.instance_eval do
+                init_translations unless initialized?
+                translations
+              end
+
+              memo.deep_merge!(partial_translations)
             end
           end
 
