@@ -130,4 +130,12 @@ class I18nFallbacksComputationTest < I18n::TestCase
     @fallbacks.map(:no => :nb, :nb => :no)
     assert_equal [:nb, :no, :"en-US", :en], @fallbacks[:nb]
   end
+
+  # Test I18n::Disabled  is raised correctly when locale is false during fallback
+
+  test "with locale equals false" do
+    assert_raise I18n::Disabled do
+      @fallbacks[false]
+    end
+  end
 end
