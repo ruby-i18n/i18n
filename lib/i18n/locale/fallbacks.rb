@@ -66,6 +66,7 @@ module I18n
 
       def [](locale)
         raise InvalidLocale.new(locale) if locale.nil?
+        raise Disabled.new('fallback#[]') if locale == false
         locale = locale.to_sym
         super || store(locale, compute(locale))
       end
