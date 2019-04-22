@@ -95,7 +95,7 @@ particular tests in different test cases.
 The reason for this is that we need to enforce the I18n API across various
 combinations of extensions. E.g. the Simple backend alone needs to support
 the same API as any combination of feature and/or optimization modules included
-to the Simple backend. We test this by reusing the same API defition (implemented
+to the Simple backend. We test this by reusing the same API definition (implemented
 as test methods) in test cases with different setups.
 
 You can find the test cases that enforce the API in test/api. And you can find
