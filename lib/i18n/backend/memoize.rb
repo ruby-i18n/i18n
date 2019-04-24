@@ -35,6 +35,10 @@ module I18n
       protected
 
         def lookup(locale, key, scope = nil, options = EMPTY_HASH)
+          if key.is_a?(Array)
+            return key.map { |k| lookup(locale, k, scope, options) }
+          end
+
           flat_key  = I18n::Backend::Flatten.normalize_flat_keys(locale,
             key, scope, options[:separator]).to_sym
           flat_hash = memoized_lookup[locale.to_sym]

@@ -42,6 +42,29 @@ module I18n
         default = extract_non_symbol_default!(options) if options[:default]
 
         fallback_options = options.merge(:fallback_in_progress => true)
+
+        if key.is_a?(Array)
+          results = Array.new(key.length) { |_| nil }
+          keys = key.to_a
+
+          I18n.fallbacks[locale].each do |fallback|
+            begin
+              untranslated_indices = results.each_with_index.select { |r, _| r.nil? }.map { |_, i| i }
+              break if untranslated_indices.empty?
+              untranslated_keys = untranslated_indices.map { |i| keys[i] }
+
+              translations = super(fallback, untranslated_keys, fallback_options)
+              untranslated_indices.zip(translations).each do |i, translation|
+                results[i] = translation
+              end
+            rescue I18n::InvalidLocale
+              # we do nothing when the locale is invalid, as this is a fallback anyways.
+            end
+          end
+
+          return results
+        end
+
         I18n.fallbacks[locale].each do |fallback|
           begin
             catch(:exception) do

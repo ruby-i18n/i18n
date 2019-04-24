@@ -65,20 +65,23 @@ class I18nBackendMemoizeTest < I18nBackendSimpleTest
       include I18n::Backend::Memoize
     end
     backend = backend_impl.new
-
     memoized_lookup = backend.send(:memoized_lookup)
 
-    assert_equal "[:foo, :scoped, :sample]", backend.translate('foo', scope = [:scoped, :sample])
+    locale = :en
+    scope = [:scoped, :sample]
+
+    assert_equal "[:en, :scoped, :sample, :foo]", backend.translate(locale, 'foo', scope: scope)
 
     30.times.inject([]) do |memo, i|
       memo << Thread.new do
-        backend.translate('bar', scope); backend.translate(:baz, scope)
+        backend.translate(locale, 'bar', scope: scope)
+        backend.translate(locale, :baz, scope: scope)
       end
     end.each(&:join)
 
     memoized_lookup = backend.send(:memoized_lookup)
-    puts memoized_lookup.inspect if $VERBOSE
-    assert_equal 3, memoized_lookup.size, "NON-THREAD-SAFE lookup memoization backend: #{memoized_lookup.class}"
+    assert_equal 1, memoized_lookup.size, "NON-THREAD-SAFE lookup memoization backend: #{memoized_lookup.class}"
+    assert_equal 3, memoized_lookup[:en].size, "NON-THREAD-SAFE lookup memoization backend: #{memoized_lookup[:en].class}"
     # if a plain Hash is used might eventually end up in a weird (inconsistent) state
   end
 

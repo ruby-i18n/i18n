@@ -45,4 +45,3 @@ class I18nBackendMetadataTest < I18n::TestCase
     assert_equal(1, I18n.t(:missing, :count => 1, :default => 'foo'.freeze).translation_metadata[:count])
   end
 end
-

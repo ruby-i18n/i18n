@@ -38,14 +38,20 @@ module I18n
       end
 
       def translate(locale, key, options = EMPTY_HASH)
-        metadata = {
+        common_metadata = {
           :locale    => locale,
-          :key       => key,
           :scope     => options[:scope],
           :default   => options[:default],
           :separator => options[:separator],
           :values    => options.reject { |name, _value| RESERVED_KEYS.include?(name) }
         }
+
+        if key.is_a?(Array)
+          metadata = key.map { |k| common_metadata.merge(:key => k) }
+        else
+          metadata = common_metadata.merge(:key => key)
+        end
+
         with_metadata(metadata) { super }
       end
 
@@ -61,9 +67,17 @@ module I18n
       protected
 
         def with_metadata(metadata, &block)
-          result = yield
-          result.translation_metadata = result.translation_metadata.merge(metadata) if result
-          result
+          if metadata.is_a?(Array)
+            results = yield
+            results.zip(metadata).each do |result, metadatum|
+              result.translation_metadata = result.translation_metadata.merge(metadatum) if result
+            end
+            results
+          else
+            result = yield
+            result.translation_metadata = result.translation_metadata.merge(metadata) if result
+            result
+          end
         end
 
     end

@@ -36,6 +36,11 @@ module I18n
       def lookup(locale, key, scope = [], options = EMPTY_HASH)
         return super unless cascade = options[:cascade]
 
+        # Cascading implementation doesn't play nice with arrays of keys
+        if key.is_a?(Array)
+          return key.map { |k| lookup(locale, k, scope, options) }
+        end
+
         cascade   = { :step => 1 } unless cascade.is_a?(Hash)
         step      = cascade[:step]   || 1
         offset    = cascade[:offset] || 1

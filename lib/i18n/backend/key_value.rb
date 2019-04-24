@@ -136,6 +136,10 @@ module I18n
         end
 
         def lookup(locale, key, scope = [], options = EMPTY_HASH)
+          if key.is_a?(Array)
+            return key.map { |k| lookup(locale, k, scope, options) }
+          end
+
           key   = normalize_flat_keys(locale, key, scope, options[:separator])
           value = @store["#{locale}.#{key}"]
           value = JSON.decode(value) if value

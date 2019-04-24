@@ -57,6 +57,31 @@ module I18n
           namespace = nil
           options = default_options.except(:default)
 
+          if key.is_a?(Array)
+            results = Array.new(key.length) { |_| nil }
+            namespaces = Array.new(key.length) { |_| nil }
+            untranslated_indices = (0...key.length).to_a
+
+            backends.each do |backend|
+              break if untranslated_indices.empty?
+              untranslated_keys = untranslated_indices.map { |i| key[i] }
+
+              options = default_options if backend == backends.last
+              translations = backend.translate(locale, untranslated_keys, options)
+
+              untranslated_indices.zip(translations).each do |i, translation|
+                if results[i].nil? && namespace_lookup?(translation, options)
+                  namespaces[i] = _deep_merge(translation, namespaces[i] || {})
+                elsif !translation.nil? || (options.key?(:default) && options[:default].nil?)
+                  untranslated_indices.delete(i)
+                  results[i] = translation
+                end
+              end
+            end
+
+            return results.zip(namespaces).map { |result, namespace| result || namespace }
+          end
+
           backends.each do |backend|
             catch(:exception) do
               options = default_options if backend == backends.last

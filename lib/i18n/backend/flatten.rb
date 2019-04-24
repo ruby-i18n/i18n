@@ -18,6 +18,10 @@ module I18n
       # and creates way less objects than the one at I18n.normalize_keys.
       # It also handles escaping the translation keys.
       def self.normalize_flat_keys(locale, key, scope, separator)
+        if key.is_a?(Array)
+          return key.map { |k| normalize_flat_keys(locale, k, scope, separator) }
+        end
+
         keys = [scope, key].flatten.compact
         separator ||= I18n.default_separator
 
@@ -88,6 +92,10 @@ module I18n
         end
 
         def resolve_link(locale, key)
+          if key.is_a?(Array)
+            return key.map { |k| resolve_link(locale, k) }
+          end
+
           key, locale = key.to_s, locale.to_sym
           links = self.links[locale]
 

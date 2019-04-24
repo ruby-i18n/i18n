@@ -26,15 +26,31 @@ module I18n
 
       def translate(locale, key, options = EMPTY_HASH)
         raise I18n::ArgumentError if (key.is_a?(String) || key.is_a?(Symbol)) && key.empty?
+        if key.is_a?(Array)
+          key.each do |k|
+            raise I18n::ArgumentError if (k.is_a?(String) || k.is_a?(Symbol)) && k.empty?
+          end
+        end
+
         raise InvalidLocale.new(locale) unless locale
         return nil if key.nil? && !options.key?(:default)
 
         entry = lookup(locale, key, options[:scope], options) unless key.nil?
 
-        if entry.nil? && options.key?(:default)
-          entry = default(locale, key, options[:default], options)
+        if key.is_a?(Array)
+          entry = key.zip(entry).map do |k, e|
+            if e.nil? && options.key?(:default)
+              default(locale, k, options[:default], options)
+            else
+              resolve(locale, k, e, options)
+            end
+          end
         else
-          entry = resolve(locale, key, entry, options)
+          if entry.nil? && options.key?(:default)
+            entry = default(locale, key, options[:default], options)
+          else
+            entry = resolve(locale, key, entry, options)
+          end
         end
 
         count = options[:count]

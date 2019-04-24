@@ -184,11 +184,7 @@ module I18n
       backend = config.backend
 
       result = catch(:exception) do
-        if key.is_a?(Array)
-          key.map { |k| backend.translate(locale, k, options) }
-        else
-          backend.translate(locale, key, options)
-        end
+        backend.translate(locale, key, options)
       end
 
       if result.is_a?(MissingTranslation)
