@@ -21,8 +21,6 @@ module I18n
     class Simple
       using I18n::HashRefinements
 
-      (class << self; self; end).class_eval { public :include }
-
       module Implementation
         include Base
 
