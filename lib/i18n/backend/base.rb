@@ -64,7 +64,7 @@ module I18n
         entry
       end
 
-      def exists?(locale, key)
+      def exists?(locale, key, options = EMPTY_HASH)
         lookup(locale, key) != nil
       end
 

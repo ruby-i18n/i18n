@@ -154,6 +154,14 @@ class I18nBackendFallbacksWithChainTest < I18n::TestCase
     assert_equal 'FOO', I18n.t(:foo, :locale => :'de-DE')
   end
 
+  test "exists? falls back from de-DE to de given a key missing from the given locale" do
+    assert_equal true, I18n.exists?(:foo, :locale => :'de-DE')
+  end
+
+  test "exists? should return false when fallback disabled given a key missing from the given locale" do
+    assert_equal false, I18n.exists?(:foo, :locale => :'de-DE', fallback: false)
+  end
+
   test "falls back from de-DE to de when there is no translation for de-DE available when using arrays, too" do
     assert_equal ['FOO', 'FOO'], I18n.t([:foo, :foo], :locale => :'de-DE')
   end
@@ -207,5 +215,11 @@ class I18nBackendFallbacksExistsTest < I18n::TestCase
   test "exists? should return false given a key which is missing from the given locale and all its fallback locales" do
     assert_equal false, I18n.exists?(:baz, :de)
     assert_equal false, I18n.exists?(:bogus, :'de-DE')
+  end
+
+  test "exists? should return false when fallback is disabled given a key which is missing from the given locale" do
+    assert_equal true, I18n.exists?(:bar, :'de-DE')
+    assert_equal false, I18n.exists?(:bar, :'de-DE', fallback: false)
+    assert_equal false, I18n.exists?(:bar, :'de-DE-XX', fallback: false)
   end
 end

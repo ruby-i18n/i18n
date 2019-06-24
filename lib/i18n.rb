@@ -207,11 +207,11 @@ module I18n
     alias :t! :translate!
 
     # Returns true if a translation exists for a given key, otherwise returns false.
-    def exists?(key, _locale = nil, locale: _locale)
+    def exists?(key, _locale = nil, locale: _locale, **options)
       locale ||= config.locale
       raise Disabled.new('exists?') if locale == false
       raise I18n::ArgumentError if key.is_a?(String) && key.empty?
-      config.backend.exists?(locale, key)
+      config.backend.exists?(locale, key, options)
     end
 
     # Transliterates UTF-8 characters to ASCII. By default this method will

@@ -68,7 +68,8 @@ module I18n
         return first_non_symbol_default
       end
 
-      def exists?(locale, key)
+      def exists?(locale, key, options = EMPTY_HASH)
+        return super unless options.fetch(:fallback, true)
         I18n.fallbacks[locale].each do |fallback|
           begin
             return true if super(fallback, key)
