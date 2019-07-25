@@ -3,13 +3,24 @@ require 'test_helper'
 class I18nLoadPathTest < I18n::TestCase
   def setup
     super
-    I18n.locale = :en
-    I18n.backend = I18n::Backend::Simple.new
-    store_translations(:en, :foo => {:bar => 'bar', :baz => 'baz'})
+    # TODO - why are these here if the test works without them?
+    # I18n.locale = :en
+    # I18n.backend = I18n::Backend::Simple.new
+    # store_translations(:en, :foo => {:bar => 'bar', :baz => 'baz'})
   end
 
   test "nested load paths do not break locale loading" do
     I18n.load_path = [[locales_dir + '/en.yml']]
+    assert_equal "baz", I18n.t(:'foo.bar')
+  end
+
+  test "load json" do
+    I18n.load_path = [[locales_dir + '/en.json']]
+    assert_equal "baz", I18n.t(:'foo.bar')
+  end
+
+  test "load resjson" do
+    I18n.load_path = [[locales_dir + '/en.resjson']]
     assert_equal "baz", I18n.t(:'foo.bar')
   end
 
