@@ -115,7 +115,7 @@ module I18n
     # *PLURALIZATION*
     #
     # Translation data can contain pluralized translations. Pluralized translations
-    # are arrays of singluar/plural versions of translations like <tt>['Foo', 'Foos']</tt>.
+    # are arrays of singular/plural versions of translations like <tt>['Foo', 'Foos']</tt>.
     #
     # Note that <tt>I18n::Backend::Simple</tt> only supports an algorithm for English
     # pluralization rules. Other algorithms can be supported by custom backends.
@@ -173,7 +173,7 @@ module I18n
     #
     # It is recommended to use/implement lambdas in an "idempotent" way. E.g. when
     # a cache layer is put in front of I18n.translate it will generate a cache key
-    # from the argument values passed to #translate. Therefor your lambdas should
+    # from the argument values passed to #translate. Therefore your lambdas should
     # always return the same translations/values per unique combination of argument
     # values.
     def translate(key = nil, *, throw: false, raise: false, locale: nil, **options) # TODO deprecate :raise
