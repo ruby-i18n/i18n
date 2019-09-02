@@ -202,7 +202,7 @@ module I18n
     # Wrapper for <tt>translate</tt> that adds <tt>:raise => true</tt>. With
     # this option, if no translation is found, it will raise <tt>I18n::MissingTranslationData</tt>
     def translate!(key, options = EMPTY_HASH)
-      translate(key, options.merge(:raise => true))
+      translate(key, **options.merge(:raise => true))
     end
     alias :t! :translate!
 

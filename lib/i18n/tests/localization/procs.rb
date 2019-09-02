@@ -59,7 +59,7 @@ module I18n
           setup_time_proc_translations
           time = ::Time.utc(2008, 3, 1, 6, 0)
           options = { :foo => 'foo' }
-          assert_equal I18n::Tests::Localization::Procs.inspect_args([time, options]), I18n.l(time, options.merge(:format => :proc, :locale => :ru))
+          assert_equal I18n::Tests::Localization::Procs.inspect_args([time, options]), I18n.l(time, **options.merge(:format => :proc, :locale => :ru))
         end
 
         protected

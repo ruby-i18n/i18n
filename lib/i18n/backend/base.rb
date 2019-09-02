@@ -81,7 +81,7 @@ module I18n
           key  = format
           type = object.respond_to?(:sec) ? 'time' : 'date'
           options = options.merge(:raise => true, :object => object, :locale => locale)
-          format  = I18n.t(:"#{type}.formats.#{key}", options)
+          format  = I18n.t(:"#{type}.formats.#{key}", **options)
         end
 
         format = translate_localization_format(locale, object, format, options)
@@ -143,7 +143,7 @@ module I18n
           result = catch(:exception) do
             case subject
             when Symbol
-              I18n.translate(subject, options.merge(:locale => locale, :throw => true))
+              I18n.translate(subject, **options.merge(:locale => locale, :throw => true))
             when Proc
               date_or_time = options.delete(:object) || object
               resolve(locale, object, subject.call(date_or_time, options))

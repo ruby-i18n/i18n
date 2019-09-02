@@ -2,8 +2,8 @@ require 'test_helper'
 
 class I18nOverrideTest < I18n::TestCase
   module OverrideInverse
-    def translate(*args)
-      super(*args).reverse
+    def translate(*args, **options)
+      super(*args, **options).reverse
     end
     alias :t :translate
   end
