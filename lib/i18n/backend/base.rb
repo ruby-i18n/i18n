@@ -122,7 +122,7 @@ module I18n
         # first translation that can be resolved. Otherwise it tries to resolve
         # the translation directly.
         def default(locale, object, subject, options = EMPTY_HASH)
-          options = options.dup.reject { |key, value| key == :default }
+          options = options.reject { |key, value| key == :default }
           case subject
           when Array
             subject.each do |item|
