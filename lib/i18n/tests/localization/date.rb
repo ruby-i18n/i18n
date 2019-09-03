@@ -68,9 +68,9 @@ module I18n
 
         test "localize Date: does not modify the options hash" do
           options = { :format => '%b', :locale => :de }
-          assert_equal 'Mär', I18n.l(@date, options)
+          assert_equal 'Mär', I18n.l(@date, **options)
           assert_equal({ :format => '%b', :locale => :de }, options)
-          assert_nothing_raised { I18n.l(@date, options.freeze) }
+          assert_nothing_raised { I18n.l(@date, **options.freeze) }
         end
 
         test "localize Date: given nil with default value it returns default" do
