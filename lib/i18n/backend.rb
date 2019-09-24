@@ -8,6 +8,7 @@ module I18n
     autoload :CacheFile,             'i18n/backend/cache_file'
     autoload :Cascade,               'i18n/backend/cascade'
     autoload :Chain,                 'i18n/backend/chain'
+    autoload :Deprecator,            'i18n/backend/deprecator'
     autoload :Fallbacks,             'i18n/backend/fallbacks'
     autoload :Flatten,               'i18n/backend/flatten'
     autoload :Gettext,               'i18n/backend/gettext'

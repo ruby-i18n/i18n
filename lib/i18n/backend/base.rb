@@ -29,7 +29,30 @@ module I18n
         raise InvalidLocale.new(locale) unless locale
         return nil if key.nil? && !options.key?(:default)
 
-        entry = lookup(locale, key, options[:scope], options) unless key.nil?
+        entry = nil
+
+        unless key.nil?
+          normalized_key = I18n.normalize_keys(locale, key, options[:scope])[1..-1].join(I18n.config.default_separator).to_sym
+          deprecated_key = I18n.config.deprecations.key(normalized_key)
+
+          # Does this key supersede a deprecated one?
+          if deprecated_key
+            # Try to use up the old key, if present.
+            entry = lookup(locale, deprecated_key, nil, options)
+          end
+
+          entry ||= lookup(locale, key, options[:scope], options)
+
+          if entry.nil?
+            # Is this key deprecated by another?
+            new_key = I18n.config.deprecations[normalized_key]
+
+            if new_key
+              puts "DEPRECATION WARNING: #{normalized_key} is deprecated, use #{new_key} instead"
+              entry = lookup(locale, new_key, nil, options)
+            end
+          end
+        end
 
         if entry.nil? && options.key?(:default)
           entry = default(locale, key, options[:default], options)

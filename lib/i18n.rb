@@ -199,6 +199,10 @@ module I18n
     end
     alias :t :translate
 
+    def deprecate(deprecation)
+      config.deprecations[deprecation.keys.first.to_sym] = deprecation.values.first.to_sym
+    end
+
     # Wrapper for <tt>translate</tt> that adds <tt>:raise => true</tt>. With
     # this option, if no translation is found, it will raise <tt>I18n::MissingTranslationData</tt>
     def translate!(key, options = EMPTY_HASH)
