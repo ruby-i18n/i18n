@@ -24,6 +24,10 @@ module I18n
         assert_equal 'Hi David!', interpolate(:default => 'Hi %{name}!', :name => 'David')
       end
 
+      test "interpolation: works with a pipe" do
+        assert_equal 'Hi david!', interpolate(:default => 'Hi %{name|lowercase}!', :'name|lowercase' => 'david')
+      end
+
       test "interpolation: given a nil value it still interpolates it into the string" do
         assert_equal 'Hi !', interpolate(:default => 'Hi %{name}!', :name => nil)
       end
