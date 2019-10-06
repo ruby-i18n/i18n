@@ -1,0 +1,26 @@
+name: Ruby
+
+on: [push]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        ruby_version: [2.6.x, 2.5.x, 2.4.x, ruby-head, rbx, jruby]
+        gemfile: [Gemfile, gemfiles/Gemfile.rails-5.0.x, gemfiles/Gemfile.rails-5.1.x, gemfiles/Gemfile.rails-5.2.x, gemfiles/Gemfile.rails-master]
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Ruby
+      uses: actions/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby_version }}
+    - name: Build and test with Rake
+      env:
+        BUNDLE_GEMFILE: ${{ matrix.gemfile }}
+      run: |
+        gem install bundler
+        bundle install --jobs 4 --retry 3
+        bundle exec rake
