@@ -6,7 +6,7 @@ jobs:
   build:
     strategy:
       matrix:
-        ruby_version: [2.6.x, 2.5.x, 2.4.x, 2.3.x]
+        ruby_version: [2.6.x, 2.5.x, 2.4.x, 2.3.x, jruby]
         gemfile: [Gemfile, gemfiles/Gemfile.rails-5.0.x, gemfiles/Gemfile.rails-5.1.x, gemfiles/Gemfile.rails-5.2.x, gemfiles/Gemfile.rails-master]
         exclude:
           # Ruby 2.4.x is not supported by Rails master
@@ -14,6 +14,9 @@ jobs:
             gemfile: gemfiles/Gemfile.rails-master
           # Ruby 2.3.x is not supported by Rails master
           - ruby_version: 2.3.x
+            gemfile: gemfiles/Gemfile.rails-master
+          # JRuby is not supported by Rails master
+          - ruby_version: jruby
             gemfile: gemfiles/Gemfile.rails-master
 
     runs-on: ubuntu-latest
