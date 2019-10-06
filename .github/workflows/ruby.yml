@@ -8,6 +8,10 @@ jobs:
       matrix:
         ruby_version: [2.6.x, 2.5.x, 2.4.x]
         gemfile: [Gemfile, gemfiles/Gemfile.rails-5.0.x, gemfiles/Gemfile.rails-5.1.x, gemfiles/Gemfile.rails-5.2.x, gemfiles/Gemfile.rails-master]
+        exclude:
+          # Ruby 2.4.x is not supported by Rails master
+          - ruby_version: 2.4.x
+            gemfiile: gemfiles/Gemfile.rails-master
 
     runs-on: ubuntu-latest
 
