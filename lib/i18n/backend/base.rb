@@ -2,12 +2,11 @@
 
 require 'yaml'
 require 'json'
-require 'i18n/core_ext/hash'
+require 'gorilla_patch/except'
 
 module I18n
   module Backend
     module Base
-      using I18n::HashRefinements
       include I18n::Backend::Transliterator
 
       # Accepts a list of paths to translation files. Loads translations from
@@ -23,6 +22,8 @@ module I18n
       def store_translations(locale, data, options = EMPTY_HASH)
         raise NotImplementedError
       end
+
+      using GorillaPatch::Except
 
       def translate(locale, key, options = EMPTY_HASH)
         raise I18n::ArgumentError if (key.is_a?(String) || key.is_a?(Symbol)) && key.empty?

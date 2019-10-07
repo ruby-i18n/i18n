@@ -17,8 +17,6 @@ module I18n
     # The implementation assumes that all backends added to the Chain implement
     # a lookup method with the same API as Simple backend does.
     class Chain
-      using I18n::HashRefinements
-
       module Implementation
         include Base
 
@@ -52,6 +50,8 @@ module I18n
         def available_locales
           backends.map { |backend| backend.available_locales }.flatten.uniq
         end
+
+        using GorillaPatch::Except
 
         def translate(locale, key, default_options = EMPTY_HASH)
           namespace = nil
@@ -89,6 +89,9 @@ module I18n
         end
 
         protected
+
+          using GorillaPatch::DeepMerge
+
           def init_translations
             backends.each do |backend|
               backend.send(:init_translations)

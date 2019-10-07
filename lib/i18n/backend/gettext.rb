@@ -31,8 +31,6 @@ module I18n
     # Without it strings containing periods (".") will not be translated.
 
     module Gettext
-      using I18n::HashRefinements
-
       class PoData < Hash
         def set_comment(msgid_or_sym, comment)
           # ignore
@@ -49,6 +47,8 @@ module I18n
         def parse(filename)
           GetText::PoParser.new.parse(::File.read(filename), PoData.new)
         end
+
+        using GorillaPatch::DeepMerge
 
         def normalize(locale, data)
           data.inject({}) do |result, (key, value)|

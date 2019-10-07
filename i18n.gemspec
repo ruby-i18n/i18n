@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.3.0'
 
   s.add_dependency 'concurrent-ruby', '~> 1.0'
+  s.add_dependency 'gorilla_patch', '~> 3.0'
 
   s.post_install_message = <<-END
 

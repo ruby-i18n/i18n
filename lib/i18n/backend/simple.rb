@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'i18n/backend/base'
+require 'gorilla_patch/deep_merge'
+require 'gorilla_patch/symbolize'
 
 module I18n
   module Backend
@@ -19,14 +21,15 @@ module I18n
     #
     # I18n::Backend::Simple.include(I18n::Backend::Pluralization)
     class Simple
-      using I18n::HashRefinements
-
       module Implementation
         include Base
 
         def initialized?
           @initialized ||= false
         end
+
+        using GorillaPatch::Symbolize
+        using GorillaPatch::DeepMerge
 
         # Stores translations for the given locale in memory.
         # This uses a deep merge for the translations hash, so existing
@@ -41,7 +44,7 @@ module I18n
           end
           locale = locale.to_sym
           translations[locale] ||= {}
-          data = data.deep_symbolize_keys
+          data = data.symbolize_keys(deep: true)
           translations[locale].deep_merge!(data)
         end
 
