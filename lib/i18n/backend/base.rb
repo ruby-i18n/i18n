@@ -180,6 +180,10 @@ module I18n
         #   each element of the array is recursively interpolated (until it finds a string)
         #   method interpolates ["yes, %{user}", ["maybe no, %{user}, "no, %{user}"]], :user => "bartuz"
         #   # => "["yes, bartuz",["maybe no, bartuz", "no, bartuz"]]"
+        #
+        #   if this method is given an unknown value type e.g. (proc):
+        #   the subject should be returned as is.
+        #
         def interpolate(locale, subject, values = EMPTY_HASH)
           return subject if values.empty?
 
