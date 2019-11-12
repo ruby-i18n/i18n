@@ -9,7 +9,8 @@ class I18nBackendChainTest < I18n::TestCase
         :subformats => {:short => 'short'},
       },
       :plural_1 => { :one => '%{count}' },
-      :dates => {:a => "A"}
+      :dates => {:a => "A"},
+      :fallback_bar => nil,
     })
     @second = backend(:en => {
       :bar => 'Bar', :formats => {
@@ -17,7 +18,8 @@ class I18nBackendChainTest < I18n::TestCase
         :subformats => {:long => 'long'},
       },
       :plural_2 => { :one => 'one' },
-      :dates => {:a => "B", :b => "B"}
+      :dates => {:a => "B", :b => "B"},
+      :fallback_bar => 'Bar',
     })
     @chain  = I18n.backend = I18n::Backend::Chain.new(@first, @second)
   end
@@ -107,20 +109,29 @@ class I18nBackendChainTest < I18n::TestCase
     assert @second.initialized?
   end
 
+  test "falls back to other backends for nil values" do
+    assert_nil @first.send(:translations)[:en][:fallback_bar]
+    assert_equal 'Bar', @second.send(:translations)[:en][:fallback_bar]
+    assert_equal 'Bar', I18n.t(:fallback_bar)
+  end
+
   test 'should be able to get all translations of all backends merged together' do
-    assert_equal I18n.backend.send(:translations),
-                 en: {
-                   foo: 'Foo',
-                   bar: 'Bar',
-                   formats: {
-                     short: 'short',
-                     long: 'long',
-                     subformats: { short: 'short', long: 'long' }
-                   },
-                   plural_1: { one: "%{count}" },
-                   plural_2: { one: 'one' },
-                   dates: { a: 'A', b: 'B' }
-                 }
+    expected = {
+      en: {
+        foo: 'Foo',
+        bar: 'Bar',
+        formats: {
+          short: 'short',
+          long: 'long',
+          subformats: { short: 'short', long: 'long' }
+        },
+        plural_1: { one: "%{count}" },
+        plural_2: { one: 'one' },
+        dates: { a: 'A', b: 'B' },
+        fallback_bar: 'Bar'
+      }
+    }
+    assert_equal expected, I18n.backend.send(:translations)
   end
 
   protected
