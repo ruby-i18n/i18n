@@ -176,6 +176,22 @@ module I18n
     # from the argument values passed to #translate. Therefore your lambdas should
     # always return the same translations/values per unique combination of argument
     # values.
+    #
+    # *Ruby 2.7+ keyword arguments warning*
+    #
+    # This method uses keyword arguments.
+    # There is a breaking change in ruby that produces warning with ruby 2.7 and won't work as expected with ruby 3.0
+    # The "hash" parameter must be passed as keyword argument.
+    #
+    # Good:
+    #  I18n.t(:salutation, :gender => 'w', :name => 'Smith')
+    #  I18n.t(:salutation, **{ :gender => 'w', :name => 'Smith' })
+    #  I18n.t(:salutation, **any_hash)
+    #
+    # Bad:
+    #  I18n.t(:salutation, { :gender => 'w', :name => 'Smith' })
+    #  I18n.t(:salutation, any_hash)
+    #
     def translate(key = nil, *, throw: false, raise: false, locale: nil, **options) # TODO deprecate :raise
       locale ||= config.locale
       raise Disabled.new('t') if locale == false
