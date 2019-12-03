@@ -34,7 +34,7 @@ module I18n
         pluralizer = pluralizer(locale)
         if pluralizer.respond_to?(:call)
           key = count == 0 && entry.has_key?(:zero) ? :zero : pluralizer.call(count)
-          raise InvalidPluralizationData.new(entry, count, key) unless entry.has_key?(key)
+          throw(:exception, InvalidPluralizationData.new(entry, count, key)) unless entry.has_key?(key)
           entry[key]
         else
           super

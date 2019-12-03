@@ -19,6 +19,9 @@ class I18nBackendPluralizationFallbackTest < I18n::TestCase
     store_translations('ru-US', cat: { one: nil, few: nil, many: nil, other: nil })
     @rule = russian_rule
     store_translations('ru', i18n: { plural: { rule: @rule }})
+
+    store_translations('fr', cat: { zero: 'chat', one: 'chat', other: 'chats' })
+    store_translations('fr-FR', cat: { zero: 'pas de chat', other: 'beaucoup de chats' })
   end
 
   test "fallbacks: nils are ignored and fallback is applied" do
@@ -49,6 +52,10 @@ class I18nBackendPluralizationFallbackTest < I18n::TestCase
 
   test "Fallbacks can pick up rules from fallback locales, too" do
     assert_equal @rule, I18n.backend.send(:pluralizer, :'ru-US')
+  end
+
+  test "catch the InvalidPluralizationData exception and fallbacks to the fallback language" do
+    assert_equal "chat", I18n.t("cat", count: 1, locale: "fr-FR")
   end
 
   private

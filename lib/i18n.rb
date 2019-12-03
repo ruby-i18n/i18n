@@ -208,7 +208,7 @@ module I18n
         end
       end
 
-      if result.is_a?(MissingTranslation)
+      if result.is_a?(ArgumentError)
         handle_exception((throw && :throw || raise && :raise), result, locale, key, options)
       else
         result
