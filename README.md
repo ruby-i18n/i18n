@@ -1,6 +1,6 @@
 # Ruby I18n
 
-[![Build Status](https://api.travis-ci.org/ruby-i18n/i18n.svg?branch=master)](https://travis-ci.org/ruby-i18n/i18n)
+[![Build Status](https://github.com/ruby-i18n/i18n/workflows/Ruby/badge.svg)](https://github.com/ruby-i18n/i18n/actions?query=workflow%3ARuby)
 
 Ruby Internationalization and localization solution.
 
