@@ -8,11 +8,11 @@ jobs:
       fail-fast: false
       matrix:
         ruby_version: [
-          2.7.x,
-          2.6.x,
-          2.5.x,
-          2.4.x,
-          2.3.x,
+          2.7.0,
+          2.6.5,
+          2.5.7,
+          2.4.9,
+          2.3.8,
           jruby
         ]
         gemfile: [
