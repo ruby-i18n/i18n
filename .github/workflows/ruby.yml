@@ -29,7 +29,7 @@ jobs:
             gemfile: gemfiles/Gemfile.rails-master
           # Ruby 2.4.x is not supported by Rails 6.0.x
           - ruby_version: 2.4.9
-            gemfile: gemfiles/Gemfile.rails-master
+            gemfile: gemfiles/Gemfile.rails-6.0.x
           # Ruby 2.3.x is not supported by Rails master
           - ruby_version: 2.3.8
             gemfile: gemfiles/Gemfile.rails-master
