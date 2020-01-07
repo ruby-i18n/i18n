@@ -25,13 +25,13 @@ jobs:
         ]
         exclude:
           # Ruby 2.4.x is not supported by Rails master
-          - ruby_version: 2.4.x
+          - ruby_version: 2.4.9
             gemfile: gemfiles/Gemfile.rails-master
           # Ruby 2.4.x is not supported by Rails 6.0.x
-          - ruby_version: 2.4.x
+          - ruby_version: 2.4.9
             gemfile: gemfiles/Gemfile.rails-master
           # Ruby 2.3.x is not supported by Rails master
-          - ruby_version: 2.3.x
+          - ruby_version: 2.3.8
             gemfile: gemfiles/Gemfile.rails-master
           # JRuby is not supported by Rails master
           - ruby_version: jruby
