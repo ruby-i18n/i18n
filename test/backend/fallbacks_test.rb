@@ -8,7 +8,7 @@ class I18nBackendFallbacksTranslateTest < I18n::TestCase
   def setup
     super
     I18n.backend = Backend.new
-    store_translations(:en, :foo => 'Foo in :en', :bar => 'Bar in :en', :buz => 'Buz in :en', :interpolate => 'Interpolate %{value}')
+    store_translations(:en, :foo => 'Foo in :en', :bar => 'Bar in :en', :buz => 'Buz in :en', :interpolate => 'Interpolate %{value}', :interpolate_count => 'Interpolate %{value} %{count}')
     store_translations(:de, :bar => 'Bar in :de', :baz => 'Baz in :de')
     store_translations(:'de-DE', :baz => 'Baz in :de-DE')
     store_translations(:'pt-BR', :baz => 'Baz in :pt-BR')
@@ -26,6 +26,10 @@ class I18nBackendFallbacksTranslateTest < I18n::TestCase
 
   test "returns the :de translation for a missing :'de-DE' translation" do
     assert_equal 'Bar in :de', I18n.t(:bar, :locale => :'de-DE')
+  end
+
+  test "keeps the count option when defaulting to a different key" do
+    assert_equal 'Interpolate 5 10', I18n.t(:non_existant, default: :interpolate_count, count: 10, value: 5)
   end
 
   test "returns the :de translation for a missing :'de-DE' when :default is a String" do

@@ -29,7 +29,7 @@ module I18n
       # either pick a special :zero translation even for languages where the
       # pluralizer does not return a :zero key.
       def pluralize(locale, entry, count)
-        return entry unless entry.is_a?(Hash) and count
+        return entry unless entry.is_a?(Hash) && count && entry.values.none? { |v| v.is_a?(Hash) }
 
         pluralizer = pluralizer(locale)
         if pluralizer.respond_to?(:call)
