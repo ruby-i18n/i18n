@@ -5,16 +5,37 @@ on: [push]
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
-        ruby_version: [2.6.x, 2.5.x, 2.4.x, 2.3.x, jruby]
-        gemfile: [Gemfile, gemfiles/Gemfile.rails-5.0.x, gemfiles/Gemfile.rails-5.1.x, gemfiles/Gemfile.rails-5.2.x, gemfiles/Gemfile.rails-master]
+        ruby_version: [
+          2.7.0,
+          2.6.5,
+          2.5.7,
+          2.4.9,
+          2.3.8,
+          jruby
+        ]
+        gemfile: [
+          Gemfile,
+          gemfiles/Gemfile.rails-5.0.x,
+          gemfiles/Gemfile.rails-5.1.x,
+          gemfiles/Gemfile.rails-5.2.x,
+          gemfiles/Gemfile.rails-6.0.x,
+          gemfiles/Gemfile.rails-master
+        ]
         exclude:
           # Ruby 2.4.x is not supported by Rails master
-          - ruby_version: 2.4.x
+          - ruby_version: 2.4.9
             gemfile: gemfiles/Gemfile.rails-master
+          # Ruby 2.4.x is not supported by Rails 6.0.x
+          - ruby_version: 2.4.9
+            gemfile: gemfiles/Gemfile.rails-6.0.x
           # Ruby 2.3.x is not supported by Rails master
-          - ruby_version: 2.3.x
+          - ruby_version: 2.3.8
             gemfile: gemfiles/Gemfile.rails-master
+          # Ruby 2.3.x is not supported by Rails 6.0.x
+          - ruby_version: 2.3.8
+            gemfile: gemfiles/Gemfile.rails-6.0.x
           # JRuby is not supported by Rails master
           - ruby_version: jruby
             gemfile: gemfiles/Gemfile.rails-master
@@ -22,9 +43,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Set up Ruby
-      uses: actions/setup-ruby@v1
+      uses: eregon/use-ruby-action@master
       with:
         ruby-version: ${{ matrix.ruby_version }}
     - name: Build and test with Rake
