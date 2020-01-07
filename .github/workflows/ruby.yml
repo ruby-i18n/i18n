@@ -7,7 +7,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby_version: [2.7.x, 2.6.x, 2.5.x, 2.4.x, 2.3.x, jruby]
+        ruby_version: [
+          2.7.x,
+          2.6.x,
+          2.5.x,
+          2.4.x,
+          2.3.x,
+          jruby
+        ]
         gemfile: [
           Gemfile,
           gemfiles/Gemfile.rails-5.0.x,
@@ -32,7 +39,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Set up Ruby
-      uses: actions/setup-ruby@v1
+      uses: eregon/use-ruby-action@master
       with:
         ruby-version: ${{ matrix.ruby_version }}
     - name: Build and test with Rake
