@@ -18,6 +18,12 @@ module I18n
         end
       end
 
+      # deep_merge from activesupport 5
+      # Copyright (c) 2005-2019 David Heinemeier Hansson
+      def deep_merge(other_hash, &block)
+        dup.deep_merge!(other_hash, &block)
+      end
+
       # deep_merge_hash! by Stefan Rusterholz, see http://www.ruby-forum.com/topic/142809
       def deep_merge!(data)
         merger = lambda do |_key, v1, v2|
