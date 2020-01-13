@@ -18,12 +18,24 @@ module I18n
         end
       end
 
-      # deep_merge_hash! by Stefan Rusterholz, see http://www.ruby-forum.com/topic/142809
-      def deep_merge!(data)
-        merger = lambda do |_key, v1, v2|
-          Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2
+      # deep_merge from activesupport 5
+      # Copyright (c) 2005-2019 David Heinemeier Hansson
+      def deep_merge(other_hash, &block)
+        dup.deep_merge!(other_hash, &block)
+      end
+
+      # deep_merge! from activesupport 5
+      # Copyright (c) 2005-2019 David Heinemeier Hansson
+      def deep_merge!(other_hash, &block)
+        merge!(other_hash) do |key, this_val, other_val|
+          if this_val.is_a?(Hash) && other_val.is_a?(Hash)
+            this_val.deep_merge(other_val, &block)
+          elsif block_given?
+            block.call(key, this_val, other_val)
+          else
+            other_val
+          end
         end
-        merge!(data, &merger)
       end
 
       def symbolize_key(key)
