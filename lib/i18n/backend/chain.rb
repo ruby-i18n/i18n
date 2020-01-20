@@ -73,9 +73,9 @@ module I18n
           throw(:exception, I18n::MissingTranslation.new(locale, key, options))
         end
 
-        def exists?(locale, key)
+        def exists?(locale, key, options = EMPTY_HASH)
           backends.any? do |backend|
-            backend.exists?(locale, key)
+            backend.exists?(locale, key, options)
           end
         end
 
