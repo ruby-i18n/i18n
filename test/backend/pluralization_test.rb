@@ -39,6 +39,11 @@ class I18nBackendPluralizationTest < I18n::TestCase
     assert_equal 'few', I18n.t(:count => 0, :default => @entry, :locale => :xx)
   end
 
+  test "pluralization picks one for 1 if the entry has attributes hash on unknown locale" do
+    @entry[:attributes] = { :field => 'field', :second => 'second' }
+    assert_equal 'one', I18n.t(:count => 1, :default => @entry, :locale => :pirate)
+  end
+
   test "Fallbacks can pick up rules from fallback locales, too" do
     assert_equal @rule, I18n.backend.send(:pluralizer, :'xx-XX')
   end
