@@ -46,7 +46,10 @@ module I18n
           begin
             catch(:exception) do
               result = super(fallback, key, fallback_options)
-              return result unless result.nil?
+              unless result.nil?
+                on_fallback(locale, fallback, key, options) if locale != fallback
+                return result
+              end
             end
           rescue I18n::InvalidLocale
             # we do nothing when the locale is invalid, as this is a fallback anyways.
@@ -80,6 +83,13 @@ module I18n
 
         false
       end
+
+      private
+
+        # Overwrite on_fallback to add specified logic when the fallback succeeds.
+        def on_fallback(_original_locale, _fallback_locale, _key, _optoins)
+          nil
+        end
     end
   end
 end
