@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/ruby-i18n/i18n/workflows/Ruby/badge.svg)](https://github.com/ruby-i18n/i18n/actions?query=workflow%3ARuby)
 
-Ruby Internationalization and localization solution.
+Ruby internationalization and localization (i18n) solution.
 
 Currently maintained by @radar.
 
@@ -12,7 +12,7 @@ Currently maintained by @radar.
 
 You will most commonly use this library within a Rails app.
 
-[See the Rails Guide](http://guides.rubyonrails.org/i18n.html) for an example of its usage.
+[See the Rails Guide](https://guides.rubyonrails.org/i18n.html) for an example of its usage.
 
 ### Ruby (without Rails)
 
@@ -51,16 +51,16 @@ I18n.t(:test) # => "Dies ist ein Test"
 
 ## Features
 
-* translation and localization
-* interpolation of values to translations (Ruby 1.9 compatible syntax)
-* pluralization (CLDR compatible)
-* customizable transliteration to ASCII
-* flexible defaults
-* bulk lookup
-* lambdas as translation data
-* custom key/scope separator
-* custom exception handlers
-* extensible architecture with a swappable backend
+* Translation and localization
+* Interpolation of values to translations
+* Pluralization (CLDR compatible)
+* Customizable transliteration to ASCII
+* Flexible defaults
+* Bulk lookup
+* Lambdas as translation data
+* Custom key/scope separator
+* Custom exception handlers
+* Extensible architecture with a swappable backend
 
 ## Pluggable Features
 
@@ -106,19 +106,16 @@ follow the usual test setup and should be easy to grok.
 
 ## More Documentation
 
-Additional documentation can be found here: https://github.com/svenfuchs/i18n/wiki
-
-## Authors
-
-* [Sven Fuchs](http://www.artweb-design.de)
-* [Joshua Harvey](http://www.workingwithrails.com/person/759-joshua-harvey)
-* [Stephan Soller](http://www.arkanis-development.de)
-* [Saimon Moore](http://saimonmoore.net)
-* [Matt Aimonetti](https://matt.aimonetti.net/)
+Additional documentation can be found here: https://github.com/ruby-i18n/i18n/wiki
 
 ## Contributors
 
-https://github.com/svenfuchs/i18n/graphs/contributors
+* @radar
+* @carlosantoniodasilva
+* @josevalim
+* @knapo
+* @tigrish
+* [and many more](https://github.com/ruby-i18n/i18n/graphs/contributors)
 
 ## License
 
