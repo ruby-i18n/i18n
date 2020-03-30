@@ -146,7 +146,7 @@ module I18n
               I18n.translate(subject, **options.merge(:locale => locale, :throw => true))
             when Proc
               date_or_time = options.delete(:object) || object
-              resolve(locale, object, subject.call(date_or_time, **options))
+              resolve(locale, object, subject.call(date_or_time, options))
             else
               subject
             end
