@@ -40,7 +40,7 @@ class I18nBackendPluralizationScopeTest < I18n::TestCase
       count: 2,
       default: ["My model"]
     }
-    assert_equal 'more models', I18n.translate(:my_model, args)
+    assert_equal 'more models', I18n.translate(:my_model, **args)
   end
 
   test "pluralization picks :one for 1" do
@@ -49,7 +49,7 @@ class I18nBackendPluralizationScopeTest < I18n::TestCase
       count: 1,
       default: ["My model"]
     }
-    assert_equal 'one model', I18n.translate(:my_model, args)
+    assert_equal 'one model', I18n.translate(:my_model, **args)
   end
 
 end
