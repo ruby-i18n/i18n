@@ -60,7 +60,7 @@ module I18n
       end
 
       def defaults=(defaults)
-        @defaults = defaults.map { |default| compute(default, false) }.flatten
+        @defaults = defaults.flat_map { |default| compute(default, false) }
       end
       attr_reader :defaults
 
