@@ -18,14 +18,17 @@ module I18n
       # and creates way less objects than the one at I18n.normalize_keys.
       # It also handles escaping the translation keys.
       def self.normalize_flat_keys(locale, key, scope, separator)
-        keys = [scope, key].flatten.compact
+        keys = [scope, key]
+        keys.flatten!
+        keys.compact!
+
         separator ||= I18n.default_separator
 
         if separator != FLATTEN_SEPARATOR
-          keys.map! do |k|
-            k.to_s.tr("#{FLATTEN_SEPARATOR}#{separator}",
-              "#{SEPARATOR_ESCAPE_CHAR}#{FLATTEN_SEPARATOR}")
-          end
+          from_str = "#{FLATTEN_SEPARATOR}#{separator}"
+          to_str = "#{SEPARATOR_ESCAPE_CHAR}#{FLATTEN_SEPARATOR}"
+
+          keys.map! { |k| k.to_s.tr from_str, to_str }
         end
 
         keys.join(".")
