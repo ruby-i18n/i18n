@@ -60,7 +60,7 @@ module I18n
       end
 
       def defaults=(defaults)
-        @defaults = defaults.map { |default| compute(default, false) }.flatten
+        @defaults = defaults.flat_map { |default| compute(default, false) }
       end
       attr_reader :defaults
 
@@ -84,13 +84,15 @@ module I18n
       protected
 
       def compute(tags, include_defaults = true, exclude = [])
-        result = Array(tags).collect do |tag|
+        result = Array(tags).flat_map do |tag|
           tags = I18n::Locale::Tag.tag(tag).self_and_parents.map! { |t| t.to_sym } - exclude
           tags.each { |_tag| tags += compute(@map[_tag], false, exclude + tags) if @map[_tag] }
           tags
-        end.flatten
+        end
         result.push(*defaults) if include_defaults
-        result.uniq.compact
+        result.uniq!
+        result.compact!
+        result
       end
     end
   end

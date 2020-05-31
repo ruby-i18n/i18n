@@ -389,7 +389,7 @@ module I18n
       @@normalized_key_cache[separator][key] ||=
         case key
         when Array
-          key.map { |k| normalize_key(k, separator) }.flatten
+          key.flat_map { |k| normalize_key(k, separator) }
         else
           keys = key.to_s.split(separator)
           keys.delete('')
