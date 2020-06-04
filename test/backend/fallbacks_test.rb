@@ -227,3 +227,36 @@ class I18nBackendFallbacksExistsTest < I18n::TestCase
     assert_equal false, I18n.exists?(:bar, :'de-DE-XX', fallback: false)
   end
 end
+
+class I18nBackendOnFallbackHookTest < I18n::TestCase
+  class Backend < I18n::Backend::Simple
+    include I18n::Backend::Fallbacks
+
+    attr :fallback_collector
+
+    private
+
+      def on_fallback(*args)
+        @fallback_collector ||= []
+        @fallback_collector << args
+      end
+  end
+
+  def setup
+    super
+    I18n.backend = Backend.new
+    I18n.fallbacks = I18n::Locale::Fallbacks.new(de: :en)
+    store_translations(:en, :foo => 'Foo in :en', :bar => 'Bar in :en')
+    store_translations(:de, :bar => 'Bar in :de')
+    store_translations(:"de-DE", :baz => 'Baz in :"de-DE"')
+  end
+
+  test "on_fallback should be called when fallback happens" do
+    assert_equal [:"de-DE", :de, :en], I18n.fallbacks[:"de-DE"]
+    assert_equal 'Baz in :"de-DE"', I18n.t(:baz, locale: :'de-DE')
+    assert_equal 'Bar in :de', I18n.t(:bar, locale: :'de-DE')
+    assert_equal 'Foo in :en', I18n.t(:foo, locale: :'de-DE')
+    assert_equal [:'de-DE', :de, :bar, {}], I18n.backend.fallback_collector[0]
+    assert_equal [:'de-DE', :en, :foo, {}], I18n.backend.fallback_collector[1]
+  end
+end
