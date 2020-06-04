@@ -8,6 +8,11 @@ module I18n
         assert_equal '[:a_lambda, {:foo=>"foo"}]', I18n.t(:a_lambda, :foo => 'foo')
       end
 
+      test "lookup: given a translation is a proc it passes the interpolation values as keyword arguments" do
+        I18n.backend.store_translations(:en, :a_lambda => lambda { |key, foo:, **| I18n::Tests::Procs.filter_args(key, foo: foo) })
+        assert_equal '[:a_lambda, {:foo=>"foo"}]', I18n.t(:a_lambda, :foo => 'foo')
+      end
+
       test "defaults: given a default is a Proc it calls it with the key and interpolation values" do
         proc = lambda { |*args| I18n::Tests::Procs.filter_args(*args) }
         assert_equal '[nil, {:foo=>"foo"}]', I18n.t(nil, :default => proc, :foo => 'foo')
