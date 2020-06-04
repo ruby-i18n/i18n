@@ -1,3 +1,12 @@
+---
+name: Bug report
+about: Create a bug report
+title: "[BUG]"
+labels: ''
+assignees: ''
+
+---
+
 ## What I tried to do
 
 * Fill this out!
@@ -10,7 +19,7 @@
 
 * Fill this out!
 
-## Versions of i18n, rails, and anything else you think is neccessary
+## Versions of i18n, rails, and anything else you think is necessary
 
 * Fill this out!
 

@@ -1,0 +1,65 @@
+name: Ruby
+
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the master branch
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby_version: [
+          2.7.1,
+          2.6.5,
+          2.5.7,
+          2.4.9,
+          2.3.8,
+          jruby
+        ]
+        gemfile: [
+          Gemfile,
+          gemfiles/Gemfile.rails-5.0.x,
+          gemfiles/Gemfile.rails-5.1.x,
+          gemfiles/Gemfile.rails-5.2.x,
+          gemfiles/Gemfile.rails-6.0.x,
+          gemfiles/Gemfile.rails-master
+        ]
+        exclude:
+          # Ruby 2.4.x is not supported by Rails master
+          - ruby_version: 2.4.9
+            gemfile: gemfiles/Gemfile.rails-master
+          # Ruby 2.4.x is not supported by Rails 6.0.x
+          - ruby_version: 2.4.9
+            gemfile: gemfiles/Gemfile.rails-6.0.x
+          # Ruby 2.3.x is not supported by Rails master
+          - ruby_version: 2.3.8
+            gemfile: gemfiles/Gemfile.rails-master
+          # Ruby 2.3.x is not supported by Rails 6.0.x
+          - ruby_version: 2.3.8
+            gemfile: gemfiles/Gemfile.rails-6.0.x
+          # JRuby is not supported by Rails master
+          - ruby_version: jruby
+            gemfile: gemfiles/Gemfile.rails-master
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: eregon/use-ruby-action@master
+      with:
+        ruby-version: ${{ matrix.ruby_version }}
+    - name: Build and test with Rake
+      env:
+        BUNDLE_GEMFILE: ${{ matrix.gemfile }}
+      run: |
+        gem install bundler
+        bundle install --jobs 4 --retry 3
+        bundle exec rake

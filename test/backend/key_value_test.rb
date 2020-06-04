@@ -21,6 +21,14 @@ class I18nBackendKeyValueTest < I18n::TestCase
     assert_flattens({:"a.b"=>['a', 'b']}, {:a=>{:b =>['a', 'b']}}, true, false)
     assert_flattens({:"a.b" => "c"}, {:"a.b" => "c"}, false)
   end
+  
+  test "store_translations supports numeric keys" do
+    setup_backend!
+    store_translations(:en, 1 => 'foo')
+    assert_equal 'foo', I18n.t('1')
+    assert_equal 'foo', I18n.t(1)
+    assert_equal 'foo', I18n.t(:'1')
+  end
 
   test "store_translations handle subtrees by default" do
     setup_backend!
@@ -41,6 +49,19 @@ class I18nBackendKeyValueTest < I18n::TestCase
     end
   end
 
+  test 'initialized? checks that a store is available' do
+    setup_backend!
+    I18n.backend.reload!
+    assert_equal I18n.backend.initialized?, true
+  end
+
+  test 'translations gets the translations from the store' do
+    setup_backend!
+    I18n.backend.send(:translations)
+    expected = { :en => {:foo => { :bar => 'bar', :baz => 'baz' }} }
+    assert_equal expected, translations
+  end 
+  
   test "subtrees enabled: given incomplete pluralization data it raises I18n::InvalidPluralizationData" do
     setup_backend!
     store_translations(:en, :bar => { :one => "One" })

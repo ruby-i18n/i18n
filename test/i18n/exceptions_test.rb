@@ -89,7 +89,7 @@ class I18nExceptionsTest < I18n::TestCase
 
     def force_missing_translation_data(options = {})
       store_translations('de', :bar => nil)
-      I18n.translate(:foo, options.merge(:scope => :bar, :locale => :de))
+      I18n.translate(:foo, **options.merge(:scope => :bar, :locale => :de))
     rescue I18n::ArgumentError => e
       block_given? ? yield(e) : raise(e)
     end

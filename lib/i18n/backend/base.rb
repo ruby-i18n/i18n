@@ -1,16 +1,17 @@
 # frozen_string_literal: true
 
 require 'yaml'
+require 'json'
 require 'i18n/core_ext/hash'
-require 'i18n/core_ext/kernel/suppress_warnings'
 
 module I18n
   module Backend
     module Base
+      using I18n::HashRefinements
       include I18n::Backend::Transliterator
 
       # Accepts a list of paths to translation files. Loads translations from
-      # plain Ruby (*.rb) or YAML files (*.yml). See #load_rb and #load_yml
+      # plain Ruby (*.rb), YAML files (*.yml), or JSON files (*.json). See #load_rb, #load_yml, and #load_json
       # for details.
       def load_translations(*filenames)
         filenames = I18n.load_path if filenames.empty?
@@ -63,7 +64,7 @@ module I18n
         entry
       end
 
-      def exists?(locale, key)
+      def exists?(locale, key, options = EMPTY_HASH)
         lookup(locale, key) != nil
       end
 
@@ -80,7 +81,7 @@ module I18n
           key  = format
           type = object.respond_to?(:sec) ? 'time' : 'date'
           options = options.merge(:raise => true, :object => object, :locale => locale)
-          format  = I18n.t(:"#{type}.formats.#{key}", options)
+          format  = I18n.t(:"#{type}.formats.#{key}", **options)
         end
 
         format = translate_localization_format(locale, object, format, options)
@@ -94,9 +95,18 @@ module I18n
       end
 
       def reload!
+        eager_load! if eager_loaded?
+      end
+
+      def eager_load!
+        @eager_loaded = true
       end
 
       protected
+
+        def eager_loaded?
+          @eager_loaded ||= false
+        end
 
         # The method which actually looks up for the translation in the store.
         def lookup(locale, key, scope = [], options = EMPTY_HASH)
@@ -112,7 +122,7 @@ module I18n
         # first translation that can be resolved. Otherwise it tries to resolve
         # the translation directly.
         def default(locale, object, subject, options = EMPTY_HASH)
-          options = options.dup.reject { |key, value| key == :default }
+          options = options.reject { |key, value| key == :default }
           case subject
           when Array
             subject.each do |item|
@@ -133,7 +143,7 @@ module I18n
           result = catch(:exception) do
             case subject
             when Symbol
-              I18n.translate(subject, options.merge(:locale => locale, :throw => true))
+              I18n.translate(subject, **options.merge(:locale => locale, :throw => true))
             when Proc
               date_or_time = options.delete(:object) || object
               resolve(locale, object, subject.call(date_or_time, options))
@@ -153,7 +163,7 @@ module I18n
         #   not standard with regards to the CLDR pluralization rules.
         # Other backends can implement more flexible or complex pluralization rules.
         def pluralize(locale, entry, count)
-          return entry unless entry.is_a?(Hash) && count
+          return entry unless entry.is_a?(Hash) && count && entry.values.none? { |v| v.is_a?(Hash) }
 
           key = pluralization_key(entry, count)
           raise InvalidPluralizationData.new(entry, count, key) if !entry.has_key?(key) || entry[key].nil?
@@ -236,17 +246,33 @@ module I18n
         end
         alias_method :load_yaml, :load_yml
 
+        # Loads a JSON translations file. The data must have locales as
+        # toplevel keys.
+        def load_json(filename)
+          begin
+            ::JSON.parse(File.read(filename))
+          rescue TypeError, StandardError => e
+            raise InvalidLocaleData.new(filename, e.inspect)
+          end
+        end
+
         def translate_localization_format(locale, object, format, options)
-          format.to_s.gsub(/%[aAbBpP]/) do |match|
+          format.to_s.gsub(/%(|\^)[aAbBpP]/) do |match|
             case match
-            when '%a' then I18n.t(:"date.abbr_day_names",                  :locale => locale, :format => format)[object.wday]
-            when '%A' then I18n.t(:"date.day_names",                       :locale => locale, :format => format)[object.wday]
-            when '%b' then I18n.t(:"date.abbr_month_names",                :locale => locale, :format => format)[object.mon]
-            when '%B' then I18n.t(:"date.month_names",                     :locale => locale, :format => format)[object.mon]
-            when '%p' then I18n.t(:"time.#{object.hour < 12 ? :am : :pm}", :locale => locale, :format => format).upcase if object.respond_to? :hour
-            when '%P' then I18n.t(:"time.#{object.hour < 12 ? :am : :pm}", :locale => locale, :format => format).downcase if object.respond_to? :hour
+            when '%a' then I18n.t!(:"date.abbr_day_names",                  :locale => locale, :format => format)[object.wday]
+            when '%^a' then I18n.t!(:"date.abbr_day_names",                 :locale => locale, :format => format)[object.wday].upcase
+            when '%A' then I18n.t!(:"date.day_names",                       :locale => locale, :format => format)[object.wday]
+            when '%^A' then I18n.t!(:"date.day_names",                      :locale => locale, :format => format)[object.wday].upcase
+            when '%b' then I18n.t!(:"date.abbr_month_names",                :locale => locale, :format => format)[object.mon]
+            when '%^b' then I18n.t!(:"date.abbr_month_names",               :locale => locale, :format => format)[object.mon].upcase
+            when '%B' then I18n.t!(:"date.month_names",                     :locale => locale, :format => format)[object.mon]
+            when '%^B' then I18n.t!(:"date.month_names",                    :locale => locale, :format => format)[object.mon].upcase
+            when '%p' then I18n.t!(:"time.#{object.hour < 12 ? :am : :pm}", :locale => locale, :format => format).upcase if object.respond_to? :hour
+            when '%P' then I18n.t!(:"time.#{object.hour < 12 ? :am : :pm}", :locale => locale, :format => format).downcase if object.respond_to? :hour
             end
           end
+        rescue MissingTranslationData => e
+          e.message
         end
 
         def pluralization_key(entry, count)

@@ -37,7 +37,7 @@ class I18nInterpolateTest < I18n::TestCase
   end
 
   test "String interpolation raises an I18n::MissingInterpolationArgument when the string has extra placeholders" do
-    assert_raise(I18n::MissingInterpolationArgument) do # Ruby 1.9 msg: "key not found"
+    assert_raise(I18n::MissingInterpolationArgument, "key not found") do
       I18n.interpolate("%{first} %{last}", :first => 'Masao')
     end
   end
@@ -87,5 +87,22 @@ class I18nMissingInterpolationCustomHandlerTest < I18n::TestCase
   test "String interpolation can use custom missing interpolation handler" do
     assert_equal %|Masao missing key is last, values are {:first=>"Masao"}, given string is '%{first} %{last}'|,
       I18n.interpolate("%{first} %{last}", :first => 'Masao')
+  end
+end
+
+class I18nCustomInterpolationPatternTest < I18n::TestCase
+  def setup
+    super
+    @old_interpolation_patterns = I18n.config.interpolation_patterns
+    I18n.config.interpolation_patterns << /\{\{(\w+)\}\}/
+  end
+
+  def teardown
+    I18n.config.interpolation_patterns = @old_interpolation_patterns
+    super
+  end
+
+  test "String interpolation can use custom interpolation pattern" do
+    assert_equal "Masao Mutoh", I18n.interpolate("{{first}} {{last}}", :first => "Masao", :last => "Mutoh")
   end
 end

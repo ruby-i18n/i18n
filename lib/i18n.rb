@@ -69,6 +69,13 @@ module I18n
       config.backend.reload!
     end
 
+    # Tells the backend to load translations now. Used in situations like the
+    # Rails production environment. Backends can implement whatever strategy
+    # is useful.
+    def eager_load!
+      config.backend.eager_load!
+    end
+
     # Translates, pluralizes and interpolates a given key using a given locale,
     # scope, and default, as well as interpolation values.
     #
@@ -108,7 +115,7 @@ module I18n
     # *PLURALIZATION*
     #
     # Translation data can contain pluralized translations. Pluralized translations
-    # are arrays of singluar/plural versions of translations like <tt>['Foo', 'Foos']</tt>.
+    # are arrays of singular/plural versions of translations like <tt>['Foo', 'Foos']</tt>.
     #
     # Note that <tt>I18n::Backend::Simple</tt> only supports an algorithm for English
     # pluralization rules. Other algorithms can be supported by custom backends.
@@ -166,17 +173,31 @@ module I18n
     #
     # It is recommended to use/implement lambdas in an "idempotent" way. E.g. when
     # a cache layer is put in front of I18n.translate it will generate a cache key
-    # from the argument values passed to #translate. Therefor your lambdas should
+    # from the argument values passed to #translate. Therefore your lambdas should
     # always return the same translations/values per unique combination of argument
     # values.
-    def translate(*args)
-      options  = args.last.is_a?(Hash) ? args.pop.dup : {}
-      key      = args.shift
-      backend  = config.backend
-      locale   = options.delete(:locale) || config.locale
-      handling = options.delete(:throw) && :throw || options.delete(:raise) && :raise # TODO deprecate :raise
-
+    #
+    # *Ruby 2.7+ keyword arguments warning*
+    #
+    # This method uses keyword arguments.
+    # There is a breaking change in ruby that produces warning with ruby 2.7 and won't work as expected with ruby 3.0
+    # The "hash" parameter must be passed as keyword argument.
+    #
+    # Good:
+    #  I18n.t(:salutation, :gender => 'w', :name => 'Smith')
+    #  I18n.t(:salutation, **{ :gender => 'w', :name => 'Smith' })
+    #  I18n.t(:salutation, **any_hash)
+    #
+    # Bad:
+    #  I18n.t(:salutation, { :gender => 'w', :name => 'Smith' })
+    #  I18n.t(:salutation, any_hash)
+    #
+    def translate(key = nil, *, throw: false, raise: false, locale: nil, **options) # TODO deprecate :raise
+      locale ||= config.locale
+      raise Disabled.new('t') if locale == false
       enforce_available_locales!(locale)
+
+      backend = config.backend
 
       result = catch(:exception) do
         if key.is_a?(Array)
@@ -185,21 +206,28 @@ module I18n
           backend.translate(locale, key, options)
         end
       end
-      result.is_a?(MissingTranslation) ? handle_exception(handling, result, locale, key, options) : result
+
+      if result.is_a?(MissingTranslation)
+        handle_exception((throw && :throw || raise && :raise), result, locale, key, options)
+      else
+        result
+      end
     end
     alias :t :translate
 
     # Wrapper for <tt>translate</tt> that adds <tt>:raise => true</tt>. With
     # this option, if no translation is found, it will raise <tt>I18n::MissingTranslationData</tt>
     def translate!(key, options = EMPTY_HASH)
-      translate(key, options.merge(:raise => true))
+      translate(key, **options.merge(:raise => true))
     end
     alias :t! :translate!
 
     # Returns true if a translation exists for a given key, otherwise returns false.
-    def exists?(key, locale = config.locale)
+    def exists?(key, _locale = nil, locale: _locale, **options)
+      locale ||= config.locale
+      raise Disabled.new('exists?') if locale == false
       raise I18n::ArgumentError if key.is_a?(String) && key.empty?
-      config.backend.exists?(locale, key)
+      config.backend.exists?(locale, key, options)
     end
 
     # Transliterates UTF-8 characters to ASCII. By default this method will
@@ -253,37 +281,40 @@ module I18n
     #     I18n.transliterate("Jürgen") # => "Juergen"
     #     I18n.transliterate("Jürgen", :locale => :en) # => "Jurgen"
     #     I18n.transliterate("Jürgen", :locale => :de) # => "Juergen"
-    def transliterate(*args)
-      options      = args.pop.dup if args.last.is_a?(Hash)
-      key          = args.shift
-      locale       = options && options.delete(:locale) || config.locale
-      handling     = options && (options.delete(:throw) && :throw || options.delete(:raise) && :raise)
-      replacement  = options && options.delete(:replacement)
+    def transliterate(key, *, throw: false, raise: false, locale: nil, replacement: nil, **options)
+      locale ||= config.locale
+      raise Disabled.new('transliterate') if locale == false
       enforce_available_locales!(locale)
+
       config.backend.transliterate(locale, key, replacement)
     rescue I18n::ArgumentError => exception
-      handle_exception(handling, exception, locale, key, options || {})
+      handle_exception((throw && :throw || raise && :raise), exception, locale, key, options)
     end
 
     # Localizes certain objects, such as dates and numbers to local formatting.
-    def localize(object, options = nil)
-      options = options ? options.dup : {}
-      locale = options.delete(:locale) || config.locale
-      format = options.delete(:format) || :default
+    def localize(object, locale: nil, format: nil, **options)
+      locale ||= config.locale
+      raise Disabled.new('l') if locale == false
       enforce_available_locales!(locale)
+
+      format ||= :default
       config.backend.localize(locale, object, format, options)
     end
     alias :l :localize
 
     # Executes block with given I18n.locale set.
     def with_locale(tmp_locale = nil)
-      if tmp_locale
+      if tmp_locale == nil
+        yield
+      else
         current_locale = self.locale
-        self.locale    = tmp_locale
+        self.locale = tmp_locale
+        begin
+          yield
+        ensure
+          self.locale = current_locale
+        end
       end
-      yield
-    ensure
-      self.locale = current_locale if tmp_locale
     end
 
     # Merges the given locale, key and scope into a single array of keys.
@@ -307,7 +338,7 @@ module I18n
 
     # Raises an InvalidLocale exception when the passed locale is not available.
     def enforce_available_locales!(locale)
-      if config.enforce_available_locales
+      if locale != false && config.enforce_available_locales
         raise I18n::InvalidLocale.new(locale) if !locale_available?(locale)
       end
     end
@@ -358,11 +389,22 @@ module I18n
       @@normalized_key_cache[separator][key] ||=
         case key
         when Array
-          key.map { |k| normalize_key(k, separator) }.flatten
+          key.flat_map { |k| normalize_key(k, separator) }
         else
           keys = key.to_s.split(separator)
           keys.delete('')
-          keys.map! { |k| k.to_sym }
+          keys.map! do |k|
+            case k
+            when /\A[-+]?[1-9]\d*\z/ # integer
+              k.to_i
+            when 'true'
+              true
+            when 'false'
+              false
+            else
+              k.to_sym
+            end
+          end
           keys
         end
     end

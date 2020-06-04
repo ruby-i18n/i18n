@@ -12,6 +12,37 @@ class I18nBackendSimpleTest < I18n::TestCase
     assert_equal "Hi David", I18n.t(nil, :default => "Hi %{name}", :name => "David")
   end
 
+  test "simple backend translate: given true as a key" do
+    store_translations :en, available: { true => "Yes", false => "No" }
+    assert_equal "Yes", I18n.t(:available)[true]
+    assert_equal "No", I18n.t(:available)[false]
+  end
+
+  test "simple backend translate: given integer as a key" do
+    store_translations :en, available: { 1 => "Yes", 2 => "No" }
+    assert_equal "Yes", I18n.t(:available)[1]
+    assert_equal "Yes", I18n.t('available.1')
+  end
+
+  test 'simple backend translate: given integer with a lead zero as a key' do
+    store_translations :en, available: { '01' => 'foo' }
+    assert_equal 'foo', I18n.t(:available)[:'01']
+    assert_equal 'foo', I18n.t('available.01')
+  end
+
+  test "simple backend translate: symbolize keys in hash" do
+    store_translations :en, nested_hashes_in_array: { hello: "world" }
+    assert_equal "world", I18n.t('nested_hashes_in_array.hello')
+    assert_equal "world", I18n.t('nested_hashes_in_array')[:hello]
+  end
+
+  test "simple backend translate: symbolize keys in array" do
+    store_translations :en, nested_hashes_in_array: [ { hello: "world" } ]
+    I18n.t('nested_hashes_in_array').each do |val|
+      assert_equal "world", val[:hello]
+    end
+  end
+
   # loading translations
   test "simple load_translations: given an unknown file type it raises I18n::UnknownFileType" do
     assert_raise(I18n::UnknownFileType) { I18n.backend.load_translations("#{locales_dir}/en.xml") }
@@ -19,6 +50,10 @@ class I18nBackendSimpleTest < I18n::TestCase
 
   test "simple load_translations: given a YAML file name with yaml extension does not raise anything" do
     assert_nothing_raised { I18n.backend.load_translations("#{locales_dir}/en.yaml") }
+  end
+
+  test "simple load_translations: given a JSON file name with yaml extension does not raise anything" do
+    assert_nothing_raised { I18n.backend.load_translations("#{locales_dir}/en.json") }
   end
 
   test "simple load_translations: given a Ruby file name it does not raise anything" do
@@ -37,6 +72,11 @@ class I18nBackendSimpleTest < I18n::TestCase
 
   test "simple load_yml: loads data from a YAML file" do
     data = I18n.backend.send(:load_yml, "#{locales_dir}/en.yml")
+    assert_equal({ 'en' => { 'foo' => { 'bar' => 'baz' } } }, data)
+  end
+
+  test "simple load_json: loads data from a JSON file" do
+    data = I18n.backend.send(:load_yml, "#{locales_dir}/en.json")
     assert_equal({ 'en' => { 'foo' => { 'bar' => 'baz' } } }, data)
   end
 
@@ -93,6 +133,13 @@ class I18nBackendSimpleTest < I18n::TestCase
     assert_equal Hash[:foo, {:bar => 'barfr', :baz => 'bazfr'}], translations[:fr]
   end
 
+  test "simple store_translations: supports numeric keys" do
+    store_translations(:en, 1 => 'foo')
+    assert_equal 'foo', I18n.t('1')
+    assert_equal 'foo', I18n.t(1)
+    assert_equal 'foo', I18n.t(:'1')
+  end
+
   # reloading translations
 
   test "simple reload_translations: unloads translations" do
@@ -103,6 +150,18 @@ class I18nBackendSimpleTest < I18n::TestCase
   test "simple reload_translations: uninitializes the backend" do
     I18n.backend.reload!
     assert_equal false, I18n.backend.initialized?
+  end
+
+  test "simple eager_load!: loads the translations" do
+    assert_equal false, I18n.backend.initialized?
+    I18n.backend.eager_load!
+    assert_equal true, I18n.backend.initialized?
+  end
+
+  test "simple reload!: reinitialize the backend if it was previously eager loaded" do
+    I18n.backend.eager_load!
+    I18n.backend.reload!
+    assert_equal true, I18n.backend.initialized?
   end
 
   test "returns localized string given missing pluralization data" do

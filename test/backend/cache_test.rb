@@ -16,11 +16,13 @@ class I18nBackendCacheTest < I18n::TestCase
     I18n.backend = Backend.new
     super
     I18n.cache_store = ActiveSupport::Cache.lookup_store(:memory_store)
+    I18n.cache_store.clear
     I18n.cache_key_digest = nil
   end
 
   def teardown
     super
+    I18n.cache_store.clear
     I18n.cache_store = nil
   end
 
@@ -67,14 +69,13 @@ class I18nBackendCacheTest < I18n::TestCase
   end
 
   test "adds locale and hash of key and hash of options" do
-    options = { :bar=>1 }
-    options_hash = RUBY_VERSION <= "1.9" ? options.inspect.hash : options.hash
-    assert_equal "i18n//en/#{:foo.hash}/#{options_hash}", I18n.backend.send(:cache_key, :en, :foo, options)
+    options = { :bar => 1 }
+    assert_equal "i18n//en/#{:foo.to_s.hash}/#{options.to_s.hash}", I18n.backend.send(:cache_key, :en, :foo, options)
   end
 
   test "cache_key uses configured digest method" do
     md5 = Digest::MD5.new
-    options = { :bar=>1 }
+    options = { :bar => 1 }
     options_hash = options.inspect
     with_cache_key_digest(md5) do
       assert_equal "i18n//en/#{md5.hexdigest(:foo.to_s)}/#{md5.hexdigest(options_hash)}", I18n.backend.send(:cache_key, :en, :foo, options)

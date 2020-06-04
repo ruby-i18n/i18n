@@ -26,6 +26,12 @@ module I18n
         super
       end
 
+      def eager_load!
+        memoized_lookup
+        available_locales
+        super
+      end
+
       protected
 
         def lookup(locale, key, scope = nil, options = EMPTY_HASH)

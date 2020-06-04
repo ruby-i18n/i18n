@@ -9,7 +9,8 @@ class I18nBackendChainTest < I18n::TestCase
         :subformats => {:short => 'short'},
       },
       :plural_1 => { :one => '%{count}' },
-      :dates => {:a => "A"}
+      :dates => {:a => "A"},
+      :fallback_bar => nil,
     })
     @second = backend(:en => {
       :bar => 'Bar', :formats => {
@@ -17,7 +18,8 @@ class I18nBackendChainTest < I18n::TestCase
         :subformats => {:long => 'long'},
       },
       :plural_2 => { :one => 'one' },
-      :dates => {:a => "B", :b => "B"}
+      :dates => {:a => "B", :b => "B"},
+      :fallback_bar => 'Bar',
     })
     @chain  = I18n.backend = I18n::Backend::Chain.new(@first, @second)
   end
@@ -79,6 +81,57 @@ class I18nBackendChainTest < I18n::TestCase
   test "store_translations options are not dropped while transfering to backend" do
     @first.expects(:store_translations).with(:foo, {:bar => :baz}, {:option => 'persists'})
     I18n.backend.store_translations :foo, {:bar => :baz}, {:option => 'persists'}
+  end
+
+  test 'store should call initialize on all backends and return true if all initialized' do
+    @first.send :init_translations
+    @second.send :init_translations
+    assert I18n.backend.initialized?
+  end
+
+  test 'store should call initialize on all backends and return false if one not initialized' do
+    @first.reload!
+    @second.send :init_translations
+    assert !I18n.backend.initialized?
+  end
+
+  test 'should reload all backends' do
+    @first.send :init_translations
+    @second.send :init_translations
+    I18n.backend.reload!
+    assert !@first.initialized?
+    assert !@second.initialized?
+  end
+
+  test 'should eager load all backends' do
+    I18n.backend.eager_load!
+    assert @first.initialized?
+    assert @second.initialized?
+  end
+
+  test "falls back to other backends for nil values" do
+    assert_nil @first.send(:translations)[:en][:fallback_bar]
+    assert_equal 'Bar', @second.send(:translations)[:en][:fallback_bar]
+    assert_equal 'Bar', I18n.t(:fallback_bar)
+  end
+
+  test 'should be able to get all translations of all backends merged together' do
+    expected = {
+      en: {
+        foo: 'Foo',
+        bar: 'Bar',
+        formats: {
+          short: 'short',
+          long: 'long',
+          subformats: { short: 'short', long: 'long' }
+        },
+        plural_1: { one: "%{count}" },
+        plural_2: { one: 'one' },
+        dates: { a: 'A', b: 'B' },
+        fallback_bar: 'Bar'
+      }
+    }
+    assert_equal expected, I18n.backend.send(:translations)
   end
 
   protected

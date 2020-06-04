@@ -19,7 +19,7 @@ module I18n
         end
 
         def subtags
-          @subtags = tag.to_s.split('-').map { |subtag| subtag.to_s }
+          @subtags = tag.to_s.split('-').map!(&:to_s)
         end
 
         def to_sym

@@ -7,7 +7,7 @@ module I18n
     # The only configuration value that is not global and scoped to thread is :locale.
     # It defaults to the default_locale.
     def locale
-      defined?(@locale) && @locale ? @locale : default_locale
+      defined?(@locale) && @locale != nil ? @locale : default_locale
     end
 
     # Sets the current locale pseudo-globally, i.e. in the Thread.current hash.
@@ -144,6 +144,22 @@ module I18n
 
     def enforce_available_locales=(enforce_available_locales)
       @@enforce_available_locales = enforce_available_locales
+    end
+
+    # Returns the current interpolation patterns. Defaults to
+    # I18n::DEFAULT_INTERPOLATION_PATTERNS.
+    def interpolation_patterns
+      @@interpolation_patterns ||= I18n::DEFAULT_INTERPOLATION_PATTERNS.dup
+    end
+
+    # Sets the current interpolation patterns. Used to set a interpolation
+    # patterns.
+    #
+    # E.g. using {{}} as a placeholder like "{{hello}}, world!":
+    #
+    #   I18n.config.interpolation_patterns << /\{\{(\w+)\}\}/
+    def interpolation_patterns=(interpolation_patterns)
+      @@interpolation_patterns = interpolation_patterns
     end
   end
 end

@@ -26,7 +26,7 @@ module I18n
         }
         assert_equal('linked', I18n.backend.translate('en', :'foo.link'))
       end
-      
+
       test "linked lookup: if a dot-separated key resolves to a dot-separated symbol it looks up the symbol" do
         I18n.backend.store_translations 'en', {
           :foo => { :link   => :"bar.linked" },
@@ -50,6 +50,16 @@ module I18n
         }
         assert_equal "can't be blank", I18n.t(:"activerecord.errors.messages.blank")
         assert_equal "can't be blank", I18n.t(:"activerecord.errors.messages.blank")
+      end
+
+      test "linked lookup: a link can resolve with option :count" do
+        I18n.backend.store_translations 'en', {
+          :counter => :counted,
+          :counted => { :foo => { :one => "one", :other => "other" }, :bar => "bar" }
+        }
+        assert_equal "one", I18n.t(:'counter.foo', count: 1)
+        assert_equal "other", I18n.t(:'counter.foo', count: 2)
+        assert_equal "bar", I18n.t(:'counter.bar', count: 3)
       end
     end
   end

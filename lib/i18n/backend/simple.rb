@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'i18n/backend/base'
+
 module I18n
   module Backend
     # A simple backend that reads translations from YAML files and stores them in
@@ -17,7 +19,7 @@ module I18n
     #
     # I18n::Backend::Simple.include(I18n::Backend::Pluralization)
     class Simple
-      (class << self; self; end).class_eval { public :include }
+      using I18n::HashRefinements
 
       module Implementation
         include Base
@@ -59,6 +61,11 @@ module I18n
           super
         end
 
+        def eager_load!
+          init_translations unless initialized?
+          super
+        end
+
         def translations(do_init: false)
           # To avoid returning empty translations,
           # call `init_translations`
@@ -84,8 +91,11 @@ module I18n
           keys = I18n.normalize_keys(locale, key, scope, options[:separator])
 
           keys.inject(translations) do |result, _key|
-            _key = _key.to_sym
-            return nil unless result.is_a?(Hash) && result.has_key?(_key)
+            return nil unless result.is_a?(Hash)
+            unless result.has_key?(_key)
+              _key = _key.to_s.to_sym
+              return nil unless result.has_key?(_key)
+            end
             result = result[_key]
             result = resolve(locale, _key, result, options.merge(:scope => nil)) if result.is_a?(Symbol)
             result
