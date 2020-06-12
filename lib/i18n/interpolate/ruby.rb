@@ -8,7 +8,7 @@ module I18n
     /%<(\w+)>(.*?\d*\.?\d*[bBdiouxXeEfgGcps])/  # matches placeholders like "%<foo>.d"
   ].freeze
   INTERPOLATION_PATTERN = Regexp.union(DEFAULT_INTERPOLATION_PATTERNS)
-  deprecate_constant :INTERPOLATION_PATTERN if method_defined? :INTERPOLATION_PATTERN
+  deprecate_constant :INTERPOLATION_PATTERN if respond_to? :deprecate_constant
 
   class << self
     # Return String or raises MissingInterpolationArgument exception.
