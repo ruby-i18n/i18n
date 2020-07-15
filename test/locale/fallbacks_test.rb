@@ -22,6 +22,13 @@ class I18nFallbacksDefaultsTest < I18n::TestCase
     assert_equal [:"de-CH", :de, :"en-GB", :en], fallbacks[:"de-CH"]
   end
 
+  test "explicit fallback to default locale" do
+    I18n.default_locale = :"en-US"
+    fallbacks = Fallbacks.new([:"en-US"])
+    assert_equal [:"de-AT", :de, :"en-US", :en], fallbacks[:"de-AT"]
+    assert_equal [:"de-CH", :de, :"en-US", :en], fallbacks[:"de-CH"]
+  end
+
   test "defaults reflect a manually passed default locale if any" do
     fallbacks = Fallbacks.new(:'fi-FI')
     assert_equal [:'fi-FI', :fi], fallbacks.defaults
