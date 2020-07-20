@@ -20,7 +20,7 @@ module I18n
 
     # Sets the current fallbacks implementation. Use this to set a different fallbacks implementation.
     def fallbacks=(fallbacks)
-      @@fallbacks = fallbacks
+      @@fallbacks = fallbacks.is_a?(I18n::Locale::Fallbacks) ? fallbacks : I18n::Locale::Fallbacks.new(fallbacks)
     end
   end
 

@@ -34,6 +34,7 @@ class I18n::TestCase < TEST_CASE
     I18n.backend = nil
     I18n.default_separator = nil
     I18n.enforce_available_locales = true
+    I18n.fallbacks = nil
     super
   end
 

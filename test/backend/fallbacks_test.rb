@@ -109,6 +109,25 @@ class I18nBackendFallbacksTranslateTest < I18n::TestCase
   end
 end
 
+# See Issue #534
+class I18nBackendFallbacksLocalizeTestWithDefaultLocale < I18n::TestCase
+  class Backend < I18n::Backend::Simple
+    include I18n::Backend::Fallbacks
+  end
+
+  def setup
+    super
+    I18n.backend = Backend.new
+    I18n.enforce_available_locales = false
+    I18n.fallbacks = [I18n.default_locale]
+    store_translations(:en, time: { formats: { fallback: 'en fallback' } })
+  end
+
+  test "falls back to default locale - Issue #534" do
+    assert_equal 'en fallback', I18n.l(Time.now, format: :fallback, locale: "un-supported")
+  end
+end
+
 class I18nBackendFallbacksLocalizeTest < I18n::TestCase
   class Backend < I18n::Backend::Simple
     include I18n::Backend::Fallbacks
