@@ -128,13 +128,14 @@ class I18nBackendFallbacksLocalizeTestWithDefaultLocale < I18n::TestCase
   end
 end
 
+# See Issue #536
 class I18nBackendFallbacksWithCustomClass < I18n::TestCase
   class BackendWithFallbacks < I18n::Backend::Simple
     include I18n::Backend::Fallbacks
   end
   class MyDefaultFallback
     # this is a stupid change
-    # but it showes that you can use any object as fallback
+    # but it shows that you can use any object as fallback
     def [](key)
      [:my_language]
     end
