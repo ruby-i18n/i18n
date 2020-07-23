@@ -128,6 +128,35 @@ class I18nBackendFallbacksLocalizeTestWithDefaultLocale < I18n::TestCase
   end
 end
 
+# See Issue #536
+class I18nBackendFallbacksWithCustomClass < I18n::TestCase
+  class BackendWithFallbacks < I18n::Backend::Simple
+    include I18n::Backend::Fallbacks
+  end
+
+  # Quacks like a fallback class
+  class MyDefaultFallback
+    def [](key)
+     [:my_language]
+    end
+  end
+
+  def setup
+    super
+    I18n.backend = BackendWithFallbacks.new
+    I18n.enforce_available_locales = false
+    I18n.fallbacks = MyDefaultFallback.new
+    store_translations(:my_language, foo: 'customer foo')
+    store_translations(:en, foo: 'english foo')
+  end
+
+  test "can use a default fallback object that doesn't inherit from I18n::Locale::Fallbacks" do
+    assert_equal 'customer foo', I18n.t(:foo, locale: :en)
+    assert_equal 'customer foo', I18n.t(:foo, locale: :nothing)
+  end
+end
+
+
 class I18nBackendFallbacksLocalizeTest < I18n::TestCase
   class Backend < I18n::Backend::Simple
     include I18n::Backend::Fallbacks
