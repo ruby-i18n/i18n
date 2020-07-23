@@ -133,10 +133,9 @@ class I18nBackendFallbacksWithCustomClass < I18n::TestCase
   class BackendWithFallbacks < I18n::Backend::Simple
     include I18n::Backend::Fallbacks
   end
+
+  # Quacks like a fallback class
   class MyDefaultFallback
-    # this is a stupid change
-    # but it shows that you can use any object as fallback
-    # when you override the access method
     def [](key)
      [:my_language]
     end
