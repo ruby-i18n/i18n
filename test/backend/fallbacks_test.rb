@@ -129,6 +129,9 @@ class I18nBackendFallbacksLocalizeTestWithDefaultLocale < I18n::TestCase
 end
 
 class I18nBackendFallbacksWithCustomClass < I18n::TestCase
+  class BackendWithFallbacks < I18n::Backend::Simple
+    include I18n::Backend::Fallbacks
+  end
   class MyDefaultFallback
     # this is a stupid change
     # but it showes that you can use any object as fallback
@@ -139,8 +142,7 @@ class I18nBackendFallbacksWithCustomClass < I18n::TestCase
 
   def setup
     super
-    I18n.backend = I18n::Backend::Simple.new
-    I18n::Backend::Simple.include(I18n::Backend::Fallbacks)
+    I18n.backend = BackendWithFallbacks.new
     I18n.enforce_available_locales = false
     I18n.fallbacks = MyDefaultFallback.new
     store_translations(:my_language, foo: 'customer foo')
