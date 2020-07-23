@@ -23,6 +23,7 @@ class I18n::TestCase < TEST_CASE
 
   def setup
     super
+    I18n.load_path = nil
     I18n.enforce_available_locales = false
   end
 
