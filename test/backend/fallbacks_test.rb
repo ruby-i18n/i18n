@@ -136,6 +136,7 @@ class I18nBackendFallbacksWithCustomClass < I18n::TestCase
   class MyDefaultFallback
     # this is a stupid change
     # but it shows that you can use any object as fallback
+    # when you override the access method
     def [](key)
      [:my_language]
     end
