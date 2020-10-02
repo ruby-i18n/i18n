@@ -14,10 +14,10 @@ Gem::Specification.new do |s|
   s.license      = "MIT"
 
   s.metadata     = {
-                     'bug_tracker_uri'   => 'https://github.com/svenfuchs/i18n/issues',
-                     'changelog_uri'     => 'https://github.com/svenfuchs/i18n/releases',
+                     'bug_tracker_uri'   => 'https://github.com/ruby-i18n/i18n/issues',
+                     'changelog_uri'     => 'https://github.com/ruby-i18n/i18n/releases',
                      'documentation_uri' => 'https://guides.rubyonrails.org/i18n.html',
-                     'source_code_uri'   => 'https://github.com/svenfuchs/i18n',
+                     'source_code_uri'   => 'https://github.com/ruby-i18n/i18n',
                    }
 
   s.files        = Dir.glob("lib/**/*") + %w(README.md MIT-LICENSE)
