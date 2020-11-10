@@ -10,17 +10,15 @@
 #
 #   I18n::Backend::Simple.include(I18n::Backend::Fallbacks)
 module I18n
-  @@fallbacks = nil
-
   class << self
     # Returns the current fallbacks implementation. Defaults to +I18n::Locale::Fallbacks+.
     def fallbacks
-      @@fallbacks ||= I18n::Locale::Fallbacks.new
+      Thread.current[:i18n_fallbacks] ||= I18n::Locale::Fallbacks.new
     end
 
     # Sets the current fallbacks implementation. Use this to set a different fallbacks implementation.
     def fallbacks=(fallbacks)
-      @@fallbacks = fallbacks.is_a?(Array) ? I18n::Locale::Fallbacks.new(fallbacks) : fallbacks
+      Thread.current[:i18n_fallbacks] = fallbacks.is_a?(Array) ? I18n::Locale::Fallbacks.new(fallbacks) : fallbacks
     end
   end
 
