@@ -54,6 +54,22 @@ class I18nInterpolateTest < I18n::TestCase
     assert_equal "%{num} %<num>d", I18n.interpolate("%%{num} %%<num>d", :num => 1)
   end
 
+  test "config enforce interpolation" do
+    store_translations(:en, "interpolation_missing" => '%{string} is missing')
+
+    prev_enforce_interpolation = I18n.config.enforce_interpolation
+    begin
+      I18n.config.enforce_interpolation = false
+      assert_equal("hello is missing", I18n.t("interpolation_missing", string: "hello"))
+      assert_nothing_raised { assert_equal("%{string} is missing", I18n.t("interpolation_missing")) }
+
+      I18n.config.enforce_interpolation = true
+      assert_raise(I18n::MissingInterpolationArgument) { I18n.t("interpolation_missing") }
+    ensure
+      I18n.config.enforce_interpolation = prev_enforce_interpolation
+    end
+  end
+
   def test_sprintf_mix_unformatted_and_formatted_named_placeholders
     assert_equal "foo 1.000000", I18n.interpolate("%{name} %<num>f", :name => "foo", :num => 1.0)
   end

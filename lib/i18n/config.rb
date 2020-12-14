@@ -161,5 +161,30 @@ module I18n
     def interpolation_patterns=(interpolation_patterns)
       @@interpolation_patterns = interpolation_patterns
     end
+
+    # Enforce interpolation even the givien options is empty so that can
+    # trigger config.missing_interpolation_argument_handler.
+    #
+    # Defaults to false.
+    #
+    # E.g.
+    #
+    #    en:
+    #      test: "%{key} is missing!"
+    #
+    #    I18n.enforce_interpolation = false
+    #    I18n.t("test", key: "hello") # => "hello is missing!"
+    #    I18n.t("test") # => "%{key} is missing!"
+    #
+    #    I18n.enforce_interpolation = true
+    #    I18n.t("test") # => raise MissingInterpolationArgument (default handler)
+    @@enforce_interpolation = false
+    def enforce_interpolation
+      @@enforce_interpolation
+    end
+
+    def enforce_interpolation=(enforce_interpolation)
+      @@enforce_interpolation = enforce_interpolation
+    end
   end
 end
