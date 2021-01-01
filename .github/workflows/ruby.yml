@@ -25,10 +25,13 @@ jobs:
             gemfiles/Gemfile.rails-master,
           ]
         exclude:
+          # Ruby 3.x is not supported by Rails 5.2.x
+          - ruby_version: 3.0.0
+            gemfile: gemfiles/Gemfile.rails-5.2.x
           # Ruby 2.4.x is not supported by Rails master
           - ruby_version: 2.4.9
             gemfile: gemfiles/Gemfile.rails-master
-          # Ruby 2.4.x is not supported by Rails 6.0.x
+          # Ruby 2.3.x is not supported by Rails master
           - ruby_version: 2.4.9
             gemfile: gemfiles/Gemfile.rails-6.0.x
           # Ruby 2.3.x is not supported by Rails master
