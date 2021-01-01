@@ -2,8 +2,8 @@ require 'test_helper'
 
 class I18nOverrideTest < I18n::TestCase
   module OverrideInverse
-    def translate(*args, **options)
-      super(*args, **options).reverse
+    def translate(key, **options)
+      super(key, **options).reverse
     end
     alias :t :translate
   end
@@ -33,7 +33,7 @@ class I18nOverrideTest < I18n::TestCase
 
   test "make sure modules can overwrite I18n signature" do
     exception = catch(:exception) do
-      @I18n.t('Hello', 'Welcome message on home page', :tokenize => true, :throw => true)
+      @I18n.t('Hello', :tokenize => true, :throw => true)
     end
     assert exception.message
     @I18n.extend OverrideSignature
