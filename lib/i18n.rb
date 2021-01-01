@@ -192,7 +192,7 @@ module I18n
     #  I18n.t(:salutation, { :gender => 'w', :name => 'Smith' })
     #  I18n.t(:salutation, any_hash)
     #
-    def translate(key = nil, *, throw: false, raise: false, locale: nil, **options) # TODO deprecate :raise
+    def translate(key = nil, throw: false, raise: false, locale: nil, **options) # TODO deprecate :raise
       locale ||= config.locale
       raise Disabled.new('t') if locale == false
       enforce_available_locales!(locale)
@@ -217,8 +217,8 @@ module I18n
 
     # Wrapper for <tt>translate</tt> that adds <tt>:raise => true</tt>. With
     # this option, if no translation is found, it will raise <tt>I18n::MissingTranslationData</tt>
-    def translate!(key, options = EMPTY_HASH)
-      translate(key, **options.merge(:raise => true))
+    def translate!(key, **options)
+      translate(key, **options, raise: true)
     end
     alias :t! :translate!
 
@@ -281,7 +281,7 @@ module I18n
     #     I18n.transliterate("Jürgen") # => "Juergen"
     #     I18n.transliterate("Jürgen", :locale => :en) # => "Jurgen"
     #     I18n.transliterate("Jürgen", :locale => :de) # => "Juergen"
-    def transliterate(key, *, throw: false, raise: false, locale: nil, replacement: nil, **options)
+    def transliterate(key, throw: false, raise: false, locale: nil, replacement: nil, **options)
       locale ||= config.locale
       raise Disabled.new('transliterate') if locale == false
       enforce_available_locales!(locale)
