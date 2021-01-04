@@ -16,7 +16,7 @@ module I18n
     # Returns the current fallbacks implementation. Defaults to +I18n::Locale::Fallbacks+.
     def fallbacks
       @@fallbacks ||= I18n::Locale::Fallbacks.new
-      Thread.current.key?(:i18n_fallbacks) ? Thread.current[:i18n_fallbacks] : @@fallbacks
+      Thread.current[:i18n_fallbacks] || @@fallbacks
     end
 
     # Sets the current fallbacks implementation. Use this to set a different fallbacks implementation.
