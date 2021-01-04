@@ -109,8 +109,18 @@ class I18nBackendFallbacksTranslateTest < I18n::TestCase
   end
 
   test "multi-threaded fallbacks" do
-    Thread.new do
+    I18n.fallbacks = [:en]
 
+    thread = Thread.new do
+      I18n.fallbacks = [:de]
+    end
+
+    begin
+      thread.join
+      assert_equal 'Bar in :en', I18n.t(:bar, :locale => :'pt-BR')
+    ensure
+      thread.exit
+      I18n.fallbacks = I18n::Locale::Fallbacks.new
     end
   end
 end
