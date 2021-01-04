@@ -107,6 +107,12 @@ class I18nBackendFallbacksTranslateTest < I18n::TestCase
     assert_equal 'default', I18n.t(:missing_bar, count: 1, default: 'default')
     assert_equal 'default', I18n.t(:missing_bar, count: 0, default: 'default')
   end
+
+  test "multi-threaded fallbacks" do
+    Thread.new do
+
+    end
+  end
 end
 
 # See Issue #534
@@ -153,6 +159,25 @@ class I18nBackendFallbacksWithCustomClass < I18n::TestCase
   test "can use a default fallback object that doesn't inherit from I18n::Locale::Fallbacks" do
     assert_equal 'customer foo', I18n.t(:foo, locale: :en)
     assert_equal 'customer foo', I18n.t(:foo, locale: :nothing)
+  end
+end
+
+# See Issue #546
+class I18nBackendFallbacksLocalizeTestWithMultipleThreads < I18n::TestCase
+  class Backend < I18n::Backend::Simple
+    include I18n::Backend::Fallbacks
+  end
+
+  def setup
+    super
+    I18n.backend = Backend.new
+    I18n.enforce_available_locales = false
+    I18n.fallbacks = [I18n.default_locale]
+    store_translations(:en, time: { formats: { fallback: 'en fallback' } })
+  end
+
+  test "falls back to default locale - Issue #546" do
+    Thread.new { assert_equal 'en fallback', I18n.l(Time.now, format: :fallback, locale: "un-supported") }.join
   end
 end
 
