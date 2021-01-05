@@ -21,7 +21,7 @@
 # configure your own digest method via which responds to #hexdigest (see
 # http://ruby-doc.org/stdlib/libdoc/digest/rdoc/index.html):
 #
-#   I18n.cache_key_digest = Digest::MD5.new
+#   I18n.cache_key_digest = OpenSSL::Digest::SHA256.new
 #
 # If you use a lambda as a default value in your translation like this:
 #
