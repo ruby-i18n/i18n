@@ -1,5 +1,5 @@
 require 'test_helper'
-require 'digest/md5'
+require 'openssl'
 
 begin
   require 'active_support'
@@ -74,11 +74,11 @@ class I18nBackendCacheTest < I18n::TestCase
   end
 
   test "cache_key uses configured digest method" do
-    md5 = Digest::MD5.new
+    digest = OpenSSL::Digest::SHA256.new
     options = { :bar => 1 }
     options_hash = options.inspect
-    with_cache_key_digest(md5) do
-      assert_equal "i18n//en/#{md5.hexdigest(:foo.to_s)}/#{md5.hexdigest(options_hash)}", I18n.backend.send(:cache_key, :en, :foo, options)
+    with_cache_key_digest(digest) do
+      assert_equal "i18n//en/#{digest.hexdigest(:foo.to_s)}/#{digest.hexdigest(options_hash)}", I18n.backend.send(:cache_key, :en, :foo, options)
     end
   end
 
