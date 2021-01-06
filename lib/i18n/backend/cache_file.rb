@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'digest/sha2'
+require 'openssl'
 
 module I18n
   module Backend
@@ -19,7 +19,7 @@ module I18n
         key = I18n::Backend::Flatten.escape_default_separator(normalized_path(filename))
         old_mtime, old_digest = initialized && lookup(:i18n, key, :load_file)
         return if (mtime = File.mtime(filename).to_i) == old_mtime ||
-                  (digest = Digest::SHA2.file(filename).hexdigest) == old_digest
+                  (digest = OpenSSL::Digest::SHA256.file(filename).hexdigest) == old_digest
         super
         store_translations(:i18n, load_file: { key => [mtime, digest] })
       end

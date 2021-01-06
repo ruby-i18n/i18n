@@ -17,11 +17,11 @@
 #
 # The cache_key implementation by default assumes you pass values that return
 # a valid key from #hash (see
-# http://www.ruby-doc.org/core/classes/Object.html#M000337). However, you can
+# https://www.ruby-doc.org/core/classes/Object.html#M000337). However, you can
 # configure your own digest method via which responds to #hexdigest (see
-# http://ruby-doc.org/stdlib/libdoc/digest/rdoc/index.html):
+# https://ruby-doc.org/stdlib/libdoc/openssl/rdoc/OpenSSL/Digest.html):
 #
-#   I18n.cache_key_digest = Digest::MD5.new
+#   I18n.cache_key_digest = OpenSSL::Digest::SHA256.new
 #
 # If you use a lambda as a default value in your translation like this:
 #
