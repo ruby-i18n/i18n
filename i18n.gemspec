@@ -28,23 +28,4 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'concurrent-ruby', '~> 1.0'
 
-  s.post_install_message = <<-END
-
-HEADS UP! i18n 1.1 changed fallbacks to exclude default locale.
-But that may break your application.
-
-If you are upgrading your Rails application from an older version of Rails:
-
-Please check your Rails app for 'config.i18n.fallbacks = true'.
-If you're using I18n (>= 1.1.0) and Rails (< 5.2.2), this should be
-'config.i18n.fallbacks = [I18n.default_locale]'.
-If not, fallbacks will be broken in your app by I18n 1.1.x.
-
-If you are starting a NEW Rails application, you can ignore this notice.
-
-For more info see:
-https://github.com/svenfuchs/i18n/releases/tag/v1.1.0
-
-END
-
 end
