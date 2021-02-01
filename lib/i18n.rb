@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'concurrent/map'
+require 'concurrent/hash'
 
 require 'i18n/version'
 require 'i18n/exceptions'
@@ -33,7 +34,7 @@ module I18n
   EMPTY_HASH = {}.freeze
 
   def self.new_double_nested_cache # :nodoc:
-    Concurrent::Map.new { |h,k| h[k] = Concurrent::Map.new }
+    Concurrent::Map.new { |h, k| h[k] = Concurrent::Map.new }
   end
 
   module Base

@@ -40,7 +40,7 @@ module I18n
             return data
           end
           locale = locale.to_sym
-          translations[locale] ||= {}
+          translations[locale] ||= Concurrent::Hash.new
           data = data.deep_symbolize_keys
           translations[locale].deep_merge!(data)
         end
@@ -71,7 +71,7 @@ module I18n
           # call `init_translations`
           init_translations if do_init && !initialized?
 
-          @translations ||= {}
+          @translations ||= Concurrent::Hash.new { |h, k| h[k] = Concurrent::Hash.new }
         end
 
       protected

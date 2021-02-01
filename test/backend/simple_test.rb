@@ -120,7 +120,7 @@ class I18nBackendSimpleTest < I18n::TestCase
       I18n.available_locales = [:en, :es]
       store_translations(:fr, :foo => {:bar => 'barfr', :baz => 'bazfr'})
       store_translations(:es, :foo => {:bar => 'bares', :baz => 'bazes'})
-      assert_nil translations[:fr]
+      assert_equal translations[:fr], {}
       assert_equal Hash[:foo, {:bar => 'bares', :baz => 'bazes'}], translations[:es]
     ensure
       I18n.config.enforce_available_locales = false
