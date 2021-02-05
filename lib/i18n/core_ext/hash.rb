@@ -4,7 +4,7 @@ module I18n
       using I18n::HashRefinements
       def except(*keys)
         dup.except!(*keys)
-      end
+      end unless method_defined?(:except)
 
       def except!(*keys)
         keys.each { |key| delete(key) }
