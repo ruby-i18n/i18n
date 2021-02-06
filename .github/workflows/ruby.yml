@@ -30,6 +30,12 @@ jobs:
           # Ruby 3.x is not supported by Rails 5.2.x
           - ruby_version: 3.0
             gemfile: gemfiles/Gemfile.rails-5.2.x
+          # Ruby 2.6.x is not supported by Rails main
+          - ruby_version: 2.6
+            gemfile: gemfiles/Gemfile.rails-main
+          # Ruby 2.5.x is not supported by Rails main
+          - ruby_version: 2.5
+            gemfile: gemfiles/Gemfile.rails-main
           # Ruby 2.4.x is not supported by Rails main
           - ruby_version: 2.4
             gemfile: gemfiles/Gemfile.rails-main
