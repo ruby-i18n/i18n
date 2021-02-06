@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby_version: [3.0.0, 2.7.1, 2.6.5, 2.5.7, 2.4.9, 2.3.8, jruby]
+        ruby_version: [3.0, 2.7, 2.6, 2.5, 2.4, 2.3, jruby]
         gemfile:
           [
             Gemfile,
@@ -28,25 +28,25 @@ jobs:
           ]
         exclude:
           # Ruby 3.x is not supported by Rails 5.2.x
-          - ruby_version: 3.0.0
+          - ruby_version: 3.0
             gemfile: gemfiles/Gemfile.rails-5.2.x
           # Ruby 2.4.x is not supported by Rails main
-          - ruby_version: 2.4.9
+          - ruby_version: 2.4
             gemfile: gemfiles/Gemfile.rails-main
           # Ruby 2.4.x is not supported by Rails 6.1.x
-          - ruby_version: 2.4.9
+          - ruby_version: 2.4
             gemfile: gemfiles/Gemfile.rails-6.1.x
           # Ruby 2.4.x is not supported by Rails 6.0.x
-          - ruby_version: 2.4.9
+          - ruby_version: 2.4
             gemfile: gemfiles/Gemfile.rails-6.0.x
           # Ruby 2.3.x is not supported by Rails 6.1.x
-          - ruby_version: 2.3.8
+          - ruby_version: 2.3
             gemfile: gemfiles/Gemfile.rails-6.1.x
           # Ruby 2.3.x is not supported by Rails main
-          - ruby_version: 2.3.8
+          - ruby_version: 2.3
             gemfile: gemfiles/Gemfile.rails-main
           # Ruby 2.3.x is not supported by Rails 6.0.x
-          - ruby_version: 2.3.8
+          - ruby_version: 2.3
             gemfile: gemfiles/Gemfile.rails-6.0.x
           # JRuby is not supported by Rails main
           - ruby_version: jruby
