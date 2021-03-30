@@ -342,4 +342,9 @@ class I18nBackendOnFallbackHookTest < I18n::TestCase
     assert_equal [:'de-DE', :de, :bar, {}], I18n.backend.fallback_collector[0]
     assert_equal [:'de-DE', :en, :foo, {}], I18n.backend.fallback_collector[1]
   end
+
+  test "on_fallback should not be called when use a String locale" do
+    assert_equal 'Bar in :de', I18n.t("bar", locale: "de")
+    assert I18n.backend.fallback_collector.nil?
+  end
 end
