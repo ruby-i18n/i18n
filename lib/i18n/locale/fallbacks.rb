@@ -46,7 +46,7 @@
 #   fallbacks[:"ar-PS"] # => [:"ar-PS", :ar, :"he-IL", :he, :"en-US", :en]
 #   fallbacks[:"ar-EG"] # => [:"ar-EG", :ar, :"en-US", :en]
 #
-#   # people speaking Sami as spoken in Finnland also speak Swedish and Finnish as spoken in Finnland
+#   # people speaking Sami as spoken in Finland also speak Swedish and Finnish as spoken in Finland
 #   fallbacks.map(:sms => [:"se-FI", :"fi-FI"])
 #   fallbacks[:sms] # => [:sms, :"se-FI", :se, :"fi-FI", :fi, :"en-US", :en]
 
