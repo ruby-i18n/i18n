@@ -200,19 +200,17 @@ module I18n
 
       backend = config.backend
 
-      result = catch(:exception) do
-        if key.is_a?(Array)
-          key.map { |k| backend.translate(locale, k, options) }
-        else
-          backend.translate(locale, key, options)
-        end
+      error = catch(:exception) do
+        return(
+          if key.is_a?(Array)
+            key.map { |k| backend.translate(locale, k, options) }
+          else
+            backend.translate(locale, key, options)
+          end
+        )
       end
 
-      if result.is_a?(ArgumentError)
-        handle_exception((throw && :throw || raise && :raise), result, locale, key, options)
-      else
-        result
-      end
+      handle_exception((throw && :throw || raise && :raise), error, locale, key, options)
     end
     alias :t :translate
 
