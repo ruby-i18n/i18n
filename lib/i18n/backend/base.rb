@@ -140,18 +140,20 @@ module I18n
         # subjects will be returned directly.
         def resolve(locale, object, subject, options = EMPTY_HASH)
           return subject if options[:resolve] == false
-          result = catch(:exception) do
-            case subject
-            when Symbol
-              I18n.translate(subject, **options.merge(:locale => locale, :throw => true))
-            when Proc
-              date_or_time = options.delete(:object) || object
-              resolve(locale, object, subject.call(date_or_time, **options))
-            else
-              subject
-            end
+          catch(:exception) do
+            return(
+              case subject
+              when Symbol
+                I18n.translate(subject, **options.merge(:locale => locale, :throw => true))
+              when Proc
+                date_or_time = options.delete(:object) || object
+                resolve(locale, object, subject.call(date_or_time, **options))
+              else
+                subject
+              end
+            )
           end
-          result unless result.is_a?(MissingTranslation)
+          nil
         end
 
         # Picks a translation from a pluralized mnemonic subkey according to English

@@ -21,7 +21,7 @@ class I18nBackendPluralizationFallbackTest < I18n::TestCase
     store_translations('ru', i18n: { plural: { rule: @rule }})
 
     store_translations('fr', cat: { zero: 'chat', one: 'chat', other: 'chats' })
-    store_translations('fr-FR', cat: { zero: 'pas de chat', other: 'beaucoup de chats' })
+    store_translations('fr-FR', cat: { zero: 'pas de chat', other: 'beaucoup de chats' }, dog: { zero: 'pas de chien', other: 'beaucoup de chiens' })
   end
 
   test "fallbacks: nils are ignored and fallback is applied" do
@@ -56,6 +56,10 @@ class I18nBackendPluralizationFallbackTest < I18n::TestCase
 
   test "catch the InvalidPluralizationData exception and fallbacks to the fallback language" do
     assert_equal "chat", I18n.t("cat", count: 1, locale: "fr-FR")
+  end
+
+  test "catch the InvalidPluralizationData exception and fallbacks to the default key" do
+    assert_equal "chat", I18n.t("dog", count: 1, locale: "fr-FR", default: [:cat])
   end
 
   private
