@@ -240,7 +240,11 @@ module I18n
         # toplevel keys.
         def load_yml(filename)
           begin
-            YAML.load_file(filename)
+            if YAML.respond_to?(:unsafe_load_file) # Psych 4.0 way
+              YAML.unsafe_load_file(filename)
+            else
+              YAML.load_file(filename)
+            end
           rescue TypeError, ScriptError, StandardError => e
             raise InvalidLocaleData.new(filename, e.inspect)
           end
