@@ -71,13 +71,18 @@ module I18n
         super || store(locale, compute(locale))
       end
 
-      def map(mappings)
-        mappings.each do |from, to|
-          from, to = from.to_sym, Array(to)
-          to.each do |_to|
-            @map[from] ||= []
-            @map[from] << _to.to_sym
+      def map(*args, &block)
+        if args.count == 1 && !block_given?
+          mappings = args.first
+          mappings.each do |from, to|
+            from, to = from.to_sym, Array(to)
+            to.each do |_to|
+              @map[from] ||= []
+              @map[from] << _to.to_sym
+            end
           end
+        else
+          @map.map(*args, &block)
         end
       end
 

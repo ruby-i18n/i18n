@@ -159,3 +159,15 @@ class I18nFallbacksComputationTest < I18n::TestCase
     end
   end
 end
+
+class I18nFallbacksHashCompatibilityTest < I18n::TestCase
+  def setup
+    super
+    @fallbacks = Fallbacks.new(:'en-US', :"de-AT" => :"de-DE")
+  end
+
+  test "map is compatible with Hash#map" do
+    result = @fallbacks.map { |key, value| [key, value] }
+    assert_equal([[:"de-AT", [:"de-DE"]]], result)
+  end
+end
