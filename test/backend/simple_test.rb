@@ -76,7 +76,7 @@ class I18nBackendSimpleTest < I18n::TestCase
   end
 
   test "simple load_json: loads data from a JSON file" do
-    data = I18n.backend.send(:load_yml, "#{locales_dir}/en.json")
+    data = I18n.backend.send(:load_json, "#{locales_dir}/en.json")
     assert_equal({ 'en' => { 'foo' => { 'bar' => 'baz' } } }, data)
   end
 
