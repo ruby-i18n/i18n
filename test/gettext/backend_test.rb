@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require 'test_helper'
+require 'i18n/backend/gettext'
 
 class I18nGettextBackendTest < I18n::TestCase
   include I18n::Gettext::Helpers
