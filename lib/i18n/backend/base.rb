@@ -2,12 +2,10 @@
 
 require 'yaml'
 require 'json'
-require 'i18n/core_ext/hash'
 
 module I18n
   module Backend
     module Base
-      using I18n::HashRefinements
       include I18n::Backend::Transliterator
 
       # Accepts a list of paths to translation files. Loads translations from
@@ -53,7 +51,7 @@ module I18n
         end
 
         deep_interpolation = options[:deep_interpolation]
-        values = options.except(*RESERVED_KEYS)
+        values = Utils.except(options, *RESERVED_KEYS)
         if values
           entry = if deep_interpolation
             deep_interpolate(locale, entry, values)
