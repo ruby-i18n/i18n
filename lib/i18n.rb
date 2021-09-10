@@ -29,12 +29,24 @@ module I18n
     scope
     separator
     throw
-  ].freeze
-  RESERVED_KEYS_PATTERN = /%\{(#{RESERVED_KEYS.join("|")})\}/
+  ]
   EMPTY_HASH = {}.freeze
 
   def self.new_double_nested_cache # :nodoc:
     Concurrent::Map.new { |h, k| h[k] = Concurrent::Map.new }
+  end
+
+  # Marks a key as reserved. Reserved keys are used internally,
+  # and can't also be used for interpolation. If you are using any
+  # extra keys as I18n options, you should call I18n.reserve_key
+  # before any I18n.translate (etc) calls are made.
+  def self.reserve_key(key)
+    RESERVED_KEYS << key.to_sym
+    @reserved_keys_pattern = nil
+  end
+
+  def self.reserved_keys_pattern # :nodoc:
+    @reserved_keys_pattern ||= /%\{(#{RESERVED_KEYS.join("|")})\}/
   end
 
   module Base

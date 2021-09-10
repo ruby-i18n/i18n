@@ -14,7 +14,7 @@ module I18n
     # Return String or raises MissingInterpolationArgument exception.
     # Missing argument's logic is handled by I18n.config.missing_interpolation_argument_handler.
     def interpolate(string, values)
-      raise ReservedInterpolationKey.new($1.to_sym, string) if string =~ RESERVED_KEYS_PATTERN
+      raise ReservedInterpolationKey.new($1.to_sym, string) if string =~ I18n.reserved_keys_pattern
       raise ArgumentError.new('Interpolation values must be a Hash.') unless values.kind_of?(Hash)
       interpolate_hash(string, values)
     end
