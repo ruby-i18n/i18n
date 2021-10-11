@@ -58,6 +58,14 @@ class I18nBackendCacheTest < I18n::TestCase
     # assert_raise(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
   end
 
+  test "MissingTranslationData does not cache custom options" do
+    I18n.t(:missing, :scope => :foo, :extra => true)
+    assert_equal 1, I18n.cache_store.instance_variable_get(:@data).size
+
+    cache_key, entry = I18n.cache_store.instance_variable_get(:@data).first
+    assert_equal({ scope: :foo }, entry.value.options)
+  end
+
   test "uses 'i18n' as a cache key namespace by default" do
     assert_equal 0, I18n.backend.send(:cache_key, :en, :foo, {}).index('i18n')
   end
