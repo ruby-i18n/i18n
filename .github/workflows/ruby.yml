@@ -12,10 +12,12 @@ on:
 
 jobs:
   build:
+    env:
+      BUNDLE_GEMFILE: ${{ matrix.gemfile }}
     strategy:
       fail-fast: false
       matrix:
-        ruby_version: [3.0, 2.7, 2.6, 2.5, 2.4, 2.3, jruby]
+        ruby_version: ["3.0", 2.7, 2.6, 2.5, 2.4, 2.3, jruby]
         gemfile:
           [
             Gemfile,
@@ -69,13 +71,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up Ruby
-        uses: eregon/use-ruby-action@master
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby_version }}
+          bundler-cache: true # 'bundle install' and cache
       - name: Build and test with Rake
-        env:
-          BUNDLE_GEMFILE: ${{ matrix.gemfile }}
-        run: |
-          gem install bundler
-          bundle install --jobs 4 --retry 3
-          bundle exec rake
+        run: bundle exec rake
