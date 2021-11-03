@@ -92,7 +92,12 @@ class I18nBackendSimpleTest < I18n::TestCase
 
   test "simple load_yml: loads data from a YAML file" do
     data, _ = I18n.backend.send(:load_yml, "#{locales_dir}/en.yml")
-    assert_equal({ 'en' => { 'foo' => { 'bar' => 'baz' } } }, data)
+    if ::YAML.respond_to?(:unsafe_load_file)
+      assert_equal({ :en => { :foo => { :bar => 'baz' } } }, data)
+      assert_predicate data.dig(:en, :foo, :bar), :frozen?
+    else
+      assert_equal({ 'en' => { 'foo' => { 'bar' => 'baz' } } }, data)
+    end
   end
 
   test "simple load_json: loads data from a JSON file" do

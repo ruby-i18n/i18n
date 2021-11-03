@@ -240,7 +240,7 @@ module I18n
         def load_yml(filename)
           begin
             if YAML.respond_to?(:unsafe_load_file) # Psych 4.0 way
-              [YAML.unsafe_load_file(filename), false]
+              [YAML.unsafe_load_file(filename, symbolize_names: true, freeze: true), true]
             else
               [YAML.load_file(filename), false]
             end
