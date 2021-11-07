@@ -67,8 +67,6 @@ module I18n
     #
     # This is useful if you are using a KeyValue backend chained to a Simple backend.
     class KeyValue
-      using I18n::HashRefinements
-
       module Implementation
         attr_accessor :store
 
@@ -91,7 +89,7 @@ module I18n
             when Hash
               if @subtrees && (old_value = @store[key])
                 old_value = JSON.decode(old_value)
-                value = old_value.deep_symbolize_keys.deep_merge!(value) if old_value.is_a?(Hash)
+                value = Utils.deep_merge!(Utils.deep_symbolize_keys(old_value), value) if old_value.is_a?(Hash)
               end
             when Proc
               raise "Key-value stores cannot handle procs"
@@ -115,12 +113,12 @@ module I18n
         # them into a hash such as the one returned from loading the
         # haml files
         def translations
-          @translations = @store.keys.clone.map do |main_key|
+          @translations = Utils.deep_symbolize_keys(@store.keys.clone.map do |main_key|
             main_value = JSON.decode(@store[main_key])
             main_key.to_s.split(".").reverse.inject(main_value) do |value, key|
               {key.to_sym => value}
             end
-          end.inject{|hash, elem| hash.deep_merge!(elem)}.deep_symbolize_keys
+          end.inject{|hash, elem| Utils.deep_merge!(hash, elem)})
         end
 
         def init_translations
@@ -141,7 +139,7 @@ module I18n
           value = JSON.decode(value) if value
 
           if value.is_a?(Hash)
-            value.deep_symbolize_keys
+            Utils.deep_symbolize_keys(value)
           elsif !value.nil?
             value
           elsif !@subtrees

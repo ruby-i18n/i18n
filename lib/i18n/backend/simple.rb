@@ -19,8 +19,6 @@ module I18n
     #
     # I18n::Backend::Simple.include(I18n::Backend::Pluralization)
     class Simple
-      using I18n::HashRefinements
-
       module Implementation
         include Base
 
@@ -40,8 +38,8 @@ module I18n
           end
           locale = locale.to_sym
           translations[locale] ||= Concurrent::Hash.new
-          data = data.deep_symbolize_keys
-          translations[locale].deep_merge!(data)
+          data = Utils.deep_symbolize_keys(data)
+          Utils.deep_merge!(translations[locale], data)
         end
 
         # Get available locales from the translations hash
