@@ -261,14 +261,14 @@ module I18n
     #
     # Setting a Hash using Ruby:
     #
-    #     store_translations(:de, :i18n => {
-    #       :transliterate => {
-    #         :rule => {
-    #           "ü" => "ue",
-    #           "ö" => "oe"
-    #         }
-    #       }
-    #     })
+    #     store_translations(:de, i18n: {
+    #                          transliterate: {
+    #                            rule: {
+    #                              'ü' => 'ue',
+    #                              'ö' => 'oe'
+    #                            }
+    #                          }
+    #                        })
     #
     # Setting a Proc:
     #
