@@ -268,7 +268,7 @@ module I18n
     #           "ö" => "oe"
     #         }
     #       }
-    #     )
+    #     })
     #
     # Setting a Proc:
     #
