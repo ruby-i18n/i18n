@@ -253,7 +253,12 @@ module I18n
         # toplevel keys.
         def load_json(filename)
           begin
-            ::JSON.parse(File.read(filename))
+            # Use #load_file as a proxy for a version of JSON where symbolize_names and freeze are supported.
+            if JSON.respond_to?(:load_file)
+              ::JSON.load_file(filename, symbolize_names: true, freeze: true)
+            else
+              ::JSON.parse(File.read(filename))
+            end
           rescue TypeError, StandardError => e
             raise InvalidLocaleData.new(filename, e.inspect)
           end

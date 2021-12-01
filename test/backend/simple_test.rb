@@ -77,7 +77,11 @@ class I18nBackendSimpleTest < I18n::TestCase
 
   test "simple load_json: loads data from a JSON file" do
     data = I18n.backend.send(:load_json, "#{locales_dir}/en.json")
-    assert_equal({ 'en' => { 'foo' => { 'bar' => 'baz' } } }, data)
+    assert_equal({ :en => { :foo => { :bar => 'baz' } } }, data)
+
+    if JSON.respond_to?(:load_file)
+      assert_predicate data.dig(:en, :foo, :bar), :frozen?
+    end
   end
 
   test "simple load_translations: loads data from known file formats" do
