@@ -66,17 +66,17 @@ class I18nBackendSimpleTest < I18n::TestCase
   end
 
   test "simple load_rb: loads data from a Ruby file" do
-    data = I18n.backend.send(:load_rb, "#{locales_dir}/en.rb")
+    data, _ = I18n.backend.send(:load_rb, "#{locales_dir}/en.rb")
     assert_equal({ :en => { :fuh => { :bah => 'bas' } } }, data)
   end
 
   test "simple load_yml: loads data from a YAML file" do
-    data = I18n.backend.send(:load_yml, "#{locales_dir}/en.yml")
+    data, _ = I18n.backend.send(:load_yml, "#{locales_dir}/en.yml")
     assert_equal({ 'en' => { 'foo' => { 'bar' => 'baz' } } }, data)
   end
 
   test "simple load_json: loads data from a JSON file" do
-    data = I18n.backend.send(:load_json, "#{locales_dir}/en.json")
+    data, _ = I18n.backend.send(:load_json, "#{locales_dir}/en.json")
     assert_equal({ :en => { :foo => { :bar => 'baz' } } }, data)
 
     if JSON.respond_to?(:load_file)
@@ -142,6 +142,20 @@ class I18nBackendSimpleTest < I18n::TestCase
     assert_equal 'foo', I18n.t('1')
     assert_equal 'foo', I18n.t(1)
     assert_equal 'foo', I18n.t(:'1')
+  end
+
+  test "simple store_translations: store translations doesn't deep symbolize keys if skip_symbolize_keys is true" do
+    data = { :foo => {'bar' => 'barfr', 'baz' => 'bazfr'} }
+
+    # symbolized by default
+    store_translations(:fr, data)
+    assert_equal Hash[:foo, {:bar => 'barfr', :baz => 'bazfr'}], translations[:fr]
+
+    I18n.backend.reload!
+
+    # not deep symbolized when configured
+    store_translations(:fr, data, skip_symbolize_keys: true)
+    assert_equal Hash[:foo, {'bar' => 'barfr', 'baz' => 'bazfr'}], translations[:fr]
   end
 
   # reloading translations

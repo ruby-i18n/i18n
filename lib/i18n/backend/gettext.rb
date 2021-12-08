@@ -41,7 +41,7 @@ module I18n
         def load_po(filename)
           locale = ::File.basename(filename, '.po').to_sym
           data = normalize(locale, parse(filename))
-          { locale => data }
+          [{ locale => data }, false]
         end
 
         def parse(filename)

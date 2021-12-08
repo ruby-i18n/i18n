@@ -45,8 +45,8 @@ class I18n::TestCase < TEST_CASE
     I18n.backend.instance_variable_get(:@translations)
   end
 
-  def store_translations(locale, data)
-    I18n.backend.store_translations(locale, data)
+  def store_translations(locale, data, options = I18n::EMPTY_HASH)
+    I18n.backend.store_translations(locale, data, options)
   end
 
   def locales_dir
