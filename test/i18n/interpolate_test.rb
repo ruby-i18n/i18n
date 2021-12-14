@@ -32,12 +32,12 @@ class I18nInterpolateTest < I18n::TestCase
     assert_equal "  1", I18n.interpolate("%<num>3.0f", :num => 1.0)
     assert_equal "100.00", I18n.interpolate("%<num>2.2f", :num => 100.0)
     assert_equal "0x64", I18n.interpolate("%<num>#x", :num => 100.0)
-    assert_raise(ArgumentError) { I18n.interpolate("%<num>,d", :num => 100) }
-    assert_raise(ArgumentError) { I18n.interpolate("%<num>/d", :num => 100) }
+    assert_raises(ArgumentError) { I18n.interpolate("%<num>,d", :num => 100) }
+    assert_raises(ArgumentError) { I18n.interpolate("%<num>/d", :num => 100) }
   end
 
   test "String interpolation raises an I18n::MissingInterpolationArgument when the string has extra placeholders" do
-    assert_raise(I18n::MissingInterpolationArgument, "key not found") do
+    assert_raises(I18n::MissingInterpolationArgument, "key not found") do
       I18n.interpolate("%{first} %{last}", :first => 'Masao')
     end
   end

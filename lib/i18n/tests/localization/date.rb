@@ -78,15 +78,15 @@ module I18n
         end
 
         test "localize Date: given nil it raises I18n::ArgumentError" do
-          assert_raise(I18n::ArgumentError) { I18n.l(nil) }
+          assert_raises(I18n::ArgumentError) { I18n.l(nil) }
         end
 
         test "localize Date: given a plain Object it raises I18n::ArgumentError" do
-          assert_raise(I18n::ArgumentError) { I18n.l(Object.new) }
+          assert_raises(I18n::ArgumentError) { I18n.l(Object.new) }
         end
 
         test "localize Date: given a format is missing it raises I18n::MissingTranslationData" do
-          assert_raise(I18n::MissingTranslationData) { I18n.l(@date, :format => :missing) }
+          assert_raises(I18n::MissingTranslationData) { I18n.l(@date, :format => :missing) }
         end
 
         test "localize Date: it does not alter the format string" do

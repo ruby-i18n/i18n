@@ -22,7 +22,7 @@ class I18nBackendTransliterator < I18n::TestCase
 
   test "transliteration rule must be a proc or hash" do
     store_translations(:xx, :i18n => {:transliterate => {:rule => ""}})
-    assert_raise I18n::ArgumentError do
+    assert_raises I18n::ArgumentError do
       I18n.backend.transliterate(:xx, "ü")
     end
   end
@@ -57,7 +57,7 @@ class I18nBackendTransliterator < I18n::TestCase
   end
 
   test "default transliterator raises errors for invalid UTF-8" do
-    assert_raise ArgumentError do
+    assert_raises ArgumentError do
       @transliterator.transliterate("a\x92b")
     end
   end

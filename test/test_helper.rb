@@ -3,7 +3,6 @@ TEST_CASE = defined?(Minitest::Test) ? Minitest::Test : MiniTest::Unit::TestCase
 
 # TODO: Remove these aliases and update tests accordingly.
 class TEST_CASE
-  alias :assert_raise :assert_raises
   alias :assert_not_equal :refute_equal
 
   def assert_nothing_raised(*args)

@@ -34,7 +34,7 @@ module I18n
       end
 
       test "lookup: given a missing key, no default and the raise option it raises MissingTranslationData" do
-        assert_raise(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
+        assert_raises(I18n::MissingTranslationData) { I18n.t(:missing, :raise => true) }
       end
 
       test "lookup: does not raise an exception if no translation data is present for the given locale" do
@@ -61,7 +61,7 @@ module I18n
       # In fact it probably *should* fail but Rails currently relies on using the default locale instead.
       # So we'll stick to this for now until we get it fixed in Rails.
       test "lookup: given nil as a locale it does not raise but use the default locale" do
-        # assert_raise(I18n::InvalidLocale) { I18n.t(:bar, :locale => nil) }
+        # assert_raises(I18n::InvalidLocale) { I18n.t(:bar, :locale => nil) }
         assert_nothing_raised { I18n.t(:bar, :locale => nil) }
       end
 

@@ -49,7 +49,7 @@ class I18nExceptionsTest < I18n::TestCase
   end
 
   test "MissingInterpolationArgument stores key and string" do
-    assert_raise(I18n::MissingInterpolationArgument) { force_missing_interpolation_argument }
+    assert_raises(I18n::MissingInterpolationArgument) { force_missing_interpolation_argument }
     force_missing_interpolation_argument do |exception|
       assert_equal :bar, exception.key
       assert_equal "%{bar}", exception.string

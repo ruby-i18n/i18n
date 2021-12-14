@@ -28,7 +28,7 @@ module I18n
       end
 
       test "pluralization: given incomplete pluralization data it raises I18n::InvalidPluralizationData" do
-        assert_raise(I18n::InvalidPluralizationData) { I18n.t(:default => { :one => 'bar' }, :count => 2) }
+        assert_raises(I18n::InvalidPluralizationData) { I18n.t(:default => { :one => 'bar' }, :count => 2) }
       end
     end
   end

@@ -41,7 +41,7 @@ module I18n
       end
 
       test "interpolation: given values but missing a key it raises I18n::MissingInterpolationArgument" do
-        assert_raise(I18n::MissingInterpolationArgument) do
+        assert_raises(I18n::MissingInterpolationArgument) do
           interpolate(:default => '%{foo}', :bar => 'bar')
         end
       end
@@ -77,13 +77,13 @@ module I18n
 
       if Object.const_defined?(:Encoding)
         test "interpolation: given a euc-jp translation and a utf-8 value it raises Encoding::CompatibilityError" do
-          assert_raise(Encoding::CompatibilityError) do
+          assert_raises(Encoding::CompatibilityError) do
             interpolate(:default => euc_jp('こんにちは、%{name}さん!'), :name => 'ゆきひろ')
           end
         end
 
         test "interpolation: given a utf-8 translation and a euc-jp value it raises Encoding::CompatibilityError" do
-          assert_raise(Encoding::CompatibilityError) do
+          assert_raises(Encoding::CompatibilityError) do
             interpolate(:default => 'こんにちは、%{name}さん!', :name => euc_jp('ゆきひろ'))
           end
         end
@@ -108,10 +108,10 @@ module I18n
       end
 
       test "interpolation: given a translations containing a reserved key it raises I18n::ReservedInterpolationKey" do
-        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:foo => :bar, :default => '%{exception_handler}') }
-        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:foo => :bar, :default => '%{default}') }
-        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:foo => :bar, :default => '%{separator}') }
-        assert_raise(I18n::ReservedInterpolationKey) { interpolate(:foo => :bar, :default => '%{scope}') }
+        assert_raises(I18n::ReservedInterpolationKey) { interpolate(:foo => :bar, :default => '%{exception_handler}') }
+        assert_raises(I18n::ReservedInterpolationKey) { interpolate(:foo => :bar, :default => '%{default}') }
+        assert_raises(I18n::ReservedInterpolationKey) { interpolate(:foo => :bar, :default => '%{separator}') }
+        assert_raises(I18n::ReservedInterpolationKey) { interpolate(:foo => :bar, :default => '%{scope}') }
       end
 
       test "interpolation: deep interpolation for default string" do
