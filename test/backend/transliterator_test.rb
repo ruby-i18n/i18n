@@ -74,7 +74,7 @@ class I18nBackendTransliterator < I18n::TestCase
   test "default transliterator fails with custom rules with uncomposed input" do
     char = [117, 776].pack("U*") # "ü" as ASCII "u" plus COMBINING DIAERESIS
     transliterator = I18n::Backend::Transliterator.get(@hash)
-    assert_not_equal "ue", transliterator.transliterate(char)
+    refute_equal "ue", transliterator.transliterate(char)
   end
 
   test "DEFAULT_APPROXIMATIONS is frozen to prevent concurrency issues" do
