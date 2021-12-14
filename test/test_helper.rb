@@ -1,19 +1,14 @@
 require 'minitest/autorun'
-TEST_CASE = defined?(Minitest::Test) ? Minitest::Test : MiniTest::Unit::TestCase
-
-# TODO: Remove these aliases and update tests accordingly.
-class TEST_CASE
-  def assert_nothing_raised(*args)
-    yield
-  end
-end
-
 require 'bundler/setup'
 require 'i18n'
 require 'mocha/setup'
 require 'test_declarative'
 
-class I18n::TestCase < TEST_CASE
+class I18n::TestCase < Minitest::Test
+  def assert_nothing_raised(*args)
+    yield
+  end
+
   def self.key_value?
     defined?(ActiveSupport)
   end
