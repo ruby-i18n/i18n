@@ -53,7 +53,13 @@ module I18n
 
 
       def self.filter_args(*args)
-        args.map {|arg| arg.delete(:fallback_in_progress) if arg.is_a?(Hash) ; arg }.inspect
+        args.map do |arg|
+          if arg.is_a?(Hash)
+            arg.delete(:fallback_in_progress)
+            arg.delete(:fallback_original_locale)
+          end
+          arg
+        end.inspect
       end
     end
   end
