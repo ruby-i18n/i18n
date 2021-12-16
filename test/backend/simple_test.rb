@@ -19,9 +19,29 @@ class I18nBackendSimpleTest < I18n::TestCase
   end
 
   test "simple backend translate: given integer as a key" do
-    store_translations :en, available: { 1 => "Yes", 2 => "No" }
+    store_translations :en, available: { -1 => "Possibly", 0 => "Maybe", 1 => "Yes", 2 => "No", 3 => "Never"  }
+    assert_equal "Possibly", I18n.t(:available)[-1]
+    assert_equal "Possibly", I18n.t('available.-1')
+    assert_equal "Maybe", I18n.t(:available)[0]
+    assert_equal "Maybe", I18n.t('available.0')
     assert_equal "Yes", I18n.t(:available)[1]
     assert_equal "Yes", I18n.t('available.1')
+    assert_equal "No", I18n.t(:available)[2]
+    assert_equal "No", I18n.t('available.2')
+    assert_equal "Never", I18n.t(:available)[3]
+    assert_equal "Never", I18n.t('available.+3')
+  end
+
+  test 'simple backend translate: given integer with a leading positive/negative sign' do
+    store_translations :en, available: { -1 => "No", 0 => "Maybe", 1 => "Yes" }
+    assert_equal 'No', I18n.t(:available)[-1]
+    assert_equal 'No', I18n.t('available.-1')
+    assert_equal 'Maybe', I18n.t(:available)[+0]
+    assert_equal 'Maybe', I18n.t(:available)[-0]
+    assert_equal 'Maybe', I18n.t('available.-0')
+    assert_equal 'Maybe', I18n.t('available.+0')
+    assert_equal 'Yes', I18n.t(:available)[+1]
+    assert_equal 'Yes', I18n.t('available.+1')
   end
 
   test 'simple backend translate: given integer with a lead zero as a key' do
