@@ -94,6 +94,10 @@ jobs:
           - ruby_version: 2.3
             gemfile: gemfiles/Gemfile.rails-main
 
+          # JRuby is not supported by Rails 7.0.x
+          - ruby_version: jruby
+            gemfile: gemfiles/Gemfile.rails-7.0.x
+
           # JRuby is not supported by Rails main
           - ruby_version: jruby
             gemfile: gemfiles/Gemfile.rails-main
