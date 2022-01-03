@@ -30,6 +30,10 @@ jobs:
             gemfiles/Gemfile.rails-main,
           ]
         exclude:
+          # Ruby 3.1 is not supported by Rails 5.2.x
+          - ruby_version: 3.1
+            gemfile: gemfiles/Gemfile.rails-5.2.x
+
           # Ruby 3.x is not supported by Rails 5.2.x
           - ruby_version: 3.0
             gemfile: gemfiles/Gemfile.rails-5.2.x
