@@ -50,10 +50,6 @@ jobs:
           - ruby_version: 2.6
             gemfile: gemfiles/Gemfile.rails-main
 
-          # Ruby 2.6.x is not supported by Rails main
-          - ruby_version: 2.6
-            gemfile: gemfiles/Gemfile.rails-main
-
           # Ruby 2.6.x is not supported by Rails 7.0.x
           - ruby_version: 2.6
             gemfile: gemfiles/Gemfile.rails-7.0.x
