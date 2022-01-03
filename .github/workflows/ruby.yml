@@ -42,6 +42,9 @@ jobs:
           # Ruby 2.6.x is not supported by Rails main
           - ruby_version: 2.6
             gemfile: gemfiles/Gemfile.rails-main
+          # Ruby 2.6.x is not supported by Rails main
+          - ruby_version: 2.6
+            gemfile: gemfiles/Gemfile.rails-main
           # Ruby 2.5.x is not supported by Rails main
           - ruby_version: 2.5
             gemfile: gemfiles/Gemfile.rails-main
@@ -54,15 +57,18 @@ jobs:
           # Ruby 2.4.x is not supported by Rails 6.0.x
           - ruby_version: 2.4
             gemfile: gemfiles/Gemfile.rails-6.0.x
+          # Ruby 2.4.x is not supported by Rails 7.0.x
+          - ruby_version: 2.4
+            gemfile: gemfiles/Gemfile.rails-7.0.x
           # Ruby 2.3.x is not supported by Rails 6.1.x
           - ruby_version: 2.3
             gemfile: gemfiles/Gemfile.rails-6.1.x
-          # Ruby 2.3.x is not supported by Rails main
-          - ruby_version: 2.3
-            gemfile: gemfiles/Gemfile.rails-main
           # Ruby 2.3.x is not supported by Rails 6.0.x
           - ruby_version: 2.3
             gemfile: gemfiles/Gemfile.rails-6.0.x
+          # Ruby 2.3.x is not supported by Rails main
+          - ruby_version: 2.3
+            gemfile: gemfiles/Gemfile.rails-main
           # JRuby is not supported by Rails main
           - ruby_version: jruby
             gemfile: gemfiles/Gemfile.rails-main
