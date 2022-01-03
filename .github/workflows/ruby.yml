@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby_version: ["3.0", 2.7, 2.6, 2.5, 2.4, 2.3, jruby]
+        ruby_version: [3.1, "3.0", 2.7, 2.6, 2.5, 2.4, 2.3, jruby]
         gemfile:
           [
             Gemfile,
@@ -26,6 +26,7 @@ jobs:
             gemfiles/Gemfile.rails-5.2.x,
             gemfiles/Gemfile.rails-6.0.x,
             gemfiles/Gemfile.rails-6.1.x,
+            gemfiles/Gemfile.rails-7.0.x,
             gemfiles/Gemfile.rails-main,
           ]
         exclude:
