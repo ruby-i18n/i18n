@@ -48,6 +48,9 @@ jobs:
           # Ruby 2.5.x is not supported by Rails main
           - ruby_version: 2.5
             gemfile: gemfiles/Gemfile.rails-main
+          # Ruby 2.5.x is not supported by Rails 7.0
+          - ruby_version: 2.5
+            gemfile: gemfiles/Gemfile.rails-7.0.x
           # Ruby 2.4.x is not supported by Rails main
           - ruby_version: 2.4
             gemfile: gemfiles/Gemfile.rails-main
