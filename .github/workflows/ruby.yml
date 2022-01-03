@@ -66,6 +66,9 @@ jobs:
           # Ruby 2.4.x is not supported by Rails 7.0.x
           - ruby_version: 2.4
             gemfile: gemfiles/Gemfile.rails-7.0.x
+          # Ruby 2.3.x is not supported by Rails 7.0.x
+          - ruby_version: 2.3
+            gemfile: gemfiles/Gemfile.rails-7.0.x
           # Ruby 2.3.x is not supported by Rails 6.1.x
           - ruby_version: 2.3
             gemfile: gemfiles/Gemfile.rails-6.1.x
