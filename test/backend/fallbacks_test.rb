@@ -191,6 +191,54 @@ class I18nBackendFallbacksLocalizeTestWithMultipleThreads < I18n::TestCase
   end
 end
 
+# See Issue #590
+class I18nBackendFallbacksSymbolReolveRestartsLookupAtOriginalLocale < I18n::TestCase
+  class Backend < I18n::Backend::Simple
+    include I18n::Backend::Fallbacks
+  end
+
+  def setup
+    super
+    I18n.backend = Backend.new
+    I18n.enforce_available_locales = false
+    I18n.fallbacks = [:root]
+    store_translations(:ak,
+                       'calendars' => {
+                         'gregorian' => {
+                           'months' => {
+                             'format' => {
+                               'abbreviated' => {
+                                 1 => 'S-Ɔ'
+                                 # Other months omitted for brevity
+                               }
+                             }
+                           }
+                         }
+                       })
+    store_translations(:root,
+                       'calendars' => {
+                         'gregorian' => {
+                           'months' => {
+                             'format' => {
+                               'abbreviated' => :"calendars.gregorian.months.format.wide",
+                               'wide' => {
+                                 1 => 'M01'
+                                 # Other months omitted for brevity
+                               }
+                             },
+                             'stand-alone' => {
+                               'abbreviated' => :"calendars.gregorian.months.format.abbreviated"
+                             }
+                           }
+                         }
+                       })
+  end
+
+  test 'falls back to original locale when symbol resolved at fallback locale' do
+    assert_equal({ 1 => 'S-Ɔ' }, I18n.t('calendars.gregorian.months.stand-alone.abbreviated', locale: :"ak-GH"))
+  end
+end
+
 
 class I18nBackendFallbacksLocalizeTest < I18n::TestCase
   class Backend < I18n::Backend::Simple

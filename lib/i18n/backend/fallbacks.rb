@@ -43,7 +43,7 @@ module I18n
         return super if options[:fallback_in_progress]
         default = extract_non_symbol_default!(options) if options[:default]
 
-        fallback_options = options.merge(:fallback_in_progress => true)
+        fallback_options = options.merge(:fallback_in_progress => true, fallback_original_locale: locale)
         I18n.fallbacks[locale].each do |fallback|
           begin
             catch(:exception) do
@@ -62,6 +62,17 @@ module I18n
 
         return super(locale, nil, options.merge(:default => default)) if default
         throw(:exception, I18n::MissingTranslation.new(locale, key, options))
+      end
+
+      def resolve(locale, object, subject, options = EMPTY_HASH)
+        return subject if options[:resolve] == false
+        return super unless subject.is_a?(Symbol)
+
+        result = catch(:exception) do
+          options.delete(:fallback_in_progress)
+          I18n.translate(subject, **options.merge(locale: options[:fallback_original_locale], throw: true))
+        end
+        result unless result.is_a?(MissingTranslation)
       end
 
       def extract_non_symbol_default!(options)
