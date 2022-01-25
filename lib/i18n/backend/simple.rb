@@ -38,7 +38,7 @@ module I18n
           end
           locale = locale.to_sym
           translations[locale] ||= Concurrent::Hash.new
-          data = Utils.deep_symbolize_keys(data)
+          data = Utils.deep_symbolize_keys(data) unless options.fetch(:skip_symbolize_keys, false)
           Utils.deep_merge!(translations[locale], data)
         end
 
