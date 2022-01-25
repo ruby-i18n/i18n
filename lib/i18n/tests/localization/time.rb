@@ -79,7 +79,7 @@ module I18n
         end
 
         test "localize Time: given a format is missing it raises I18n::MissingTranslationData" do
-          assert_raise(I18n::MissingTranslationData) { I18n.l(@time, :format => :missing) }
+          assert_raises(I18n::MissingTranslationData) { I18n.l(@time, :format => :missing) }
         end
 
         protected

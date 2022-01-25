@@ -82,12 +82,12 @@ class I18nBackendFallbacksTranslateTest < I18n::TestCase
   end
 
   test "raises I18n::MissingTranslationData exception when fallback is disabled even when fallback translation exists" do
-    assert_raise(I18n::MissingTranslationData) { I18n.t(:foo, :locale => :de, :fallback => false, :raise => true) }
+    assert_raises(I18n::MissingTranslationData) { I18n.t(:foo, :locale => :de, :fallback => false, :raise => true) }
   end
 
   test "raises I18n::MissingTranslationData exception when no translation was found" do
-    assert_raise(I18n::MissingTranslationData) { I18n.t(:faa, :locale => :en, :raise => true) }
-    assert_raise(I18n::MissingTranslationData) { I18n.t(:faa, :locale => :de, :raise => true) }
+    assert_raises(I18n::MissingTranslationData) { I18n.t(:faa, :locale => :en, :raise => true) }
+    assert_raises(I18n::MissingTranslationData) { I18n.t(:faa, :locale => :de, :raise => true) }
   end
 
   test "should ensure that default is not splitted on new line char" do

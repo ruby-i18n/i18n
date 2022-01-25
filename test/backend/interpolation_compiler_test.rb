@@ -78,7 +78,7 @@ class InterpolationCompilerTest < I18n::TestCase
   end
 
   def test_raises_exception_when_argument_is_missing
-    assert_raise(I18n::MissingInterpolationArgument) do
+    assert_raises(I18n::MissingInterpolationArgument) do
       compile_and_interpolate('%{first} %{last}', :first => 'first')
     end
   end

@@ -14,14 +14,14 @@ class I18nLoadPathTest < I18n::TestCase
   end
 
   test "loading an empty yml file raises an InvalidLocaleData exception" do
-    assert_raise I18n::InvalidLocaleData do
+    assert_raises I18n::InvalidLocaleData do
       I18n.load_path = [[locales_dir + '/invalid/empty.yml']]
       I18n.t(:'foo.bar', :default => "baz")
     end
   end
 
   test "loading an invalid yml file raises an InvalidLocaleData exception" do
-    assert_raise I18n::InvalidLocaleData do
+    assert_raises I18n::InvalidLocaleData do
       I18n.load_path = [[locales_dir + '/invalid/syntax.yml']]
       I18n.t(:'foo.bar', :default => "baz")
     end
