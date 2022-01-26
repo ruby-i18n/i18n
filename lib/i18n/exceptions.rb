@@ -47,10 +47,12 @@ module I18n
 
   class MissingTranslation < ArgumentError
     module Base
+      PERMITTED_KEYS = [:scope].freeze
+
       attr_reader :locale, :key, :options
 
       def initialize(locale, key, options = EMPTY_HASH)
-        @key, @locale, @options = key, locale, options.dup
+        @key, @locale, @options = key, locale, options.slice(*PERMITTED_KEYS)
         options.each { |k, v| self.options[k] = v.inspect if v.is_a?(Proc) }
       end
 
