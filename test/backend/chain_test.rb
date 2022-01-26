@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'i18n/backend/chain'
 
 class I18nBackendChainTest < I18n::TestCase
   def setup

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'i18n/core_ext/hash'
-
 module I18n
   module Backend
     # Backend that chains multiple other backends and checks each of them when
