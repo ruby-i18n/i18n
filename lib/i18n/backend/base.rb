@@ -255,7 +255,7 @@ module I18n
         def load_json(filename)
           begin
             # Use #load_file as a proxy for a version of JSON where symbolize_names and freeze are supported.
-            if JSON.respond_to?(:load_file)
+            if ::JSON.respond_to?(:load_file)
               [::JSON.load_file(filename, symbolize_names: true, freeze: true), true]
             else
               [::JSON.parse(File.read(filename)), false]
