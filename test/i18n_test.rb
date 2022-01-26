@@ -487,4 +487,22 @@ class I18nTest < I18n::TestCase
       I18n.enforce_available_locales = false
     end
   end
+
+  test "can reserve a key" do
+    begin
+      reserved_keys_were = I18n::RESERVED_KEYS.dup
+
+      assert !I18n::RESERVED_KEYS.include?(:foo)
+      assert !I18n::RESERVED_KEYS.include?(:bar)
+
+      I18n.reserve_key(:foo)
+      I18n.reserve_key("bar")
+
+      assert I18n::RESERVED_KEYS.include?(:foo)
+      assert I18n::RESERVED_KEYS.include?(:bar)
+    ensure
+      I18n::RESERVED_KEYS = reserved_keys_were
+      I18n.instance_variable_set(:@reserved_keys_pattern, nil)
+    end
+  end
 end
