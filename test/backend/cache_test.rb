@@ -62,7 +62,7 @@ class I18nBackendCacheTest < I18n::TestCase
     I18n.t(:missing, :scope => :foo, :extra => true)
     assert_equal 1, I18n.cache_store.instance_variable_get(:@data).size
 
-    cache_key, entry = I18n.cache_store.instance_variable_get(:@data).first
+    _, entry = I18n.cache_store.instance_variable_get(:@data).first
     assert_equal({ scope: :foo }, entry.value.options)
   end
 
