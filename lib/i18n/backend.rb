@@ -12,6 +12,7 @@ module I18n
     autoload :Gettext,               'i18n/backend/gettext'
     autoload :InterpolationCompiler, 'i18n/backend/interpolation_compiler'
     autoload :KeyValue,              'i18n/backend/key_value'
+    autoload :LazyLoadable,          'i18n/backend/lazy_loadable'
     autoload :Memoize,               'i18n/backend/memoize'
     autoload :Metadata,              'i18n/backend/metadata'
     autoload :Pluralization,         'i18n/backend/pluralization'
