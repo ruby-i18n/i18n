@@ -242,15 +242,21 @@ module I18n
 
         # Loads a YAML translations file. The data must have locales as
         # toplevel keys.
-        def load_yml(filename)
-          begin
-            if YAML.respond_to?(:unsafe_load_file) # Psych 4.0 way
+        if YAML.respond_to?(:unsafe_load_file) && YAML.unsafe_load_file(File.expand_path("test_issue_606.yml", __dir__), symbolize_names: true).keys.first.encoding == Encoding::UTF_8
+          def load_yml(filename)
+            begin
               [YAML.unsafe_load_file(filename, symbolize_names: true, freeze: true), true]
-            else
-              [YAML.load_file(filename), false]
+            rescue TypeError, ScriptError, StandardError => e
+              raise InvalidLocaleData.new(filename, e.inspect)
             end
-          rescue TypeError, ScriptError, StandardError => e
-            raise InvalidLocaleData.new(filename, e.inspect)
+          end
+        else
+          def load_yml(filename)
+            begin
+              [YAML.load_file(filename), false]
+            rescue TypeError, ScriptError, StandardError => e
+              raise InvalidLocaleData.new(filename, e.inspect)
+            end
           end
         end
         alias_method :load_yaml, :load_yml
