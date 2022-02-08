@@ -110,4 +110,38 @@ module I18n
       super "can not load translations from #{filename}, the file type #{type} is not known"
     end
   end
+
+  class UnsupportedMethod < ArgumentError
+    attr_reader :method, :backend_klass, :msg
+    def initialize(method, backend_klass, msg)
+      @method = method
+      @backend_klass = backend_klass
+      @msg = msg
+      super "#{backend_klass} does not support the ##{method} method. #{msg}"
+    end
+  end
+
+  class InvalidFilenames < ArgumentError
+    NUMBER_OF_ERRORS_SHOWN = 20
+    def initialize(file_errors)
+      super <<~MSG
+        Found #{file_errors.count} error(s).
+        The first #{[file_errors.count, NUMBER_OF_ERRORS_SHOWN].min} error(s):
+        #{file_errors.map(&:message).first(NUMBER_OF_ERRORS_SHOWN).join("\n")}
+
+        To use the LazyLoadable backend:
+        1. Filenames must start with the locale.
+        2. An underscore must separate the locale with any optional text that follows.
+        3. The file must only contain translation data for the single locale.
+
+        Example:
+        "/config/locales/fr.yml" which contains:
+        ```yml
+          fr:
+            dog:
+              chien
+        ```
+      MSG
+    end
+  end
 end
