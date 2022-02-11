@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'pry'
 
 class I18nBackendFallbacksTranslateTest < I18n::TestCase
   class Backend < I18n::Backend::Simple
@@ -192,7 +193,7 @@ class I18nBackendFallbacksLocalizeTestWithMultipleThreads < I18n::TestCase
 end
 
 # See Issue #590
-class I18nBackendFallbacksSymbolReolveRestartsLookupAtOriginalLocale < I18n::TestCase
+class I18nBackendFallbacksSymbolResolveRestartsLookupAtOriginalLocale < I18n::TestCase
   class Backend < I18n::Backend::Simple
     include I18n::Backend::Fallbacks
   end
@@ -236,6 +237,29 @@ class I18nBackendFallbacksSymbolReolveRestartsLookupAtOriginalLocale < I18n::Tes
 
   test 'falls back to original locale when symbol resolved at fallback locale' do
     assert_equal({ 1 => 'S-Ɔ' }, I18n.t('calendars.gregorian.months.stand-alone.abbreviated', locale: :"ak-GH"))
+  end
+end
+
+# See Issue #617
+class RegressionTestFor617 < I18n::TestCase
+  class Backend < I18n::Backend::Simple
+    include I18n::Backend::Fallbacks
+  end
+
+  def setup
+    super
+    I18n.backend = Backend.new
+    I18n.enforce_available_locales = false
+    I18n.fallbacks = {:en=>[:en], :"en-US"=>[:"en-US", :en]}
+    I18n.locale = :'en-US'
+    store_translations(:"en-US", {})
+    store_translations(:en, :activerecord=>{:models=>{:product=>{:one=>"Product", :other=>"Products"}, :"product/ticket"=>{:one=>"Ticket", :other=>"Tickets"}}})
+  end
+
+  test 'model scope resolution' do
+    defaults = [:"product/ticket", :product, "Ticket"]
+    options = {:scope=>[:activerecord, :models], :count=>1, :default=> defaults}
+    assert_equal("Ticket", I18n.t(defaults.shift, **options))
   end
 end
 
