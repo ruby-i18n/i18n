@@ -74,7 +74,6 @@ module I18n
                 arg.strftime('%a, %d %b %Y')
               when Hash
                 arg.delete(:fallback_in_progress)
-                arg.delete(:fallback_original_locale)
                 arg.inspect
               else
                 arg.inspect

@@ -23,7 +23,6 @@ module I18n
     exception_handler
     fallback
     fallback_in_progress
-    fallback_original_locale
     format
     object
     raise
