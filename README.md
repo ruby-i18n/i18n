@@ -1,5 +1,6 @@
 # Ruby I18n
 
+[![Gem Version](https://badge.fury.io/rb/i18n.svg)](https://badge.fury.io/rb/i18n)
 [![Build Status](https://github.com/ruby-i18n/i18n/workflows/Ruby/badge.svg)](https://github.com/ruby-i18n/i18n/actions?query=workflow%3ARuby)
 
 Ruby internationalization and localization (i18n) solution.
