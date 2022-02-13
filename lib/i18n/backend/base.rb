@@ -35,7 +35,7 @@ module I18n
         if entry.nil? && options.key?(:default)
           entry = default(locale, key, options[:default], options)
         else
-          entry = resolve(locale, key, entry, options)
+          entry = resolve_entry(locale, key, entry, options)
         end
 
         count = options[:count]
@@ -154,6 +154,7 @@ module I18n
           end
           result unless result.is_a?(MissingTranslation)
         end
+        alias_method :resolve_entry, :resolve
 
         # Picks a translation from a pluralized mnemonic subkey according to English
         # pluralization rules :

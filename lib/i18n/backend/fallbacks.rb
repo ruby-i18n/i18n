@@ -64,13 +64,20 @@ module I18n
         throw(:exception, I18n::MissingTranslation.new(locale, key, options))
       end
 
-      def resolve(locale, object, subject, options = EMPTY_HASH)
+      def resolve_entry(locale, object, subject, options = EMPTY_HASH)
         return subject if options[:resolve] == false
-        return super unless subject.is_a?(Symbol)
-
         result = catch(:exception) do
-          options.delete(:fallback_in_progress)
-          I18n.translate(subject, **options.merge(locale: options[:fallback_original_locale], throw: true))
+          options.delete(:fallback_in_progress) if options.key?(:fallback_in_progress)
+
+          case subject
+          when Symbol
+            I18n.translate(subject, **options.merge(:locale => options[:fallback_original_locale], :throw => true))
+          when Proc
+            date_or_time = options.delete(:object) || object
+            resolve_entry(options[:fallback_original_locale], object, subject.call(date_or_time, **options))
+          else
+            subject
+          end
         end
         result unless result.is_a?(MissingTranslation)
       end

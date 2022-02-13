@@ -239,6 +239,28 @@ class I18nBackendFallbacksSymbolReolveRestartsLookupAtOriginalLocale < I18n::Tes
   end
 end
 
+# See Issue #617
+class RegressionTestFor617 < I18n::TestCase
+  class Backend < I18n::Backend::Simple
+    include I18n::Backend::Fallbacks
+  end
+
+  def setup
+    super
+    I18n.backend = Backend.new
+    I18n.enforce_available_locales = false
+    I18n.fallbacks = {:en=>[:en], :"en-US"=>[:"en-US", :en]}
+    I18n.locale = :'en-US'
+    store_translations(:"en-US", {})
+    store_translations(:en, :activerecord=>{:models=>{:product=>{:one=>"Product", :other=>"Products"}, :"product/ticket"=>{:one=>"Ticket", :other=>"Tickets"}}})
+  end
+
+  test 'model scope resolution' do
+    defaults = [:product, "Ticket"]
+    options = {:scope=>[:activerecord, :models], :count=>1, :default=> defaults}
+    assert_equal("Ticket", I18n.t(:"product/ticket", **options))
+  end
+end
 
 class I18nBackendFallbacksLocalizeTest < I18n::TestCase
   class Backend < I18n::Backend::Simple

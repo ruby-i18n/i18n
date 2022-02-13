@@ -94,7 +94,7 @@ module I18n
               return nil unless result.has_key?(_key)
             end
             result = result[_key]
-            result = resolve(locale, _key, result, options.merge(:scope => nil)) if result.is_a?(Symbol)
+            result = resolve_entry(locale, _key, result, options.merge(:scope => nil)) if result.is_a?(Symbol)
             result
           end
         end
