@@ -184,11 +184,15 @@ module I18n
         #   method interpolates ["yes, %{user}", ["maybe no, %{user}, "no, %{user}"]], :user => "bartuz"
         #   # => "["yes, bartuz",["maybe no, bartuz", "no, bartuz"]]"
         def interpolate(locale, subject, values = EMPTY_HASH)
-          return subject if values.empty?
-
           case subject
-          when ::String then I18n.interpolate(subject, values)
-          when ::Array then subject.map { |element| interpolate(locale, element, values) }
+          when ::String
+            if I18n.config.interpolation_patterns.any? { |pattern| pattern =~ subject }
+              I18n.interpolate(subject, values)
+            else
+              subject
+            end
+          when ::Array
+            subject.map { |element| interpolate(locale, element, values) }
           else
             subject
           end

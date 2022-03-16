@@ -42,6 +42,13 @@ class I18nInterpolateTest < I18n::TestCase
     end
   end
 
+  test "String interpolation raises an I18n::MissingInterpolationArgument when the string misses certain placeholder" do
+    store_translations(I18n.default_locale, "interpolation_missing" => '%{string} is missing')
+
+    assert_nothing_raised { I18n.t("interpolation_missing", string: "nothing") }
+    assert_raises(I18n::MissingInterpolationArgument) { I18n.t("interpolation_missing") }
+  end
+
   test "String interpolation does not raise when extra values were passed" do
     assert_nothing_raised do
       assert_equal "Masao Mutoh", I18n.interpolate("%{first} %{last}", :first => 'Masao', :last => 'Mutoh', :salutation => 'Mr.' )
