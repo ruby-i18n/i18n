@@ -214,18 +214,12 @@ module I18n
 
       backend = config.backend
 
-      result = catch(:exception) do
-        if key.is_a?(Array)
-          key.map { |k| backend.translate(locale, k, options) }
-        else
-          backend.translate(locale, key, options)
+      if key.is_a?(Array)
+        key.map do |k|
+          translate_key(k, throw, raise, locale, backend, options)
         end
-      end
-
-      if result.is_a?(MissingTranslation)
-        handle_exception((throw && :throw || raise && :raise), result, locale, key, options)
       else
-        result
+        translate_key(key, throw, raise, locale, backend, options)
       end
     end
     alias :t :translate
@@ -363,6 +357,18 @@ module I18n
     end
 
   private
+
+    def translate_key(key, throw, raise, locale, backend, options)
+      result = catch(:exception) do
+        backend.translate(locale, key, options)
+      end
+
+      if result.is_a?(MissingTranslation)
+        handle_exception((throw && :throw || raise && :raise), result, locale, key, options)
+      else
+        result
+      end
+    end
 
     # Any exceptions thrown in translate will be sent to the @@exception_handler
     # which can be a Symbol, a Proc or any other Object unless they're forced to
