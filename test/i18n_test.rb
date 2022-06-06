@@ -212,6 +212,13 @@ class I18nTest < I18n::TestCase
     assert_equal "translation missing: en.bogus", I18n.t(:bogus)
   end
 
+  test "translate given multiple bogus keys returns the first error message" do
+    assert_equal(
+      "translation missing: en.bogus",
+      I18n.t([:bogus, :also_bogus]),
+    )
+  end
+
   test "translate given an empty string as a key raises an I18n::ArgumentError" do
     assert_raises(I18n::ArgumentError) { I18n.t("") }
   end
