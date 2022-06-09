@@ -16,7 +16,7 @@ class I18nMiddlewareTest < I18n::TestCase
     refute_equal updated_i18n_config_object_id, old_i18n_config_object_id
   end
 
-  test "succesfully resets i18n locale to default locale by defining new config" do
+  test "successfully resets i18n locale to default locale by defining new config" do
     @middleware.call({})
 
     assert_equal :fr, I18n.locale
