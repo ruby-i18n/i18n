@@ -107,7 +107,7 @@ module I18n
       private
 
         # Overwrite on_fallback to add specified logic when the fallback succeeds.
-        def on_fallback(_original_locale, _fallback_locale, _key, _optoins)
+        def on_fallback(_original_locale, _fallback_locale, _key, _options)
           nil
         end
     end
