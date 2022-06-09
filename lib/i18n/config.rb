@@ -106,7 +106,7 @@ module I18n
     # if you don't care about arity.
     #
     # == Example:
-    # You can supress raising an exception and return string instead:
+    # You can suppress raising an exception and return string instead:
     #
     #   I18n.config.missing_interpolation_argument_handler = Proc.new do |key|
     #     "#{key} is missing"
