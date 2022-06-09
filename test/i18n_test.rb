@@ -379,7 +379,7 @@ class I18nTest < I18n::TestCase
     assert_equal I18n.default_locale, I18n.locale
   end
 
-  test "I18n.translitarate handles I18n::ArgumentError exception" do
+  test "I18n.transliterate handles I18n::ArgumentError exception" do
     I18n::Backend::Transliterator.stubs(:get).raises(I18n::ArgumentError)
     I18n.exception_handler.expects(:call).raises(I18n::ArgumentError)
     assert_raises(I18n::ArgumentError) {
@@ -387,7 +387,7 @@ class I18nTest < I18n::TestCase
     }
   end
 
-  test "I18n.translitarate raises I18n::ArgumentError exception" do
+  test "I18n.transliterate raises I18n::ArgumentError exception" do
     I18n::Backend::Transliterator.stubs(:get).raises(I18n::ArgumentError)
     I18n.exception_handler.expects(:call).never
     assert_raises(I18n::ArgumentError) {
