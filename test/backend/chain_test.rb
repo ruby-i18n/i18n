@@ -78,7 +78,7 @@ class I18nBackendChainTest < I18n::TestCase
       "Bah"], I18n.t([:formats, :plural_2, :bah], :default => 'Bah')
   end
 
-  test "store_translations options are not dropped while transfering to backend" do
+  test "store_translations options are not dropped while transferring to backend" do
     @first.expects(:store_translations).with(:foo, {:bar => :baz}, {:option => 'persists'})
     I18n.backend.store_translations :foo, {:bar => :baz}, {:option => 'persists'}
   end
