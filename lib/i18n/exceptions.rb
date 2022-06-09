@@ -24,7 +24,7 @@ module I18n
         been set is likely to display text from the wrong locale to some users.
 
         If you have a legitimate reason to access i18n data outside of the user flow, you can do so by passing
-        the desired locale explictly with the `locale` argument, e.g. `I18n.#{method}(..., locale: :en)`
+        the desired locale explicitly with the `locale` argument, e.g. `I18n.#{method}(..., locale: :en)`
       MESSAGE
     end
   end
