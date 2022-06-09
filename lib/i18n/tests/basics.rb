@@ -26,7 +26,7 @@ module I18n
         assert_equal I18n.available_locales, I18n.backend.available_locales
       end
 
-      test "available_locales memoizes when set explicitely" do
+      test "available_locales memoizes when set explicitly" do
         I18n.backend.expects(:available_locales).never
         I18n.available_locales = [:foo]
         I18n.backend.store_translations('de', :bar => 'baz')
@@ -34,7 +34,7 @@ module I18n
         assert_equal [:foo], I18n.available_locales
       end
 
-      test "available_locales delegates to the backend when not set explicitely" do
+      test "available_locales delegates to the backend when not set explicitly" do
         original_available_locales_value = I18n.backend.available_locales
         I18n.backend.expects(:available_locales).returns(original_available_locales_value).twice
         assert_equal I18n.backend.available_locales, I18n.available_locales
