@@ -192,7 +192,7 @@ class I18nBackendFallbacksLocalizeTestWithMultipleThreads < I18n::TestCase
 end
 
 # See Issue #590
-class I18nBackendFallbacksSymbolReolveRestartsLookupAtOriginalLocale < I18n::TestCase
+class I18nBackendFallbacksSymbolResolveRestartsLookupAtOriginalLocale < I18n::TestCase
   class Backend < I18n::Backend::Simple
     include I18n::Backend::Fallbacks
   end
