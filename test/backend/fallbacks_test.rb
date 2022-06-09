@@ -29,7 +29,7 @@ class I18nBackendFallbacksTranslateTest < I18n::TestCase
   end
 
   test "keeps the count option when defaulting to a different key" do
-    assert_equal 'Interpolate 5 10', I18n.t(:non_existant, default: :interpolate_count, count: 10, value: 5)
+    assert_equal 'Interpolate 5 10', I18n.t(:non_existent, default: :interpolate_count, count: 10, value: 5)
   end
 
   test "returns the :de translation for a missing :'de-DE' when :default is a String" do
