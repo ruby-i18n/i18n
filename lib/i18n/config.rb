@@ -38,7 +38,7 @@ module I18n
     end
 
     # Returns an array of locales for which translations are available.
-    # Unless you explicitely set these through I18n.available_locales=
+    # Unless you explicitly set these through I18n.available_locales=
     # the call will be delegated to the backend.
     def available_locales
       @@available_locales ||= nil
@@ -106,7 +106,7 @@ module I18n
     # if you don't care about arity.
     #
     # == Example:
-    # You can supress raising an exception and return string instead:
+    # You can suppress raising an exception and return string instead:
     #
     #   I18n.config.missing_interpolation_argument_handler = Proc.new do |key|
     #     "#{key} is missing"

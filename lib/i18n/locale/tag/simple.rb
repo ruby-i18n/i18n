@@ -1,5 +1,5 @@
 # Simple Locale tag implementation that computes subtags by simply splitting
-# the locale tag at '-' occurences.
+# the locale tag at '-' occurrences.
 module I18n
   module Locale
     module Tag
