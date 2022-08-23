@@ -47,4 +47,14 @@ class I18nBackendPluralizationTest < I18n::TestCase
   test "Fallbacks can pick up rules from fallback locales, too" do
     assert_equal @rule, I18n.backend.send(:pluralizer, :'xx-XX')
   end
+
+  test "linked lookup works with pluralization backend" do
+    I18n.backend.store_translations(:xx, {
+      :automobiles => :autos,
+      :autos => :cars,
+      :cars => { :porsche => { :one => "I have %{count} Porsche 🚗", :other => "I have %{count} Porsches 🚗" } }
+    })
+    assert_equal "I have 1 Porsche 🚗", I18n.t(:'automobiles.porsche', count: 1, :locale => :xx)
+    assert_equal "I have 20 Porsches 🚗", I18n.t(:'automobiles.porsche', count: 20, :locale => :xx)
+  end
 end
