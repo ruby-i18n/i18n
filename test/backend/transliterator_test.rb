@@ -42,7 +42,7 @@ class I18nBackendTransliterator < I18n::TestCase
     # create string with range of Unicode's western characters with
     # diacritics, excluding the division and multiplication signs which for
     # some reason or other are floating in the middle of all the letters.
-    string = (0xC0..0x17E).to_a.reject {|c| [0xD7, 0xF7].include? c}.pack("U*")
+    string = (0xC0..0x17E).to_a.reject {|c| [0xD7, 0xF7].include? c}.append(0x1E9E).pack("U*")
     string.split(//) do |char|
       assert_match %r{^[a-zA-Z']*$}, @transliterator.transliterate(string)
     end
