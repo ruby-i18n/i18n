@@ -34,6 +34,11 @@ module I18n
           assert_equal 'Sa', I18n.l(@date, :format => '%a', :locale => :de)
         end
 
+        test "localize Date: given an meridian indicator format it returns the correct meridian indicator" do
+          assert_equal 'AM', I18n.l(@date, :format => '%p', :locale => :de)
+          assert_equal 'am', I18n.l(@date, :format => '%P', :locale => :de)
+        end
+
         test "localize Date: given an abbreviated and uppercased day name format it returns the correct abbreviated day name in upcase" do
           assert_equal 'sa'.upcase, I18n.l(@date, :format => '%^a', :locale => :de)
         end
