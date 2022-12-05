@@ -21,6 +21,9 @@ module I18n
     class Simple
       module Implementation
         include Base
+        
+        # Mutex to ensure that concurrent translations loading will be thread-safe
+        MUTEX = Mutex.new
 
         def initialized?
           @initialized ||= false
@@ -68,7 +71,11 @@ module I18n
           # call `init_translations`
           init_translations if do_init && !initialized?
 
-          @translations ||= Concurrent::Hash.new { |h, k| h[k] = Concurrent::Hash.new }
+          @translations ||= Concurrent::Hash.new do |h, k|
+            MUTEX.synchronize do
+              h[k] = Concurrent::Hash.new
+            end
+          end
         end
 
       protected
