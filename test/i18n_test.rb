@@ -303,6 +303,10 @@ class I18nTest < I18n::TestCase
     assert_equal true, I18n.exists?(:currency, :nl)
   end
 
+  test "exists? given an existing key and a scope will return true" do
+    assert_equal true, I18n.exists?(:delimiter, scope: [:currency, :format])
+  end
+
   test "exists? given a non-existing key and an existing locale will return false" do
     assert_equal false, I18n.exists?(:bogus, :nl)
   end

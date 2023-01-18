@@ -66,7 +66,7 @@ module I18n
       end
 
       def exists?(locale, key, options = EMPTY_HASH)
-        lookup(locale, key) != nil
+        lookup(locale, key, options[:scope]) != nil
       end
 
       # Acts the same as +strftime+, but uses a localized version of the
