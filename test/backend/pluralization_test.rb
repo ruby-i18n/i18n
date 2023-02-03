@@ -62,6 +62,23 @@ class I18nBackendPluralizationTest < I18n::TestCase
     assert_equal 'one', I18n.t(:count => 1, :default => @entry, :locale => :pirate)
   end
 
+  test "Nested keys within pluralization context" do
+    store_translations(:xx,
+      :stars => {
+        one: "%{count} star",
+        other: "%{count} stars",
+        special: {
+          one: "%{count} special star",
+          other: "%{count} special stars",
+        }
+      }
+    )
+    assert_equal "1 star", I18n.t('stars', count: 1, :locale => :xx)
+    assert_equal "20 stars", I18n.t('stars', count: 20, :locale => :xx)
+    assert_equal "1 special star", I18n.t('stars.special', count: 1, :locale => :xx)
+    assert_equal "20 special stars", I18n.t('stars.special', count: 20, :locale => :xx)
+  end
+
   test "Fallbacks can pick up rules from fallback locales, too" do
     assert_equal @rule, I18n.backend.send(:pluralizer, :'xx-XX')
   end

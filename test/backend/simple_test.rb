@@ -209,6 +209,23 @@ class I18nBackendSimpleTest < I18n::TestCase
     assert_equal true, I18n.backend.initialized?
   end
 
+  test "Nested keys within pluralization context" do
+    store_translations(:en,
+      :stars => {
+        one: "%{count} star",
+        other: "%{count} stars",
+        special: {
+          one: "%{count} special star",
+          other: "%{count} special stars",
+        }
+      }
+    )
+    assert_equal "1 star", I18n.t('stars', count: 1, :locale => :en)
+    assert_equal "20 stars", I18n.t('stars', count: 20, :locale => :en)
+    assert_equal "1 special star", I18n.t('stars.special', count: 1, :locale => :en)
+    assert_equal "20 special stars", I18n.t('stars.special', count: 20, :locale => :en)
+  end
+
   test "returns localized string given missing pluralization data" do
     assert_equal 'baz', I18n.t('foo.bar', count: 1)
   end
