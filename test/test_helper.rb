@@ -44,6 +44,16 @@ class I18n::TestCase < Minitest::Test
   def locales_dir
     File.dirname(__FILE__) + '/test_data/locales'
   end
+
+  def stub_const(klass, constant, new_value)
+    old_value = klass.const_get(constant)
+    klass.send(:remove_const, constant)
+    klass.const_set(constant, new_value)
+    yield
+  ensure
+    klass.send(:remove_const, constant)
+    klass.const_set(constant, old_value)
+  end
 end
 
 class DummyRackApp

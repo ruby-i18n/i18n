@@ -501,18 +501,14 @@ class I18nTest < I18n::TestCase
 
   test "can reserve a key" do
     begin
-      reserved_keys_were = I18n::RESERVED_KEYS.dup
+      stub_const(I18n, :RESERVED_KEYS, []) do
+        I18n.reserve_key(:foo)
+        I18n.reserve_key("bar")
 
-      assert !I18n::RESERVED_KEYS.include?(:foo)
-      assert !I18n::RESERVED_KEYS.include?(:bar)
-
-      I18n.reserve_key(:foo)
-      I18n.reserve_key("bar")
-
-      assert I18n::RESERVED_KEYS.include?(:foo)
-      assert I18n::RESERVED_KEYS.include?(:bar)
+        assert I18n::RESERVED_KEYS.include?(:foo)
+        assert I18n::RESERVED_KEYS.include?(:bar)
+      end
     ensure
-      I18n::RESERVED_KEYS = reserved_keys_were
       I18n.instance_variable_set(:@reserved_keys_pattern, nil)
     end
   end
