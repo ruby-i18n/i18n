@@ -28,7 +28,11 @@ module I18n
 
     def interpolate_hash(string, values)
       pattern = INTERPOLATION_PATTERNS_CACHE[config.interpolation_patterns]
-      string.gsub(pattern) do |match|
+      interpolated = false
+
+      interpolated_string = string.gsub(pattern) do |match|
+        interpolated = true
+
         if match == '%%'
           '%'
         else
@@ -42,6 +46,8 @@ module I18n
           $3 ? sprintf("%#{$3}", value) : value
         end
       end
+
+      interpolated ? interpolated_string : string
     end
   end
 end

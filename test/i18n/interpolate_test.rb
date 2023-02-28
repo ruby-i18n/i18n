@@ -65,8 +65,14 @@ class I18nInterpolateTest < I18n::TestCase
     end
 
   end
+
   test "with String subclass that redefined gsub method" do
     assert_equal "Hello mars world", I18n.interpolate(RailsSafeBuffer.new("Hello %{planet} world"), :planet => 'mars') 
+  end
+
+  test "with String subclass that redefined gsub method returns same object if no interpolations" do
+    string = RailsSafeBuffer.new("Hello world")
+    assert_same string, I18n.interpolate(string, :planet => 'mars')
   end
 end
 
