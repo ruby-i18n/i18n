@@ -54,7 +54,7 @@ module I18n
         end
 
         deep_interpolation = options[:deep_interpolation]
-        values = Utils.except(options, *RESERVED_KEYS)
+        values = Utils.except(options, *RESERVED_KEYS) unless options.empty?
         if values
           entry = if deep_interpolation
             deep_interpolate(locale, entry, values)
@@ -123,7 +123,12 @@ module I18n
         # first translation that can be resolved. Otherwise it tries to resolve
         # the translation directly.
         def default(locale, object, subject, options = EMPTY_HASH)
-          options = options.reject { |key, value| key == :default }
+          if options.size == 1 && options.has_key?(:default)
+            options = {}
+          else
+            options = Utils.except(options, :default)
+          end
+
           case subject
           when Array
             subject.each do |item|
