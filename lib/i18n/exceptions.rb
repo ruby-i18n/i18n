@@ -47,7 +47,7 @@ module I18n
 
   class MissingTranslation < ArgumentError
     module Base
-      PERMITTED_KEYS = [:scope].freeze
+      PERMITTED_KEYS = [:scope, :default].freeze
 
       attr_reader :locale, :key, :options
 
@@ -63,8 +63,18 @@ module I18n
       end
 
       def message
-        "translation missing: #{keys.join('.')}"
+        if options[:default].is_a?(Array)
+          other_options = ([key, *options[:default]]).map { |k| normalized_option(k).prepend('- ') }.join("\n")
+          "Translation missing. Options considered were:\n#{other_options}"
+        else
+          "Translation missing: #{keys.join('.')}"
+        end
       end
+
+      def normalized_option(key)
+        I18n.normalize_keys(locale, key, options[:scope]).join('.')
+      end
+
       alias :to_s :message
 
       def to_exception

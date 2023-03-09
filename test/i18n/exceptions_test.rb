@@ -32,6 +32,12 @@ class I18nExceptionsTest < I18n::TestCase
     end
   end
 
+  test "MissingTranslationData message contains all potential options" do
+    force_missing_translation_data(default: [:option_a, :option_b]) do |exception|
+      assert_equal "translation missing. Options considered were:\n- de.bar.option_a, \n- de.bar.option_a", exception.message
+    end
+  end
+
   test "InvalidPluralizationData stores entry, count and key" do
     force_invalid_pluralization_data do |exception|
       assert_equal({:other => "bar"}, exception.entry)
