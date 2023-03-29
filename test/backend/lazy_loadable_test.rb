@@ -7,7 +7,7 @@ class I18nBackendLazyLoadableTest < I18n::TestCase
     @lazy_mode_backend = I18n::Backend::LazyLoadable.new(lazy_load: true)
     @eager_mode_backend = I18n::Backend::LazyLoadable.new(lazy_load: false)
 
-    I18n.load_path = [File.join(locales_dir, '/en.yml'), File.join(locales_dir,  '/fr.yml')]
+    I18n.load_path = [File.join(locales_dir, '/en.yml'), File.join(locales_dir, '/en.yaml'), File.join(locales_dir,  '/fr.yml')]
   end
 
   test "lazy mode: only loads translations for current locale" do

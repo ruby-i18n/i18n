@@ -98,7 +98,7 @@ module I18n
       # Parse the load path and extract all locales.
       def available_locales
         if lazy_load?
-          I18n.load_path.map { |path| LocaleExtractor.locale_from_path(path) }
+          I18n.load_path.map { |path| LocaleExtractor.locale_from_path(path) }.uniq
         else
           super
         end
