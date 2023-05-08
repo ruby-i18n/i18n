@@ -331,9 +331,8 @@ module I18n
     # keys are Symbols.
     def normalize_keys(locale, key, scope, separator = nil)
       separator ||= I18n.default_separator
-      locale = locale.to_sym if locale
 
-      result = [locale]
+      result = locale ? normalize_key(locale, separator) : [locale]
       result.concat(normalize_key(scope, separator)) if scope
       result.concat(normalize_key(key, separator))
     end

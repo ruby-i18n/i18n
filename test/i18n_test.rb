@@ -140,6 +140,10 @@ class I18nTest < I18n::TestCase
     assert_equal [:en, :foo, :bar, :baz, :buz], I18n.normalize_keys(:en, :'baz|buz', :'foo|bar', '|')
   end
 
+  test "normalize_keys normalizes given locale with separator" do
+    assert_equal [:en, :foo, :bar, :baz], I18n.normalize_keys(:"en.foo", :baz, :bar)
+  end
+
   test "can set the exception_handler" do
     begin
       previous_exception_handler = I18n.exception_handler
