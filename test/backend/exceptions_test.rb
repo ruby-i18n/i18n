@@ -10,7 +10,7 @@ class I18nBackendExceptionsTest < I18n::TestCase
     exception = catch(:exception) do
       I18n.t(:'baz.missing', :scope => :'foo.bar', :throw => true)
     end
-    assert_equal "translation missing: en.foo.bar.baz.missing", exception.message
+    assert_equal "Translation missing: en.foo.bar.baz.missing", exception.message
   end
 
   test "exceptions: MissingTranslationData message from #translate includes the given scope and full key" do
@@ -18,7 +18,7 @@ class I18nBackendExceptionsTest < I18n::TestCase
       I18n.t(:'baz.missing', :scope => :'foo.bar', :raise => true)
     rescue I18n::MissingTranslationData => exception
     end
-    assert_equal "translation missing: en.foo.bar.baz.missing", exception.message
+    assert_equal "Translation missing: en.foo.bar.baz.missing", exception.message
   end
 
   test "exceptions: MissingTranslationData message from #localize includes the given scope and full key" do
@@ -26,7 +26,7 @@ class I18nBackendExceptionsTest < I18n::TestCase
       I18n.l(Time.now, :format => :foo)
     rescue I18n::MissingTranslationData => exception
     end
-    assert_equal "translation missing: en.time.formats.foo", exception.message
+    assert_equal "Translation missing: en.time.formats.foo", exception.message
   end
 
   test "exceptions: MissingInterpolationArgument message includes missing key, provided keys and full string" do
