@@ -209,16 +209,16 @@ class I18nTest < I18n::TestCase
   end
 
   # def test_translate_given_no_args_raises_missing_translation_data
-  #   assert_equal "translation missing: en, no key", I18n.t
+  #   assert_equal "Translation missing: en, no key", I18n.t
   # end
 
   test "translate given a bogus key returns an error message" do
-    assert_equal "translation missing: en.bogus", I18n.t(:bogus)
+    assert_equal "Translation missing: en.bogus", I18n.t(:bogus)
   end
 
   test "translate given multiple bogus keys returns an array of error messages" do
     assert_equal(
-      ["translation missing: en.bogus", "translation missing: en.also_bogus"],
+      ["Translation missing: en.bogus", "Translation missing: en.also_bogus"],
       I18n.t([:bogus, :also_bogus]),
     )
   end
@@ -266,7 +266,7 @@ class I18nTest < I18n::TestCase
         I18n.t('foo')
       end
 
-      assert_equal 'translation missing: en.foo', I18n.t('foo', locale: :en)
+      assert_equal 'Translation missing: en.foo', I18n.t('foo', locale: :en)
     end
   end
 

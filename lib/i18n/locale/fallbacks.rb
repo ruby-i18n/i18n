@@ -74,7 +74,6 @@ module I18n
               @map[from] << _to.to_sym
             end
           end
-          replace @map
         else
           @map.map(*args, &block)
         end

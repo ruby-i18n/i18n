@@ -60,7 +60,7 @@ module I18n
         end
 
         test "localize DateTime: given missing translations it returns the correct error message" do
-          assert_equal 'translation missing: fr.date.abbr_month_names', I18n.l(@datetime, :format => '%b', :locale => :fr)
+          assert_equal 'Translation missing: fr.date.abbr_month_names', I18n.l(@datetime, :format => '%b', :locale => :fr)
         end
 
         test "localize DateTime: given a meridian indicator format it returns the correct meridian indicator" do

@@ -60,8 +60,14 @@ class I18nBackendFallbacksTranslateTest < I18n::TestCase
     assert_nil I18n.t(:missing_bar, :locale => :'de-DE', :default => nil)
   end
 
-  test "returns the translation missing message if the default is also missing" do
-    assert_equal 'translation missing: de-DE.missing_bar', I18n.t(:missing_bar, :locale => :'de-DE', :default => [:missing_baz])
+  test "returns the Translation missing: message if the default is also missing" do
+    translation_missing_message = <<~MSG
+      Translation missing. Options considered were:
+      - de-DE.missing_bar
+      - de-DE.missing_baz
+    MSG
+
+    assert_equal translation_missing_message.chomp, I18n.t(:missing_bar, :locale => :'de-DE', :default => [:missing_baz])
   end
 
   test "returns the :'de-DE' default :baz translation for a missing :'de-DE' when defaults contains Symbol" do
