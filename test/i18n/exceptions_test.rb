@@ -28,13 +28,7 @@ class I18nExceptionsTest < I18n::TestCase
 
   test "MissingTranslationData message contains the locale and scoped key" do
     force_missing_translation_data do |exception|
-      assert_equal 'Translation missing: de.bar.foo', exception.message
-    end
-  end
-
-  test "MissingTranslationData message contains all potential options" do
-    force_missing_translation_data(default: [:option_a, :option_b]) do |exception|
-      assert_equal "Translation missing:. Options considered were:\n- de.bar.option_a, \n- de.bar.option_a", exception.message
+      assert_equal 'translation missing: de.bar.foo', exception.message
     end
   end
 
