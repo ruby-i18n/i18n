@@ -332,9 +332,11 @@ module I18n
     def normalize_keys(locale, key, scope, separator = nil)
       separator ||= I18n.default_separator
 
-      result = locale ? normalize_key(locale, separator) : [locale]
-      result.concat(normalize_key(scope, separator)) if scope
-      result.concat(normalize_key(key, separator))
+      [
+        *normalize_key(locale, separator),
+        *normalize_key(scope, separator),
+        *normalize_key(key, separator)
+      ]
     end
 
     # Returns true when the passed locale, which can be either a String or a
