@@ -62,8 +62,9 @@ class I18nBackendCacheTest < I18n::TestCase
     I18n.t(:missing, :scope => :foo, :extra => true)
     assert_equal 1, I18n.cache_store.instance_variable_get(:@data).size
 
-    _, entry = I18n.cache_store.instance_variable_get(:@data).first
-    assert_equal({ scope: :foo }, entry.value.options)
+    value = I18n.cache_store.read(I18n.cache_store.instance_variable_get(:@data).keys.first)
+
+    assert_equal({ scope: :foo }, value.options)
   end
 
   test "uses 'i18n' as a cache key namespace by default" do
