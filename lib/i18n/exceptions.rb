@@ -63,8 +63,8 @@ module I18n
       end
 
       def message
-        if options[:default].is_a?(Array)
-          other_options = ([key, *options[:default]]).map { |k| normalized_option(k).prepend('- ') }.join("\n")
+        if (default = options[:default]).is_a?(Array) && default.any?
+          other_options = ([key, *default]).map { |k| normalized_option(k).prepend('- ') }.join("\n")
           "Translation missing. Options considered were:\n#{other_options}"
         else
           "Translation missing: #{keys.join('.')}"
