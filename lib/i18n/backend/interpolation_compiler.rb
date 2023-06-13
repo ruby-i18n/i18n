@@ -22,7 +22,7 @@ module I18n
         extend self
 
         TOKENIZER                    = /(%%?\{[^}]+\})/
-        INTERPOLATION_SYNTAX_PATTERN = /(%)?(%\{([^\}]+)\})/
+        INTERPOLATION_SYNTAX_PATTERN = /(%%?)\{([^}]+)\}/
 
         def compile_if_an_interpolation(string)
           if interpolated_str?(string)
@@ -53,8 +53,8 @@ module I18n
         end
 
         def handle_interpolation_token(interpolation, matchdata)
-          escaped, pattern, key = matchdata.values_at(1, 2, 3)
-          escaped ? pattern : compile_interpolation_token(key.to_sym)
+          escaped, key = matchdata.values_at(1, 2)
+          escaped == '%%' ? "%{#{key}}" : compile_interpolation_token(key.to_sym)
         end
 
         def compile_interpolation_token(key)
