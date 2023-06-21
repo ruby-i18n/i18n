@@ -21,8 +21,7 @@ module I18n
       module Compiler
         extend self
 
-        TOKENIZER                    = /(%%?\{[^}]+\})/
-        INTERPOLATION_SYNTAX_PATTERN = /(%)?(%\{([^\}]+)\})/
+        TOKENIZER = /(%%?\{[^}]+\})/
 
         def compile_if_an_interpolation(string)
           if interpolated_str?(string)
@@ -37,7 +36,7 @@ module I18n
         end
 
         def interpolated_str?(str)
-          str.kind_of?(::String) && str =~ INTERPOLATION_SYNTAX_PATTERN
+          str.kind_of?(::String) && str =~ TOKENIZER
         end
 
         protected
@@ -48,13 +47,12 @@ module I18n
 
         def compiled_interpolation_body(str)
           tokenize(str).map do |token|
-            (matchdata = token.match(INTERPOLATION_SYNTAX_PATTERN)) ? handle_interpolation_token(token, matchdata) : escape_plain_str(token)
+            token.match(TOKENIZER) ? handle_interpolation_token(token) : escape_plain_str(token)
           end.join
         end
 
-        def handle_interpolation_token(interpolation, matchdata)
-          escaped, pattern, key = matchdata.values_at(1, 2, 3)
-          escaped ? pattern : compile_interpolation_token(key.to_sym)
+        def handle_interpolation_token(token)
+          token.start_with?('%%') ? token[1..] : compile_interpolation_token(token[2..-2])
         end
 
         def compile_interpolation_token(key)
