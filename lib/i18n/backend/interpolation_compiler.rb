@@ -21,7 +21,7 @@ module I18n
       module Compiler
         extend self
 
-        TOKENIZER                    = /(%%\{[^\}]+\}|%\{[^\}]+\})/
+        TOKENIZER                    = /(%%?\{[^}]+\})/
         INTERPOLATION_SYNTAX_PATTERN = /(%)?(%\{([^\}]+)\})/
 
         def compile_if_an_interpolation(string)
