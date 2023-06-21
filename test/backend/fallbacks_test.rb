@@ -312,7 +312,7 @@ class I18nBackendFallbacksWithChainTest < I18n::TestCase
   def setup
     super
     backend = Backend.new
-    backend.store_translations(:de, :foo => 'FOO')
+    backend.store_translations(:de, :foo => 'FOO', :nested => { key: "value" })
     backend.store_translations(:'pt-BR', :foo => 'Baz in :pt-BR')
     I18n.backend = Chain.new(I18n::Backend::Simple.new, backend)
   end
@@ -323,6 +323,10 @@ class I18nBackendFallbacksWithChainTest < I18n::TestCase
 
   test "exists? falls back from de-DE to de given a key missing from the given locale" do
     assert_equal true, I18n.exists?(:foo, :locale => :'de-DE')
+  end
+
+  test "exists? passes along the scope option" do
+    assert_equal true, I18n.exists?(:key, :locale => :'de-DE', scope: :nested)
   end
 
   test "exists? should return false when fallback disabled given a key missing from the given locale" do

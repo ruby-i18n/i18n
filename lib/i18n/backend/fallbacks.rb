@@ -95,7 +95,7 @@ module I18n
         return super unless options.fetch(:fallback, true)
         I18n.fallbacks[locale].each do |fallback|
           begin
-            return true if super(fallback, key)
+            return true if super(fallback, key, options)
           rescue I18n::InvalidLocale
             # we do nothing when the locale is invalid, as this is a fallback anyways.
           end
