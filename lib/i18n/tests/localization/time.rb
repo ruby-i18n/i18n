@@ -19,10 +19,9 @@ module I18n
           assert_equal '01. März 2008 06:00', I18n.l(@time, :format => :long, :locale => :de)
         end
 
-        # TODO Seems to break on Windows because ENV['TZ'] is ignored. What's a better way to do this?
-        # def test_localize_given_the_default_format_it_uses_it
-        #   assert_equal 'Sa, 01. Mar 2008 06:00:00 +0000', I18n.l(@time, :format => :default, :locale => :de)
-        # end
+        test "localize Time: given the default format it uses it" do
+          assert_equal 'Sa, 01. Mär 2008 06:00:00 +0000', I18n.l(@time, :format => :default, :locale => :de)
+        end
 
         test "localize Time: given a day name format it returns the correct day name" do
           assert_equal 'Samstag', I18n.l(@time, :format => '%A', :locale => :de)
