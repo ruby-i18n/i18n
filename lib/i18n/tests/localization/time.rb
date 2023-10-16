@@ -23,6 +23,10 @@ module I18n
           assert_equal 'Sa, 01. Mär 2008 06:00:00 +0000', I18n.l(@time, :format => :default, :locale => :de)
         end
 
+        test "localize Time: given no format it uses the default" do
+          assert_equal 'Sa, 01. Mär 2008 06:00:00 +0000', I18n.l(@time, :locale => :de)
+        end
+
         test "localize Time: given a day name format it returns the correct day name" do
           assert_equal 'Samstag', I18n.l(@time, :format => '%A', :locale => :de)
         end
