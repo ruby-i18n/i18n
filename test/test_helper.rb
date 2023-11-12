@@ -1,7 +1,7 @@
 require 'minitest/autorun'
 require 'bundler/setup'
 require 'i18n'
-require 'mocha/setup'
+require 'mocha/minitest'
 require 'test_declarative'
 
 class I18n::TestCase < Minitest::Test
