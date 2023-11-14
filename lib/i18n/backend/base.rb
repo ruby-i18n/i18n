@@ -55,12 +55,14 @@ module I18n
 
         deep_interpolation = options[:deep_interpolation]
         values = Utils.except(options, *RESERVED_KEYS) unless options.empty?
-        if values
+        if values && !values.empty?
           entry = if deep_interpolation
             deep_interpolate(locale, entry, values)
           else
             interpolate(locale, entry, values)
           end
+        elsif entry.is_a?(String) && entry =~ I18n.reserved_keys_pattern
+          raise ReservedInterpolationKey.new($1.to_sym, entry)
         end
         entry
       end

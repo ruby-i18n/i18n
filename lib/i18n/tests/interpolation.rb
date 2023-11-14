@@ -112,6 +112,10 @@ module I18n
         assert_raises(I18n::ReservedInterpolationKey) { interpolate(:foo => :bar, :default => '%{default}') }
         assert_raises(I18n::ReservedInterpolationKey) { interpolate(:foo => :bar, :default => '%{separator}') }
         assert_raises(I18n::ReservedInterpolationKey) { interpolate(:foo => :bar, :default => '%{scope}') }
+        assert_raises(I18n::ReservedInterpolationKey) { interpolate(:default => '%{scope}') }
+
+        I18n.backend.store_translations(:en, :interpolate => 'Hi %{scope}!')
+        assert_raises(I18n::ReservedInterpolationKey) { interpolate(:interpolate) }
       end
 
       test "interpolation: deep interpolation for default string" do
