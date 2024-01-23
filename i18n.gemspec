@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = '>= 1.3.5'
   s.required_ruby_version = '>= 2.3.0'
 
+  s.add_dependency 'racc'
   s.add_dependency 'concurrent-ruby', '~> 1.0'
 
 end
