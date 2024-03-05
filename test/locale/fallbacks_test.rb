@@ -170,4 +170,15 @@ class I18nFallbacksHashCompatibilityTest < I18n::TestCase
     result = @fallbacks.map { |key, value| [key, value] }
     assert_equal([[:"de-AT", [:"de-DE"]]], result)
   end
+
+  test "empty? is compatible with Hash#empty?" do
+    refute_predicate(@fallbacks, :empty?)
+    refute_predicate(Fallbacks.new(:'en-US'), :empty?)
+    refute_predicate(Fallbacks.new(:"de-AT" => :"de-DE"), :empty?)
+    assert_predicate(Fallbacks.new, :empty?)
+  end
+
+  test "#inspect" do
+    assert_equal('#<I18n::Locale::Fallbacks @map={:"de-AT"=>[:"de-DE"]} @defaults=[:"en-US", :en]>', @fallbacks.inspect)
+  end
 end

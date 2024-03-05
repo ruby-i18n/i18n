@@ -79,6 +79,14 @@ module I18n
         end
       end
 
+      def empty?
+        @map.empty? && @defaults.empty?
+      end
+
+      def inspect
+       "#<#{self.class.name} @map=#{@map.inspect} @defaults=#{@defaults.inspect}>"
+      end
+
       protected
 
       def compute(tags, include_defaults = true, exclude = [])
