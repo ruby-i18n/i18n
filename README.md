@@ -13,9 +13,13 @@ Currently maintained by @radar.
 
 You will most commonly use this library within a Rails app.
 
+We support Rails versions from 6.0 and up.
+
 [See the Rails Guide](https://guides.rubyonrails.org/i18n.html) for an example of its usage.
 
 ### Ruby (without Rails)
+
+We support Ruby versions from 3.0 and up.
 
 If you want to use this library without Rails, you can simply add `i18n` to your `Gemfile`:
 
