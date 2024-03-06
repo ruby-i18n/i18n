@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   s.platform     = Gem::Platform::RUBY
   s.require_path = 'lib'
   s.required_rubygems_version = '>= 1.3.5'
-  s.required_ruby_version = '>= 2.3.0'
+  s.required_ruby_version = '>= 3.0.0'
 
   s.add_dependency 'concurrent-ruby', '~> 1.0'
   s.add_dependency 'racc', '~> 1.7'
