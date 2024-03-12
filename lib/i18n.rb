@@ -48,7 +48,7 @@ module I18n
   end
 
   def self.reserved_keys_pattern # :nodoc:
-    @reserved_keys_pattern ||= /%\{(#{RESERVED_KEYS.join("|")})\}/
+    @reserved_keys_pattern ||= /(?<!%)%\{(#{RESERVED_KEYS.join("|")})\}/
   end
 
   module Base
