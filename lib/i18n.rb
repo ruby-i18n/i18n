@@ -250,7 +250,10 @@ module I18n
 
       return [] unless exists?(key, **options.slice(:locale, :scope))
 
-      translate(key, **options.slice(:locale, :scope))
+      translation = translate(key, **options.slice(:locale, :scope))
+
+      raise I18n::NonStringTranslationError unless translation.is_a?(String)
+      translation
         .scan(Regexp.union(I18n.config.interpolation_patterns))
         .flatten
         .compact
