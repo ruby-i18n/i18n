@@ -233,18 +233,23 @@ module I18n
 
     # Returns an array of interpolation keys for the given translation key
     #
+    # *Examples*
+    #
     # Suppose we have the following:
     #   I18n.t 'example.zero' == 'Zero interpolations'
     #   I18n.t 'example.one' == 'One interpolation %{foo}'
     #   I18n.t 'example.two' == 'Two interpolations %{foo} %{bar}'
+    #   I18n.t 'example.three' == ['One %{foo}', 'Two %{bar}', 'Three %{baz}']
     #   I18n.t 'example.one', locale: :other == 'One interpolation %{baz} %{bar}'
     #
     # Then we can expect the following results:
     #   I18n.interpolation_keys('example.zero') #=> []
     #   I18n.interpolation_keys('example.one') #=> ['foo']
     #   I18n.interpolation_keys('example.two') #=> ['foo', 'bar']
+    #   I18n.interpolation_keys('example.three') #=> ['foo', 'bar', 'baz']
     #   I18n.interpolation_keys('one', scope: 'example', locale: :other) #=> ['baz']
     #   I18n.interpolation_keys('does-not-exist') #=> []
+    #   I18n.interpolation_keys('example') #=> []
     def interpolation_keys(key, **options)
       raise I18n::ArgumentError if !key.is_a?(String) || key.empty?
 
