@@ -154,6 +154,4 @@ module I18n
       MSG
     end
   end
-
-  class NonStringTranslationError < ArgumentError; end
 end

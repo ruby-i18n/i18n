@@ -251,12 +251,8 @@ module I18n
       return [] unless exists?(key, **options.slice(:locale, :scope))
 
       translation = translate(key, **options.slice(:locale, :scope))
-
-      raise I18n::NonStringTranslationError unless translation.is_a?(String)
-      translation
-        .scan(Regexp.union(I18n.config.interpolation_patterns))
-        .flatten
-        .compact
+      interpolation_keys_from_translation(translation)
+        .flatten.compact
     end
 
     # Returns true if a translation exists for a given key, otherwise returns false.
@@ -456,6 +452,17 @@ module I18n
           end
           keys
         end
+    end
+
+    def interpolation_keys_from_translation(translation)
+      case translation
+      when ::String
+        translation.scan(Regexp.union(I18n.config.interpolation_patterns))
+      when ::Array
+        translation.map { |element| interpolation_keys_from_translation(element) }
+      else
+        []
+      end
     end
   end
 

@@ -301,13 +301,18 @@ class I18nTest < I18n::TestCase
     assert_equal [], I18n.interpolation_keys("does-not-exist")
   end
 
-  test "interpolation_keys raises I18n::ArgumentError when non-string argument" do
-    assert_raises(I18n::ArgumentError) { I18n.interpolation_keys(["bad-argument"]) }
+  test "interpolation_keys returns an empty array when nested translation" do
+    store_translations(:en, "example_nested" => { "one" => "One %{foo}", "two" => "Two %{bar}" })
+    assert_equal [], I18n.interpolation_keys("example_nested")
   end
 
-  test "interpolation_keys raises I18n::NonStringTranslationError when translation is not a String" do
-    store_translations(:en, "example_nested" => { "one" => "One", "two" => "Two" })
-    assert_raises(I18n::NonStringTranslationError) { I18n.interpolation_keys("example_nested") }
+  test "interpolation_keys returns an array of keys when translation is an Array" do
+    store_translations(:en, "example_array" => ["One %{foo}", ["Two %{bar}", ["Three %{baz}"]]])
+    assert_equal ["foo", "bar", "baz"], I18n.interpolation_keys("example_array")
+  end
+
+  test "interpolation_keys raises I18n::ArgumentError when non-string argument" do
+    assert_raises(I18n::ArgumentError) { I18n.interpolation_keys(["bad-argument"]) }
   end
 
   test "exists? given an existing key will return true" do
