@@ -188,8 +188,8 @@ module I18n
         #
         #   if the given subject is an array then:
         #   each element of the array is recursively interpolated (until it finds a string)
-        #   method interpolates ["yes, %{user}", ["maybe no, %{user}, "no, %{user}"]], :user => "bartuz"
-        #   # => "["yes, bartuz",["maybe no, bartuz", "no, bartuz"]]"
+        #   method interpolates ["yes, %{user}", ["maybe no, %{user}", "no, %{user}"]], :user => "bartuz"
+        #   # => ["yes, bartuz", ["maybe no, bartuz", "no, bartuz"]]
         def interpolate(locale, subject, values = EMPTY_HASH)
           return subject if values.empty?
 
