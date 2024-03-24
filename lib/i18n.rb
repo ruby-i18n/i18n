@@ -240,7 +240,7 @@ module I18n
     #   I18n.t 'example.one' == 'One interpolation %{foo}'
     #   I18n.t 'example.two' == 'Two interpolations %{foo} %{bar}'
     #   I18n.t 'example.three' == ['One %{foo}', 'Two %{bar}', 'Three %{baz}']
-    #   I18n.t 'example.one', locale: :other == 'One interpolation %{baz} %{bar}'
+    #   I18n.t 'example.one', locale: :other == 'One interpolation %{baz}'
     #
     # Then we can expect the following results:
     #   I18n.interpolation_keys('example.zero') #=> []
