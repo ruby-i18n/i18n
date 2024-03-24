@@ -287,6 +287,34 @@ class I18nTest < I18n::TestCase
     assert_equal I18n.config.available_locales.size * 2, I18n.config.available_locales_set.size
   end
 
+  test "interpolation_keys returns an array of keys" do
+    store_translations(:en, "example_two" => "Two interpolations %{foo} %{bar}")
+    assert_equal ["foo", "bar"], I18n.interpolation_keys("example_two")
+  end
+
+  test "interpolation_keys returns an empty array when no interpolations " do
+    store_translations(:en, "example_zero" => "Zero interpolations")
+    assert_equal [], I18n.interpolation_keys("example_zero")
+  end
+
+  test "interpolation_keys returns an empty array when missing translation " do
+    assert_equal [], I18n.interpolation_keys("does-not-exist")
+  end
+
+  test "interpolation_keys returns an empty array when nested translation" do
+    store_translations(:en, "example_nested" => { "one" => "One %{foo}", "two" => "Two %{bar}" })
+    assert_equal [], I18n.interpolation_keys("example_nested")
+  end
+
+  test "interpolation_keys returns an array of keys when translation is an Array" do
+    store_translations(:en, "example_array" => ["One %{foo}", ["Two %{bar}", ["Three %{baz}"]]])
+    assert_equal ["foo", "bar", "baz"], I18n.interpolation_keys("example_array")
+  end
+
+  test "interpolation_keys raises I18n::ArgumentError when non-string argument" do
+    assert_raises(I18n::ArgumentError) { I18n.interpolation_keys(["bad-argument"]) }
+  end
+
   test "exists? given an existing key will return true" do
     assert_equal true, I18n.exists?(:currency)
   end
