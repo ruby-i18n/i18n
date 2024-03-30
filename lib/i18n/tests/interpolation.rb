@@ -123,6 +123,9 @@ module I18n
           assert_equal '%{separator}', interpolate(:foo => :bar, :default => '%%{separator}')
         end
 
+        # Note: The two interpolations below do not remove the escape character (%) because
+        #   I18n should not alter the strings when no interpolation parameters are given,
+        #   see the comment at the top of this file.
         assert_nothing_raised do
           assert_equal '%%{scope}', interpolate(:default => '%%{scope}')
         end
