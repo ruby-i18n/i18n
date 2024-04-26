@@ -90,11 +90,16 @@ module I18n
       protected
 
       def compute(tags, include_defaults = true, exclude = [])
-        result = Array(tags).flat_map do |tag|
-          tags = I18n::Locale::Tag.tag(tag).self_and_parents.map! { |t| t.to_sym } - exclude
-          tags.each { |_tag| tags += compute(@map[_tag], false, exclude + tags) if @map[_tag] }
-          tags
+        tags = Array(tags).flat_map do |tag|
+          I18n::Locale::Tag.tag(tag).self_and_parents.map! { |t| t.to_sym }
         end
+        tags -= exclude
+
+        result = tags
+        tags.each do |tag|
+          result += compute(@map[tag], false, exclude + result) if @map[tag]
+        end
+
         result.push(*defaults) if include_defaults
         result.uniq!
         result.compact!
