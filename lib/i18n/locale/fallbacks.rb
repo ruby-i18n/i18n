@@ -95,7 +95,6 @@ module I18n
           tags = I18n::Locale::Tag.tag(tag).self_and_parents.map! { |t| t.to_sym } - exclude
           result += tags
           tags.each { |_tag| result += compute(@map[_tag], false, exclude + result) if @map[_tag] }
-          result
         end
 
         result.push(*defaults) if include_defaults
