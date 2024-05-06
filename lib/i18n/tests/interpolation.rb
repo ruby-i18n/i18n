@@ -118,6 +118,24 @@ module I18n
         assert_raises(I18n::ReservedInterpolationKey) { interpolate(:interpolate) }
       end
 
+      test "interpolation: it does not raise I18n::ReservedInterpolationKey for escaped variables" do
+        assert_nothing_raised do
+          assert_equal '%{separator}', interpolate(:foo => :bar, :default => '%%{separator}')
+        end
+
+        # Note: The two interpolations below do not remove the escape character (%) because
+        #   I18n should not alter the strings when no interpolation parameters are given,
+        #   see the comment at the top of this file.
+        assert_nothing_raised do
+          assert_equal '%%{scope}', interpolate(:default => '%%{scope}')
+        end
+
+        I18n.backend.store_translations(:en, :interpolate => 'Hi %%{scope}!')
+        assert_nothing_raised do
+          assert_equal 'Hi %%{scope}!', interpolate(:interpolate)
+        end
+      end
+
       test "interpolation: deep interpolation for default string" do
         assert_equal 'Hi %{name}!', interpolate(:default => 'Hi %{name}!', :deep_interpolation => true)
       end
