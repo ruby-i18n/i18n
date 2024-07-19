@@ -315,6 +315,10 @@ class I18nTest < I18n::TestCase
     assert_raises(I18n::ArgumentError) { I18n.interpolation_keys(["bad-argument"]) }
   end
 
+  test "exists? given nil raises I18n::ArgumentError" do
+    assert_raises(I18n::ArgumentError) { I18n.exists?(nil) }
+  end
+
   test "exists? given an existing key will return true" do
     assert_equal true, I18n.exists?(:currency)
   end
