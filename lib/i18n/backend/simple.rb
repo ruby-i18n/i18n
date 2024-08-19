@@ -10,14 +10,14 @@ module I18n
     # The implementation is provided by a Implementation module allowing to easily
     # extend Simple backend's behavior by including modules. E.g.:
     #
-    # module I18n::Backend::Pluralization
-    #   def pluralize(*args)
-    #     # extended pluralization logic
-    #     super
-    #   end
-    # end
-    #
-    # I18n::Backend::Simple.include(I18n::Backend::Pluralization)
+    #     module I18n::Backend::Pluralization
+    #       def pluralize(*args)
+    #         # extended pluralization logic
+    #         super
+    #       end
+    #     end
+    #     
+    #     I18n::Backend::Simple.include(I18n::Backend::Pluralization)
     class Simple
       module Implementation
         include Base
