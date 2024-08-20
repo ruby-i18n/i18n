@@ -71,7 +71,11 @@ module I18n
 
           case subject
           when Symbol
-            I18n.translate(subject, **options.merge(:locale => options[:fallback_original_locale], :throw => true))
+            I18n.translate(subject, **options.merge(
+              :locale => options[:fallback_original_locale],
+              :throw => true,
+              :skip_interpolation => true
+            ))
           when Proc
             date_or_time = options.delete(:object) || object
             resolve_entry(options[:fallback_original_locale], object, subject.call(date_or_time, **options))

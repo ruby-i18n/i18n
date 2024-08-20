@@ -76,6 +76,12 @@ module I18n
       test "lookup: a resulting Hash is not frozen" do
         assert !I18n.t(:hash).frozen?
       end
+
+      # Addresses issue: #599
+      test "lookup: only interpolates once when resolving symbols" do
+        I18n.backend.store_translations(:en, foo: :bar, bar: '%{value}')
+        assert_equal '%{dont_interpolate_me}', I18n.t(:foo, value: '%{dont_interpolate_me}')
+      end
     end
   end
 end

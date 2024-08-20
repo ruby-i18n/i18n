@@ -54,8 +54,9 @@ module I18n
         end
 
         deep_interpolation = options[:deep_interpolation]
+        skip_interpolation = options[:skip_interpolation]
         values = Utils.except(options, *RESERVED_KEYS) unless options.empty?
-        if values && !values.empty?
+        if !skip_interpolation && values && !values.empty?
           entry = if deep_interpolation
             deep_interpolate(locale, entry, values)
           else
@@ -151,7 +152,14 @@ module I18n
           result = catch(:exception) do
             case subject
             when Symbol
-              I18n.translate(subject, **options.merge(:locale => locale, :throw => true))
+              I18n.translate(
+                subject,
+                **options.merge(
+                  :locale => locale,
+                  :throw => true,
+                  :skip_interpolation => true
+                )
+              )
             when Proc
               date_or_time = options.delete(:object) || object
               resolve(locale, object, subject.call(date_or_time, **options))
