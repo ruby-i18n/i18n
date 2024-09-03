@@ -31,4 +31,14 @@ class I18nLoadPathTest < I18n::TestCase
     I18n.load_path << Dir[locales_dir + '/*.{rb,yml}']
     assert_equal "baz", I18n.t(:'foo.bar')
   end
+
+  test "adding Pathnames to the load path does not break YML file locale loading" do
+    I18n.load_path << Pathname.new(locales_dir + '/en.yml')
+    assert_equal "baz", I18n.t(:'foo.bar')
+  end
+
+  test "adding Pathnames to the load path does not break Ruby file locale loading" do
+    I18n.load_path << Pathname.new(locales_dir + '/en.rb')
+    assert_equal "bas", I18n.t(:'fuh.bah')
+  end
 end
