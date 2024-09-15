@@ -265,7 +265,8 @@ module I18n
     def exists?(key, _locale = nil, locale: _locale, **options)
       locale ||= config.locale
       raise Disabled.new('exists?') if locale == false
-      raise I18n::ArgumentError if key.is_a?(String) && key.empty?
+      raise I18n::ArgumentError if (key.is_a?(String) && key.empty?) || key.nil?
+
       config.backend.exists?(locale, key, options)
     end
 
