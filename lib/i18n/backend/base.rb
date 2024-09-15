@@ -244,7 +244,7 @@ module I18n
         # Loads a plain Ruby translations file. eval'ing the file must yield
         # a Hash containing translation data with locales as toplevel keys.
         def load_rb(filename)
-          translations = eval(IO.read(filename), binding, filename)
+          translations = eval(IO.read(filename), binding, filename.to_s)
           [translations, false]
         end
 
