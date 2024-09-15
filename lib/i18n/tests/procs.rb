@@ -57,6 +57,7 @@ module I18n
           if arg.is_a?(Hash)
             arg.delete(:fallback_in_progress)
             arg.delete(:fallback_original_locale)
+            arg.delete(:skip_interpolation)
           end
           arg
         end.inspect

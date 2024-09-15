@@ -19,6 +19,7 @@ module I18n
   RESERVED_KEYS = %i[
     cascade
     deep_interpolation
+    skip_interpolation
     default
     exception_handler
     fallback

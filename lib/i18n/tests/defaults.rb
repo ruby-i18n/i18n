@@ -47,6 +47,13 @@ module I18n
         I18n.backend.store_translations(:en, { :foo => { :bar => 'bar' } }, { :separator => '|' })
         assert_equal 'bar', I18n.t(nil, :default => :'foo|bar', :separator => '|')
       end
+
+      # Addresses issue: #599
+      test "defaults: only interpolates once when resolving defaults" do
+        I18n.backend.store_translations(:en, :greeting => 'hey %{name}')
+        assert_equal 'hey %{dont_interpolate_me}',
+          I18n.t(:does_not_exist, :name => '%{dont_interpolate_me}', default: [:greeting])
+      end
     end
   end
 end
