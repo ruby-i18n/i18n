@@ -173,11 +173,12 @@ module I18n
 
         # Picks a translation from a pluralized mnemonic subkey according to English
         # pluralization rules :
-        # - It will pick the :one subkey if count is equal to 1.
+        # - It will pick the :zero subkey where count is equal to 0 and there
+        #   is a :zero subkey present. This behaviour is not standard with
+        #   regards to the CLDR pluralization rules.
+        # - It will pick the :one subkey if count is equal to 1 and there is a
+        #   :one subkey present.
         # - It will pick the :other subkey otherwise.
-        # - It will pick the :zero subkey in the special case where count is
-        #   equal to 0 and there is a :zero subkey present. This behaviour is
-        #   not standard with regards to the CLDR pluralization rules.
         # Other backends can implement more flexible or complex pluralization rules.
         def pluralize(locale, entry, count)
           entry = entry.reject { |k, _v| k == :attributes } if entry.is_a?(Hash)
@@ -306,8 +307,9 @@ module I18n
         end
 
         def pluralization_key(entry, count)
-          key = :zero if count == 0 && entry.has_key?(:zero)
-          key ||= count == 1 ? :one : :other
+          return :zero if count == 0 && entry.has_key?(:zero)
+          return :one if count == 1 && entry.has_key?(:one)
+          :other
         end
     end
   end
