@@ -92,4 +92,15 @@ class I18nBackendPluralizationTest < I18n::TestCase
     assert_equal "I have 1 Porsche 🚗", I18n.t(:'automobiles.porsche', count: 1, :locale => :xx)
     assert_equal "I have 20 Porsches 🚗", I18n.t(:'automobiles.porsche', count: 20, :locale => :xx)
   end
+
+  test "only 'other' is required on a locale without pluralization rules" do
+    store_translations(:no_plural_rule_locale,
+                       :stars => {
+                         other: "%{count} stars",
+                       }
+    )
+    assert_equal "0 stars", I18n.t('stars', count: 0, :locale => :no_plural_rule_locale)
+    assert_equal "1 stars", I18n.t('stars', count: 1, :locale => :no_plural_rule_locale)
+    assert_equal "20 stars", I18n.t('stars', count: 20, :locale => :no_plural_rule_locale)
+  end
 end
