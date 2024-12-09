@@ -31,6 +31,6 @@ class I18nBackendExceptionsTest < I18n::TestCase
 
   test "exceptions: MissingInterpolationArgument message includes missing key, provided keys and full string" do
     exception = I18n::MissingInterpolationArgument.new('key', {:this => 'was given'}, 'string')
-    assert_equal 'missing interpolation argument "key" in "string" ({:this=>"was given"} given)', exception.message
+    assert_equal %|missing interpolation argument "key" in "string" (#{{:this=>"was given"}} given)|, exception.message
   end
 end
