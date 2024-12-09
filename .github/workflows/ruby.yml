@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby_version: [3.3, 3.2, 3.1, '3.0', jruby]
+        ruby_version: [head, 3.3, 3.2, 3.1, '3.0', jruby]
         gemfile:
           - Gemfile
           - gemfiles/Gemfile.rails-6.0.x
