@@ -26,7 +26,9 @@ jobs:
           - gemfiles/Gemfile.rails-7.1.x
           - gemfiles/Gemfile.rails-main
         exclude:
-          # Ruby 3.0 is not supported by Rails main (requires at least Ruby 3.1)
+          # Rails main requires at least Ruby 3.2
+          - ruby_version: '3.1'
+            gemfile: gemfiles/Gemfile.rails-main
           - ruby_version: '3.0'
             gemfile: gemfiles/Gemfile.rails-main
           # JRuby is not supported by Rails 7.0.x
