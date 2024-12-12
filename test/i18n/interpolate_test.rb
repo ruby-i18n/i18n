@@ -91,7 +91,7 @@ class I18nMissingInterpolationCustomHandlerTest < I18n::TestCase
   end
 
   test "String interpolation can use custom missing interpolation handler" do
-    assert_equal %|Masao missing key is last, values are {:first=>"Masao"}, given string is '%{first} %{last}'|,
+    assert_equal %|Masao missing key is last, values are #{{:first=>"Masao"}.to_s}, given string is '%{first} %{last}'|,
       I18n.interpolate("%{first} %{last}", :first => 'Masao')
   end
 end

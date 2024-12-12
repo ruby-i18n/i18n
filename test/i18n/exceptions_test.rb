@@ -43,7 +43,7 @@ class I18nExceptionsTest < I18n::TestCase
   test "InvalidPluralizationData message contains count, data and missing key" do
     force_invalid_pluralization_data do |exception|
       assert_match '1', exception.message
-      assert_match '{:other=>"bar"}', exception.message
+      assert_match %|#{{:other=>"bar"}}|, exception.message
       assert_match 'one', exception.message
     end
   end
@@ -58,7 +58,7 @@ class I18nExceptionsTest < I18n::TestCase
 
   test "MissingInterpolationArgument message contains the missing and given arguments" do
     force_missing_interpolation_argument do |exception|
-      assert_equal 'missing interpolation argument :bar in "%{bar}" ({:baz=>"baz"} given)', exception.message
+      assert_equal %|missing interpolation argument :bar in "%{bar}" (#{{:baz=>"baz"}.to_s} given)|, exception.message
     end
   end
 

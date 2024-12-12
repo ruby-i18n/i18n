@@ -88,7 +88,7 @@ class InterpolationCompilerTest < I18n::TestCase
     I18n.config.missing_interpolation_argument_handler = lambda do |key, values, string|
       "missing key is #{key}, values are #{values.inspect}, given string is '#{string}'"
     end
-    assert_equal %|first missing key is last, values are {:first=>"first"}, given string is '%{first} %{last}'|,
+    assert_equal %|first missing key is last, values are #{{:first=>"first"}.to_s}, given string is '%{first} %{last}'|,
         compile_and_interpolate('%{first} %{last}', :first => 'first')
   ensure
     I18n.config.missing_interpolation_argument_handler = old_handler

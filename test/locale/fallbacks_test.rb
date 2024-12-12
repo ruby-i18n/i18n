@@ -179,6 +179,6 @@ class I18nFallbacksHashCompatibilityTest < I18n::TestCase
   end
 
   test "#inspect" do
-    assert_equal('#<I18n::Locale::Fallbacks @map={:"de-AT"=>[:"de-DE"]} @defaults=[:"en-US", :en]>', @fallbacks.inspect)
+    assert_equal(%|#<I18n::Locale::Fallbacks @map=#{{:"de-AT"=>[:"de-DE"]}} @defaults=[:"en-US", :en]>|, @fallbacks.inspect)
   end
 end

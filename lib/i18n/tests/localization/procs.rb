@@ -34,7 +34,7 @@ module I18n
         test "localize Date: given a format that resolves to a Proc it calls the Proc with the object and extra options" do
           setup_time_proc_translations
           date = ::Date.new(2008, 3, 1)
-          assert_equal '[Sat, 01 Mar 2008, {:foo=>"foo"}]', I18n.l(date, :format => :proc, :foo => 'foo', :locale => :ru)
+          assert_equal %|[Sat, 01 Mar 2008, #{{:foo=>"foo"}}]|, I18n.l(date, :format => :proc, :foo => 'foo', :locale => :ru)
         end
 
         test "localize DateTime: given a format that resolves to a Proc it calls the Proc with the object" do
@@ -46,7 +46,7 @@ module I18n
         test "localize DateTime: given a format that resolves to a Proc it calls the Proc with the object and extra options" do
           setup_time_proc_translations
           datetime = ::DateTime.new(2008, 3, 1, 6)
-          assert_equal '[Sat, 01 Mar 2008 06:00:00 +00:00, {:foo=>"foo"}]', I18n.l(datetime, :format => :proc, :foo => 'foo', :locale => :ru)
+          assert_equal %|[Sat, 01 Mar 2008 06:00:00 +00:00, #{{:foo=>"foo"}}]|, I18n.l(datetime, :format => :proc, :foo => 'foo', :locale => :ru)
         end
 
         test "localize Time: given a format that resolves to a Proc it calls the Proc with the object" do
