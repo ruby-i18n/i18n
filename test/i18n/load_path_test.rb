@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'pathname'
 
 class I18nLoadPathTest < I18n::TestCase
   def setup
