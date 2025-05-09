@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'cgi'
-
 module I18n
   class ExceptionHandler
     def call(exception, _locale, _key, _options)
