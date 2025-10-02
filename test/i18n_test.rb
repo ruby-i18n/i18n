@@ -59,7 +59,7 @@ class I18nTest < I18n::TestCase
   test "sets the current locale to Thread.current" do
     assert_nothing_raised { I18n.locale = 'de' }
     assert_equal :de, I18n.locale
-    assert_equal :de, Thread.current[:i18n_config].locale
+    assert_equal :de, Thread.current.thread_variable_get(:i18n_config).locale
     I18n.locale = :en
   end
 
@@ -80,7 +80,7 @@ class I18nTest < I18n::TestCase
     begin
       I18n.config = self
       assert_equal self, I18n.config
-      assert_equal self, Thread.current[:i18n_config]
+      assert_equal self, Thread.current.thread_variable_get(:i18n_config)
     ensure
       I18n.config = ::I18n::Config.new
     end
@@ -547,5 +547,18 @@ class I18nTest < I18n::TestCase
     ensure
       I18n.instance_variable_set(:@reserved_keys_pattern, nil)
     end
+  end
+
+  test "I18n.locale is preserved in Fiber context" do
+    I18n.available_locales = [:en, :ja]
+    I18n.default_locale = :ja
+    I18n.locale = :en
+
+    fiber_locale = nil
+    Fiber.new do
+      fiber_locale = I18n.locale
+    end.resume
+
+    assert_equal :en, fiber_locale
   end
 end

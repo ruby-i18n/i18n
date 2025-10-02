@@ -9,10 +9,10 @@ class I18nMiddlewareTest < I18n::TestCase
   end
 
   test "middleware initializes new config object after request" do
-    old_i18n_config_object_id = Thread.current[:i18n_config].object_id
+    old_i18n_config_object_id = Thread.current.thread_variable_get(:i18n_config).object_id
     @middleware.call({})
 
-    updated_i18n_config_object_id = Thread.current[:i18n_config].object_id
+    updated_i18n_config_object_id = Thread.current.thread_variable_get(:i18n_config).object_id
     refute_equal updated_i18n_config_object_id, old_i18n_config_object_id
   end
 
