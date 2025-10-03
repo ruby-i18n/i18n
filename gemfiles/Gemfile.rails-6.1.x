@@ -10,6 +10,8 @@ gem 'minitest', '~> 5.14'
 gem 'racc'
 gem 'base64'
 gem 'mutex_m'
+gem 'bigdecimal'
+gem 'concurrent-ruby', '1.3.4'
 
 platforms :mri do
   gem 'oj'
