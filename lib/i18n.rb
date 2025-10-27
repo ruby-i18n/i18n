@@ -344,11 +344,13 @@ module I18n
 
     # Executes block with given I18n.locale set.
     def with_locale(tmp_locale = nil)
-      if tmp_locale == nil
+      tmp_locale_sym = tmp_locale&.to_sym
+
+      if tmp_locale_sym.nil? || tmp_locale_sym == self.locale
         yield
       else
         current_locale = self.locale
-        self.locale = tmp_locale
+        self.locale = tmp_locale_sym
         begin
           yield
         ensure
