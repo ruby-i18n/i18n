@@ -56,6 +56,10 @@ class I18nBackendTransliterator < I18n::TestCase
     assert_equal "abc#", @transliterator.transliterate("abcſ", "#")
   end
 
+  test "can keep non-ASCII chars not in map with :none" do
+    assert_equal "abcſ", @transliterator.transliterate("abcſ", :none)
+  end
+
   test "default transliterator raises errors for invalid UTF-8" do
     assert_raises ArgumentError do
       @transliterator.transliterate("a\x92b")
