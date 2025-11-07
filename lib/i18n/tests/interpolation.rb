@@ -89,14 +89,14 @@ module I18n
         end
 
         test "interpolation: ASCII strings in the backend should be encoded to UTF8 if interpolation options are in UTF8" do
-          I18n.backend.store_translations 'en', 'encoding' => ('%{who} let me go'.force_encoding("ASCII"))
+          I18n.backend.store_translations 'en', 'encoding' => ('%{who} let me go'.dup.force_encoding(Encoding::US_ASCII))
           result = I18n.t 'encoding', :who => "måmmå miå"
           assert_equal Encoding::UTF_8, result.encoding
         end
 
         test "interpolation: UTF8 strings in the backend are still returned as UTF8 with ASCII interpolation" do
           I18n.backend.store_translations 'en', 'encoding' => 'måmmå miå %{what}'
-          result = I18n.t 'encoding', :what => 'let me go'.force_encoding("ASCII")
+          result = I18n.t 'encoding', :what => 'let me go'.dup.force_encoding(Encoding::US_ASCII)
           assert_equal Encoding::UTF_8, result.encoding
         end
 
@@ -172,7 +172,7 @@ module I18n
       end
 
       def euc_jp(string)
-        string.encode!(Encoding::EUC_JP)
+        string.encode(Encoding::EUC_JP)
       end
 
       def interpolate(*args)
