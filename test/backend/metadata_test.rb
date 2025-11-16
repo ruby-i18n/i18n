@@ -38,7 +38,7 @@ class I18nBackendMetadataTest < I18n::TestCase
   end
 
   test "pluralization adds the count to metadata on Strings" do
-    assert_equal(1, I18n.t(:missing, :count => 1, :default => { :one => 'foo' }).translation_metadata[:count])
+    assert_equal(1, I18n.t(:missing, :count => 1, :default => { :one => +'foo' }).translation_metadata[:count])
   end
 
   test "metadata works with frozen values" do

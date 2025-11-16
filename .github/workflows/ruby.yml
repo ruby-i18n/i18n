@@ -17,6 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        rubyopt: [""]
         ruby_version: [head, 3.4, 3.3, 3.2, jruby]
         gemfile:
           - Gemfile
@@ -34,6 +35,10 @@ jobs:
             gemfile: gemfiles/Gemfile.rails-8.0.x
           - ruby_version: jruby
             gemfile: gemfiles/Gemfile.rails-main
+        include:
+          - ruby_version: 3.4
+            gemfile: Gemfile
+            rubyopt: "--enable-frozen-string-literal --debug-frozen-string-literal"
 
     runs-on: ubuntu-latest
 
