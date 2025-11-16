@@ -17,30 +17,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby_version: [head, 3.4, 3.3, 3.2, 3.1, '3.0', jruby]
         rubyopt: [""]
+        ruby_version: [head, 3.4, 3.3, 3.2, jruby]
         gemfile:
           - Gemfile
-          - gemfiles/Gemfile.rails-6.0.x
-          - gemfiles/Gemfile.rails-6.1.x
           - gemfiles/Gemfile.rails-7.0.x
           - gemfiles/Gemfile.rails-7.1.x
           - gemfiles/Gemfile.rails-7.2.x
           - gemfiles/Gemfile.rails-8.0.x
           - gemfiles/Gemfile.rails-main
         exclude:
-          # Rails 8+ requires at least Ruby 3.2
-          - ruby_version: '3.1'
-            gemfile: gemfiles/Gemfile.rails-main
-          - ruby_version: '3.0'
-            gemfile: gemfiles/Gemfile.rails-main
-          - ruby_version: '3.1'
-            gemfile: gemfiles/Gemfile.rails-8.0.x
-          - ruby_version: '3.0'
-            gemfile: gemfiles/Gemfile.rails-8.0.x
-          # Rails 7.2.x requires at least Ruby 3.1
-          - ruby_version: '3.0'
-            gemfile: gemfiles/Gemfile.rails-7.2.x
           # JRuby is not supported by Rails 7.0.x
           - ruby_version: jruby
             gemfile: gemfiles/Gemfile.rails-7.0.x
@@ -57,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
