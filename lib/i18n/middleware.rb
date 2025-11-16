@@ -10,7 +10,7 @@ module I18n
     def call(env)
       @app.call(env)
     ensure
-      Thread.current[:i18n_config] = I18n::Config.new
+      Thread.current.thread_variable_set(:i18n_config, I18n::Config.new)
     end
 
   end
