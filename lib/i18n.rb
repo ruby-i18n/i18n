@@ -388,6 +388,22 @@ module I18n
       config.available_locales_initialized?
     end
 
+    def capitalize(string, locale: nil, rules: t(:'i18n.case_map.rules', locale:, default: nil))
+      string.capitalize(*rules)
+    end
+
+    def downcase(string, locale: nil, rules: t(:'i18n.case_map.rules', locale:, default: nil))
+      string.downcase(*rules)
+    end
+
+    def swapcase(string, locale: nil, rules: t(:'i18n.case_map.rules', locale:, default: nil))
+      string.swapcase(*rules)
+    end
+
+    def upcase(string, locale: nil, rules: t(:'i18n.case_map.rules', locale:, default: nil))
+      string.upcase(*rules)
+    end
+
   private
 
     def translate_key(key, throw, raise, locale, backend, options)
