@@ -119,9 +119,9 @@ module I18n
     # backend defines acceptable sources.
     #
     # E.g. the provided SimpleBackend accepts a list of paths to translation
-    # files which are either named *.rb and contain plain Ruby Hashes or are
-    # named *.yml and contain YAML data. So for the SimpleBackend clients may
-    # register translation files like this:
+    # files which are either named *.rb and contain plain Ruby Hashes,
+    # named *.yml and contain YAML data, or named *.json and contain JSON data.
+    # So for the SimpleBackend clients may register translation files like this:
     #   I18n.load_path << 'path/to/locale/en.yml'
     def load_path
       @@load_path ||= []
