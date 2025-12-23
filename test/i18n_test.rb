@@ -455,6 +455,23 @@ class I18nTest < I18n::TestCase
     assert_equal "???", I18n.transliterate("日本語")
   end
 
+  test "upcase string" do
+    assert_equal "TÜRKIYE", I18n.upcase("Türkiye")
+  end
+
+  test "upcase string with locale" do
+    assert_equal "TÜRKIYE", I18n.upcase("Türkiye", locale: nil)
+  end
+
+  test "upcase string with rules" do
+    assert_equal "TÜRKİYE", I18n.upcase("Türkiye", rules: :turkic)
+  end
+
+  test "upcase string with stored rules" do
+    store_translations(:tr, {i18n: {case_map: {rules: [:turkic]}}})
+    assert_equal "TÜRKİYE", I18n.upcase("Türkiye", locale: :tr)
+  end
+
   test "I18n.locale_available? returns true when the passed locale is available" do
     I18n.available_locales = [:en, :de]
     assert_equal true, I18n.locale_available?(:de)
