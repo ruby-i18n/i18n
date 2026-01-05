@@ -563,7 +563,7 @@ class I18nTest < I18n::TestCase
     end
   end
 
-  test "I18n.locale is preserved in Fiber context" do
+  test "I18n.locale is preserved in Fiber context when using Thread locals" do
     I18n.available_locales = [:en, :ja]
     I18n.default_locale = :ja
     I18n.locale = :en
@@ -574,5 +574,23 @@ class I18nTest < I18n::TestCase
     end.resume
 
     assert_equal :en, fiber_locale
+  end
+
+  test "I18n.locale is preserved in Fiber context when using Fiber locals" do
+    begin
+      I18n.isolation_scope = :fiber
+      I18n.available_locales = [:en, :ja]
+      I18n.default_locale = :ja
+      I18n.locale = :en
+
+      fiber_locale = nil
+      Fiber.new do
+        fiber_locale = I18n.locale
+      end.resume
+
+      assert_equal :en, fiber_locale
+    ensure
+      I18n.isolation_scope = :thread
+    end
   end
 end
