@@ -63,6 +63,20 @@ class I18nTest < I18n::TestCase
     I18n.locale = :en
   end
 
+  test "isolation_scope= can set the current isolation scope to Fiber[]" do
+    begin
+      assert_nothing_raised {
+        I18n.isolation_scope = :fiber
+        I18n.locale = 'de'
+      }
+      assert_equal :de, I18n.locale
+      assert_equal :de, Fiber[:i18n_config].locale
+      I18n.locale = :en
+    ensure
+      I18n.isolation_scope = :thread
+    end
+  end
+
   test "locale= doesn't ignore junk" do
     assert_raises(NoMethodError) { I18n.locale = Class }
   end
