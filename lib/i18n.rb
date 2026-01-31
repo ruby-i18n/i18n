@@ -55,13 +55,30 @@ module I18n
   module Base
     # Gets I18n configuration object.
     def config
-      Thread.current.thread_variable_get(:i18n_config) ||
-        Thread.current.thread_variable_set(:i18n_config, I18n::Config.new)
+      case isolation_scope
+      when :thread
+        Thread.current.thread_variable_get(:i18n_config) || self.config = I18n::Config.new
+      when :fiber
+        Fiber[:i18n_config] || self.config = I18n::Config.new
+      end
     end
 
     # Sets I18n configuration object.
     def config=(value)
-      Thread.current.thread_variable_set(:i18n_config, value)
+      case isolation_scope
+      when :thread
+        Thread.current.thread_variable_set(:i18n_config, value)
+      when :fiber
+        Fiber[:i18n_config] = value
+      end
+    end
+
+    def isolation_scope
+      @@isolation_scope ||= :thread
+    end
+
+    def isolation_scope=(scope)
+      @@isolation_scope = scope
     end
 
     # Write methods which delegates to the configuration object
