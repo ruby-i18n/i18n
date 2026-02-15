@@ -16,13 +16,21 @@ module I18n
     # Returns the current fallbacks implementation. Defaults to +I18n::Locale::Fallbacks+.
     def fallbacks
       @@fallbacks ||= I18n::Locale::Fallbacks.new
-      Thread.current[:i18n_fallbacks] || @@fallbacks
+      if Fiber.respond_to?(:[])
+        Fiber[:i18n_fallbacks] || @@fallbacks
+      else
+        Thread.current[:i18n_fallbacks] || @@fallbacks
+      end
     end
 
     # Sets the current fallbacks implementation. Use this to set a different fallbacks implementation.
     def fallbacks=(fallbacks)
       @@fallbacks = fallbacks.is_a?(Array) ? I18n::Locale::Fallbacks.new(fallbacks) : fallbacks
-      Thread.current[:i18n_fallbacks] = @@fallbacks
+      if Fiber.respond_to?(:[])
+        Fiber[:i18n_fallbacks] = @@fallbacks
+      else
+        Thread.current[:i18n_fallbacks] = @@fallbacks
+      end
     end
   end
 

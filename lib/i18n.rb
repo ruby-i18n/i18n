@@ -56,7 +56,13 @@ module I18n
     # Gets I18n configuration object.
     def config
       if Fiber.respond_to?(:[])
-        Fiber[:i18n_config] || self.config = I18n::Config.new
+        current = Fiber[:i18n_config] || self.config = I18n::Config.new
+        if current.respond_to?(:owned_by?) && !current.owned_by?(Fiber.current)
+          current = current.dup
+          Fiber[:i18n_config] = current
+        end
+
+        current
       else
         Thread.current.thread_variable_get(:i18n_config) ||
           Thread.current.thread_variable_set(:i18n_config, I18n::Config.new)
@@ -67,6 +73,7 @@ module I18n
     def config=(value)
       if Fiber.respond_to?(:[])
         Fiber[:i18n_config] = value
+        value.owner = Fiber.current if value.respond_to?(:owner=)
       else
         Thread.current.thread_variable_set(:i18n_config, value)
       end

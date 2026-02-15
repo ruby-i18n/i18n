@@ -10,7 +10,23 @@ module I18n
       defined?(@locale) && @locale != nil ? @locale : default_locale
     end
 
-    # Sets the current locale pseudo-globally, i.e. in the Thread.current hash.
+    def initialize
+      @owner = Fiber.current
+    end
+
+    def owned_by?(fiber)
+      @owner == fiber
+    end
+
+    def owner=(fiber)
+      @owner = fiber
+    end
+
+    def initialize_copy(other)
+      @owner = Fiber.current
+    end
+
+    # Sets the current locale pseudo-globally, i.e. in the Thread.current or Fiber local hash.
     def locale=(locale)
       I18n.enforce_available_locales!(locale)
       @locale = locale && locale.to_sym

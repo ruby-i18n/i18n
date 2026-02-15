@@ -569,4 +569,54 @@ class I18nTest < I18n::TestCase
 
     assert_equal :en, fiber_locale
   end
+
+  test "I18n.locale is isolated between concurrent Fibers" do
+    skip "Fiber storage requires Ruby 3.2+" unless Fiber.respond_to?(:[])
+    I18n.available_locales = [:en, :ja]
+    I18n.default_locale = :en
+    I18n.locale = :en
+
+    fiber_ja = Fiber.new do
+      I18n.locale = :ja
+      Fiber.yield I18n.locale
+      I18n.locale
+    end
+
+    fiber_en = Fiber.new do
+      I18n.locale = :en
+      Fiber.yield I18n.locale
+      I18n.locale
+    end
+
+    assert_equal :ja, fiber_ja.resume
+    assert_equal :en, fiber_en.resume
+    assert_equal :ja, fiber_ja.resume
+    assert_equal :en, fiber_en.resume
+  end
+
+  test "I18n.locale write in child Fiber does not leak to parent" do
+    skip "Fiber storage requires Ruby 3.2+" unless Fiber.respond_to?(:[])
+
+    I18n.available_locales = [:en, :ja]
+    I18n.default_locale = :en
+    I18n.locale = :en
+
+    parent_locale = I18n.locale
+    parent_config_id = I18n.config.object_id
+
+    child_saw_locale = nil
+    child_config_id = nil
+
+    Fiber.new do
+      child_saw_locale = I18n.locale
+      child_config_id = I18n.config.object_id
+
+      I18n.locale = :ja
+      assert_equal :ja, I18n.locale
+    end.resume
+
+    assert_equal parent_locale, I18n.locale
+    assert_equal :en, child_saw_locale
+    refute_equal parent_config_id, child_config_id
+  end
 end
