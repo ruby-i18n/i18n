@@ -54,6 +54,18 @@ I18n.locale = :de
 I18n.t(:test) # => "Dies ist ein Test"
 ```
 
+### Fiber-safe config updates
+
+`Fiber[]` values are inherited by child fibers.
+To avoid sharing mutable config objects across fibers, prefer creating updated configs and setting them with `set!`:
+
+```ruby
+I18n.config.with(locale: :ja).set!
+```
+
+`set!` stores a frozen config in the current execution context.
+This keeps inherited state safe and lets updates happen by replacing config objects.
+
 ## Features
 
 * Translation and localization

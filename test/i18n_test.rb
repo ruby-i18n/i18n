@@ -90,8 +90,38 @@ class I18nTest < I18n::TestCase
         assert_equal self, Thread.current.thread_variable_get(:i18n_config)
       end
     ensure
-      I18n.config = ::I18n::Config.new
+      ::I18n::Config.new.set!
     end
+  end
+
+  test "config#with returns a copied configuration with overrides" do
+    base = I18n::Config.new
+    base.locale = :en
+
+    copy = base.with(locale: :de)
+
+    assert_equal :en, base.locale
+    assert_equal :de, copy.locale
+    refute_equal base.object_id, copy.object_id
+  end
+
+  test "config#with raises when an unknown attribute is passed" do
+    assert_raises(NoMethodError) { I18n::Config.new.with(unknown_attribute: true) }
+  end
+
+  test "config#set! stores a frozen config and keeps I18n setters usable" do
+    I18n.available_locales = [:en, :de]
+    config = I18n::Config.new.with(locale: :en)
+
+    assert_same config, config.set!
+    assert_same config, I18n.config
+    assert config.frozen?
+    assert_raises(FrozenError) { config.locale = :de }
+
+    I18n.locale = :de
+    refute_same config, I18n.config
+    assert_equal :en, config.locale
+    assert_equal :de, I18n.locale
   end
 
   test "locale is not shared between configurations" do

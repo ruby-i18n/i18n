@@ -69,11 +69,25 @@ module I18n
       end
     end
 
+    # Gets a mutable I18n configuration object.
+    def writable_config
+      current = config
+      return current unless current.frozen?
+
+      current = current.dup
+      if Fiber.respond_to?(:[])
+        Fiber[:i18n_config] = current
+      else
+        Thread.current.thread_variable_set(:i18n_config, current)
+      end
+      current
+    end
+
     # Sets I18n configuration object.
     def config=(value)
       if Fiber.respond_to?(:[])
         Fiber[:i18n_config] = value
-        value.owner = Fiber.current if value.respond_to?(:owner=)
+        value.owner = Fiber.current if value.respond_to?(:owner=) && !value.frozen?
       else
         Thread.current.thread_variable_set(:i18n_config, value)
       end
@@ -88,7 +102,7 @@ module I18n
         end
 
         def #{method}=(value)
-          config.#{method} = (value)
+          writable_config.#{method} = (value)
         end
       DELEGATORS
     end
