@@ -55,18 +55,13 @@ module I18n
   module Base
     # Gets I18n configuration object.
     def config
-      if Fiber.respond_to?(:[])
-        current = Fiber[:i18n_config] || self.config = I18n::Config.new
-        if current.respond_to?(:owned_by?) && !current.owned_by?(Fiber.current)
-          current = current.dup
-          Fiber[:i18n_config] = current
-        end
-
-        current
-      else
-        Thread.current.thread_variable_get(:i18n_config) ||
-          Thread.current.thread_variable_set(:i18n_config, I18n::Config.new)
+      current = Fiber[:i18n_config] || self.config = I18n::Config.new
+      if current.respond_to?(:owned_by?) && !current.owned_by?(Fiber.current)
+        current = current.dup
+        Fiber[:i18n_config] = current
       end
+
+      current
     end
 
     # Gets a mutable I18n configuration object.
@@ -75,22 +70,14 @@ module I18n
       return current unless current.frozen?
 
       current = current.dup
-      if Fiber.respond_to?(:[])
-        Fiber[:i18n_config] = current
-      else
-        Thread.current.thread_variable_set(:i18n_config, current)
-      end
+      Fiber[:i18n_config] = current
       current
     end
 
     # Sets I18n configuration object.
     def config=(value)
-      if Fiber.respond_to?(:[])
-        Fiber[:i18n_config] = value
-        value.owner = Fiber.current if value.respond_to?(:owner=) && !value.frozen?
-      else
-        Thread.current.thread_variable_set(:i18n_config, value)
-      end
+      Fiber[:i18n_config] = value
+      value.owner = Fiber.current if value.respond_to?(:owner=) && !value.frozen?
     end
 
     # Write methods which delegates to the configuration object
