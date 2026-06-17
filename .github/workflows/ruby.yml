@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         rubyopt: [""]
-        ruby_version: [head, 3.4, 3.3, 3.2, jruby]
+        ruby_version: [head, 3.4, 3.3, jruby]
         gemfile:
           - Gemfile
           - gemfiles/Gemfile.rails-7.0.x
