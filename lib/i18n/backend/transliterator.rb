@@ -68,7 +68,8 @@ module I18n
           "ŧ"=>"t", "Ũ"=>"U", "ũ"=>"u", "Ū"=>"U", "ū"=>"u", "Ŭ"=>"U", "ŭ"=>"u",
           "Ů"=>"U", "ů"=>"u", "Ű"=>"U", "ű"=>"u", "Ų"=>"U", "ų"=>"u", "Ŵ"=>"W",
           "ŵ"=>"w", "Ŷ"=>"Y", "ŷ"=>"y", "Ÿ"=>"Y", "Ź"=>"Z", "ź"=>"z", "Ż"=>"Z",
-          "ż"=>"z", "Ž"=>"Z", "ž"=>"z"
+          "ż"=>"z", "Ž"=>"Z", "ž"=>"z", "Ǫ"=>"O", "ǫ"=>"o", "Ǭ"=>"O",
+          "ǭ"=>"o"
         }.freeze
 
         def initialize(rule = nil)
@@ -80,7 +81,7 @@ module I18n
         def transliterate(string, replacement = nil)
           replacement ||= DEFAULT_REPLACEMENT_CHAR
           string.gsub(/[^\x00-\x7f]/u) do |char|
-            approximations[char] || replacement
+            approximations[char] || (replacement == :none ? char : replacement)
           end
         end
 
