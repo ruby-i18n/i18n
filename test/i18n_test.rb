@@ -56,10 +56,10 @@ class I18nTest < I18n::TestCase
     assert_equal I18n.default_locale, I18n.locale
   end
 
-  test "sets the current locale to Thread.current" do
+  test "sets the current locale to Fiber local" do
     assert_nothing_raised { I18n.locale = 'de' }
     assert_equal :de, I18n.locale
-    assert_equal :de, Thread.current.thread_variable_get(:i18n_config).locale
+    assert_equal :de, Fiber[:i18n_config].locale
     I18n.locale = :en
   end
 
@@ -80,10 +80,40 @@ class I18nTest < I18n::TestCase
     begin
       I18n.config = self
       assert_equal self, I18n.config
-      assert_equal self, Thread.current.thread_variable_get(:i18n_config)
+      assert_equal self, Fiber[:i18n_config]
     ensure
-      I18n.config = ::I18n::Config.new
+      ::I18n::Config.new.set!
     end
+  end
+
+  test "config#with returns a copied configuration with overrides" do
+    base = I18n::Config.new
+    base.locale = :en
+
+    copy = base.with(locale: :de)
+
+    assert_equal :en, base.locale
+    assert_equal :de, copy.locale
+    refute_equal base.object_id, copy.object_id
+  end
+
+  test "config#with raises when an unknown attribute is passed" do
+    assert_raises(NoMethodError) { I18n::Config.new.with(unknown_attribute: true) }
+  end
+
+  test "config#set! stores a frozen config and keeps I18n setters usable" do
+    I18n.available_locales = [:en, :de]
+    config = I18n::Config.new.with(locale: :en)
+
+    assert_same config, config.set!
+    assert_same config, I18n.config
+    assert config.frozen?
+    assert_raises(FrozenError) { config.locale = :de }
+
+    I18n.locale = :de
+    refute_same config, I18n.config
+    assert_equal :en, config.locale
+    assert_equal :de, I18n.locale
   end
 
   test "locale is not shared between configurations" do
@@ -560,5 +590,52 @@ class I18nTest < I18n::TestCase
     end.resume
 
     assert_equal :en, fiber_locale
+  end
+
+  test "I18n.locale is isolated between concurrent Fibers" do
+    I18n.available_locales = [:en, :ja]
+    I18n.default_locale = :en
+    I18n.locale = :en
+
+    fiber_ja = Fiber.new do
+      I18n.locale = :ja
+      Fiber.yield I18n.locale
+      I18n.locale
+    end
+
+    fiber_en = Fiber.new do
+      I18n.locale = :en
+      Fiber.yield I18n.locale
+      I18n.locale
+    end
+
+    assert_equal :ja, fiber_ja.resume
+    assert_equal :en, fiber_en.resume
+    assert_equal :ja, fiber_ja.resume
+    assert_equal :en, fiber_en.resume
+  end
+
+  test "I18n.locale write in child Fiber does not leak to parent" do
+    I18n.available_locales = [:en, :ja]
+    I18n.default_locale = :en
+    I18n.locale = :en
+
+    parent_locale = I18n.locale
+    parent_config_id = I18n.config.object_id
+
+    child_saw_locale = nil
+    child_config_id = nil
+
+    Fiber.new do
+      child_saw_locale = I18n.locale
+      child_config_id = I18n.config.object_id
+
+      I18n.locale = :ja
+      assert_equal :ja, I18n.locale
+    end.resume
+
+    assert_equal parent_locale, I18n.locale
+    assert_equal :en, child_saw_locale
+    refute_equal parent_config_id, child_config_id
   end
 end

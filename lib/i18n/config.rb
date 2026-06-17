@@ -10,7 +10,41 @@ module I18n
       defined?(@locale) && @locale != nil ? @locale : default_locale
     end
 
-    # Sets the current locale pseudo-globally, i.e. in the Thread.current hash.
+    def initialize
+      @owner = Fiber.current
+    end
+
+    def owned_by?(fiber)
+      @owner == fiber
+    end
+
+    def owner=(fiber)
+      @owner = fiber
+    end
+
+    def initialize_copy(other)
+      @owner = Fiber.current
+    end
+
+    # Returns a copied configuration with the provided attributes set.
+    def with(**attrs)
+      dup.tap do |copy|
+        attrs.each do |name, value|
+          copy.public_send("#{name}=", value)
+        end
+      end
+    end
+
+    # Sets this configuration as the current one for the active execution context.
+    # The stored configuration is frozen to avoid sharing mutable state between fibers.
+    def set!
+      self.owner = Fiber.current unless frozen?
+      freeze
+      I18n.config = self
+      self
+    end
+
+    # Sets the current locale pseudo-globally, i.e. in the Thread.current or Fiber local hash.
     def locale=(locale)
       I18n.enforce_available_locales!(locale)
       @locale = locale && locale.to_sym

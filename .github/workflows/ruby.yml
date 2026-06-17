@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         rubyopt: [""]
-        ruby_version: [head, 3.4, 3.3, 3.2, jruby]
+        ruby_version: [head, 3.4, 3.3, jruby]
         gemfile:
           - Gemfile
           - gemfiles/Gemfile.rails-7.0.x
@@ -34,9 +34,6 @@ jobs:
           - ruby_version: jruby
             gemfile: gemfiles/Gemfile.rails-8.0.x
           - ruby_version: jruby
-            gemfile: gemfiles/Gemfile.rails-main
-          # Rails main requires Ruby 3.3+
-          - ruby_version: 3.2
             gemfile: gemfiles/Gemfile.rails-main
         include:
           - ruby_version: 3.4
