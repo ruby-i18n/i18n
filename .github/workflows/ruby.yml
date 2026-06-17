@@ -35,6 +35,9 @@ jobs:
             gemfile: gemfiles/Gemfile.rails-8.0.x
           - ruby_version: jruby
             gemfile: gemfiles/Gemfile.rails-main
+          # Rails main requires Ruby 3.3+
+          - ruby_version: 3.2
+            gemfile: gemfiles/Gemfile.rails-main
         include:
           - ruby_version: 3.4
             gemfile: Gemfile
