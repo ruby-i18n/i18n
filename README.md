@@ -19,7 +19,7 @@ We support Rails versions from 6.0 and up.
 
 ### Ruby (without Rails)
 
-We support Ruby versions from 3.2 and up.
+We support Ruby versions from 3.1 and up.
 
 If you want to use this library without Rails, you can simply add `i18n` to your `Gemfile`:
 
