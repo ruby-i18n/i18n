@@ -43,7 +43,13 @@ module I18n
                     config.missing_interpolation_argument_handler.call(key, values, string)
                   end
           value = value.call(values) if value.respond_to?(:call)
-          $3 ? sprintf("%#{$3}", value) : value
+
+          # Localize interpolated Date's, Time's, and DateTime's
+          if value.respond_to?(:strftime)
+            backend.localize(locale, value)
+          else
+            $3 ? sprintf("%#{$3}", value) : value
+          end
         end
       end
 

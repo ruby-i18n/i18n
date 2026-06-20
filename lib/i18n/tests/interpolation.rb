@@ -107,6 +107,46 @@ module I18n
         end
       end
 
+      test "interpolation: given a Date with no default format set it raises I18n::MissingTranslationData" do
+        assert_raises(I18n::MissingTranslationData) do
+          date = Date.new(2008, 3, 1)
+          interpolate(:default => '%{date}', :date => date)
+        end
+      end
+
+      test "interpolation: given a Time with no default format set it raises I18n::MissingTranslationData" do
+        assert_raises(I18n::MissingTranslationData) do
+          time = Time.utc(2008, 3, 1, 6, 0)
+          interpolate(:default => '%{time}', :time => time)
+        end
+      end
+
+      test "interpolation: given a DateTime with no default format set it raises I18n::MissingTranslationData" do
+        assert_raises(I18n::MissingTranslationData) do
+          datetime = Time.utc(2008, 3, 1, 6, 0).to_datetime
+          interpolate(:default => '%{datetime}', :datetime => datetime)
+        end
+      end
+
+      test "interpolation: given a Date it localizes it to the default date format" do
+        setup_datetime_localizations
+        date = Date.new(2008, 3, 1)
+        assert_equal '01.03.2008', interpolate(:default => '%{date}', :date => date)
+      end
+
+      test "interpolation: given a Time it localizes it to the default time format" do
+        setup_datetime_localizations
+        time = Time.utc(2008, 3, 1, 6, 0)
+        assert_equal 'Sa, 01. Mär 2008 06:00:00 +0000', interpolate(:default => '%{time}', :time => time)
+      end
+
+      # DateTime uses the Time format
+      test "interpolation: given a DateTime it localizes it to the default time format" do
+        setup_datetime_localizations
+        datetime = Time.utc(2008, 3, 1, 6, 0).to_datetime
+        assert_equal 'Sa, 01. Mär 2008 06:00:00 +0000', interpolate(:default => '%{datetime}', :datetime => datetime)
+      end
+
       test "interpolation: given a translations containing a reserved key it raises I18n::ReservedInterpolationKey" do
         assert_raises(I18n::ReservedInterpolationKey) { interpolate(:foo => :bar, :default => '%{exception_handler}') }
         assert_raises(I18n::ReservedInterpolationKey) { interpolate(:foo => :bar, :default => '%{default}') }
@@ -179,6 +219,25 @@ module I18n
         options = args.last.is_a?(Hash) ? args.pop : {}
         key = args.pop
         I18n.backend.translate('en', key, options)
+      end
+
+      def setup_datetime_localizations
+        I18n.backend.store_translations :en, {
+          :date => {
+            :formats => {
+              :default => "%d.%m.%Y"
+            },
+            # :time format uses abbreviated day and month names
+            :abbr_day_names => %w(So Mo Di Mi Do Fr Sa),
+            :abbr_month_names => %w(Jan Feb Mär Apr Mai Jun Jul Aug Sep Okt Nov Dez).unshift(nil)
+          },
+
+          :time => {
+            :formats => {
+              :default => "%a, %d. %b %Y %H:%M:%S %z"
+            }
+          }
+        }
       end
     end
   end
