@@ -118,7 +118,7 @@ module I18n
             main_key.to_s.split(".").reverse.inject(main_value) do |value, key|
               {key.to_sym => value}
             end
-          end.inject{|hash, elem| Utils.deep_merge!(hash, elem)})
+          end.inject({}){|hash, elem| Utils.deep_merge!(hash, elem)})
         end
 
         def init_translations
