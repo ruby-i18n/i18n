@@ -166,16 +166,17 @@ module I18n
         end
 
         def has_key?(key)
-          @subtree && @subtree.has_key?(key) || self[key]
+          return true if @subtree && @subtree.has_key?(key)
+          !self[key].nil?
         end
 
         def [](key)
-          unless @subtree && value = @subtree[key]
-            value = @store["#{@master_key}.#{key}"]
-            if value
-              value = JSON.decode(value)
-              (@subtree ||= {})[key] = value
-            end
+          return @subtree[key] if @subtree && @subtree.has_key?(key)
+
+          value = @store["#{@master_key}.#{key}"]
+          if value
+            value = JSON.decode(value)
+            (@subtree ||= {})[key] = value
           end
           value
         end
