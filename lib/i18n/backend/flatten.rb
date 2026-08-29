@@ -105,7 +105,8 @@ module I18n
 
         def find_link(locale, key) #:nodoc:
           links[locale].each_pair do |from, to|
-            return [from, to] if key[0, from.length] == from
+            return [from, to] if key.start_with?(from) &&
+                                 (key.length == from.length || key[from.length] == FLATTEN_SEPARATOR)
           end && nil
         end
 
