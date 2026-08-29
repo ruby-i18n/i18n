@@ -34,7 +34,7 @@ module_eval <<'..end src/poparser.ry modeval..id7a99570e05', 'src/poparser.ry', 
     @data = data
     @fuzzy = false
     @msgctxt = ""
-    $ignore_fuzzy = ignore_fuzzy
+    @ignore_fuzzy = ignore_fuzzy
 
     str.strip!
     @q = []
@@ -245,7 +245,7 @@ module_eval <<'.,.,', 'src/poparser.ry', 25
 
 module_eval <<'.,.,', 'src/poparser.ry', 48
   def _reduce_8( val, _values, result )
-    if @fuzzy and $ignore_fuzzy
+    if @fuzzy and @ignore_fuzzy
       if val[1] != ""
         $stderr.print _("Warning: fuzzy message was ignored.\n")
         $stderr.print "         msgid '#{val[1]}'\n"
@@ -263,7 +263,7 @@ module_eval <<'.,.,', 'src/poparser.ry', 48
 
 module_eval <<'.,.,', 'src/poparser.ry', 65
   def _reduce_9( val, _values, result )
-    if @fuzzy and $ignore_fuzzy
+    if @fuzzy and @ignore_fuzzy
       if val[1] != ""
         $stderr.print _("Warning: fuzzy message was ignored.\n")
         $stderr.print "msgid = '#{val[1]}\n"
