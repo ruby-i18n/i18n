@@ -10,6 +10,14 @@ module I18n
       defined?(@locale) && @locale != nil ? @locale : default_locale
     end
 
+    def raw_locale # :nodoc:
+      @locale
+    end
+
+    def raw_locale=(locale) # :nodoc:
+      @locale = locale
+    end
+
     def initialize
       @owner = Fiber.current
     end

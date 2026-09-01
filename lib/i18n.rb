@@ -377,12 +377,12 @@ module I18n
       if tmp_locale == nil
         yield
       else
-        current_locale = self.locale
+        current_locale = config.raw_locale
         self.locale = tmp_locale
         begin
           yield
         ensure
-          self.locale = current_locale
+          writable_config.raw_locale = current_locale
         end
       end
     end
