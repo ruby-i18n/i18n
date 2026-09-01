@@ -12,10 +12,14 @@ module I18n
   INTERPOLATION_PATTERN = Regexp.union(DEFAULT_INTERPOLATION_PATTERNS)
   deprecate_constant :INTERPOLATION_PATTERN
 
-  INTERPOLATION_PATTERNS_CACHE = Hash.new do |hash, patterns|
-    hash[patterns] = Regexp.union(patterns)
+  def self.interpolation_patterns_cache
+    if defined?(Ractor)
+      Ractor.current[:i18n_interpolation_patterns_cache] ||= {}
+    else
+      @interpolation_patterns_cache ||= {}
+    end
   end
-  private_constant :INTERPOLATION_PATTERNS_CACHE
+  private_class_method :interpolation_patterns_cache
 
   class << self
     # Return String or raises MissingInterpolationArgument exception.
@@ -27,7 +31,7 @@ module I18n
     end
 
     def interpolate_hash(string, values)
-      pattern = INTERPOLATION_PATTERNS_CACHE[config.interpolation_patterns]
+      pattern = interpolation_patterns_cache[config.interpolation_patterns] ||= Regexp.union(config.interpolation_patterns)
       interpolated = false
 
       interpolated_string = string.gsub(pattern) do |match|

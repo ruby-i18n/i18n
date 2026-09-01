@@ -62,7 +62,7 @@ module I18n
 
         def interpolate_or_raise_missing(key)
           escaped_key = escape_key_sym(key)
-          RESERVED_KEYS.include?(key) ? reserved_key(escaped_key) : interpolate_key(escaped_key)
+          I18n.reserved_keys.include?(key) ? reserved_key(escaped_key) : interpolate_key(escaped_key)
         end
 
         def interpolate_key(key)

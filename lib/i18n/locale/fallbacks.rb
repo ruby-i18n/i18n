@@ -61,7 +61,7 @@ module I18n
         raise InvalidLocale.new(locale) if locale.nil?
         raise Disabled.new('fallback#[]') if locale == false
         locale = locale.to_sym
-        super || store(locale, compute(locale))
+        super || (frozen? ? compute(locale) : store(locale, compute(locale)))
       end
 
       def map(*args, &block)
@@ -77,6 +77,13 @@ module I18n
         else
           @map.map(*args, &block)
         end
+      end
+
+      def freeze
+        return self if frozen?
+        @map&.freeze
+        @defaults&.freeze
+        super
       end
 
       def empty?

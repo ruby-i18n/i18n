@@ -8,6 +8,9 @@ module I18n
     module Base
       include I18n::Backend::Transliterator
 
+      # Evaluation context for translation files.
+      TRANSLATION_FILE_CONTEXT = Object.new.freeze
+
       # Accepts a list of paths to translation files. Loads translations from
       # plain Ruby (*.rb), YAML files (*.yml), or JSON files (*.json). See #load_rb, #load_yml, and #load_json
       # for details.
@@ -55,7 +58,7 @@ module I18n
 
         deep_interpolation = options[:deep_interpolation]
         skip_interpolation = options[:skip_interpolation]
-        values = Utils.except(options, *RESERVED_KEYS) unless options.empty?
+        values = Utils.except(options, *I18n.reserved_keys) unless options.empty?
         if !skip_interpolation && values && !values.empty?
           entry = if deep_interpolation
             deep_interpolate(locale, entry, values)
@@ -252,7 +255,7 @@ module I18n
         # Loads a plain Ruby translations file. eval'ing the file must yield
         # a Hash containing translation data with locales as toplevel keys.
         def load_rb(filename)
-          translations = eval(IO.read(filename), binding, filename.to_s)
+          translations = TRANSLATION_FILE_CONTEXT.instance_eval(IO.read(filename), filename.to_s)
           [translations, false]
         end
 

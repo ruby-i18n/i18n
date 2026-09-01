@@ -14,18 +14,27 @@ module I18n
 
   class << self
     # Returns the current fallbacks implementation. Defaults to +I18n::Locale::Fallbacks+.
+    # When not explicitly set, a frozen default instance is returned without
+    # writing the class variable, so reads from non-main Ractors do not
+    # trigger isolation violations.
     def fallbacks
-      @@fallbacks ||= I18n::Locale::Fallbacks.new
-      if Fiber.respond_to?(:[])
+      current = if Fiber.respond_to?(:[])
         Fiber[:i18n_fallbacks] || @@fallbacks
       else
         Thread.current[:i18n_fallbacks] || @@fallbacks
       end
+      current || I18n::Locale::Fallbacks.new.freeze
     end
 
     # Sets the current fallbacks implementation. Use this to set a different fallbacks implementation.
     def fallbacks=(fallbacks)
-      @@fallbacks = fallbacks.is_a?(Array) ? I18n::Locale::Fallbacks.new(fallbacks) : fallbacks
+      @@fallbacks = if fallbacks.nil?
+        nil
+      elsif fallbacks.is_a?(Array)
+        I18n::Locale::Fallbacks.new(fallbacks).freeze
+      else
+        fallbacks.freeze
+      end
       if Fiber.respond_to?(:[])
         Fiber[:i18n_fallbacks] = @@fallbacks
       else
