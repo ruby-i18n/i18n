@@ -44,5 +44,13 @@ class I18nBackendMetadataTest < I18n::TestCase
   test "metadata works with frozen values" do
     assert_equal(1, I18n.t(:missing, :count => 1, :default => 'foo'.freeze).translation_metadata[:count])
   end
+
+  test "metadata is attached to a pluralized entry whose stored strings are frozen" do
+    I18n.backend.store_translations(:en, :apples => { :one => 'apple'.freeze, :other => 'apples'.freeze })
+    metadata = I18n.t(:apples, :count => 1).translation_metadata
+    assert_equal(:en, metadata[:locale])
+    assert_equal(:apples, metadata[:key])
+    assert_equal(1, metadata[:count])
+  end
 end
 

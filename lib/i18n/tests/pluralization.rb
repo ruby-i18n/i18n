@@ -27,6 +27,18 @@ module I18n
         assert_equal({ :one => 'bar' }, I18n.t(:default => { :one => 'bar' }, :count => nil))
       end
 
+      test "pluralization: the result is not the stored translation object" do
+        I18n.backend.store_translations(:en, :__plural => { :one => +'apple', :other => +'apples' })
+        result = I18n.t(:__plural, :count => 1)
+        result << '!'
+        assert_equal 'apple', I18n.t(:__plural, :count => 1)
+      end
+
+      test "pluralization: the result is not frozen" do
+        I18n.backend.store_translations(:en, :__frozen_plural => { :one => 'apple'.freeze, :other => 'apples'.freeze })
+        assert_equal false, I18n.t(:__frozen_plural, :count => 1).frozen?
+      end
+
       test "pluralization: given incomplete pluralization data it raises I18n::InvalidPluralizationData" do
         assert_raises(I18n::InvalidPluralizationData) { I18n.t(:default => { :one => 'bar' }, :count => 2) }
       end
