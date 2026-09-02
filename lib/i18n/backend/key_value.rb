@@ -153,7 +153,7 @@ module I18n
           else
             return entry unless entry.is_a?(Hash)
             key = pluralization_key(entry, count)
-            entry[key]
+            pluralized_entry(entry[key])
           end
         end
       end

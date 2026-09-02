@@ -185,7 +185,14 @@ module I18n
 
           key = pluralization_key(entry, count)
           raise InvalidPluralizationData.new(entry, count, key) unless entry.has_key?(key)
-          entry[key]
+          pluralized_entry(entry[key])
+        end
+
+        # translate dups a String entry, but a pluralized entry is a Hash there,
+        # so the selected value must be copied here or the store's own String
+        # is handed to the caller.
+        def pluralized_entry(value)
+          value.is_a?(::String) ? value.dup : value
         end
 
         # Interpolates values into a given subject.

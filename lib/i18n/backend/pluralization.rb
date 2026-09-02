@@ -45,13 +45,13 @@ module I18n
           # Users that want a different string for the case of `count == 0` should use the explicit "0" key instead.
           # We keep this incorrect behaviour for now for backwards compatibility until we can remove it.
           # Ref: https://github.com/ruby-i18n/i18n/issues/629
-          return entry[:zero] if count == 0 && entry.has_key?(:zero)
+          return pluralized_entry(entry[:zero]) if count == 0 && entry.has_key?(:zero)
 
           # "0" and "1" are special cases
           # https://unicode-org.github.io/cldr/ldml/tr35-numbers.html#Explicit_0_1_rules
           if count == 0 || count == 1
             value = entry[symbolic_count(count)]
-            return value if value
+            return pluralized_entry(value) if value
           end
 
           # Lateral Inheritance of "count" attribute (http://www.unicode.org/reports/tr35/#Lateral_Inheritance):
@@ -63,7 +63,7 @@ module I18n
           plural_rule_category = pluralizer.call(count)
 
           value = if entry.has_key?(plural_rule_category) || entry.has_key?(:other)
-            entry[plural_rule_category] || entry[:other]
+            pluralized_entry(entry[plural_rule_category] || entry[:other])
           else
             raise InvalidPluralizationData.new(entry, count, plural_rule_category)
           end
