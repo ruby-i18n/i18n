@@ -271,6 +271,7 @@ module I18n
     #   I18n.t 'example.one' == 'One interpolation %{foo}'
     #   I18n.t 'example.two' == 'Two interpolations %{foo} %{bar}'
     #   I18n.t 'example.three' == ['One %{foo}', 'Two %{bar}', 'Three %{baz}']
+    #   I18n.t 'example.sprintf' == 'Sprintf style %<foo>.2f'
     #   I18n.t 'example.one', locale: :other == 'One interpolation %{baz}'
     #
     # Then we can expect the following results:
@@ -278,6 +279,7 @@ module I18n
     #   I18n.interpolation_keys('example.one') #=> ['foo']
     #   I18n.interpolation_keys('example.two') #=> ['foo', 'bar']
     #   I18n.interpolation_keys('example.three') #=> ['foo', 'bar', 'baz']
+    #   I18n.interpolation_keys('example.sprintf') #=> ['foo']
     #   I18n.interpolation_keys('one', scope: 'example', locale: :other) #=> ['baz']
     #   I18n.interpolation_keys('does-not-exist') #=> []
     #   I18n.interpolation_keys('example') #=> []
@@ -494,7 +496,11 @@ module I18n
     def interpolation_keys_from_translation(translation)
       case translation
       when ::String
-        translation.scan(Regexp.union(I18n.config.interpolation_patterns))
+        # %<foo>d also captures the format specifier; keep the key only, as
+        # interpolate_hash does.
+        translation.scan(Regexp.union(I18n.config.interpolation_patterns)).map do |captures|
+          Array(captures).compact.first
+        end
       when ::Array
         translation.map { |element| interpolation_keys_from_translation(element) }
       else
