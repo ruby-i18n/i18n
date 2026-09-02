@@ -349,6 +349,26 @@ class I18nTest < I18n::TestCase
     assert_equal ["foo", "bar", "baz"], I18n.interpolation_keys("example_array")
   end
 
+  test "interpolation_keys returns only the key for sprintf style interpolations" do
+    store_translations(:en, "example_sprintf" => "n = %<count>d")
+    assert_equal ["count"], I18n.interpolation_keys("example_sprintf")
+  end
+
+  test "interpolation_keys returns only the key when the sprintf format has a precision" do
+    store_translations(:en, "example_precision" => "x = %<v>.2f")
+    assert_equal ["v"], I18n.interpolation_keys("example_precision")
+  end
+
+  test "interpolation_keys handles both interpolation styles in one translation" do
+    store_translations(:en, "example_mixed" => "%{a} and %<b>d")
+    assert_equal ["a", "b"], I18n.interpolation_keys("example_mixed")
+  end
+
+  test "interpolation_keys ignores escaped percent signs" do
+    store_translations(:en, "example_literal" => "100%% sure about %{foo}")
+    assert_equal ["foo"], I18n.interpolation_keys("example_literal")
+  end
+
   test "interpolation_keys raises I18n::ArgumentError when non-string argument" do
     assert_raises(I18n::ArgumentError) { I18n.interpolation_keys(["bad-argument"]) }
   end
