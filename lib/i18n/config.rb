@@ -60,6 +60,10 @@ module I18n
       @@backend = backend
     end
 
+    def deprecations
+      @@deprecations ||= {}
+    end
+
     # Returns the current default locale. Defaults to :'en'
     def default_locale
       @@default_locale ||= :en
