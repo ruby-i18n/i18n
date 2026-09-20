@@ -158,6 +158,23 @@ class I18nFallbacksComputationTest < I18n::TestCase
       @fallbacks[false]
     end
   end
+
+  # I18n::Locale::Tag::Rfc4646.tag returns nil for a tag it can't parse
+  # (Tag::Simple, the default, never does - it accepts anything). See #711.
+  test "gracefully handles a tag the current Tag implementation cannot parse" do
+    previous_implementation = Tag.implementation
+    Tag.implementation = Tag::Rfc4646
+    begin
+      invalid_locale = :"123"
+      # @fallbacks (from #setup) has :"en-US" as a default, so the invalid
+      # tag itself still comes back, with the usual defaults appended.
+      assert_equal [invalid_locale, :"en-US", :en], @fallbacks[invalid_locale]
+      # With no defaults configured, only the tag itself is returned.
+      assert_equal [invalid_locale], Fallbacks.new[invalid_locale]
+    ensure
+      Tag.implementation = previous_implementation
+    end
+  end
 end
 
 class I18nFallbacksHashCompatibilityTest < I18n::TestCase

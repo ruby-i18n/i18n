@@ -92,7 +92,11 @@ module I18n
       def compute(tags, include_defaults = true, exclude = [])
         result = []
         Array(tags).each do |tag|
-          tags = I18n::Locale::Tag.tag(tag).self_and_parents.map! { |t| t.to_sym } - exclude
+          parsed_tag = I18n::Locale::Tag.tag(tag)
+          # The current Tag implementation (e.g. Rfc4646) may fail to parse
+          # the given tag and return nil - fall back to just the tag itself,
+          # with no parents, rather than raising.
+          tags = (parsed_tag ? parsed_tag.self_and_parents.map! { |t| t.to_sym } : [tag.to_sym]) - exclude
           result += tags
           tags.each { |_tag| result += compute(@map[_tag], false, exclude + result) if @map[_tag] }
         end
