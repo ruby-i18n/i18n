@@ -158,6 +158,15 @@ module I18n
     # value for the key +bar+ will be interpolated into the translation:
     #   I18n.t :foo, :bar => 'baz' # => 'foo baz'
     #
+    # When looking up a namespace, strings in the returned Hash are not
+    # interpolated by default. Set <tt>:deep_interpolation => true</tt> to
+    # recursively interpolate strings in nested Hashes and Arrays. For example,
+    # given the translation <tt>:greetings => { :morning => "Good morning, %{name}!" }</tt>:
+    #   I18n.t :greetings, :name => 'Sam'
+    #   # => { :morning => "Good morning, %{name}!" }
+    #   I18n.t :greetings, :name => 'Sam', :deep_interpolation => true
+    #   # => { :morning => "Good morning, Sam!" }
+    #
     # *PLURALIZATION*
     #
     # Translation data can contain pluralized translations. Pluralized translations
