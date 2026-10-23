@@ -60,8 +60,9 @@ module I18n
       class << self
         def locale_from_path(path)
           name = File.basename(path, ".*")
-          locale = name.include?(".") ? name.split(".").last : name.split("_").first
-          locale.to_sym unless locale.nil?
+          dot = name.rindex(".")
+          locale = dot ? name[dot + 1, name.size] : name[0, name.index("_") || name.size]
+          locale.to_sym
         end
       end
     end
