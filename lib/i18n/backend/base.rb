@@ -84,8 +84,7 @@ module I18n
         if Symbol === format
           key  = format
           type = object.respond_to?(:sec) ? 'time' : 'date'
-          options = options.merge(:raise => true, :object => object, :locale => locale)
-          format  = I18n.t(:"#{type}.formats.#{key}", **options)
+          format = I18n.t(:"#{type}.formats.#{key}", **options, :raise => true, :object => object, :locale => locale)
         end
 
         format = translate_localization_format(locale, object, format, options)
@@ -289,16 +288,16 @@ module I18n
         def translate_localization_format(locale, object, format, options)
           format.to_s.gsub(/%(|\^)[aAbBpP]/) do |match|
             case match
-            when '%a' then I18n.t!(:"date.abbr_day_names",                  :locale => locale, :format => format)[object.wday]
-            when '%^a' then I18n.t!(:"date.abbr_day_names",                 :locale => locale, :format => format)[object.wday].upcase
-            when '%A' then I18n.t!(:"date.day_names",                       :locale => locale, :format => format)[object.wday]
-            when '%^A' then I18n.t!(:"date.day_names",                      :locale => locale, :format => format)[object.wday].upcase
-            when '%b' then I18n.t!(:"date.abbr_month_names",                :locale => locale, :format => format)[object.mon]
-            when '%^b' then I18n.t!(:"date.abbr_month_names",               :locale => locale, :format => format)[object.mon].upcase
-            when '%B' then I18n.t!(:"date.month_names",                     :locale => locale, :format => format)[object.mon]
-            when '%^B' then I18n.t!(:"date.month_names",                    :locale => locale, :format => format)[object.mon].upcase
-            when '%p' then I18n.t!(:"time.#{(object.respond_to?(:hour) ? object.hour : 0) < 12 ? :am : :pm}", :locale => locale, :format => format).upcase
-            when '%P' then I18n.t!(:"time.#{(object.respond_to?(:hour) ? object.hour : 0) < 12 ? :am : :pm}", :locale => locale, :format => format).downcase
+            when '%a' then I18n.t(:"date.abbr_day_names",                  :locale => locale, :format => format, :raise => true)[object.wday]
+            when '%^a' then I18n.t(:"date.abbr_day_names",                 :locale => locale, :format => format, :raise => true)[object.wday].upcase
+            when '%A' then I18n.t(:"date.day_names",                       :locale => locale, :format => format, :raise => true)[object.wday]
+            when '%^A' then I18n.t(:"date.day_names",                      :locale => locale, :format => format, :raise => true)[object.wday].upcase
+            when '%b' then I18n.t(:"date.abbr_month_names",                :locale => locale, :format => format, :raise => true)[object.mon]
+            when '%^b' then I18n.t(:"date.abbr_month_names",               :locale => locale, :format => format, :raise => true)[object.mon].upcase
+            when '%B' then I18n.t(:"date.month_names",                     :locale => locale, :format => format, :raise => true)[object.mon]
+            when '%^B' then I18n.t(:"date.month_names",                    :locale => locale, :format => format, :raise => true)[object.mon].upcase
+            when '%p' then I18n.t(:"time.#{(object.respond_to?(:hour) ? object.hour : 0) < 12 ? :am : :pm}", :locale => locale, :format => format, :raise => true).upcase
+            when '%P' then I18n.t(:"time.#{(object.respond_to?(:hour) ? object.hour : 0) < 12 ? :am : :pm}", :locale => locale, :format => format, :raise => true).downcase
             end
           end
         rescue MissingTranslationData => e
