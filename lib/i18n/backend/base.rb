@@ -55,7 +55,7 @@ module I18n
 
         deep_interpolation = options[:deep_interpolation]
         skip_interpolation = options[:skip_interpolation]
-        values = Utils.except(options, *RESERVED_KEYS) unless options.empty?
+        values = options.except(*RESERVED_KEYS) unless options.empty?
         if !skip_interpolation && values && !values.empty?
           entry = if deep_interpolation
             deep_interpolate(locale, entry, values)
