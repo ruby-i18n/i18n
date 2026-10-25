@@ -81,6 +81,7 @@ class I18nBackendLazyLoadableTest < I18n::TestCase
       invalid_files = [
         { filename: ['translation', '.yml'] },                # No locale identifier
         { filename: ['translation', '.unsupported'] },        # No locale identifier and unsupported extension
+        { filename: ['translation', '.fr.yml'] },             # Locale identifier after a dot, for another locale
       ]
 
       invalid_files.each do |file|
@@ -93,6 +94,7 @@ class I18nBackendLazyLoadableTest < I18n::TestCase
       valid_files = [
         { filename: ['en_translation', '.yml'] },         # Contains locale identifier with correct demarcation, and supported extension
         { filename: ['en_', '.yml'] },                    # Path component matches locale identifier exactly
+        { filename: ['translation', '.en.yml'] },             # Locale identifier after a dot, as in devise.en.yml
       ]
 
       valid_files.each do |file|

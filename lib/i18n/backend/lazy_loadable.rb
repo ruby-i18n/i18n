@@ -18,11 +18,15 @@ module I18n
     # c) the filename starts with the locale identifier
     # d) the locale identifier and optional proceeding text is separated by an underscore, ie. "_".
     #
+    # The locale identifier can also end the filename, preceded by a dot, as in
+    # "devise.en.yml", the naming most Rails applications and gems use.
+    #
     # Examples:
     # Valid files that will be selected by this backend:
     #
     # "files/locales/en_translation.yml" (Selected for locale "en")
     # "files/locales/fr.po"  (Selected for locale "fr")
+    # "files/locales/devise.fr.yml" (Selected for locale "fr")
     #
     # Invalid files that won't be selected by this backend:
     #
@@ -56,8 +60,9 @@ module I18n
       class << self
         def locale_from_path(path)
           name = File.basename(path, ".*")
-          locale = name.split("_").first
-          locale.to_sym unless locale.nil?
+          dot = name.rindex(".")
+          locale = dot ? name[dot + 1, name.size] : name[0, name.index("_") || name.size]
+          locale.to_sym
         end
       end
     end
