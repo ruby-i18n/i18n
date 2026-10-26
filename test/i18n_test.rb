@@ -575,14 +575,15 @@ class I18nTest < I18n::TestCase
 
   test "can reserve a key" do
     begin
-      stub_const(I18n, :RESERVED_KEYS, []) do
-        I18n.reserve_key(:foo)
-        I18n.reserve_key("bar")
+      old_reserved_keys = I18n.reserved_keys
+      I18n.instance_variable_set(:@reserved_keys, [].freeze)
+      I18n.reserve_key(:foo)
+      I18n.reserve_key("bar")
 
-        assert I18n::RESERVED_KEYS.include?(:foo)
-        assert I18n::RESERVED_KEYS.include?(:bar)
-      end
+      assert I18n.reserved_keys.include?(:foo)
+      assert I18n.reserved_keys.include?(:bar)
     ensure
+      I18n.instance_variable_set(:@reserved_keys, old_reserved_keys)
       I18n.instance_variable_set(:@reserved_keys_pattern, nil)
     end
   end

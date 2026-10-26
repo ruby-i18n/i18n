@@ -71,11 +71,7 @@ module I18n
           # call `init_translations`
           init_translations if do_init && !initialized?
 
-          @translations ||= Concurrent::Hash.new do |h, k|
-            MUTEX.synchronize do
-              h[k] = Concurrent::Hash.new
-            end
-          end
+          @translations ||= Concurrent::Hash.new
         end
 
       protected
