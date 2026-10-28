@@ -3,6 +3,7 @@ module I18n
     module Basics
       def teardown
         I18n.available_locales = nil
+        super
       end
 
       test "available_locales returns the available_locales produced by the backend, by default" do
