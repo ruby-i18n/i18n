@@ -51,7 +51,14 @@ module I18n
         return super if options[:fallback_in_progress]
         default = extract_non_symbol_default!(options) if options[:default]
 
-        fallback_options = options.merge(:fallback_in_progress => true, fallback_original_locale: locale)
+        if options.instance_of?(Hash)
+          # Same Hash as the merge below without building a Hash for the two keywords.
+          fallback_options = options.merge
+          fallback_options[:fallback_in_progress] = true
+          fallback_options[:fallback_original_locale] = locale
+        else
+          fallback_options = options.merge(:fallback_in_progress => true, fallback_original_locale: locale)
+        end
         I18n.fallbacks[locale].each do |fallback|
           begin
             catch(:exception) do
