@@ -431,4 +431,14 @@ class I18nBackendOnFallbackHookTest < I18n::TestCase
     assert_equal 'Bar in :de', I18n.t("bar", locale: "de")
     assert I18n.backend.fallback_collector.nil?
   end
+
+  test "on_fallback should be called for a locale that is == to the fallback but not the same locale" do
+    locale = Object.new
+    def locale.to_s; "de"; end
+    def locale.to_sym; :de; end
+    def locale.==(other); other == :en; end
+
+    assert_equal 'Foo in :en', I18n.backend.translate(locale, :foo)
+    assert_equal [[locale, :en, :foo, {}]], I18n.backend.fallback_collector
+  end
 end

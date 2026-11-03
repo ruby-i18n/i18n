@@ -57,7 +57,7 @@ module I18n
             catch(:exception) do
               result = super(fallback, key, fallback_options)
               unless result.nil?
-                on_fallback(locale, fallback, key, options) if locale.to_s != fallback.to_s
+                on_fallback(locale, fallback, key, options) if !locale.equal?(fallback) && locale.to_s != fallback.to_s
                 return result
               end
             end
