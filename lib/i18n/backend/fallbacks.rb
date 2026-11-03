@@ -95,7 +95,22 @@ module I18n
       end
 
       def extract_non_symbol_default!(options)
-        defaults = [options[:default]].flatten
+        default = options[:default]
+        if Array === default
+          defaults = [default].flatten
+        elsif (converted = Array.try_convert(default))
+          # The same conversion flattening [default] applies to its element;
+          # flattening [converted] then walks it the same way.
+          defaults = [converted].flatten
+        else
+          # [default].flatten would be [default]: the detect and the
+          # assignment below, without the wrapper Array.
+          if !default.is_a?(Symbol)
+            options[:default] = [] if default
+            return default
+          end
+          return
+        end
         first_non_symbol_default = defaults.detect{|default| !default.is_a?(Symbol)}
         if first_non_symbol_default
           options[:default] = defaults[0, defaults.index(first_non_symbol_default)]

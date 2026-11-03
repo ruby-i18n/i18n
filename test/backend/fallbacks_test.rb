@@ -83,6 +83,64 @@ class I18nBackendFallbacksTranslateTest < I18n::TestCase
     assert_equal "Default Bar", I18n.t(:missing_foo, :locale => :'de-DE', :default => [:missing_bar, Proc.new { "Default Bar" }, :baz])
   end
 
+  test "flattens nested Array defaults and leaves the given Array unchanged" do
+    defaults = [[:missing_bar, ["Default Bar"]], :baz]
+    assert_equal "Default Bar", I18n.t(:missing_foo, :locale => :'de-DE', :default => defaults)
+    assert_equal [[:missing_bar, ["Default Bar"]], :baz], defaults
+  end
+
+  test "flattens a default that converts to an Array" do
+    default = Object.new
+    def default.to_ary; [:missing_bar, "Default Bar"]; end
+    assert_equal "Default Bar", I18n.t(:missing_foo, :locale => :'de-DE', :default => default)
+  end
+
+  test "flattens a String default that converts to an Array" do
+    default = +"Literal"
+    def default.to_ary; [:missing_bar, "Default Bar"]; end
+    assert_equal "Default Bar", I18n.t(:missing_foo, :locale => :'de-DE', :default => default)
+
+    default = +"Literal"
+    def default.method_missing(name, *args); name == :to_ary ? [:missing_bar, "Default Bar"] : super; end
+    assert_equal "Default Bar", I18n.t(:missing_foo, :locale => :'de-DE', :default => default)
+  end
+
+  test "flattens an Array default as given when an element's to_ary changes it" do
+    default = ["Original", nil]
+    default[1] = Object.new.tap { |o| o.define_singleton_method(:to_ary) { default[0] = "Changed"; [:missing_bar] } }
+    assert_equal "Original", I18n.t(:missing_foo, :locale => :'de-DE', :default => default)
+  end
+
+  test "flattens a converted default as given when an element's to_ary changes it" do
+    converted = ["Original", nil]
+    converted[1] = Object.new.tap { |o| o.define_singleton_method(:to_ary) { converted[0] = "Changed"; [:missing_bar] } }
+    default = Object.new.tap { |o| o.define_singleton_method(:to_ary) { converted } }
+    assert_equal "Original", I18n.t(:missing_foo, :locale => :'de-DE', :default => default)
+  end
+
+  test "checks a default that is not a Symbol with ! like the elements of an Array default" do
+    is_a_result = Object.new
+    def is_a_result.!; true; end
+    default = Object.new
+    default.define_singleton_method(:is_a?) { |_| is_a_result }
+    options = { :default => default }
+    assert_same default, I18n.backend.send(:extract_non_symbol_default!, options)
+    assert_equal({ :default => [] }, options)
+  end
+
+  test "leaves a nil or false default in the options" do
+    [nil, false].each do |default|
+      options = { :default => default }.freeze
+      assert_equal default, I18n.backend.send(:extract_non_symbol_default!, options)
+      assert_equal({ :default => default }, options)
+    end
+  end
+
+  test "flattens an Array subclass default without calling its flatten" do
+    default = Class.new(Array) { def flatten(*); ["Overridden"]; end }[:missing_bar, "Default Bar"]
+    assert_equal "Default Bar", I18n.t(:missing_foo, :locale => :'de-DE', :default => default)
+  end
+
   test "returns the default translation for a missing :'de-DE' and existing :de when default is a Hash" do
     assert_equal 'Default 6 Bars', I18n.t(:missing_foo, :locale => :'de-DE', :default => [:missing_bar, {:other => "Default %{count} Bars"}, "Default Bar"], :count => 6)
   end
