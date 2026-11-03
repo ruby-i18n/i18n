@@ -600,6 +600,25 @@ class I18nTest < I18n::TestCase
     assert_equal :en, fiber_locale
   end
 
+  test "uses Fiber storage that becomes available after i18n is loaded" do
+    skip "Fiber storage requires Ruby 3.2+" unless Fiber.respond_to?(:[])
+    stub_const(I18n, :FIBER_STORAGE, false) do
+      I18n.locale = :de
+      assert_equal :de, Fiber[:i18n_config].locale
+      assert_equal :de, I18n.locale
+    end
+  ensure
+    I18n.send(:private_constant, :FIBER_STORAGE)
+    I18n.locale = :en
+  end
+
+  test "fallbacks can be set when the fallbacks backend is required on its own" do
+    lib = File.expand_path('../lib', __dir__)
+    script = 'require "i18n/backend/fallbacks"; fallbacks = { en: [:en] }; I18n.fallbacks = fallbacks; print I18n.fallbacks.equal?(fallbacks)'
+    output = IO.popen([RbConfig.ruby, '-I', lib, '-e', script, err: [:child, :out]], &:read)
+    assert_equal 'true', output
+  end
+
   test "I18n.locale is isolated between concurrent Fibers" do
     skip "Fiber storage requires Ruby 3.2+" unless Fiber.respond_to?(:[])
     I18n.available_locales = [:en, :ja]
