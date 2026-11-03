@@ -28,6 +28,40 @@ class I18nBackendFallbacksTranslateTest < I18n::TestCase
     assert_equal 'Bar in :de', I18n.t(:bar, :locale => :'de-DE')
   end
 
+  test "passes the fallback options to each locale without changing the caller's options" do
+    received = []
+    recorder = Module.new do
+      define_method(:translate) do |locale, key, options = I18n::EMPTY_HASH|
+        received << [locale, options.dup]
+        super(locale, key, options)
+      end
+    end
+    I18n.backend = Class.new(I18n::Backend::Simple) { include recorder; include I18n::Backend::Fallbacks }.new
+    store_translations(:de, :bar => 'Bar in :de')
+    options = { scope: [], fallback_original_locale: :fr }.freeze
+    assert_equal 'Bar in :de', I18n.backend.translate(:'de-DE', :bar, options)
+    assert_equal({ scope: [], fallback_original_locale: :fr }, options)
+    assert_equal [:'de-DE', :de], received.map(&:first)
+    fallback_options = received.first.last
+    assert_equal({ scope: [], fallback_original_locale: :"de-DE", fallback_in_progress: true }, fallback_options)
+    assert_equal [:scope, :fallback_original_locale, :fallback_in_progress], fallback_options.keys
+    assert_equal [:"de-DE"], received.map { |_, o| o[:fallback_original_locale] }.uniq
+  end
+
+  test "builds the fallback options of a Hash subclass with its own merge" do
+    stored = []
+    options_class = Class.new(Hash) do
+      define_method(:[]=) do |key, value|
+        stored << key
+        super(key, value)
+      end
+    end
+    options = options_class[:scope, []]
+    assert_equal 'Bar in :de', I18n.backend.translate(:'de-DE', :bar, options)
+    assert_equal [], stored
+    assert_equal({ scope: [] }, options)
+  end
+
   test "keeps the count option when defaulting to a different key" do
     assert_equal 'Interpolate 5 10', I18n.t(:non_existent, default: :interpolate_count, count: 10, value: 5)
   end
