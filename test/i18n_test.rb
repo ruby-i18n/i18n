@@ -464,6 +464,21 @@ class I18nTest < I18n::TestCase
     assert_equal I18n.default_locale, I18n.locale
   end
 
+  test "I18n.with_locale does not pin the locale to the old default_locale afterwards" do
+    # If I18n.locale was never explicitly set (only default_locale was),
+    # with_locale must restore that same "unset, tracks default_locale"
+    # state - not freeze I18n.locale to whatever default_locale resolved
+    # to during the call.
+    I18n.default_locale = :en
+    I18n.with_locale(:de) { }
+    assert_equal :en, I18n.locale
+
+    I18n.default_locale = :pl
+    assert_equal :pl, I18n.locale
+  ensure
+    I18n.default_locale = :en
+  end
+
   test "I18n.transliterate handles I18n::ArgumentError exception" do
     I18n::Backend::Transliterator.stubs(:get).raises(I18n::ArgumentError)
     I18n.exception_handler.expects(:call).raises(I18n::ArgumentError)

@@ -377,12 +377,17 @@ module I18n
       if tmp_locale == nil
         yield
       else
-        current_locale = self.locale
+        # Save the raw (possibly unset) locale rather than the resolved
+        # #locale, so that if it was never explicitly set, it's restored
+        # to that same unset state afterwards - keeping it tracking
+        # default_locale dynamically - instead of being pinned to
+        # whatever default_locale happened to resolve to right now.
+        current_locale = config.raw_locale
         self.locale = tmp_locale
         begin
           yield
         ensure
-          self.locale = current_locale
+          config.raw_locale = current_locale
         end
       end
     end

@@ -10,6 +10,19 @@ module I18n
       defined?(@locale) && @locale != nil ? @locale : default_locale
     end
 
+    # Returns the locale explicitly set on this config, or +nil+ if none
+    # has been set (in which case #locale falls back to #default_locale).
+    # Unlike #locale=, this does not validate against available_locales,
+    # since it's meant for saving/restoring state (e.g. I18n.with_locale)
+    # rather than for setting a new locale.
+    def raw_locale
+      @locale if defined?(@locale)
+    end
+
+    def raw_locale=(locale)
+      @locale = locale
+    end
+
     def initialize
       @owner = Fiber.current
     end
