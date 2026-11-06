@@ -58,8 +58,19 @@ module I18n
       if Fiber.respond_to?(:[])
         current = Fiber[:i18n_config] || self.config = I18n::Config.new
         if current.respond_to?(:owned_by?) && !current.owned_by?(Fiber.current)
-          current = current.dup
-          Fiber[:i18n_config] = current
+          if current.instance_of?(I18n::Config)
+            copy = current.dup
+            Fiber[:i18n_config] = copy
+          else
+            # A subclass may keep its locale elsewhere (Rails' ActionView::I18nProxy
+            # keeps it on another config), so a dup would still share it.
+            # Copy just the locale value instead.
+            locale = current.locale
+            copy = I18n::Config.new
+            Fiber[:i18n_config] = copy
+            copy.locale = locale
+          end
+          current = copy
         end
 
         current
